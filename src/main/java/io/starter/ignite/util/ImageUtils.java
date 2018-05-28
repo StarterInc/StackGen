@@ -27,7 +27,7 @@ public class ImageUtils {
 	public static int IMAGE_MEDIUM_ICON_WIDTH = 128;
 	public static int IMAGE_TINY_ICON_WIDTH = 64;
 
-	public static String TEST_IMAGES_FOLDER = "/Users/johnstarter/server/test/testimages";
+	public static String TEST_IMAGES_FOLDER = "/testimages";
 
 	/**
 	 * returns the custom file path for the resource

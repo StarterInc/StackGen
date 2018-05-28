@@ -4,7 +4,8 @@ public interface SystemConstants {
 
 	public static String DB_NAME = (System.getProperty("RDS_DB_NAME") != null ? System.getProperty("RDS_DB_NAME")
 			: "NONE");
-	public static String DB_URL = (System.getProperty("RDS_HOSTNAME") != null ? System.getProperty("RDS_HOSTNAME") : "NONE");
+	public static String DB_URL = (System.getProperty("RDS_HOSTNAME") != null ? System.getProperty("RDS_HOSTNAME")
+			: "NONE");
 	public static String DB_USER = (System.getProperty("RDS_USERNAME") != null ? System.getProperty("RDS_USERNAME")
 			: "NONE");
 	public static String DB_PASSWORD = (System.getProperty("RDS_PASSWORD") != null ? System.getProperty("RDS_PASSWORD")

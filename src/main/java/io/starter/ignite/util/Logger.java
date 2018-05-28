@@ -3,8 +3,6 @@
  */
 package io.starter.ignite.util;
 
-import java.io.IOException;
-
 /**
  * the usual logging stuff
  * 

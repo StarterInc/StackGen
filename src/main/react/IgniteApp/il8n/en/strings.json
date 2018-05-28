@@ -1,0 +1,184 @@
+{
+  "bigdecimal_longitude":"Longitude",
+  "bigdecimal_latitude":"Latitude",
+  "bigdecimal_coords": "Coordinates",
+  "bigdecimal_soures":"Sources",
+  
+  "bigdecimal_refresh":"Refresh",
+  "bigdecimal_login": "Log in",
+  "bigdecimal_log_in": "Log In",
+  "bigdecimal_create_account": "Create account",
+  "bigdecimal_username": "USERNAME",
+  "bigdecimal_new_username_placeholder": "Enter a New Username",
+  "bigdecimal_new_password_placeholder": "Enter a New Password",
+  "bigdecimal_useremail": "USEREMAIL",
+  "bigdecimal_password": "PASSWORD",
+  "bigdecimal_forgot_password": "Forgot Password",
+  "bigdecimal_reset_password": "Reset",
+  "bigdecimal_welcome_text": "Welcome, ",
+  "bigdecimal_exclamation_mark": "!",
+  "bigdecimal_incorrect_login_credentials": "Incorrect Login Credentials",
+
+  "bigdecimal_recent_updates": "Recent Updates",
+  "bigdecimal_additional_comments": "Additional Comments",
+  
+
+  
+  "bigdecimal_action_label_upload": "upload",
+  "bigdecimal_action_label_upload_by": "uploaded by",
+  "bigdecimal_action_label_data_entry": "data entry",
+  "bigdecimal_action_label_content_edited_by": "data edited by",
+
+
+  "bigdecimal_activities": "Recent Activity",
+  "bigdecimal_training": "Training",
+  "bigdecimal_help_settings": "User Settings",
+  "bigdecimal_media_browser": "Media Browser",
+
+
+  "bigdecimal_help_faq": "F.A.Q.",
+  "bigdecimal_help_privacy": "Privacy",
+  "bigdecimal_help_legal": "Legal",
+
+
+  "bigdecimal_open":"Open",
+  "bigdecimal_close":"Close",
+  "bigdecimal_edit_article":"EDIT ARTICLE",
+  "bigdecimal_create_new_article":"Create New Article",
+  "bigdecimal_new_article":"New Article",
+  "bigdecimal_documentation":"Documentation",
+  "bigdecimal_new_site":"New Site",
+  "bigdecimal_new_object":"New Object",
+  "bigdecimal_add_object_instructions":"Enter detailed information for the Object",
+  "bigdecimal_object_name":"Object Name",
+  "bigdecimal_object_description":"Object Description",
+
+
+  "bigdecimal_camera_media":"Upload Images",
+  "bigdecimal_camera_media_instructions":"You can upload as many image and video files as you want.",
+  "bigdecimal_photo_picker":"Photo Picker",
+  "bigdecimal_camera_select_from_gallery":"Choose Image from Gallery",
+  "bigdecimal_upload_successful": "Upload Successful!",
+  "bigdecimal_camera_cancel": "Cancel",
+  "bigdecimal_articles_start_date":"Article Start Date",
+  "bigdecimal_articles_start_date_error": "You must enter a start date in the format MM/DD/YYYY",
+  "bigdecimal_articles_start_date_placeholder": "Enter the start date of the Article in format MM/DD/YYYY",
+  "bigdecimal_camera_instructions_online":"Capture or select a video or photo for upload.",
+  "bigdecimal_camera_description":"Content Description",
+  "bigdecimal_new_uploaded_file":"Uploaded File",
+  "bigdecimal_camera_description_placeholder":"Enter a Caption",
+  "bigdecimal_camera_take_video":"Video",
+  "bigdecimal_camera_video_picker":"Video Picker",
+  "bigdecimal_camera_video_take_video":"Take a Video...",
+  "bigdecimal_camera_take_picture":"Take a Photo...",
+  "bigdecimal_image_picker_selected_photo": "Selected Image",
+  "bigdecimal_image_picker_selected_video": "Selected Video",
+  "bigdecimal_upload_offline": "Save to Queue for Upload Later",
+  "bigdecimal_upload_online": "Upload File",
+  "bigdecimal_camera_media_use_mobile_gps":"Using Image Coordinates:",
+
+
+  "bigdecimal_team":"TEAM",
+  "bigdecimal_edit_team":"Edit Team",
+  "bigdecimal_team_name":"TEAM NAME",
+  "bigdecimal_team_pick":"Team",
+  "bigdecimal_team_invite":"SEND INVITE",
+  "bigdecimal_team_invite_new_member":"SEND INVITE",
+  "bigdecimal_team_invite_new_member_placeholder":"Enter email or username to invite member.",
+  "bigdecimal_team_description":"Team Description",
+  "bigdecimal_team_new_team":"CREATE A TEAM",
+  "bigdecimal_team_new_team_or":"OR",
+  "bigdecimal_team_link":"New team",
+  "bigdecimal_team_add_people":"ADD PEOPLE",
+  "bigdecimal_team_level_of_access":"LEVEL OF ACCESS",
+  "bigdecimal_team_who_has_access":"TEAM MEMBERS",
+  "bigdecimal_team_find_by_username_or_email":"FIND BY USERNAME OR EMAIL",
+  "bigdecimal_team_access_add_and_edit":"Add & edit",
+  "bigdecimal_team_access_view_only":"View only",
+  "bigdecimal_team_remove_user": "Remove User",
+
+
+  "bigdecimal_map_select":"SELECT",
+  "bigdecimal_map_add_marker":"ADD MARKER",
+  "bigdecimal_map_markers":"Map",
+  "bigdecimal_map_add_area":"ADD AREA",
+  "bigdecimal_map_key_map":"Map",
+  "bigdecimal_map_remove_marker": "REMOVE MARKER",
+  "bigdecimal_maps_add_marker_instructions": "Please use the 'ADD MARKER' button to drop a pin.",
+
+
+  "bigdecimal_usersettings": "SETTINGS",
+  "bigdecimal_email_placeholder": "Enter an Email Address (anonymous preferred)",
+
+  "bigdecimal_username_placeholder": "Enter a Username (alias)",
+  "bigdecimal_username_anonymous_disclaimer": "Consider using anonymous alias and email for improved security.",
+  "bigdecimal_password_placeholder": "Enter a Password",
+
+  "bigdecimal_site_name": "Site Name",
+  "bigdecimal_site_name_placeholder": "Name of Site",
+  "bigdecimal_site_name_error": "You must enter a site name.",
+
+  "bigdecimal_site_description": "Description",
+  "bigdecimal_site_damage_level": "Damage Level",
+  "bigdecimal_site_total_destruction": "Total Destruction",
+
+  "bigdecimal_primary_hazards": "Primary Hazards",
+  "bigdecimal_hazards": "Hazards",
+  "bigdecimal_primary_hazard":"Primary Hazard",
+  "bigdecimal_secondary_hazard":"Secondary Hazard",
+
+  "bigdecimal_natural_hazards": "Natural Hazards",
+  "bigdecimal_manmade_hazards": "Man Made Hazards",
+  "bigdecimal_personal_hazards": "Personal Hazards",
+
+  "bigdecimal_add":" Add",
+  "bigdecimal_remove": " Remove",
+  "bigdecimal_up": " Up",
+  "bigdecimal_down":" Down",
+  "bigdecimal_optional":" (Optional)",
+  "bigdecimal_required": " (Required)",
+  "bigdecimal_please_fill_out_the_form": "Form not complete. Please check for missing entries or error messages.",
+
+  "bigdecimal_user_change_username":" CHANGE USER NAME",
+  "bigdecimal_user_change_settings": "Settings",
+  "bigdecimal_help_and_documentation": "Help",
+  "bigdecimal_help_training": "Training",
+  "bigdecimal_help_about":"About BigDecimal",
+
+  "bigdecimal_user_memberships": "Memberships",
+  "bigdecimal_user_team_memberships": "Team Memberships for",
+
+  "bigdecimal_new_article_title":"CREATE NEW ARTICLE",
+  "bigdecimal_new_article_confirm":"Confirm and Continue",
+
+  "bigdecimal_article_get_started":"Please enter the basic information about your Article",
+  "bigdecimal_article_name":"Article Name",
+  "bigdecimal_article_name_placeholder": "Enter article name",
+  "bigdecimal_article_name_form_error":"Your article must have a name. Describe the project.",
+  "bigdecimal_camera_form_error": "Your upload must have a description (caption)",
+  "bigdecimal_description":"Article Description",
+  "bigdecimal_articles_description_placeholder":"Enter detailed description",
+  "bigdecimal_article_description_form_error":"Please enter a detailed description for your article up to (255 chars)",
+
+  "bigdecimal_article_team":"Article Team",
+  "bigdecimal_setup_article_team":"ADD USERS TO TEAM",
+
+  "bigdecimal_site_region_description":"Region",
+  "bigdecimal_articles_region_placeholder":"Enter Region / City Name",
+  "bigdecimal_site_region_description_instructions":"Name of the Region or City where the article will focus",
+  "bigdecimal_article_region_form_error":"Enter a valid City, or Region name.",
+
+  "bigdecimal_articles_thumbnail": "Set Image",
+  "bigdecimal_articles_thumbnail_instructions": "Enter the Image used in headers and icons",
+  "bigdecimal_articles_thumbnail_placeholder": "Image or Web URL",
+  "bigdecimal_articles_thumbnail_error":"Invalid thumbnail image URL.",
+
+
+  "bigdecimal_user_already_exists": "Sorry a user with those credentials already exists. Please try again.",
+  "bigdecimal_user_unexpected_server_error": "Unexpected Server Error",
+  "bigdecimal_device_no_gps": "Your device is currently not providing location information to BigDecimal. Please check your GPS settings.",
+
+
+  "bigdecimal_share_social_message": "Join me and the thousands of concerned people working to save and share content: http://bigdecimal.o"
+
+}

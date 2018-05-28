@@ -1,5 +1,6 @@
 package io.starter.ignite.util;
 
+import io.starter.ignite.generator.Configuration;
 import io.starter.ignite.generator.Main;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class RunCommand {
 
 		args[0] = "/usr/local/bin/react-native";
 		args[1] = "init";
-		args[2] = "${MYBATIS_MAIN}main/react/MyLittlePony";
+		args[2] = "${MYBATIS_MAIN}main/react/" + Configuration.REACT_APP_NAME;
 		args[3] = "--verbose";
 
 		// args[1] =

@@ -159,30 +159,6 @@ class CreateUser extends Component {
     this.props.navigator.push({id:'documentation'});
   }
 
-/*
-TODO: implement redux form
-
-            <Form model="userInfo"
-              onSubmit={(userInfo) => this.handleSubmit(userInfo)}>
-
-              <Field model="userInfo.username">
-              <Text>uSERNAMEXXX</Text>
-                <TextInput />
-              </Field>
-
-
-              <Field model="userInfo.password">
-                <Text>PasswordXXX</Text>
-                  <TextInput />
-              </Field>
-
-            </Form>
-
-
-*/
-
-
-
   close(){
       this.props.navigator.pop();
   }

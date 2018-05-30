@@ -48,13 +48,8 @@ class AppBar extends React.Component{
     })
   }
     /*
-      source={{{uri: 'http://{{appname}}.online/wp-content/uploads/2016/05/background_elevator.png'}}}
-    */
-
-    /*
     <Animated.Image // Base: Image, Text, View
-      // source={{{uri: 'http://{{appname}}.online/wp-content/uploads/2016/05/background_elevator.png'}}}
-      // source={require('../../assets/background.png')}
+      // source={{{uri: 'http://{{appname}}.online/wp-content/uploads/2016/05/somebackground.png'}}}
       style={{{
         height:100,
         opacity:1,

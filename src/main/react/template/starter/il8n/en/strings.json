@@ -22,8 +22,6 @@
 
   "{{appname}}_recent_updates": "Recent Updates",
   "{{appname}}_additional_comments": "Additional Comments",
-  
-
 
   "{{appname}}_action_label_upload": "upload",
   "{{appname}}_action_label_upload_by": "uploaded by",
@@ -114,23 +112,6 @@
   "{{appname}}_username_anonymous_disclaimer": "Consider using anonymous alias and email for improved security.",
   "{{appname}}_password_placeholder": "Enter a Password",
 
-  "{{appname}}_site_name": "Site Name",
-  "{{appname}}_site_name_placeholder": "Name of Site",
-  "{{appname}}_site_name_error": "You must enter a site name.",
-
-  "{{appname}}_site_description": "Description",
-  "{{appname}}_site_damage_level": "Damage Level",
-  "{{appname}}_site_total_destruction": "Total Destruction",
-
-  "{{appname}}_primary_hazards": "Primary Hazards",
-  "{{appname}}_hazards": "Hazards",
-  "{{appname}}_primary_hazard":"Primary Hazard",
-  "{{appname}}_secondary_hazard":"Secondary Hazard",
-
-  "{{appname}}_natural_hazards": "Natural Hazards",
-  "{{appname}}_manmade_hazards": "Man Made Hazards",
-  "{{appname}}_personal_hazards": "Personal Hazards",
-
   "{{appname}}_add":" Add",
   "{{appname}}_remove": " Remove",
   "{{appname}}_up": " Up",
@@ -143,10 +124,10 @@
   "{{appname}}_user_change_settings": "Settings",
   "{{appname}}_help_and_documentation": "Help",
   "{{appname}}_help_training": "Training",
-  "{{appname}}_help_about":"About BigDecimal",
+  "{{appname}}_help_about":"About {{COMPANY_NAME}}",
 
   "{{appname}}_user_memberships": "Memberships",
-  "{{appname}}_user_team_memberships": "Team Memberships for",
+  "{{appname}}_user_team_memberships": "Group Memberships for",
 
   "{{appname}}_new_article_title":"CREATE NEW ARTICLE",
   "{{appname}}_new_article_confirm":"Confirm and Continue",
@@ -172,7 +153,6 @@
   "{{appname}}_articles_thumbnail_instructions": "Enter the Image used in headers and icons",
   "{{appname}}_articles_thumbnail_placeholder": "Image or Web URL",
   "{{appname}}_articles_thumbnail_error":"Invalid thumbnail image URL.",
-
 
   "{{appname}}_user_already_exists": "Sorry a user with those credentials already exists. Please try again.",
   "{{appname}}_user_unexpected_server_error": "Unexpected Server Error",

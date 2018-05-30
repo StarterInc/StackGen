@@ -1,0 +1,9 @@
+<applicationDocs targetNamespace="http://wadl.dev.java.net/2009/02">
+    <doc xml:lang="en" title="Documentation for the Starter REST API">
+        <b>System Documentation</b><br/>
+        <br/>
+        <a href='http://amal.starter.io'>Visit the Starter Website</a>
+        
+    </doc>
+
+</applicationDocs>

@@ -194,8 +194,8 @@ public class CustomInstantDeserializer<T extends Temporal>
           if (context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)) {
             return adjust.apply(value, this.getZone(context));
           }
-        } catch (DateTimeException e) {
-          throw _peelDTE(e);
+        } catch (Exception ed) {
+          throw (ed); // fixed
         }
         return value;
       }

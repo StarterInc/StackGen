@@ -1,0 +1,201 @@
+swagger: '2.0'
+info:
+  description: This is the StarterIgnite API
+  version: 1.0.0
+  title: StarterIgnite API
+  # put the contact info for your development or API team
+  contact:
+    email: info@starter.io
+
+  license:
+    name: AGPL 3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+
+# all paths will be relative to the basePath specified
+# basePath: /v1
+
+# tags are used for organizing operations
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: users
+  description: Operations available to regular users
+schemes:
+- https
+paths:
+  /content:
+    get:
+      tags:
+      - users
+      summary: searches content
+      operationId: searchContent
+      description: |
+        By passing in the appropriate options, you can search for
+        available content in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: searchString
+        description: pass an optional search string for looking up content
+        required: false
+        type: string
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 50
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Content'
+        400:
+          description: bad input parameter
+    post:
+      tags:
+      - admins
+      summary: adds an content item
+      operationId: addContent
+      description: Adds an item to the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: contentItem
+        description: Content item to add
+        schema:
+          $ref: '#/definitions/Content'
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+definitions:
+  Content:
+    type: object
+    required:
+    - id
+    - name
+    - author
+    - organization
+    - releaseDate
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: Widget Adapter
+      author:
+        $ref: '#/definitions/User'
+      releaseDate:
+        type: string
+        format: int32
+        example: 2016-08-29T09:12:33.001Z
+      organization:
+        $ref: '#/definitions/Organization'
+  Organization:
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: ACME Corporation
+      homePage:
+        type: string
+        format: url
+        example:  https://www.acme-corp.com
+      phone:
+        type: string
+        example: 408-867-5309
+  Bicycles:
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: Litespeed
+      type:
+        type: string
+        example: Mountain Bike        
+  Location:
+    required:
+    - id
+    - locationname
+    - email
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      locationname:
+        type: string
+        example: Golden Gate Park
+      country:
+        type: string
+        example: USA
+      email:
+        type: string
+        example: sparky@starter.io
+      homePage:
+        type: string
+        format: url
+        example:  https://www.acme-corp.com
+      phone:
+        type: string
+        example: 408-867-5309
+  User:
+    required:
+    - id
+    - username
+    - email
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      fingerprint:
+        type: string
+        example: DK$DFSJaraDD
+      username:
+        type: string
+        example: Sparky
+      email:
+        type: string
+        example: sparky@yo.com
+      homePage:
+        type: string
+        format: url
+        example:  https://www.acme-corp.com
+      phone:
+        type: string
+        example: 408-867-5309
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /spaceghost69/Starter/1.0.0

@@ -1,0 +1,164 @@
+{
+  
+  "{{appname}}_longitude":"Longitude",
+  "{{appname}}_latitude":"Latitude",
+  "{{appname}}_coords": "Coordinates",
+  "{{appname}}_soures":"Sources",
+  
+  "{{appname}}_refresh":"Refresh",
+  "{{appname}}_login": "Log in",
+  "{{appname}}_log_in": "Log In",
+  "{{appname}}_create_account": "Create account",
+  "{{appname}}_username": "USERNAME",
+  "{{appname}}_new_username_placeholder": "Enter a New Username",
+  "{{appname}}_new_password_placeholder": "Enter a New Password",
+  "{{appname}}_useremail": "USEREMAIL",
+  "{{appname}}_password": "PASSWORD",
+  "{{appname}}_forgot_password": "Forgot Password",
+  "{{appname}}_reset_password": "Reset",
+  "{{appname}}_welcome_text": "Welcome, ",
+  "{{appname}}_exclamation_mark": "!",
+  "{{appname}}_incorrect_login_credentials": "Incorrect Login Credentials",
+
+  "{{appname}}_recent_updates": "Recent Updates",
+  "{{appname}}_additional_comments": "Additional Comments",
+
+  "{{appname}}_action_label_upload": "upload",
+  "{{appname}}_action_label_upload_by": "uploaded by",
+  "{{appname}}_action_label_data_entry": "data entry",
+  "{{appname}}_action_label_content_edited_by": "data edited by",
+
+
+  "{{appname}}_activities": "Recent Activity",
+  "{{appname}}_training": "Training",
+  "{{appname}}_help_settings": "User Settings",
+  "{{appname}}_media_browser": "Media Browser",
+
+
+  "{{appname}}_help_faq": "F.A.Q.",
+  "{{appname}}_help_privacy": "Privacy",
+  "{{appname}}_help_legal": "Legal",
+
+
+  "{{appname}}_open":"Open",
+  "{{appname}}_close":"Close",
+  "{{appname}}_edit_article":"EDIT ARTICLE",
+  "{{appname}}_create_new_article":"Create New Article",
+  "{{appname}}_new_article":"New Article",
+  "{{appname}}_documentation":"Documentation",
+  "{{appname}}_new_site":"New Site",
+  "{{appname}}_new_object":"New Object",
+  "{{appname}}_add_object_instructions":"Enter detailed information for the Object",
+  "{{appname}}_object_name":"Object Name",
+  "{{appname}}_object_description":"Object Description",
+
+
+  "{{appname}}_camera_media":"Upload Images",
+  "{{appname}}_camera_media_instructions":"You can upload as many image and video files as you want.",
+  "{{appname}}_photo_picker":"Photo Picker",
+  "{{appname}}_camera_select_from_gallery":"Choose Image from Gallery",
+  "{{appname}}_upload_successful": "Upload Successful!",
+  "{{appname}}_camera_cancel": "Cancel",
+  "{{appname}}_articles_start_date":"Article Start Date",
+  "{{appname}}_articles_start_date_error": "You must enter a start date in the format MM/DD/YYYY",
+  "{{appname}}_articles_start_date_placeholder": "Enter the start date of the Article in format MM/DD/YYYY",
+  "{{appname}}_camera_instructions_online":"Capture or select a video or photo for upload.",
+  "{{appname}}_camera_description":"Content Description",
+  "{{appname}}_new_uploaded_file":"Uploaded File",
+  "{{appname}}_camera_description_placeholder":"Enter a Caption",
+  "{{appname}}_camera_take_video":"Video",
+  "{{appname}}_camera_video_picker":"Video Picker",
+  "{{appname}}_camera_video_take_video":"Take a Video...",
+  "{{appname}}_camera_take_picture":"Take a Photo...",
+  "{{appname}}_image_picker_selected_photo": "Selected Image",
+  "{{appname}}_image_picker_selected_video": "Selected Video",
+  "{{appname}}_upload_offline": "Save to Queue for Upload Later",
+  "{{appname}}_upload_online": "Upload File",
+  "{{appname}}_camera_media_use_mobile_gps":"Using Image Coordinates:",
+
+
+  "{{appname}}_team":"TEAM",
+  "{{appname}}_edit_team":"Edit Team",
+  "{{appname}}_team_name":"TEAM NAME",
+  "{{appname}}_team_pick":"Team",
+  "{{appname}}_team_invite":"SEND INVITE",
+  "{{appname}}_team_invite_new_member":"SEND INVITE",
+  "{{appname}}_team_invite_new_member_placeholder":"Enter email or username to invite member.",
+  "{{appname}}_team_description":"Team Description",
+  "{{appname}}_team_new_team":"CREATE A TEAM",
+  "{{appname}}_team_new_team_or":"OR",
+  "{{appname}}_team_link":"New team",
+  "{{appname}}_team_add_people":"ADD PEOPLE",
+  "{{appname}}_team_level_of_access":"LEVEL OF ACCESS",
+  "{{appname}}_team_who_has_access":"TEAM MEMBERS",
+  "{{appname}}_team_find_by_username_or_email":"FIND BY USERNAME OR EMAIL",
+  "{{appname}}_team_access_add_and_edit":"Add & edit",
+  "{{appname}}_team_access_view_only":"View only",
+  "{{appname}}_team_remove_user": "Remove User",
+
+  "{{appname}}_map_select":"SELECT",
+  "{{appname}}_map_add_marker":"ADD MARKER",
+  "{{appname}}_map_markers":"Map",
+  "{{appname}}_map_add_area":"ADD AREA",
+  "{{appname}}_map_key_map":"Map",
+  "{{appname}}_map_remove_marker": "REMOVE MARKER",
+  "{{appname}}_maps_add_marker_instructions": "Please use the 'ADD MARKER' button to drop a pin.",
+
+
+  "{{appname}}_usersettings": "SETTINGS",
+  "{{appname}}_email_placeholder": "Enter an Email Address (anonymous preferred)",
+
+  "{{appname}}_username_placeholder": "Enter a Username (alias)",
+  "{{appname}}_username_anonymous_disclaimer": "Consider using anonymous alias and email for improved security.",
+  "{{appname}}_password_placeholder": "Enter a Password",
+
+  "{{appname}}_add":" Add",
+  "{{appname}}_remove": " Remove",
+  "{{appname}}_up": " Up",
+  "{{appname}}_down":" Down",
+  "{{appname}}_optional":" (Optional)",
+  "{{appname}}_required": " (Required)",
+  "{{appname}}_please_fill_out_the_form": "Form not complete. Please check for missing entries or error messages.",
+
+  "{{appname}}_user_change_username":" CHANGE USER NAME",
+  "{{appname}}_user_change_settings": "Settings",
+  "{{appname}}_help_and_documentation": "Help",
+  "{{appname}}_help_training": "Training",
+  "{{appname}}_help_about":"About {{COMPANY_NAME}}",
+
+  "{{appname}}_user_memberships": "Memberships",
+  "{{appname}}_user_team_memberships": "Group Memberships for",
+
+  "{{appname}}_new_article_title":"CREATE NEW ARTICLE",
+  "{{appname}}_new_article_confirm":"Confirm and Continue",
+
+  "{{appname}}_article_get_started":"Please enter the basic information about your Article",
+  "{{appname}}_article_name":"Article Name",
+  "{{appname}}_article_name_placeholder": "Enter article name",
+  "{{appname}}_article_name_form_error":"Your article must have a name. Describe the project.",
+  "{{appname}}_camera_form_error": "Your upload must have a description (caption)",
+  "{{appname}}_description":"Article Description",
+  "{{appname}}_articles_description_placeholder":"Enter detailed description",
+  "{{appname}}_article_description_form_error":"Please enter a detailed description for your article up to (255 chars)",
+
+  "{{appname}}_article_team":"Article Team",
+  "{{appname}}_setup_article_team":"ADD USERS TO TEAM",
+
+  "{{appname}}_site_region_description":"Region",
+  "{{appname}}_articles_region_placeholder":"Enter Region / City Name",
+  "{{appname}}_site_region_description_instructions":"Name of the Region or City where the article will focus",
+  "{{appname}}_article_region_form_error":"Enter a valid City, or Region name.",
+
+  "{{appname}}_articles_thumbnail": "Set Image",
+  "{{appname}}_articles_thumbnail_instructions": "Enter the Image used in headers and icons",
+  "{{appname}}_articles_thumbnail_placeholder": "Image or Web URL",
+  "{{appname}}_articles_thumbnail_error":"Invalid thumbnail image URL.",
+
+  "{{appname}}_user_already_exists": "Sorry a user with those credentials already exists. Please try again.",
+  "{{appname}}_user_unexpected_server_error": "Unexpected Server Error",
+  "{{appname}}_device_no_gps": "Your device is currently not providing location information to BigDecimal. Please check your GPS settings.",
+
+
+  "{{appname}}_share_social_message": "Join Us!"
+
+}

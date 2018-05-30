@@ -29,26 +29,13 @@ import strings from '../il8n/il8n'
 // var NavigationBar = require('./NavigationBar');
 
 // views
-// var AssessmentDetail = require('../views/AssessmentDetail');
 // var MediaDetail = require('../views/MediaDetail');
 // var MediaPlayerComponent = require('../components/MediaPlayerComponent');
-
-// var Activities = require('../views/Activities');//
-// 
 /*
- * var ResetPassword = require('../views/ResetPassword'); var Assessments =
- * require('../views/Assessments'); var Collections =
- * require('../views/Collections'); var ContentItemListView =
+ * var ResetPassword = require('../views/ResetPassword'); 
  * require('../components/ContentItemListView'); var CameraView=
  * require('../views/CameraView'); var PolygonMapViewComponent =
  * require('../components/PolygonMapViewComponent'); var RegionMapView =
- * require('../views/RegionMapView'); var RegionView =
- * require('../views/RegionView'); var Sites = require('../views/Sites'); var
- * SiteDetail = require('../views/SiteDetail'); var SiteEdit =
- * require('../views/SiteEdit'); var ObjectEdit =
- * require('../views/ObjectEdit');
- * 
- * var TeamEdit = require('../views/TeamEdit'); var UserSettings =
  * require('../views/UserSettings'); var ImagePicker =
  * require('../components/ImagePicker'); var ModalCapture =
  * require('../components/ModalCapture'); var HamburgerMenu =

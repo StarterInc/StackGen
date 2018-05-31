@@ -11,4 +11,4 @@ cd ~
 mkdir data
 
 # run che
-sudo docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v /home/ec2-user/data:/data eclipse/che start
+sudo docker run -it --rm -e CHE_HOST={SERVER_IP} -e CHE_DOCKER_HOST={SERVER_IP} -v /var/run/docker.sock:/var/run/docker.sock -v /home/ec2-user/data:/data eclipse/che start

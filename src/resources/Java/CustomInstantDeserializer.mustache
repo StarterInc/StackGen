@@ -195,7 +195,7 @@ public class CustomInstantDeserializer<T extends Temporal>
             return adjust.apply(value, this.getZone(context));
           }
         } catch (Exception ed) {
-          throw (ed); // fixed
+          throw (ed); // fixed?
         }
         return value;
       }

@@ -2,6 +2,9 @@ package io.starter.ignite.util;
 
 public interface SystemConstants {
 
+	public static final int IGNITE_MAJOR_VERSION = 1;
+	public static final int IGNITE_MINOR_VERSION = 1;
+
 	public static String ROOT_FOLDER = System.getProperty("user.dir");
 
 	public static String DB_NAME = (System.getProperty("RDS_DB_NAME") != null ? System.getProperty("RDS_DB_NAME")

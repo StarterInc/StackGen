@@ -2,8 +2,6 @@ package io.starter.ignite.generator;
 
 import io.starter.ignite.generator.react.AppEntityObject;
 import io.starter.ignite.util.FileUtil;
-import io.starter.ignite.util.RunCommand;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,8 +10,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,14 +69,14 @@ public class ReactGen extends Gen implements Generator {
 		if (gen == null)
 			throw new IllegalStateException(
 					"No ReactGen context in createAppEntities");
-		if (gen.REACT_APP_NAME == null)
+		if (Configuration.REACT_APP_NAME == null)
 			throw new IllegalStateException("No AppName in createAppEntities");
 		if (forName == null)
 			throw new IllegalStateException(
 					"No Class defined in createAppEntities");
 
-		AppEntityObject ap = new AppEntityObject(gen.REACT_APP_NAME, forName);
-		gen.REACT_DATA_OBJECTS.add(ap);
+		AppEntityObject ap = new AppEntityObject(Configuration.REACT_APP_NAME, forName);
+		Configuration.REACT_DATA_OBJECTS.add(ap);
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -107,7 +103,7 @@ public class ReactGen extends Gen implements Generator {
 			// for each object in system, create a REDUX
 			// action and reducer from templates
 			if (shortName.startsWith("objectName")) {
-				for (AppEntityObject aeo : gen.REACT_DATA_OBJECTS) {
+				for (AppEntityObject aeo : Configuration.REACT_DATA_OBJECTS) {
 
 					// read in template file
 					String foutp = StringTool.replaceText(fname, "objectName",
@@ -230,7 +226,7 @@ public class ReactGen extends Gen implements Generator {
 
 	static void generateReactNativeFromAppFolder() {
 		File[] templateFiles = Gen.getFilesInFolder(new File(
-				Main.REACT_TEMPLATE_APP_FOLDER), Main.FOLDER_SKIP_LIST);
+				Configuration.REACT_TEMPLATE_APP_FOLDER), Configuration.FOLDER_SKIP_LIST);
 		for (Object o : templateFiles) {
 			io.starter.ignite.util.Logger.log("React Native Template file: " + o.toString());
 		}

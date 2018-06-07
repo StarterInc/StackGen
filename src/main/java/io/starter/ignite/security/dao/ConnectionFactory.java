@@ -1,6 +1,6 @@
 package io.starter.ignite.security.dao;
 
-import io.starter.ignite.util.IgniteUtils;
+import io.starter.ignite.util.SystemConstants;
 import io.starter.ignite.util.Logger;
 import io.starter.ignite.util.SystemConstants;
 
@@ -40,38 +40,34 @@ public class ConnectionFactory {
 	private static ConnectionFactory ref = new ConnectionFactory();
 
 	public static String toConfigString() {
-		return "ConnectionFactory v." + IgniteUtils.IGNITE_MAJOR_VERSION + "."
-				+ IgniteUtils.IGNITE_MINOR_VERSION + " \r\n" + "Settings:"
-				+ "\r\n" + "=========" + "\r\n" + driverName + "\r\n"
-				+ sourceURL + "\r\n" + dbName + "\r\n" + userName;
+		return "ConnectionFactory v." + SystemConstants.IGNITE_MAJOR_VERSION + "."
+				+ SystemConstants.IGNITE_MINOR_VERSION + " \r\n" + "Settings:" + "\r\n" + "=========" + "\r\n"
+				+ driverName + "\r\n" + sourceURL + "\r\n" + dbName + "\r\n" + userName;
 	}
 
 	/**
-	 * Private default constructor No outside objects can create an object of
-	 * this class This constructor initializes the DriverManager by loading the
-	 * driver for the database
+	 * Private default constructor No outside objects can create an object of this
+	 * class This constructor initializes the DriverManager by loading the driver
+	 * for the database
 	 */
 	private ConnectionFactory() {
 
-		Logger.debug("ConnectionFactory: initializing:"
-				+ ConnectionFactory.driverName);
+		Logger.debug("ConnectionFactory: initializing:" + ConnectionFactory.driverName);
 
 		try {
 
 			Class.forName(ConnectionFactory.driverName);
-			Logger.debug("ConnectionFactory: Got JDBC class "
-					+ ConnectionFactory.driverName + " OK!");
+			Logger.debug("ConnectionFactory: Got JDBC class " + ConnectionFactory.driverName + " OK!");
 		} catch (final ClassNotFoundException e) {
 
-			Logger.error("ConnectionFactory: Exception loading driver class: "
-					+ e.toString());
-		}// end try-catch
+			Logger.error("ConnectionFactory: Exception loading driver class: " + e.toString());
+		} // end try-catch
 
 	} // end default private constructor
 
 	/**
-	 * Get and return a Connection object that can be used to connect to the
-	 * data storage
+	 * Get and return a Connection object that can be used to connect to the data
+	 * storage
 	 *
 	 * @return Connection
 	 * @throws SQLException
@@ -80,8 +76,7 @@ public class ConnectionFactory {
 
 		Connection con = null;
 
-		Logger.debug("ConnectionFactory: returning connection:"
-				+ ConnectionFactory.sourceURL);
+		Logger.debug("ConnectionFactory: returning connection:" + ConnectionFactory.sourceURL);
 		final PoolProperties p = new PoolProperties();
 
 		if (true) { // (System.getProperty("PARAM1") != null &&
@@ -90,17 +85,14 @@ public class ConnectionFactory {
 
 			try {
 				final InitialContext ic = new InitialContext();
-				final DataSource dataSource = (DataSource) ic
-						.lookup(SystemConstants.JNDI_DB_LOOKUP_STRING);
+				final DataSource dataSource = (DataSource) ic.lookup(SystemConstants.JNDI_DB_LOOKUP_STRING);
 				final java.sql.Connection c = dataSource.getConnection();
 				Logger.debug("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
 						+ SystemConstants.JNDI_DB_LOOKUP_STRING + ".");
 				return c;
 			} catch (final Exception e) {
 				Logger.warn("ConnectionFactory.getConnection() failed to get JNDI connection: ["
-						+ SystemConstants.JNDI_DB_LOOKUP_STRING
-						+ "] "
-						+ "Falling back to non JNDI connection.");
+						+ SystemConstants.JNDI_DB_LOOKUP_STRING + "] " + "Falling back to non JNDI connection.");
 
 			}
 
@@ -142,14 +134,13 @@ public class ConnectionFactory {
 				con = datasource.getConnectionAsync().get();
 				con = datasource.getConnectionAsync().get();
 				final Statement st = con.createStatement();
-				final ResultSet rs = st
-						.executeQuery("SELECT 1 FROM DUAL"); // Oracle/MySQL only
+				final ResultSet rs = st.executeQuery("SELECT 1 FROM DUAL"); // Oracle/MySQL only
 				while (rs.next()) {
 					//
 				}
 				rs.close();
 				st.close();
-		    } finally {
+			} finally {
 				if (con != null) {
 					try {
 						con.close();
@@ -158,7 +149,8 @@ public class ConnectionFactory {
 				}
 			}
 		} catch (final Exception e) {
-			Logger.warn("ConnectionFactory Failed to achieve a Pooled DataSource... reverting to Non-Pooled JDBC connection. NOT FOR PRODUCTION.");
+			Logger.warn(
+					"ConnectionFactory Failed to achieve a Pooled DataSource... reverting to Non-Pooled JDBC connection. NOT FOR PRODUCTION.");
 			return ConnectionFactory.getDataSource().getConnection();
 		}
 		return con;
@@ -169,12 +161,11 @@ public class ConnectionFactory {
 	 *
 	 * TODO: implement FUTURE connections try { Future<Connection> future =
 	 * datasource.getConnectionAsync(); while (!future.isDone()) {
-	 * io.starter.ignite.util.Logger.log(
-	 * "Connection is not yet available. Do some background work"); try {
-	 * Thread.sleep(100); //simulate work }catch (InterruptedException x) {
-	 * Thread.currentThread().interrupt(); } } con = future.get(); //should
-	 * return instantly Statement st = con.createStatement(); ResultSet rs =
-	 * st.executeQuery("select * from user");
+	 * io.starter.ignite.util.Logger.log( "Connection is not yet available. Do some
+	 * background work"); try { Thread.sleep(100); //simulate work }catch
+	 * (InterruptedException x) { Thread.currentThread().interrupt(); } } con =
+	 * future.get(); //should return instantly Statement st = con.createStatement();
+	 * ResultSet rs = st.executeQuery("select * from user");
 	 *
 	 * @return
 	 */
@@ -199,16 +190,12 @@ public class ConnectionFactory {
 				final InitialContext ic = new InitialContext();
 				DataSource dataSource = (DataSource) ic.lookup(lcname);
 				final java.sql.Connection c = dataSource.getConnection();
-				Logger.log("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
-						+ lcname + ".");
+				Logger.log("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: " + lcname + ".");
 				return dataSource;
 
 			} catch (final Exception e) {
-				Logger.warn("ConnectionFactory.getConnection() failed to get JNDI connection: "
-						+ lcname
-						+ ". "
-						+ e.toString()
-						+ " Falling back to non JNDI connection.");
+				Logger.warn("ConnectionFactory.getConnection() failed to get JNDI connection: " + lcname + ". "
+						+ e.toString() + " Falling back to non JNDI connection.");
 
 				ds.setServerName(ConnectionFactory.sourceURL);
 				ds.setPassword(ConnectionFactory.password);

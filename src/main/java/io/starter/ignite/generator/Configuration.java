@@ -70,7 +70,7 @@ public interface Configuration extends SystemConstants {
 
 	public static String REACT_APP_OUTPUT_FOLDER = ROOT_FOLDER + SOURCE_MAIN + "/react/out/";
 
-	public static String IGNITE_DATAMODEL_PACKAGE = "io.swagger.model.";
+	public static String IGNITE_DATAMODEL_PACKAGE = "io.starter.ignite.model.";
 
 	public List<AppEntityObject> REACT_DATA_OBJECTS = new ArrayList<AppEntityObject>();
 	public static List<String> SKIP_LIST = new ArrayList<>(Arrays.asList(".class"));

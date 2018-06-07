@@ -21,31 +21,16 @@
     <table schema="${RDS_DB_NAME}" tableName="user">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
     <table schema="ignite" tableName=".BICYCLES">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName=".ORGANIZATION">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
     <table schema="ignite" tableName=".USER">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
     <table schema="ignite" tableName=".LOCATION">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName=".USER">

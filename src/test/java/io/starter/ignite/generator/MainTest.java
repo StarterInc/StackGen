@@ -21,10 +21,11 @@ public class MainTest {
 	}
 
 	@Test
+	@Ignore
 	public void swaggerGen() {
 		// generate swqgger api clients
 		// (for now just use swaggerhub generated)
-		SwaggerGen swaggerGen = new SwaggerGen(Configuration.SPEC_LOCATION + "/StarterIgnite.yml");
+		SwaggerGen swaggerGen = new SwaggerGen("StarterIgnite.yml");
 		assertNotNull(swaggerGen.generate());
 	}
 

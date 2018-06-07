@@ -5,8 +5,6 @@ import io.swagger.codegen.config.CodegenConfigurator;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import org.apache.log4j.spi.Configurator;
-
 /**
  * responsible for generating the Swagger server and clients
  * 
@@ -28,7 +26,7 @@ public class SwaggerGen extends DefaultGenerator implements Configuration{
 
 		spec = SPEC_LOCATION + spec;
 		
-		System.out.println("Create Swagger Client Apis for:" + spec);
+		io.starter.ignite.util.Logger.log("Create Swagger Client Apis for:" + spec);
 		// attempt to read from config file
 		CodegenConfigurator configurator = CodegenConfigurator.fromFile(CONFIG_FILE);
 

@@ -171,7 +171,7 @@ public class ReactGen extends Gen implements Generator {
 				fout.createNewFile();
 				Writer fwriter = new FileWriter(fout);
 
-				System.out.println("Copying template file: " + fout);
+				io.starter.ignite.util.Logger.log("Copying template file: " + fout);
 
 				fwriter.flush();
 			} catch (Exception e) {
@@ -213,7 +213,7 @@ public class ReactGen extends Gen implements Generator {
 				fout.createNewFile();
 				Writer fwriter = new FileWriter(fout);
 
-				System.out.println("Mustaching template file: " + fout);
+				io.starter.ignite.util.Logger.log("Mustaching template file: " + fout);
 				Mustache reactmf = mf.compile(fread, REACT_APP_OUTPUT_FOLDER);
 
 				// if we are dealing with a sub-object
@@ -232,7 +232,7 @@ public class ReactGen extends Gen implements Generator {
 		File[] templateFiles = Gen.getFilesInFolder(new File(
 				Main.REACT_TEMPLATE_APP_FOLDER), Main.FOLDER_SKIP_LIST);
 		for (Object o : templateFiles) {
-			System.out.println("React Native Template file: " + o.toString());
+			io.starter.ignite.util.Logger.log("React Native Template file: " + o.toString());
 		}
 	}
 

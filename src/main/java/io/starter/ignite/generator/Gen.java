@@ -57,7 +57,7 @@ public class Gen {
 		if (results.get(className) != null) // skip dupes
 			return null;
 
-		System.out.println("Crawling Class Heirarchy for Root Class: " + packageName + "." + className);
+		io.starter.ignite.util.Logger.log("Crawling Class Heirarchy for Root Class: " + packageName + "." + className);
 
 		results.put(className, ob);
 
@@ -78,7 +78,7 @@ public class Gen {
 
 			// Uses the appropriate adapter:
 			if (!f.getName().startsWith("ajc$")) { // skip aspects
-				System.out.println(this.toString() + " generating Field : " + f.getName() + " Type: " + f.getType());
+				io.starter.ignite.util.Logger.log(this.toString() + " generating Field : " + f.getName() + " Type: " + f.getType());
 
 				Object fldObj = impl.createValue(f);
 				if (fldObj != null)

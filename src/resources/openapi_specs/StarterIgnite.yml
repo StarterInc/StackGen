@@ -10,10 +10,26 @@ info:
   license:
     name: AGPL 3.0
     url: https://www.gnu.org/licenses/agpl-3.0.html
+    
+  termsOfService: http://example.com/terms/
 
-# all paths will be relative to the basePath specified
-# basePath: /v1
-
+servers:
+- url: https://{username}.gigantic-server.com:{port}/{basePath}
+  description: The production API server
+  variables:
+    username:
+      # note! no enum here means it is an open value
+      default: demo
+      description: this value is assigned by the service provider, in this example `gigantic-server.com`
+    port:
+      enum:
+        - '8443'
+        - '443'
+      default: '8443'
+    basePath:
+      # open meaning there is the opportunity to use special base paths as assigned by the provider, default is `v2`
+      default: v1
+      
 # tags are used for organizing operations
 tags:
 - name: admins
@@ -143,20 +159,34 @@ definitions:
         example: Litespeed
       type:
         type: string
-        example: Mountain Bike        
+        example: Mountain Bike
   Location:
     required:
     - id
     - locationname
-    - email
+    - latitude
+    - longitude
     properties:
       id:
         type: string
         format: uuid
         example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      owner_id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-0851-d701748f90e6
+      elevation:
+        type: "double"
+        example: 37.7564084
+      latitude:
+        type: "double"
+        example: 37.7564084
+      longitude:
+        type: string
+        example: 122.4717396
       locationname:
         type: string
-        example: Golden Gate Park
+        example: Grand View Park
       country:
         type: string
         example: USA
@@ -166,10 +196,10 @@ definitions:
       homePage:
         type: string
         format: url
-        example:  https://www.acme-corp.com
+        example:  https://www.starter.io
       phone:
         type: string
-        example: 408-867-5309
+        example: 222-333-4444
   User:
     required:
     - id
@@ -183,6 +213,9 @@ definitions:
       fingerprint:
         type: string
         example: DK$DFSJaraDD
+      ssn:
+        type: string
+        example: 111-22-3333
       username:
         type: string
         example: Sparky
@@ -196,6 +229,7 @@ definitions:
       phone:
         type: string
         example: 408-867-5309
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-basePath: /spaceghost69/Starter/1.0.0
+      social:
+        type: string
+        format: url
+        example:  https://twitter.com/StarterIO

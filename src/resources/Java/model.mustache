@@ -1,4 +1,4 @@
-{{>licenseInfo}}
+	{{>licenseInfo}}
 
 package {{package}};
 
@@ -31,6 +31,9 @@ import android.os.Parcel;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 {{/useBeanValidation}}
+
+import io.starter.ignite.model.DataField;
+import io.starter.ignite.security.securefield.SecureField;
 
 {{#models}}
 {{#model}}

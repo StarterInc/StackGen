@@ -169,7 +169,7 @@ public class ConnectionFactory {
 	 *
 	 * TODO: implement FUTURE connections try { Future<Connection> future =
 	 * datasource.getConnectionAsync(); while (!future.isDone()) {
-	 * System.out.println(
+	 * io.starter.ignite.util.Logger.log(
 	 * "Connection is not yet available. Do some background work"); try {
 	 * Thread.sleep(100); //simulate work }catch (InterruptedException x) {
 	 * Thread.currentThread().interrupt(); } } con = future.get(); //should
@@ -310,8 +310,8 @@ public class ConnectionFactory {
 
 		} catch (final SQLException e) {
 
-			System.out.println("ERROR: Unable to close Statement");
-			System.out.println(e.getMessage());
+			io.starter.ignite.util.Logger.log("ERROR: Unable to close Statement");
+			io.starter.ignite.util.Logger.log(e.getMessage());
 
 		} // end try-catch block
 

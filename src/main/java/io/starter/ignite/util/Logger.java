@@ -3,53 +3,51 @@
  */
 package io.starter.ignite.util;
 
+import org.apache.log4j.PropertyConfigurator;
+
 /**
  * the usual logging stuff
  * 
  * @author John McMahon Copyright 2013 Starter Inc., all rights reserved.
  * 
  */
-public class Logger {
+public class Logger implements SystemConstants{
 
-	private static boolean debug = true; // (System.getProperty("production")
-											// == null);
+	static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Logger.class);
+
+	// PropertiesConfigurator is used to configure logger from properties file
+	static {
+		// URL lc =
+		// Logger.class.getClassLoader().getResource("resources/log4j.properties");
+		String lc = ROOT_FOLDER+ "/src/resources/log4j.properties";
+		PropertyConfigurator.configure(lc);
+	}
 
 	/**
 	 * start with the basics
-	 * 
+	 *
 	 * @param message
 	 */
 	public static void log(String message) {
-		System.out.println(getTimestamp() + "INFO: " + message);
+		logger.info(message);
 	}
 
 	public static void debug(String string) {
-		if (debug)
-			System.out.println(getTimestamp() + "DEBUG: " + string);
+		logger.debug(string);
 	}
 
 	public static void error(String string) {
-		System.err.println(getTimestamp() + "ERROR: " + string);
-
+		logger.error(string);
 	}
 
 	public static void warn(String string) {
-		System.err.println(getTimestamp() + "WARNING: " + string);
+		logger.warn(string);
 
 	}
 
-	public static String getTimestamp() {
-		return "[" + new java.util.Date().toLocaleString() + "] ";
-	}
-
-	public void info(String string) {
-		System.err.println(getTimestamp() + "INFO: " + string);
-
-	}
-
-	public void error(Exception e) {
-		error(e.toString());
-
+	public static void error(Exception e) {
+		error(e.getMessage());
+		e.printStackTrace();
 	}
 
 }

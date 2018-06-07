@@ -31,11 +31,11 @@ public class MyBatisGen extends Gen implements Generator {
 	public static Map createMyBatis(Class c, MyBatisGen gen) throws Exception {
 
 		// projectDir.mkdirs();
-		System.out.println("Generate MyBatis...");
+		io.starter.ignite.util.Logger.log("Generate MyBatis...");
 
 		Map classesToGenerate = gen.processClasses(c, null, gen);
 
-		System.out.println("Write updated XML...");
+		io.starter.ignite.util.Logger.log("Write updated XML...");
 
 		return classesToGenerate;
 
@@ -96,7 +96,7 @@ public class MyBatisGen extends Gen implements Generator {
 		packageName = "gen." + packageName;
 		className = className.substring(dotpos);
 
-		System.out.println("Load XML template...");
+		io.starter.ignite.util.Logger.log("Load XML template...");
 		File configFile = new File(MYBATIS_GEN_CONFIG);
 
 		if (jdo == null) {
@@ -155,7 +155,7 @@ public class MyBatisGen extends Gen implements Generator {
 	}
 
 	static void createMyBatisFromModelFolder() throws Exception {
-		System.out.println("Iterate Swagger Entities and create Tables...");
+		io.starter.ignite.util.Logger.log("Iterate Swagger Entities and create Tables...");
 		File[] modelFiles = Gen.getFiles();
 		MyBatisGen gen = new MyBatisGen();
 		for (File mf : modelFiles) {
@@ -170,7 +170,7 @@ public class MyBatisGen extends Gen implements Generator {
 			Class<?> loadedClass = classLoader.loadClass(cn);
 			createMyBatis(loadedClass, gen);
 		}
-		System.out.println("Run Generation Script...");
+		io.starter.ignite.util.Logger.log("Run Generation Script...");
 		generate();
 	}
 

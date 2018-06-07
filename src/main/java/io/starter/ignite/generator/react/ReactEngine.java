@@ -16,23 +16,19 @@ public class ReactEngine {
 		se.eval("var global = this");
 		// eval react.js
 		String fdir = System.getProperty("user.dir");
-		se.eval(new FileReader(fdir
-				+ "/WebContent/react/reactjs/node_modules/react/dist/react.js"));
+		se.eval(new FileReader(fdir + "/WebContent/react/reactjs/node_modules/react/dist/react.js"));
 		// This would also be an external JS file
-		String component = "var MyComponent = React.createClass({"
-				+ "	render: function() {"
-				+ "		return React.DOM.div(null, this.props.text)" + "	}"
-				+ "});";
+		String component = "var MyComponent = React.createClass({" + "	render: function() {"
+				+ "		return React.DOM.div(null, this.props.text)" + "	}" + "});";
 		se.eval(component);
 	}
 
 	// Render the component, which can be called multiple times
 	public void render(String text) throws Throwable {
-		String render = "React.renderToString(React.createFactory(MyComponent)({"
-				+
-				// using JSONObject here would be cleaner obviosuly
+		String render = "React.renderToString(React.createFactory(MyComponent)({" +
+		// using JSONObject here would be cleaner obviosuly
 				"	text: '" + text + "'" + "}))";
-		System.out.println(se.eval(render));
+		io.starter.ignite.util.Logger.error(se.eval(render).toString());
 	}
 
 	public static void main(String... args) throws Throwable {

@@ -139,14 +139,14 @@ public class JavaGen extends Gen implements Generator {
 	}
 
 	static void generateClassesFromModelFolder() throws Exception {
-		System.out.println("Iterate MyBatis Entities and create Wrapper Classes...");
+		io.starter.ignite.util.Logger.log("Iterate MyBatis Entities and create Wrapper Classes...");
 
 		String[] modelFiles = MyBatisGen.getModelFiles();
 		for (String mf : modelFiles) {
 			String cn = mf.substring(0, mf.indexOf("."));
 			// cn = cn + ".class";
 			cn = "io.starter.ignite.model." + cn;
-			System.out.println("Creating Classes from ModelFile: " + cn);
+			io.starter.ignite.util.Logger.log("Creating Classes from ModelFile: " + cn);
 
 			try {
 
@@ -173,7 +173,7 @@ public class JavaGen extends Gen implements Generator {
 		// test
 		String sourcepath = JAVA_GEN_SRC_FOLDER + packageDir;
 
-		System.out.println("JavaGen Compiling: " + sourcepath);
+		io.starter.ignite.util.Logger.log("JavaGen Compiling: " + sourcepath);
 		String[] cmdarray = new String[] { "javac", sourcepath + "User.java", "-sourcepath", sourcepath, "-classpath",
 				System.getProperty("java.class.path") };
 
@@ -198,9 +198,9 @@ public class JavaGen extends Gen implements Generator {
 				compilationUnit);
 
 		// Compilation Requirements
-		System.out.println("Compiling: " + sourcepath);
+		io.starter.ignite.util.Logger.log("Compiling: " + sourcepath);
 		if (compilerTask.call()) {
-			System.out.println("Compilation Complete.");
+			io.starter.ignite.util.Logger.log("Compilation Complete.");
 
 			// classes, this should point to the top of the package structure!
 			URLClassLoader classLoader = new URLClassLoader(
@@ -212,20 +212,18 @@ public class JavaGen extends Gen implements Generator {
 				String loadClassName = f.getName().substring(0, f.getName().length() - 5); // strip "java"
 				loadClassName = packageDir.replace('/', '.') + loadClassName;
 				loadClassName = loadClassName.substring(1); // strip leading dot
-				Class<?> loadedClass = classLoader.loadClass(loadClassName);
-				// Create a new instance...
-				Object obj = null;
 				try {
-					obj = loadedClass.newInstance();
-
-					System.out.println("Successfully compiled: " + obj.toString());
+					Class<?> loadedClass = classLoader.loadClass(loadClassName);
+					// Create a new instance...
+					Object obj = loadedClass.newInstance();
+					io.starter.ignite.util.Logger.log("Successfully compiled: " + obj.toString());
 					// Santity check
 					/*
 					 * if (obj instanceof DoStuff) { // Cast to the DoStuff interface DoStuff
 					 * stuffToDo = (DoStuff) obj; // Run it baby stuffToDo.doStuff(); }
 					 */
 				} catch (Exception e) {
-					// does not work with Classes lacking default constructor
+					io.starter.ignite.util.Logger.log("Could not verify: " + f.toString());
 				}
 			}
 			classLoader.close();

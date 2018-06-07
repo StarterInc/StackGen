@@ -168,7 +168,7 @@ public final class JSXTransformationFilter implements Filter {
 		extractedPre += "text/javascript\">";
 		extractedPre += js;
 
-		System.out.println("js = " + js);
+		io.starter.ignite.util.Logger.log("js = " + js);
 
 		return extractedPre + extractedPost;
 	}
@@ -228,7 +228,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 			}
 			i.close();
 		} catch (Exception e) {
-			System.out.println(e);
+			io.starter.ignite.util.Logger.error(e);
 		}
 		return val;
 	}

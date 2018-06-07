@@ -24,7 +24,7 @@ public class FileUtil {
 			// if directory not exists, create it
 			if (!dest.exists()) {
 				dest.mkdirs();
-				System.out.println("Directory copied from " + src + "  to "
+				io.starter.ignite.util.Logger.log("Directory copied from " + src + "  to "
 						+ dest);
 			}
 
@@ -55,7 +55,7 @@ public class FileUtil {
 
 			in.close();
 			out.close();
-			System.out.println("File copied from " + src + " to " + dest);
+			io.starter.ignite.util.Logger.log("File copied from " + src + " to " + dest);
 		}
 	}
 

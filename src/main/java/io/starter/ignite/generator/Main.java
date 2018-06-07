@@ -22,9 +22,10 @@ public class Main implements Configuration {
 
 	public static void main(String[] args) {
 
-		System.out.println(ASCIIArtPrinter.print());
-
-		System.out.println("Starting Main...");
+		System.out.print(ASCIIArtPrinter.print());
+		System.out.println();
+		System.out.println();
+		io.starter.ignite.util.Logger.log("Starting Main...");
 
 		try {
 
@@ -57,7 +58,7 @@ public class Main implements Configuration {
 			// generate React Redux apps
 			ReactGen.generateReactNativeFromAppFolder();
 
-			System.out.println("Main Complete.");
+			io.starter.ignite.util.Logger.log("Main Complete.");
 		} catch (Exception e) {
 			System.err.println("Exception during App Generation: " + e.getMessage());
 			e.printStackTrace();

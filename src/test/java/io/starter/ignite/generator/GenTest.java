@@ -24,7 +24,7 @@ public class GenTest {
 	public void genFilesTest() {
 		// generate swqgger api clients
 		// (for now just use swaggerhub generated)
-		File[] fx = Gen.getFiles();
+		File[] fx = Gen.getModelJavaFiles();
 		junit.framework.Assert.assertNotNull(fx);
 	}
 

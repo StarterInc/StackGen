@@ -76,7 +76,7 @@ public class AppEntityObject {
 			val = jf.value();
 
 		if (!apia.hidden() && val != null) {
-			System.out.println("Processing Field: " + s.toGenericString()
+			io.starter.ignite.util.Logger.log("Processing Field: " + s.toGenericString()
 					+ " :" + val);
 			variables.add(new Variable(val, apia.example()));
 		} else {

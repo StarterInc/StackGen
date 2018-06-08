@@ -27,10 +27,10 @@ import com.extentech.toolkit.StringTool;
 public class DBGen extends Gen implements Generator {
 
 	public void init() throws SQLException, IOException {
-		System.out.println("Generating DB...");
+		io.starter.ignite.util.Logger.log("Generating DB...");
 		System.out.print("Create DB Connection...");
 		Connection conn = ConnectionFactory.getConnection();
-		System.out.println((conn.isValid(DB_TIMEOUT) ? "OK!" : "FAILED!"));
+		io.starter.ignite.util.Logger.log((conn.isValid(DB_TIMEOUT) ? "OK!" : "FAILED!"));
 	}
 
 	/**
@@ -152,8 +152,8 @@ public class DBGen extends Gen implements Generator {
 	}
 
 	static void createDatabaseTablesFromModelFolder() throws Exception {
-		System.out.println("Iterate Swagger Entities and create Tables...");
-		File[] modelFiles = Gen.getFiles();
+		io.starter.ignite.util.Logger.log("Iterate Swagger Entities and create Tables...");
+		File[] modelFiles = Gen.getModelJavaFiles();
 		DBGen gen = new DBGen();
 		// classes, this should point to the top of the package structure!
 		URLClassLoader classLoader = new URLClassLoader(new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });

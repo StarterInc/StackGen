@@ -7,14 +7,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.starter.ignite.generator.react.AppEntityObject;
+import io.starter.ignite.util.SystemConstants;
 
 /**
- * provides a configuration for App generation
+ * Configuration values
  * 
  * @author john
  *
  */
-public interface Configuration {
+public interface Configuration extends SystemConstants {
 
 	public static boolean VERBOSE = false;
 	public static boolean DEBUG = false;
@@ -22,8 +23,6 @@ public interface Configuration {
 	public static String LONG_DATE_FORMAT = "MMM/d/yyyy HH:mm:ss Z";
 	public static String GEN_MODEL_PACKAGE = "io.starter.ignite.model.";
 	static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(LONG_DATE_FORMAT);
-
-	public static String ROOT_FOLDER = System.getProperty("user.dir");
 
 	public static String SOURCE_MAIN = "/src/main";
 	public static String SOURCE_RESOURCES = "/src/resources";
@@ -37,7 +36,7 @@ public interface Configuration {
 
 	// ## SwaggerGen OPEN API
 	public static String SPEC_LOCATION = ROOT_FOLDER + SOURCE_RESOURCES + "/openapi_specs/";
-	public static String CONFIG_FILE = ROOT_FOLDER + "/src/resources/swagger_config.json";
+	public static String CONFIG_FILE = ROOT_FOLDER + SOURCE_RESOURCES + "/swagger_config.json";
 	public static String OUTPUT_DIR = JAVA_GEN_FOLDER;
 
 	public static String ORG = "io.starter";
@@ -71,7 +70,7 @@ public interface Configuration {
 
 	public static String REACT_APP_OUTPUT_FOLDER = ROOT_FOLDER + SOURCE_MAIN + "/react/out/";
 
-	public static String IGNITE_DATAMODEL_PACKAGE = "io.swagger.model.";
+	public static String IGNITE_DATAMODEL_PACKAGE = "io.starter.ignite.model.";
 
 	public List<AppEntityObject> REACT_DATA_OBJECTS = new ArrayList<AppEntityObject>();
 	public static List<String> SKIP_LIST = new ArrayList<>(Arrays.asList(".class"));

@@ -45,7 +45,7 @@ public class JSXTransformer {
 		jsxTransformer.init();
 		String js = jsxTransformer
 				.transform("/** @jsx React.DOM */ React.renderComponent(<h1>Hello, world!</h1>,document.getElementById('example'));");
-		System.out.println("js = " + js);
+		io.starter.ignite.util.Logger.log("js = " + js);
 	}
 
 	public void setModulePaths(List<String> modulePaths) {

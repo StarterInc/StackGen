@@ -30,8 +30,7 @@ public class DataFieldAspect {
 		Logger.debug("Get Data Field for: " + pjp.toLongString());
 		Object targetObject = pjp.getTarget();
 		String dataFieldName = pjp.getSignature().getName();
-		Field dataField = targetObject.getClass().getDeclaredField(
-				dataFieldName);
+		Field dataField = targetObject.getClass().getDeclaredField(dataFieldName);
 		dataField.setAccessible(true);
 		Object persistedObject = dataField.get(targetObject);
 		dataField.setAccessible(false);
@@ -52,8 +51,7 @@ public class DataFieldAspect {
 		String persistedValue = DataPersister.persist(clearTextValue);
 		Object targetObject = pjp.getTarget();
 		String dataFieldName = pjp.getSignature().getName();
-		Field dataField = targetObject.getClass().getDeclaredField(
-				dataFieldName);
+		Field dataField = targetObject.getClass().getDeclaredField(dataFieldName);
 		dataField.setAccessible(true);
 		dataField.set(targetObject, persistedValue);
 		dataField.setAccessible(false);

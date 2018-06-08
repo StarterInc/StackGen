@@ -454,7 +454,7 @@ public class JdbcRealm extends AuthorizingRealm {
 			Collection<String> roleNames) throws SQLException {
 
 		if (cachedPermissions.get(username) != null) {
-			System.out.println("JdbcRealm permissions cache hit for: "
+			io.starter.ignite.util.Logger.log("JdbcRealm permissions cache hit for: "
 					+ username);
 			return (Set) cachedPermissions.get(username);
 		}

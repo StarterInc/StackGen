@@ -2,16 +2,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
-	<!-- TODO: fix parent pom
-	<parent>
-		<groupId>io.starter</groupId>
-		<artifactId>StarterIgnite</artifactId>
-		<version>1.2.1</version>
-		<relativePath>../StarterIgnite/parent-pom.xml</relativePath>
-	</parent>
-	 -->
-
 	<groupId>io.starter</groupId>
 	<artifactId>StarterIgnite</artifactId>
 	<version>1.2.1-SNAPSHOT</version>
@@ -389,10 +379,11 @@
 			<groupId>com.extentech</groupId>
 			<artifactId>OpenXLS</artifactId>
 			<version>1.0</version>
+
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/OpenXLS-1.0.jar</systemPath>
+
 		</dependency>
-		
 		<dependency>
 			<groupId>net.java.dev.jets3t</groupId>
 			<artifactId>jets3t</artifactId>
@@ -665,7 +656,7 @@
 	</build>
 
 
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<url>http://ignite.starter.io/ignite</url>
 	<ciManagement>
 		<system>jenkins</system>

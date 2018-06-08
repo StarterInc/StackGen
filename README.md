@@ -1,39 +1,56 @@
-Starter Ignite
+#Starter Ignite React
 
-Generate a functional Data-driven React Native app from an OpenAPI spec file.
+##Enabling Document Driven Development (DDD) for the 2020s.
 
+Generate data-driven React Native apps from an OpenAPI spec file.
 
- * generate an app from swagger YAML
- 
-
+ Generate an app from swagger YAML
  *   - YAML -> Swagger client
  *   - Swagger Client -> entity classes
  *   - Swagger Client -> DML for database
  *   - Swagger CLient -> React-native JS screens
 
+#Generation Steps:
 
-Clear out the gen and
+##INIT
+Clear out the generation output folder
 	
-generate swqgger api clients
-	
+##SWAGGER
+Generate OpenApi (Swqgger) clients
 
-System.exit(0);
-			
-generate corresponding DML
-statements to create a JDBC database
+##DB
+Generate Database via corresponding DML statements to create a SQL database
 execute DB creation, connect and test
-			
 
+##ORM
 generate MyBatis client classes
 XML configuration file
 
-annotated wrapper with encryption,
- logging, annotations
-		
+##ENHANCE JAVA MODEL
+annotated wrapper with encryption (optional), logging, annotations
+create wrapper classes which delegates calls to/from api to the mybatis entity
 
-create wrapper classes which
-delegates calls to/from api to the mybatis entity
+##CLIENTS
+generate React Redux Mobile apps
+run unit tests
 
-generate React Redux apps
+##CI/DEPLOY
+TODO
 
-System.out.println("Main Complete.");
+#Getting Started
+
+##Edit your OpenAPI Specification File
+TODO: make dropfolder user configurable
+Dropfolder is /<installationdir>/src/resources/openapi_specs/
+
+##Run the generator via Maven task
+
+mvn clean install -DMYBATIS_MAIN=${project_loc}/gen/src/ -DMYBATIS_JAVA=${project_loc}/gen/src/main/java/io/starter/ignite/model/ -DRDS_HOSTNAME=${database_hostname} -DRDS_DB_NAME=ignite -DRDS_USERNAME=igniteuser -DRDS_PASSWORD=${database_password}
+
+##Collect output
+Server App output is
+ /<installationdir>/gen/
+React Native App output is
+ /<installationdir>/REACT_EXPORT
+ 
+ 

@@ -83,7 +83,7 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 		setAuthorizationCachingEnabled(true); // ok needs to be reset
 		initializeDB();
 
-		System.out.println("Done Initializing RoleSecurityJdbcRealm");
+		io.starter.ignite.util.Logger.log("Done Initializing RoleSecurityJdbcRealm");
 	}
 
 	public boolean clearCacheForAllActiveUsers() {

@@ -36,3 +36,21 @@ run unit tests
 
 ##CI/DEPLOY
 TODO
+
+#Getting Started
+
+##Edit your OpenAPI Specification File
+TODO: make dropfolder user configurable
+Dropfolder is /<installationdir>/src/resources/openapi_specs/
+
+##Run the generator via Maven task
+
+mvn clean install -DMYBATIS_MAIN=${project_loc}/gen/src/ -DMYBATIS_JAVA=${project_loc}/gen/src/main/java/io/starter/ignite/model/ -DRDS_HOSTNAME=${database_hostname} -DRDS_DB_NAME=ignite -DRDS_USERNAME=igniteuser -DRDS_PASSWORD=${database_password}
+
+##Collect output
+Server App output is
+ /<installationdir>/gen/
+React Native App output is
+ /<installationdir>/REACT_EXPORT
+ 
+ 

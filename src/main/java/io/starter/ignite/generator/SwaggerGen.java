@@ -46,7 +46,8 @@ public class SwaggerGen extends DefaultGenerator implements Configuration{
 		configurator.setArtifactVersion("1.0");
 		configurator.setInvokerPackage(INVOKER_PACKAGE);
 		configurator.setVerbose(VERBOSE);
-
+		configurator.addDynamicProperty("dynamic-html", "true");
+		
 		// app config
 		configurator.setAuth("oauth");
 		configurator.setInputSpec(spec);

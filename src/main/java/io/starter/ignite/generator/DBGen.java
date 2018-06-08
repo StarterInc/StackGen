@@ -153,7 +153,7 @@ public class DBGen extends Gen implements Generator {
 
 	static void createDatabaseTablesFromModelFolder() throws Exception {
 		io.starter.ignite.util.Logger.log("Iterate Swagger Entities and create Tables...");
-		File[] modelFiles = Gen.getFiles();
+		File[] modelFiles = Gen.getModelJavaFiles();
 		DBGen gen = new DBGen();
 		// classes, this should point to the top of the package structure!
 		URLClassLoader classLoader = new URLClassLoader(new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });

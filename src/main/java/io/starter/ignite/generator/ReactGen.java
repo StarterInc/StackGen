@@ -92,7 +92,7 @@ public class ReactGen extends Gen implements Generator {
 		ReactGen gen = new ReactGen();
 		generateEntitiesFromModelFolder(gen);
 
-		File[] templateFiles = Gen.getFilesInFolder(new File(
+		File[] templateFiles = Gen.getSourceFilesInFolder(new File(
 				REACT_TEMPLATE_APP_FOLDER), SKIP_LIST);
 
 		for (Object o : templateFiles) {
@@ -225,7 +225,7 @@ public class ReactGen extends Gen implements Generator {
 	}
 
 	static void generateReactNativeFromAppFolder() {
-		File[] templateFiles = Gen.getFilesInFolder(new File(
+		File[] templateFiles = Gen.getSourceFilesInFolder(new File(
 				Configuration.REACT_TEMPLATE_APP_FOLDER), Configuration.FOLDER_SKIP_LIST);
 		for (Object o : templateFiles) {
 			io.starter.ignite.util.Logger.log("React Native Template file: " + o.toString());

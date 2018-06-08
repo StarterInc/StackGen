@@ -20,6 +20,9 @@ import com.extentech.toolkit.StringTool;
  */
 public class Gen {
 
+	// TODO: potentially cache decrypted values
+	private static final boolean WRITE_LOCAL_FIELDS = false;
+
 	/**
 	 * iterate over the Class heirarchy and build a list of public classes and
 	 * methods
@@ -62,14 +65,13 @@ public class Gen {
 		results.put(className, ob);
 
 		java.lang.reflect.Field[] fields = ob.getDeclaredFields();
-		java.lang.reflect.Method[] methods = ob.getMethods();
-		List fieldList = new ArrayList();
-		List getters = new ArrayList();
-		List setters = new ArrayList();
+		List<Object> fieldList = new ArrayList<Object>();
+		List<Object> getters = new ArrayList<Object>();
+		List<Object> setters = new ArrayList<Object>();
 
 		// recursively crawl the member objects
 		for (Field f : fields) {
-			Class retval = f.getType();
+			Class<?> retval = f.getType();
 			if (!retval.isPrimitive() && (!retval.getName().equals(className))) {
 				if (!retval.getName().startsWith("L[java.") && !retval.getName().startsWith("ajc$")
 						&& !retval.getName().startsWith("[C"))
@@ -78,10 +80,11 @@ public class Gen {
 
 			// Uses the appropriate adapter:
 			if (!f.getName().startsWith("ajc$")) { // skip aspects
-				io.starter.ignite.util.Logger.log(this.toString() + " generating Field : " + f.getName() + " Type: " + f.getType());
+				io.starter.ignite.util.Logger
+						.log(this.toString() + " generating Field : " + f.getName() + " Type: " + f.getType());
 
 				Object fldObj = impl.createValue(f);
-				if (fldObj != null)
+				if (fldObj != null && WRITE_LOCAL_FIELDS)
 					fieldList.add(fldObj);
 
 				Object fldAccess = impl.createAccessor(f);
@@ -103,7 +106,7 @@ public class Gen {
 	/**
 	 * @return
 	 */
-	static File[] getFiles() {
+	static File[] getModelJavaFiles() {
 		File modelDir = new File(Configuration.API_MODEL_CLASSES);
 		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
 			@Override
@@ -114,7 +117,21 @@ public class Gen {
 		return modelFiles;
 	}
 
-	static File[] getFilesInFolder(File f, List<String> skipList) {
+	/**
+	 * @return
+	 */
+	static File[] getModelClassFiles() {
+		File modelDir = new File(Configuration.API_MODEL_CLASSES);
+		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".java");
+			}
+		});
+		return modelFiles;
+	}
+
+	static File[] getSourceFilesInFolder(File f, List<String> skipList) {
 		File[] modelFiles = f.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -134,13 +151,20 @@ public class Gen {
 					return true;
 				if (name.toLowerCase().endsWith(".info"))
 					return true;
+				if (name.toLowerCase().endsWith(".md"))
+					return true;
+				if (name.toLowerCase().endsWith(".txt"))
+					return true;
+				if (name.toLowerCase().endsWith(".sh"))
+					return true;
+
 				return false;
 			}
 		});
 		List<File> folderFiles = new ArrayList<File>();
 		for (File fx : modelFiles) {
 			if (fx.isDirectory()) {
-				File[] subdirFiles = getFilesInFolder(fx, Configuration.FOLDER_SKIP_LIST);
+				File[] subdirFiles = getSourceFilesInFolder(fx, Configuration.FOLDER_SKIP_LIST);
 				folderFiles.addAll(Arrays.asList(subdirFiles));
 			} else {
 				folderFiles.add(fx);

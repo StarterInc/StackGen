@@ -79,7 +79,7 @@ public class JavaGen extends Gen implements Generator {
 		MethodSpec ret = MethodSpec.methodBuilder(fldName)
 				.addJavadoc("Starter Ignite Generated Method: " + DATE_FORMAT.format(new Date()))
 				.addModifiers(Modifier.PUBLIC).returns(fieldType)
-				.addAnnotation(AnnotationSpec.builder(DataField.class).build())
+				// .addAnnotation(AnnotationSpec.builder(DataField.class).build())
 				.addStatement("return " + memberName + "." + fieldName).build();
 
 		return ret;
@@ -97,7 +97,7 @@ public class JavaGen extends Gen implements Generator {
 
 		MethodSpec ret = MethodSpec.methodBuilder(fldNameSet)
 				.addJavadoc("Starter Ignite Generated Method: " + DATE_FORMAT.format(new Date()))
-				.addModifiers(Modifier.PUBLIC).addAnnotation(AnnotationSpec.builder(DataField.class).build())
+				// .addModifiers(Modifier.PUBLIC).addAnnotation(AnnotationSpec.builder(DataField.class).build())
 				.addParameter(fieldType, fieldName + "Val")
 				.addStatement(memberName + "." + fieldName + " = " + fieldName + "Val").build();
 
@@ -190,7 +190,7 @@ public class JavaGen extends Gen implements Generator {
 		optionList.add(System.getProperty("java.class.path") + ";gen/src/main/java");
 
 		// File[] fx = new File(sourcepath).listFiles();
-		File[] fx = getFilesInFolder(new File(sourcepath), Configuration.SKIP_LIST);
+		File[] fx = getSourceFilesInFolder(new File(sourcepath), Configuration.SKIP_LIST);
 
 		Iterable<? extends JavaFileObject> compilationUnit = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(fx));
 

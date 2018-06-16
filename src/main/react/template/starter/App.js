@@ -1,4 +1,5 @@
 /*
+VERSION 0.0.1
 *  App is where we init our cross-platform data store
 */
 'use strict';
@@ -152,4 +153,4 @@ CodePushStatusDidChange(status) {
 // register and export
 module.exports = App;
 
-AppRegistry.registerComponent('IgniteReact', () => App);
+AppRegistry.registerComponent('{{appname}}', () => App);

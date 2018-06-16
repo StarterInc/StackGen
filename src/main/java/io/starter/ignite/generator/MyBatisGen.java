@@ -61,7 +61,7 @@ public class MyBatisGen extends Gen implements Generator {
 
 		myBatisGenerator.generate(cb);
 		for (String warning : warnings) {
-			System.err.println("WARNING: MyBatis Generation: " + warning);
+			io.starter.ignite.util.Logger.error("WARNING: MyBatis Generation: " + warning);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class MyBatisGen extends Gen implements Generator {
 		File configFile = new File(MYBATIS_GEN_CONFIG);
 
 		if (jdo == null) {
-			System.err.println("Reading MyBatis Generator Config Template: " + MYBATIS_GEN_CONFIG);
+			io.starter.ignite.util.Logger.error("Reading MyBatis Generator Config Template: " + MYBATIS_GEN_CONFIG);
 			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
 		}
 		Element el = new Element("table").setText("1000").setAttribute("schema", SCHEMA_NAME).setAttribute("tableName",
@@ -161,7 +161,7 @@ public class MyBatisGen extends Gen implements Generator {
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));
 			cn = Configuration.MODEL_PACKAGE + "." + cn;
-			System.err.println("Creating Classes from ModelFile: " + cn);
+			io.starter.ignite.util.Logger.log("Loading Classes from ModelFile: " + cn);
 			// Create a new custom class loader, pointing to the directory that contains the
 			// compiled
 			// classes, this should point to the top of the package structure!

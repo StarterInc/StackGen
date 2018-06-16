@@ -134,7 +134,7 @@ public class DBGen extends Gen implements Generator {
 		try {
 			ps.execute();
 
-			System.err.println("SUCCESS: " + "\r\n" + tableDML + "\r\n" + ConnectionFactory.toConfigString());
+			io.starter.ignite.util.Logger.error("SUCCESS: " + "\r\n" + tableDML + "\r\n" + ConnectionFactory.toConfigString());
 
 		} catch (Exception e) {
 			if (e.toString().contains("already exists")) {
@@ -162,7 +162,7 @@ public class DBGen extends Gen implements Generator {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));
 			// cn = cn + ".class";
 			cn = MODEL_PACKAGE + "." + cn;
-			System.err.println("Creating Classes from ModelFile: " + cn);
+			io.starter.ignite.util.Logger.log("Loading Classes from ModelFile: " + cn);
 			Class<?> loadedClass = classLoader.loadClass(cn);
 
 			createTableFromClass(loadedClass, gen);

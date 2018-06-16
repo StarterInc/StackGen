@@ -69,7 +69,9 @@ public class SwaggerGen extends DefaultGenerator implements Configuration{
 		String[] modelFiles = modelDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				if (name.contains("Example"))
+				if (name.toLowerCase().contains("example"))
+					return false;
+				if (name.toLowerCase().contains("mapper"))
 					return false;
 				if (name.contains(JavaGen.ADD_GEN_CLASS_NAME))
 					return false;

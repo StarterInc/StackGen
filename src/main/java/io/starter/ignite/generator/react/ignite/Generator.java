@@ -124,7 +124,7 @@ public class Generator {
 
 		JSONObject dtx = getJSON();
 		String jsx = getJSXFromJSON(dtx);
-		System.err.println(jsx);
+		io.starter.ignite.util.Logger.error(jsx);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class Generator {
 		initMaps();
 		JSONObject dtx = getJSON();
 		String jsx = getJSXFromJSON(dtx);
-		System.err.println(jsx);
+		io.starter.ignite.util.Logger.error(jsx);
 	}
 
 	/**

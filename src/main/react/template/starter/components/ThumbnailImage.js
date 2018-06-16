@@ -11,10 +11,6 @@ import {
 import styles from '../AppStyles';
 var ThumbnailImage = React.createClass({
 
-  propTypes: {
-    onPress: React.PropTypes.func,
-  },
-
   openImageDetail: function(img){
     alert(JSON.stringify(img))
   },
@@ -82,7 +78,7 @@ var TopModal = React.createClass({
       toValue: deviceHeight
     }).start(this.props.closeModal);
   },
-  {{=<% %>=}}
+
   render: function() {
     return (
         <Animated.View style={[styles.modal, styles.flexCenter, {transform: [{translateY: this.state.offset}]}]}>
@@ -92,7 +88,7 @@ var TopModal = React.createClass({
         </Animated.View>
     )
   }
-  <%={{ }}=%>
+
 });
 var App = React.createClass({
     render: function() {

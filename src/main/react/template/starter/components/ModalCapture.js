@@ -138,7 +138,7 @@ class ModalCapture extends Component {
       dispatch(submitAddContentItem(this.description, this.state, dispatch, navigator))
     }
 
-   {{=<% %>=}}
+   
   render() {
     return (
       <View style={[styles.containerDark, {flex: 1, flexDirection: 'column', justifyContent: 'space-between'}]}>
@@ -227,7 +227,7 @@ class ModalCapture extends Component {
        </View>
     );
   }
-  <%={{ }}=%>
+  
 }
 
 

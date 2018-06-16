@@ -152,7 +152,7 @@ public class JavaGen extends Gen implements Generator {
 
 				createClasses(Class.forName(cn));
 			} catch (ClassNotFoundException e) {
-				System.err.println("FAILURE Creating Classes from ModelFile: " + cn);
+				io.starter.ignite.util.Logger.error("JavaGen.generateClassesFromModelFolder failed: " + cn);
 			}
 		}
 	}

@@ -255,8 +255,8 @@ public class ConnectionFactory {
 		try {
 			rs.close();
 		} catch (final SQLException e) {
-			System.err.println("ERROR: Unable to close Result Set");
-			System.err.println(e.getMessage());
+			io.starter.ignite.util.Logger.error("ERROR: Unable to close Result Set");
+			io.starter.ignite.util.Logger.error(e.getMessage());
 		} // end try-catch block
 
 	} // end method close
@@ -275,8 +275,8 @@ public class ConnectionFactory {
 
 		} catch (final SQLException e) {
 
-			System.err.println("ERROR: Unable to close Statement");
-			System.err.println(e.getMessage());
+			io.starter.ignite.util.Logger.error("ERROR: Unable to close Statement");
+			io.starter.ignite.util.Logger.error(e.getMessage());
 
 		} // end try-catch block
 

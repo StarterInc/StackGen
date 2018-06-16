@@ -1,4 +1,7 @@
 {
-  "name": "{{app_name}}",
-  "displayName": "{{app_name}}"
+  "expo": {
+    "sdkVersion": "27.0.0"
+  },
+  "name": "starter",
+  "displayName": "ignite"
 }

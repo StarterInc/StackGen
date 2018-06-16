@@ -56,11 +56,11 @@ public class Main implements Configuration {
 			JavaGen.generateClassesFromModelFolder();
 
 			// generate React Redux apps
-			ReactGen.generateReactNativeFromAppFolder();
+			ReactGen.generateReactNative();
 
 			io.starter.ignite.util.Logger.log("Main Complete.");
 		} catch (Exception e) {
-			System.err.println("Exception during App Generation: " + e.getMessage());
+			io.starter.ignite.util.Logger.error("Exception during App Generation: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -75,7 +75,7 @@ public class Main implements Configuration {
 
 		boolean outputDir = new File(Configuration.OUTPUT_DIR + "/src/resources/MyBatis_SQL_Maps").mkdirs();
 		if (!outputDir) {
-			System.err.println("Could not init: " + outputDir + ". Exiting.");
+			io.starter.ignite.util.Logger.error("Could not init: " + outputDir + ". Exiting.");
 		}
 	}
 }

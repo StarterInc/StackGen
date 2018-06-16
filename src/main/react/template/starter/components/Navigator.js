@@ -44,10 +44,7 @@ import strings from '../il8n/il8n'
  * var MapViewComponent = require('../components/MapViewComponent');
  */
 
-{{#objects}}
-	var {{objectname}}View = require('../views/{{objectname}}View');
-{{/objects}} 
-
+ 
 var CreateUser = require('../views/CreateUser');
 var WebViewComponent = require('../views/WebViewComponent');
 var WP = require('../views/WP');
@@ -76,17 +73,7 @@ class NavMenu extends React.Component {
         style={styles.scrollContainer}
         >
       
-      {{#objects}}
-      
-      <NavButton
-	      onPress={() => {
-	        this.props.navigator.push({ id: '{{objectname}}' });
-	      }}
-	      text='{{objectname}}'
-	  />
-
-       {{/objects}} 		
-
+ 		
       
            <NavButton
            onPress={() => {
@@ -106,13 +93,13 @@ class NavMenu extends React.Component {
           onPress={() => {
             this.props.navigator.push({ id: 'login' });
           }}
-          text={strings.{{appname}}_log_in}
+          text={strings._log_in}
         />
         <NavButton
           onPress={() => {
             this.props.navigator.push({ id: 'createUser' });
           }}
-          text={strings.{{appname}}_create_account}
+          text={strings._create_account}
         />
         <NavButton
           onPress={() => {
@@ -154,13 +141,7 @@ var Navigation = React.createClass({
     
     
     
-    {{#objects}}
-
-    case '{{objectname}}':
-        return <{{objectname}}View store={this.store} navigator={nav} {...route.passProps}  stateData={this.state}/>;
-
-     {{/objects}} 		
-
+ 		
 
     
       case 'messenger':
@@ -213,7 +194,7 @@ var Navigation = React.createClass({
         return <RegionView store={this.store} navigator={nav} {...route.passProps} />;
       case 'content':
         return <ContentItemListView  store={this.store}
-          url='http://{{appname}}.online' navigator={nav} {...route.passProps} />;
+          url='http://.online' navigator={nav} {...route.passProps} />;
       case 'ide':
           return <WebViewComponent  store={this.store}
             url='http://34.193.150.49/wp-content/uploads/starter_hype.html' title='Help & Settings' navigator={nav} {...route.passProps} />;
@@ -227,7 +208,7 @@ var Navigation = React.createClass({
       
       case 'faq':
         return <WebViewComponent  store={this.store}
-          url='http://{{appname}}.online/frequently-asked-questions' title='Training' navigator={nav} {...route.passProps} />;
+          url='http://.online/frequently-asked-questions' title='Training' navigator={nav} {...route.passProps} />;
       
       case 'navbar':
         return <NavigationBar  store={this.store} url='' navigator={nav} {...route.passProps} />;
@@ -268,7 +249,7 @@ var Navigation = React.createClass({
     }
   },
 
-  {{=<% %>=}}
+  
   render: function() {
     if(false){ // typeof(this.props.username) == 'undefined'){
       return (
@@ -308,7 +289,7 @@ var Navigation = React.createClass({
       );
     }
   },
-  <%={{ }}=%>
+  
 
   componentWillUnmount: function() {
     this._listeners && this._listeners.forEach(listener => listener.remove());

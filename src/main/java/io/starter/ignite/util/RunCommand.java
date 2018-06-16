@@ -63,16 +63,16 @@ public class RunCommand {
 
 	public static void runSafe(String string, String[] cmdarray)
 			throws IOException {
-		System.err.println("Running: " + string);
+		io.starter.ignite.util.Logger.error("Running: " + string);
 		// check to see if the command is in our list of safe commands
 		if (!WHITE_LIST.contains(cmd.toLowerCase())) {
-			System.err.println("RunCommand could not run: " + cmd
+			io.starter.ignite.util.Logger.error("RunCommand could not run: " + cmd
 					+ ".  Command not whitelisted.");
 			return;
 		}
 
 		ProcessBuilder builder = new ProcessBuilder(cmdarray);
-		builder.directory(new File(Main.JAVA_GEN_SRC_FOLDER).getAbsoluteFile()); // root
+		builder.directory(new File(Main.REACT_EXPORT_FOLDER + "/starter/").getAbsoluteFile()); // root
 		builder.redirectErrorStream(true);
 		builder.start();
 	}

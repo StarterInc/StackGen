@@ -50,7 +50,7 @@ android_build_config(
 
 android_resource(
     name = "res",
-    package = "com.starter",
+    package = "io.starter.ignite",
     res = "src/main/res",
 )
 

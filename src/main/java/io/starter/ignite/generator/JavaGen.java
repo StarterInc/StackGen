@@ -1,14 +1,10 @@
 package io.starter.ignite.generator;
 
-import io.starter.ignite.model.DataField;
-import io.starter.ignite.util.RunCommand;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.Modifier;

@@ -17,7 +17,7 @@ public class MainTest {
 
 	@Before
 	public void setUp() {
-		System.err.println("Setting up generatorTest");
+		io.starter.ignite.util.Logger.error("Setting up generatorTest");
 	}
 
 	@Test
@@ -39,7 +39,7 @@ public class MainTest {
 		try {
 			ReactGen.main(null);
 		} catch (Exception e) {
-			System.err.println("ReactGen failed: " + e);
+			io.starter.ignite.util.Logger.error("ReactGen failed: " + e);
 		}
 	}
 }

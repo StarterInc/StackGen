@@ -2,7 +2,6 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-  <classPathEntry location="/Users/john/.m2/repository/mysql/mysql-connector-java/5.1.38/mysql-connector-java-5.1.38.jar" />
   <context id="context1">
     <plugin type="io.starter.ignite.generator.MyBatisIgnitePluginAdapter">
       <property name="annotationClass" value="io.starter.ignite.security.securefield.SecureField" />

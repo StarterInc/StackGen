@@ -73,10 +73,10 @@ class ImagePicker extends Component {
       fields: {
         name: {
           // name field configuration here..
-          label: strings.{{appname}}_assessment_name,
+          label: strings._assessment_name,
           autoFocus: true,
-          placeholder: strings.{{appname}}_assessment_name_placeholder,
-          error: strings.{{appname}}_assessment_name_form_error,
+          placeholder: strings._assessment_name_placeholder,
+          error: strings._assessment_name_form_error,
             returnKeyType: 'next',
            onSubmitEditing: () => this.refs.form.getComponent('description').refs.input.focus(),
           //onBlur: () => {
@@ -116,11 +116,11 @@ class ImagePicker extends Component {
 
   selectPhotoTapped() {
     const options = {
-      title: strings.{{appname}}_photo_picker,
-      takePhotoButtonTitle: strings.{{appname}}_camera_take_picture,
+      title: strings._photo_picker,
+      takePhotoButtonTitle: strings._camera_take_picture,
       cancelPhotoButtonTitle: "Cancel",
       cancelButtonTitle: "Cancel",
-      chooseFromLibraryButtonTitle: strings.{{appname}}_camera_select_from_gallery,
+      chooseFromLibraryButtonTitle: strings._camera_select_from_gallery,
       quality: 1,
        maxWidth: 4300,
        maxHeight: 4300,
@@ -175,8 +175,8 @@ class ImagePicker extends Component {
 
     selectVideoTapped() {
       const options = {
-        title: strings.{{appname}}_camera_video_picker,
-        takePhotoButtonTitle: strings.{{appname}}_camera_video_take_video,
+        title: strings._camera_video_picker,
+        takePhotoButtonTitle: strings._camera_video_take_video,
 
         cancelButtonTitle: "Cancel",
 
@@ -260,7 +260,7 @@ class ImagePicker extends Component {
   <View style={[styles.column, {}]}>
     <IconButton
       icon="ios-videocam-outline"
-      text={strings.{{appname}}_camera_take_video}
+      text={strings._camera_take_video}
       onPress={this.selectVideoTapped.bind(this)}
     />
     { this.state.videoSource &&
@@ -286,9 +286,9 @@ class ImagePicker extends Component {
             onPress={(this.close.bind(this))}
           />
 
-          <Text style={styles.title}>{strings.{{appname}}_camera_media}</Text>
+          <Text style={styles.title}>{strings._camera_media}</Text>
 
-          <View style={{{marginRight:20}}}/>
+          <View style=/>
 
       </View>
       :
@@ -297,10 +297,10 @@ class ImagePicker extends Component {
 
       <View style={styles.formContainer}>
       <Text style={styles.titleFormHeader}>
-        {strings.{{appname}}_camera_media}
+        {strings._camera_media}
       </Text>
       <TextInput
-        placeholder={strings.{{appname}}_camera_description_placeholder}
+        placeholder={strings._camera_description_placeholder}
         autoCapitalize={'none'}
         autoCorrect={true}
         style={[styles.formInput]}
@@ -308,17 +308,17 @@ class ImagePicker extends Component {
         defaultValue={this.description}
        />
 
-    <View style={{{paddingHorizontal:0}}}>
+    <View style=>
 
         <Text style={[styles.tinyFNT, { marginBottom:0, alignSelf:'flex-start'}]}>
-          {strings.{{appname}}_camera_instructions_online}
+          {strings._camera_instructions_online}
         </Text>
 
           <View style={[styles.row]}>
 
             <IconButton
               icon="ios-camera-outline"
-              text={strings.{{appname}}_camera_take_picture_button}
+              text={strings._camera_take_picture_button}
               onPress={this.selectPhotoTapped.bind(this)}
             />
                { this.state.imageSource === null ? <Text></Text> :
@@ -331,7 +331,7 @@ class ImagePicker extends Component {
 
           <IconButton
             icon={'ios-cloud-upload-outline'}
-            text={strings.{{appname}}_upload_online} // TODO: implement offline save queue
+            text={strings._upload_online} // TODO: implement offline save queue
             onPress={(this.onSubmitPressed.bind(this))}
            />
 
@@ -343,7 +343,7 @@ class ImagePicker extends Component {
            <Text style={styles.microFNT}>Current Speed: {JSON.stringify(initialPosition.coords.speed)}</Text>
            </View>
          :
-           <Text style={[styles.errorText,styles.tinyFNT]}>{strings.{{appname}}_device_no_gps}</Text>
+           <Text style={[styles.errorText,styles.tinyFNT]}>{strings._device_no_gps}</Text>
          )}
          </View>
          </View>
@@ -358,7 +358,7 @@ class ImagePicker extends Component {
 no video for now
 <IconButton
   icon="ios-videocam-outline"
-  text={strings.{{appname}}_camera_take_video_button}
+  text={strings._camera_take_video_button}
   onPress={this.selectVideoTapped.bind(this)}
 />
 { this.state.videoSource &&

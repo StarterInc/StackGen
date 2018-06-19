@@ -3,14 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- TODO: fix parent pom
-	<parent>
-		<groupId>io.starter</groupId>
-		<artifactId>StarterIgnite</artifactId>
-		<version>1.2.1</version>
-		<relativePath>../StarterIgnite/parent-pom.xml</relativePath>
-	</parent>
-	 -->
+	<!-- TODO: fix parent pom <parent> <groupId>io.starter</groupId> <artifactId>StarterIgnite</artifactId> 
+		<version>1.2.1</version> <relativePath>../StarterIgnite/parent-pom.xml</relativePath> 
+		</parent> -->
 
 	<groupId>io.starter</groupId>
 	<artifactId>StarterIgnite</artifactId>
@@ -28,6 +23,30 @@
 	<!-- <repositories> <repository> <id>org.osaf.caldav4j</id> <name>org.osaf.caldav4j</name> 
 		<url>https://caldav4j.googlecode.com/svn/maven/</url> </repository> </repositories> -->
 	<dependencies>
+
+		<!-- embed maven internal to the build to package the generated output -->
+		<!-- https://mvnrepository.com/artifact/org.apache.maven/maven-embedder -->
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-embedder</artifactId>
+			<version>3.5.3</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.sonatype.aether/aether-connector-wagon -->
+		<dependency>
+			<groupId>org.sonatype.aether</groupId>
+			<artifactId>aether-connector-wagon</artifactId>
+			<version>1.13.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.wagon/wagon-http-lightweight -->
+		<dependency>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-http-lightweight</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+		<!-- end embed maven -->
 
 		<!-- locally installed RANDOOP <dependency> <groupId>net.sourceforge.javydreamercsw</groupId> 
 			<artifactId>randoop-maven-plugin</artifactId> <version>1.0-SNAPSHOT</version> 
@@ -392,7 +411,7 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/OpenXLS-1.0.jar</systemPath>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>net.java.dev.jets3t</groupId>
 			<artifactId>jets3t</artifactId>
@@ -664,6 +683,29 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>distro</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<packaging>jar</packaging>
 	<url>http://ignite.starter.io/ignite</url>

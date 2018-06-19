@@ -12,9 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 var AddButton = React.createClass({
 
-  propTypes: {
-    onPress: React.PropTypes.func,
-  },
+
 
   render: function() {
     return (

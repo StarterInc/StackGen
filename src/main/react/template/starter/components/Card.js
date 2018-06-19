@@ -34,7 +34,7 @@ var Card = React.createClass({
 
   },
 
-  {{=<% %>=}}
+  
   render: function() {
     var style='title';
     if(this.props.smallimage){
@@ -110,7 +110,7 @@ var Card = React.createClass({
       </TouchableOpacity>
     );
   }
-  <%={{ }}=%>
+  
 });
 
 module.exports = Card;

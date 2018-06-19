@@ -80,7 +80,7 @@ public class AppEntityObject {
 					+ " :" + val);
 			variables.add(new Variable(val, apia.example()));
 		} else {
-			System.err.println("Skipping Invalid Field: " + s.toGenericString()
+			io.starter.ignite.util.Logger.error("Skipping Invalid Field: " + s.toGenericString()
 					+ " :" + val);
 		}
 	}

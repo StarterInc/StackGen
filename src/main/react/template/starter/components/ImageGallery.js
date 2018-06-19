@@ -26,7 +26,7 @@ var ImageGallery = React.createClass({
     var pos = 0
     return (
       <View>
-      <View style={{{flex:1, marginHorizontal:10, height:2,backgroundColor:'#CCCCCC', marginLeft:20, marginTop:10}}} />
+      <View style= />
       <Text style={[styles.tiny,{marginVertical:10}]}>Gallery</Text>
 
         <ScrollView

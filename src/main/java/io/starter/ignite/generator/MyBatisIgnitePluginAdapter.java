@@ -25,7 +25,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 	private String annotationString;
 
 	public MyBatisIgnitePluginAdapter() {
-		System.err.println("Instantiating MyBatisIgnitePluginAdapter...");
+		io.starter.ignite.util.Logger.error("Instantiating MyBatisIgnitePluginAdapter...");
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 			IntrospectedTable introspectedTable, ModelClassType modelClassType) {
 
 		if (Configuration.DEBUG)
-			System.err.println("MyBatisIgnitePluginAdapter Generating: "
+			io.starter.ignite.util.Logger.error("MyBatisIgnitePluginAdapter Generating: "
 					+ field + " class:"
 					+ field.getType().getFullyQualifiedName());
 

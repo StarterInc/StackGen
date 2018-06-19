@@ -4,8 +4,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
-*.war
 *.ear
 
 # exclude jar for gradle wrapper
@@ -19,9 +17,12 @@ hs_err_pid*
 target
 .gradle
 build
-/gen/
 /WebContent/
 /.classpath
 /.project
 /.che/
 /gen/
+/gen.*/
+
+/.DS_Store
+

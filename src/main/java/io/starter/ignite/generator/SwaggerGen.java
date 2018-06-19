@@ -4,6 +4,7 @@ import io.swagger.codegen.*;
 import io.swagger.codegen.config.CodegenConfigurator;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.List;
 
 /**
  * responsible for generating the Swagger server and clients
@@ -11,10 +12,10 @@ import java.io.FilenameFilter;
  * @author john
  * 
  */
-public class SwaggerGen extends DefaultGenerator implements Configuration{
-	
-	DefaultGenerator generator = new DefaultGenerator();
+public class SwaggerGen extends DefaultGenerator implements Configuration {
 
+	DefaultGenerator generator = new DefaultGenerator();
+	CodegenConfigurator configurator = CodegenConfigurator.fromFile(CONFIG_FILE);
 
 	/**
 	 * Create and initialize a new SwaggerGen
@@ -25,10 +26,9 @@ public class SwaggerGen extends DefaultGenerator implements Configuration{
 	public SwaggerGen(String spec) {
 
 		spec = SPEC_LOCATION + spec;
-		
+
 		io.starter.ignite.util.Logger.log("Create Swagger Client Apis for:" + spec);
 		// attempt to read from config file
-		CodegenConfigurator configurator = CodegenConfigurator.fromFile(CONFIG_FILE);
 
 		// if a config file wasn't specified or we were unable to read it
 		if (configurator == null) {
@@ -47,7 +47,7 @@ public class SwaggerGen extends DefaultGenerator implements Configuration{
 		configurator.setInvokerPackage(INVOKER_PACKAGE);
 		configurator.setVerbose(VERBOSE);
 		configurator.addDynamicProperty("dynamic-html", "true");
-		
+
 		// app config
 		configurator.setAuth("oauth");
 		configurator.setInputSpec(spec);
@@ -59,9 +59,12 @@ public class SwaggerGen extends DefaultGenerator implements Configuration{
 		configurator.setGitRepoId("StarterIgnite");
 		configurator.setGitUserId("Spaceghost69");
 
-		final ClientOptInput clientOptInput = configurator.toClientOptInput();
+	}
 
-		new DefaultGenerator().opts(clientOptInput).generate();
+	@Override
+	public List<File> generate() {
+		final ClientOptInput clientOptInput = configurator.toClientOptInput();
+		return new DefaultGenerator().opts(clientOptInput).generate();
 	}
 
 	static String[] getModelFiles() {
@@ -69,7 +72,9 @@ public class SwaggerGen extends DefaultGenerator implements Configuration{
 		String[] modelFiles = modelDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				if (name.contains("Example"))
+				if (name.toLowerCase().contains("example"))
+					return false;
+				if (name.toLowerCase().contains("mapper"))
 					return false;
 				if (name.contains(JavaGen.ADD_GEN_CLASS_NAME))
 					return false;

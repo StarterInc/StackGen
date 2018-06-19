@@ -13,10 +13,6 @@ import Card from '../components/Card';
 
 var UserInfo = React.createClass({
 
-  propTypes: {
-    onPress: React.PropTypes.func,
-  },
-
   render: function() {
     return (
       <View style={styles.row}>

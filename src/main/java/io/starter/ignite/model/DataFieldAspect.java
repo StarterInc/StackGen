@@ -21,7 +21,7 @@ public class DataFieldAspect {
 	public Object getDataField(ProceedingJoinPoint pjp) throws Throwable {
 		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
 
-		// System.err.println("Calling: " + cnm);
+		// io.starter.ignite.util.Logger.error("Calling: " + cnm);
 		// if iBatis is calling, do not read
 		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
 			return pjp.proceed(pjp.getArgs());
@@ -41,7 +41,7 @@ public class DataFieldAspect {
 	public Object setDataField(ProceedingJoinPoint pjp) throws Throwable {
 		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
 
-		// System.err.println("Calling: " + cnm);
+		// io.starter.ignite.util.Logger.error("Calling: " + cnm);
 		// if iBatis is calling, do not persist
 		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
 			return pjp.proceed(pjp.getArgs());

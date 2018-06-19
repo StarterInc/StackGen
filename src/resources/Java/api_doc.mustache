@@ -53,7 +53,7 @@ try {
     {{#returnType}}{{{returnType}}} result = {{/returnType}}apiInstance.{{{operationId}}}({{#allParams}}{{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{#returnType}}
     System.out.println(result);{{/returnType}}
 } catch (ApiException e) {
-    System.err.println("Exception when calling {{{classname}}}#{{{operationId}}}");
+    io.starter.ignite.util.Logger.error("Exception when calling {{{classname}}}#{{{operationId}}}");
     e.printStackTrace();
 }
 ```

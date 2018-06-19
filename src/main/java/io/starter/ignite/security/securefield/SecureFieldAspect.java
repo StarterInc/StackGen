@@ -22,7 +22,7 @@ public class SecureFieldAspect {
 	public Object getSecureField(ProceedingJoinPoint pjp) throws Throwable {
 		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
 
-		// System.err.println("Calling: " + cnm);
+		// io.starter.ignite.util.Logger.error("Calling: " + cnm);
 		// if iBatis is calling, do not decrypt
 		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
 			return pjp.proceed(pjp.getArgs());
@@ -43,7 +43,7 @@ public class SecureFieldAspect {
 	public Object setSecureField(ProceedingJoinPoint pjp) throws Throwable {
 		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
 
-		// System.err.println("Calling: " + cnm);
+		// io.starter.ignite.util.Logger.error("Calling: " + cnm);
 		// if iBatis is calling, do not encrypt
 		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
 			return pjp.proceed(pjp.getArgs());

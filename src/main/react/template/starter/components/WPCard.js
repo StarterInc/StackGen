@@ -32,7 +32,7 @@ var WPCard = React.createClass({
 
   },
 
-  {{=<% %>=}}
+  
   render: function() {
     var style='title';
     if(this.props.smallimage){
@@ -110,7 +110,7 @@ var WPCard = React.createClass({
       </TouchableOpacity>
     );
   }
-  <%={{ }}=%>
+  
 });
 
 module.exports = WPCard;

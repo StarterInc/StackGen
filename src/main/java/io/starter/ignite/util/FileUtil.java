@@ -1,6 +1,11 @@
 package io.starter.ignite.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * utility methods for files
@@ -24,8 +29,6 @@ public class FileUtil {
 			// if directory not exists, create it
 			if (!dest.exists()) {
 				dest.mkdirs();
-				io.starter.ignite.util.Logger.log("Directory copied from " + src + "  to "
-						+ dest);
 			}
 
 			// list all the directory contents
@@ -40,6 +43,7 @@ public class FileUtil {
 			}
 
 		} else {
+
 			// if file, then copy it
 			// Use bytes stream to support all file types
 			InputStream in = new FileInputStream(src);
@@ -55,7 +59,7 @@ public class FileUtil {
 
 			in.close();
 			out.close();
-			io.starter.ignite.util.Logger.log("File copied from " + src + " to " + dest);
+			// io.starter.ignite.util.Logger.log("File copied from " + src + " to " + dest);
 		}
 	}
 

@@ -23,10 +23,13 @@ public class MavenBuilder implements Configuration {
 	 * run the Maven build
 	 */
 	public static void build() {
+		io.starter.ignite.util.Logger.log("========= BEGIN MavenBuilder ========= : " + JAVA_GEN_FOLDER);
+
 		MavenCli cli = new MavenCli();
 		System.setProperty("maven.multiModuleProjectDirectory", "true");
 		System.setProperty("skipTests", "true");
 		cli.doMain(new String[] { "clean", "install" }, JAVA_GEN_FOLDER, System.out, System.out);
+		io.starter.ignite.util.Logger.log("========= END MavenBuilder =========");
 	}
 
 }

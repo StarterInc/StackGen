@@ -131,20 +131,20 @@ class CameraView extends React.Component {
       <TouchableOpacity
               onPress={() => this.close(this.props)}
               style={styles.closeButton}>
-                <Text style={{{ fontWeight: 'bold', fontSize: 20 }}}>X</Text>
+                <Text style=>X</Text>
             </TouchableOpacity>
 
 
             <IconButton
               icon='md-camera'
-              text={strings.{{appname}}_camera_take_picture}
+              text={strings._camera_take_picture}
               onPress={this.selectPhotoTapped.bind(this)}
 
             ></IconButton>
 
             <IconButton
               icon='md-video'
-              text={strings.{{appname}}_camera_take_video}
+              text={strings._camera_take_video}
               onPress={this.selectVideoTapped.bind(this)}
 
             ></IconButton>
@@ -162,7 +162,7 @@ class CameraView extends React.Component {
           </View>
         </TouchableOpacity>
         { this.state.videoSource &&
-          <Text style={{{margin: 8, textAlign: 'center'}}}>{this.state.videoSource}</Text>
+          <Text style=>{this.state.videoSource}</Text>
         }
       </View>
     );

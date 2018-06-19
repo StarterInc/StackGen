@@ -1,9 +1,5 @@
 package io.starter.ignite.generator;
 
-import io.starter.ignite.generator.react.AppEntityObject;
-import io.starter.ignite.util.FileUtil;
-import io.starter.ignite.util.RunCommand;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,10 +10,15 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.extentech.toolkit.StringTool;
-import com.github.mustachejava.*;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
+
+import io.starter.ignite.generator.react.AppEntityObject;
+import io.starter.ignite.util.FileUtil;
+import io.starter.ignite.util.RunCommand;
 
 /**
  * Uses MustacheJava
@@ -37,12 +38,11 @@ public class ReactGen extends Gen implements Generator {
 	 */
 	private static void export(ReactGen gen) throws IOException {
 
-		io.starter.ignite.util.Logger
-				.log("Exporting: " + REACT_TEMPLATE_APP_FOLDER + " to: " + REACT_APP_OUTPUT_FOLDER);
-		FileUtil.copyFolder(REACT_APP_OUTPUT_FOLDER, REACT_TEMPLATE_APP_FOLDER);
+		io.starter.ignite.util.Logger.log("Exporting: " + REACT_TEMPLATE_APP_FOLDER + " to: " + REACT_EXPORT_FOLDER);
+		FileUtil.copyFolder(REACT_TEMPLATE_APP_FOLDER, REACT_EXPORT_FOLDER);
 
 		io.starter.ignite.util.Logger
-				.log("Exporting: " + REACT_APP_OUTPUT_FOLDER + REACT_APP_NAME + " to: " + REACT_APP_OUTPUT_FOLDER);
+				.log("Exporting: " + REACT_APP_OUTPUT_FOLDER + REACT_APP_NAME + " to: " + REACT_EXPORT_FOLDER);
 		FileUtil.copyFolder(REACT_APP_OUTPUT_FOLDER + REACT_APP_NAME, REACT_EXPORT_FOLDER);
 	}
 
@@ -96,7 +96,7 @@ public class ReactGen extends Gen implements Generator {
 		ReactGen gen = new ReactGen();
 		generateEntitiesFromModelFolder(gen);
 
-		File[] templateFiles = Gen.getSourceFilesInFolder(new File(REACT_TEMPLATE_APP_FOLDER), SKIP_LIST);
+		File[] templateFiles = Gen.getSourceFilesInFolder(new File(REACT_TEMPLATE_FOLDER), FOLDER_SKIP_LIST);
 
 		for (Object o : templateFiles) {
 			String fname = o.toString();
@@ -189,13 +189,13 @@ public class ReactGen extends Gen implements Generator {
 			throws IOException, FileNotFoundException {
 
 		MustacheFactory mf = new DefaultMustacheFactory();
-		String foutp = StringTool.replaceText(fname, REACT_TEMPLATE_APP_FOLDER + "/",
-				REACT_APP_OUTPUT_FOLDER + REACT_APP_NAME + "/starter/");
+		String foutp = StringTool.replaceText(fname, REACT_TEMPLATE_FOLDER,
+				REACT_APP_OUTPUT_FOLDER + REACT_APP_NAME + "/");
 
 		// read in template file
 		if (multifile != null) {
-			foutp = StringTool.replaceText(multifile, REACT_TEMPLATE_APP_FOLDER + "/",
-					REACT_APP_OUTPUT_FOLDER + REACT_APP_NAME + "/starter/");
+			foutp = StringTool.replaceText(multifile, REACT_TEMPLATE_FOLDER,
+					REACT_APP_OUTPUT_FOLDER + REACT_APP_NAME + "/");
 		}
 
 		File fout = new File(foutp);
@@ -204,6 +204,10 @@ public class ReactGen extends Gen implements Generator {
 		fout.mkdirs();
 		if (fout.isDirectory())
 			fout.delete();
+		if (!fout.exists()) {
+			fout.mkdirs();
+			fout.delete();
+		}
 		if (!finp.isDirectory()) {
 			try {
 				Reader fread = new FileReader(finp);
@@ -212,12 +216,10 @@ public class ReactGen extends Gen implements Generator {
 				fout.createNewFile();
 				Writer fwriter = new FileWriter(fout);
 
-				io.starter.ignite.util.Logger.log("Mustaching template file: " + fout);
+				io.starter.ignite.util.Logger.log("Mustaching template: " + finp + " to output file: " + fout);
 				Mustache reactmf = mf.compile(fread, REACT_APP_OUTPUT_FOLDER);
 
 				// if we are dealing with a sub-object
-				// (ie: an object in the "objects" collection)
-				// then we feed the object in
 				reactmf.execute(fwriter, gen);
 
 				fwriter.flush();

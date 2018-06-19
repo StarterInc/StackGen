@@ -72,10 +72,14 @@ public class Main implements Configuration {
 	}
 
 	private static void initOutputFolders() {
-		File genDir = new File(Configuration.JAVA_GEN_FOLDER);
+		File genDir = new File(JAVA_GEN_FOLDER);
+		io.starter.ignite.util.Logger
+				.error("Initializing output folder: " + JAVA_GEN_FOLDER + " exists: " + genDir.exists());
 		if (genDir.exists()) {
-			genDir.renameTo(new File(Configuration.JAVA_GEN_FOLDER + "." + System.currentTimeMillis()));
-			genDir = new File(Configuration.JAVA_GEN_FOLDER);
+			String fx = JAVA_GEN_FOLDER + "." + System.currentTimeMillis();
+			io.starter.ignite.util.Logger.error("Output Folder: " + JAVA_GEN_FOLDER + " exists. Renaming to: " + fx);
+			genDir.renameTo(new File(fx));
+			genDir = new File(JAVA_GEN_FOLDER);
 			genDir.mkdirs();
 		}
 

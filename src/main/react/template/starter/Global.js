@@ -11,7 +11,7 @@ if(typeof global.self === "undefined")
     STORE_KEY: 'TODO',
     MAJOR_VERSION : '.1',
     MINOR_VERSION : '0.1.27',
-    API_HOST: 'https://api.{{appname}}.online/',
+    API_HOST: 'https://api..online/',
     API_VERSION : '1.0',
     COLOR: {
       ORANGE: '#FF9900',

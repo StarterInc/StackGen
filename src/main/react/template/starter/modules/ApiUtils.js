@@ -15,7 +15,7 @@ var ApiUtils = {
         // alert(JSON.stringify(response.text()));
       return response;
     } else if (response.status == 401) {
-      let error = new Error(strings.{{appname}}_incorrect_login_credentials)
+      let error = new Error(strings._incorrect_login_credentials)
       error.response = response;
       throw error;
     } else {

@@ -153,4 +153,4 @@ CodePushStatusDidChange(status) {
 // register and export
 module.exports = App;
 
-AppRegistry.registerComponent('{{appname}}', () => App);
+AppRegistry.registerComponent('', () => App);

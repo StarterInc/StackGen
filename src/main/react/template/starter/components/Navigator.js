@@ -260,7 +260,7 @@ var Navigation = React.createClass({
         <Navigator
           ref={this._setNavigatorRef}
           style={styles.navigatorContainer}
-          initialRoute={{ message: 'First Scene', }}
+          initialRoute=
           renderScene={this.renderScene}
           configureScene={(route) => {
             if (route.sceneConfig) {

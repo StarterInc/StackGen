@@ -32,17 +32,18 @@
 		</developer>
 	</developers>
 	<parent>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-parent</artifactId>
-			<version>2.0.2.RELEASE</version>
-			<relativePath />
-		</parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.2.RELEASE</version>
+		<relativePath />
+	</parent>
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.0.0-M1</version>
+				<version>3.0.0-M2</version>
 				<executions>
 					<execution>
 						<id>enforce-maven</id>
@@ -423,7 +424,13 @@
 
 		</dependency>
 
-
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin -->
+		<dependency>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-enforcer-plugin</artifactId>
+		    <version>3.0.0-M2</version>
+		</dependency>
+			
 		<!-- TODO: setup artifactory... for now locally installed per: http://softwarecave.org/2014/06/14/adding-external-jars-into-maven-project/ -->
 		<dependency>
 			<groupId>io.swagger</groupId>

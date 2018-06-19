@@ -33,14 +33,7 @@ module.exports = {
 
 // begin userdata object state
 	
-{{#objects}}
-	{{objectname}}:{
-		{{#variables}}
-			{{variablename}}: '{{variableval}}',
-		{{/variables}}
-	},
- {{/objects}} 		
-
+ 		
 	fetching:false,
   
 };

@@ -59,14 +59,15 @@ public interface Configuration extends SystemConstants {
 
 	// ## React
 	// TODO: make dynamic
-	public static String REACT_APP_NAME = "IgniteReactApp";
+	public static String REACT_APP_NAME = "MyLittlePony";
 
 	public static String REACT_TEMPLATE_APP_FOLDER = ROOT_FOLDER + SOURCE_MAIN + "/react/IgniteApp/";
+	public static String REACT_TEMPLATE_FOLDER = ROOT_FOLDER + SOURCE_MAIN + "/react/template/";
 
 	// external React Project Path
 	public static String REACT_EXPORT_FOLDER = ROOT_FOLDER + "/REACT_EXPORT";
 
-	public static String REACT_APP_OUTPUT_FOLDER = ROOT_FOLDER + SOURCE_MAIN + "/react/out/";
+	public static String REACT_APP_OUTPUT_FOLDER = ROOT_FOLDER + "/tmp/react/";
 
 	public static String IGNITE_DATAMODEL_PACKAGE = "io.starter.ignite.model.";
 

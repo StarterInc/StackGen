@@ -43,24 +43,24 @@ var options = {
   fields: {
     username: {
       // name field configuration here..
-      label: strings.{{appname}}_username,
+      label: strings._username,
       autoFocus: true,
-      placeholder: strings.{{appname}}_name_placeholder,
+      placeholder: strings._name_placeholder,
       //onBlur: () => {
         // {(event) => this.state.name = event.nativeEvent.text}
         // console.log('onBlur: ' + this.state.name);
       //}
     },
     email:{
-      label: strings.{{appname}}_useremail,
+      label: strings._useremail,
     },
     password:{
-      label: strings.{{appname}}_password,
+      label: strings._password,
     },
   },
   i18n: {
-    optional: strings.{{appname}}_optional,   // suffix added to optional fields
-    required: strings.{{appname}}_required,               // suffix added to required fields
+    optional: strings._optional,   // suffix added to optional fields
+    required: strings._required,               // suffix added to required fields
   }
 }; // optional rendering options (see documentation)
 // END FORM SCHEMA
@@ -101,14 +101,14 @@ class CreateUser extends Component {
 
 
             <Text style={styles.title}>
-                {strings.{{appname}}_create_account}
+                {strings._create_account}
             </Text>
           </View>
             <Text style={styles.tiny}>
-                {strings.{{appname}}_username}
+                {strings._username}
             </Text>
             <TextInput
-                placeholder={strings.{{appname}}_username_placeholder}
+                placeholder={strings._username_placeholder}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 autoFocus={true}
@@ -116,10 +116,10 @@ class CreateUser extends Component {
                 style={styles.formInput}
                 value={username} />
             <Text style={styles.tiny}>
-                {strings.{{appname}}_useremail}
+                {strings._useremail}
             </Text>
             <TextInput
-                placeholder={strings.{{appname}}_email_placeholder}
+                placeholder={strings._email_placeholder}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 onChange={(event) => this.email = event.nativeEvent.text}
@@ -127,10 +127,10 @@ class CreateUser extends Component {
                 value={email} />
 
             <Text style={styles.tiny}>
-                {strings.{{appname}}_password}
+                {strings._password}
             </Text>
             <TextInput
-                placeholder={strings.{{appname}}_password_placeholder}
+                placeholder={strings._password_placeholder}
                 secureTextEntry={true}
                 autoCapitalize={'none'}
                 autoCorrect={false}
@@ -148,7 +148,7 @@ class CreateUser extends Component {
               onPress={(this.showFAQLink.bind(this))}
             >
             <Text style={[styles.bottom, styles.title2]}>
-                {strings.{{appname}}_help_faq}
+                {strings._help_faq}
             </Text>
             </TouchableHighlight>
           </View>

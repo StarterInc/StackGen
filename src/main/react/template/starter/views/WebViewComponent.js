@@ -108,7 +108,7 @@ var WebViewComponent = React.createClass({
           ref={WEBVIEW_REF}
           automaticallyAdjustContentInsets={false}
           style={styles.webView}
-          // source={{{ uri: this.state.url }}}
+          // source=
           javaScriptEnabled={true}
           domStorageEnabled={true}
           decelerationRate="normal"
@@ -206,12 +206,12 @@ var ScaledWebView = React.createClass({
     }
   },
 
-  {{=<% %>=}}
+  
   render: function() {
     return (
-      <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}}>
+      <View style=>
         <WebView
-          source={{uri: 'http://{{appname}}.online/'}}   
+          source=.online/'}}   
           scalesPageToFit={this.state.scalingEnabled}
         />
         <View style={styles.buttons}>
@@ -231,7 +231,7 @@ var ScaledWebView = React.createClass({
     );
    },
   }
-  <%={{ }}=%>
+  
 )
 
 const HTML = `
@@ -265,14 +265,10 @@ const HTML = `
  * exports.examples = [ { title: 'Simple Browser', render(): ReactElement {
  * return <WebViewExample />; } }, { title: 'Scale Page to Fit', render():
  * ReactElement { return <ScaledWebView/>; } }, { title: 'Bundled HTML',
- * render(): ReactElement { return ( <WebView style={{{ backgroundColor: BGWASH,
- * height: 100, }}} source={require('./helloworld.html')} scalesPageToFit={true} /> ); } }, {
- * title: 'Static HTML', render(): ReactElement { return ( <WebView style={{{
- * backgroundColor: BGWASH, height: 100, }}} source={{{html: HTML}}}
+ * render(): ReactElement { return ( <WebView style= source={require('./helloworld.html')} scalesPageToFit={true} /> ); } }, {
+ * title: 'Static HTML', render(): ReactElement { return ( <WebView style= source=
  * scalesPageToFit={true} /> ); } }, { title: 'POST Test', render():
- * ReactElement { return ( <WebView style={{{ backgroundColor: BGWASH, height:
- * 100, }}} source={{{ uri: 'http://www.posttestserver.com/post.php', method:
- * 'POST', body: 'foo=bar&bar=foo' }}} scalesPageToFit={false} /> ); } } ];
+ * ReactElement { return ( <WebView style= source= scalesPageToFit={false} /> ); } } ];
  */
 
 module.exports = WebViewComponent;

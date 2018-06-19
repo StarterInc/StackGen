@@ -72,7 +72,7 @@ var Card = React.createClass({
             name={this.props.iconStyle}
           />;
     }else{
-      image = <View style={{width:10}} />;
+      image = <View style= />;
     }
 
     var onPressLink;
@@ -97,7 +97,7 @@ var Card = React.createClass({
               {this.props.title2}
             </Text>
             <View style={styles.cardRow}  onPress={this.props.onPress}>
-              <Text style={{flex:1, marginTop:5, marginBottom:5  }}  onPress={this.props.onPress}>
+              <Text style=  onPress={this.props.onPress}>
                 {description}
               </Text>
 

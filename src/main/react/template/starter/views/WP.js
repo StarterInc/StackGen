@@ -89,19 +89,19 @@ var WP = React.createClass({
     );
   },
   
-  {{=<% %>=}}
+  
   // this is the original render function, now renamed to renderArticles, which will render our main template
   renderArticles: function() {
     return (
       <View style={[styles.container, {flex: 1, flexDirection: 'column', justifyContent: 'space-between'}]}>
 
-      <AppBar title={strings.<%appname%>_help_training} navigator={this.props.navigator} closebutton={true}/>
+      <AppBar title={strings._help_training} navigator={this.props.navigator} closebutton={true}/>
 
         <ScrollView
           horizontal={false}
           decelerationRate={10}
           pagingEnabled={false}
-          contentInset={{bottom: 300}}
+          contentInset=
           // snapToInterval={GLOBAL.SCREEN_WIDTH*0.5}
            snapToAlignment="start"
           contentContainerStyle={styles.wrapper}
@@ -115,7 +115,7 @@ var WP = React.createClass({
               //  description={JSON.stringify(article._embedded)}
             //     superTitle={article._embedded.author.name}
                 WPImageSource={WP_HOST + '/wp-json/wp/v2/media/' + article.featured_media}
-                // imageSource={'http://{{appname}}.online/wp-json/wp/v2/media/' + article.featured_media}
+                // imageSource={'http://.online/wp-json/wp/v2/media/' + article.featured_media}
                 // description={assessment.description}
                 // onPress={(this.openSiteDetail.bind(this))}
               >
@@ -125,7 +125,7 @@ var WP = React.createClass({
                 automaticallyAdjustContentInsets={false}
                 style={[styles.container,{flex:1, marginTop:-40,height:200, paddingHorizontal:20}]}
                 // onNavigationStateChange='null'
-                source={{html:'<html><body style="font-family:helvetica; font-size:12;">' + article.content.rendered + '</body></html>'}}
+                source=
                 // startInLoadingState={true}
                 scalesPageToFit={this.state.scalesPageToFit}
               >
@@ -137,7 +137,7 @@ var WP = React.createClass({
       </View>
     );
   }
-  <%={{ }}=%>
+  
 });
 
 var Dimensions = require('Dimensions');

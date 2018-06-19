@@ -150,19 +150,19 @@ class ModalCapture extends Component {
             icon="md-arrow-back"
             onPress={(this.close.bind(this))}
           />
-          <Text style={styles.title}>{strings.{{appname}}_camera_media}</Text>
-          <View style={{height:10, width:30}}/>
+          <Text style={styles.title}>{strings._camera_media}</Text>
+          <View style=/>
       </View>
 
 
-      <Text style={[styles.tiny, {paddingHorizontal:30}]}>{strings.{{appname}}_camera_description}</Text>
+      <Text style={[styles.tiny, {paddingHorizontal:30}]}>{strings._camera_description}</Text>
 
       <Image
         source={this.state.imageSource}
         style={styles.imageContainer}>
 
             <TextInput
-              placeholder={strings.{{appname}}_camera_description_placeholder}
+              placeholder={strings._camera_description_placeholder}
               autoCapitalize={'none'}
               autoCorrect={true}
               onChange={(event) => this.description = event.nativeEvent.text}
@@ -175,14 +175,14 @@ class ModalCapture extends Component {
     <View style={[styles.formContainer, {paddingHorizontal:30, paddingTop:10}]}>
 
         <Text style={styles.title2}>
-          {strings.{{appname}}_camera_instructions_online}
+          {strings._camera_instructions_online}
         </Text>
 
           <View style={[styles.row, {}]}>
               <View style={[styles.column, {}]}>
                 <IconButton
                   icon="ios-camera-outline"
-                  text={strings.{{appname}}_camera_take_picture}
+                  text={strings._camera_take_picture}
                   onPress={this.selectPhotoTapped.bind(this)}
                 />
 
@@ -195,7 +195,7 @@ class ModalCapture extends Component {
 
                 <IconButton
                   icon="ios-videocam-outline"
-                  text={strings.{{appname}}_camera_take_video}
+                  text={strings._camera_take_video}
                   onPress={this.selectVideoTapped.bind(this)}
                 />
 
@@ -208,7 +208,7 @@ class ModalCapture extends Component {
 
         <View style={[styles.column, {paddingHorizontal:30, marginTop:0}]}>
           <AddButton
-            text={strings.{{appname}}_upload_online} // TODO: implement offline save queue
+            text={strings._upload_online} // TODO: implement offline save queue
             onPress={(this.onSubmitPressed.bind(this))}
            />
 
@@ -220,7 +220,7 @@ class ModalCapture extends Component {
            <Text style={styles.tinyFNT}>Current Speed: {JSON.stringify(initialPosition.coords.speed)}</Text>
            </View>
          :
-           <Text style={[styles.errorText,styles.tinyFNT]}>{strings.{{appname}}_device_no_gps}</Text>
+           <Text style={[styles.errorText,styles.tinyFNT]}>{strings._device_no_gps}</Text>
          )}
          </View>
 

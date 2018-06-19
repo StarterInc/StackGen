@@ -83,7 +83,7 @@ var TopModal = React.createClass({
     return (
         <Animated.View style={[styles.modal, styles.flexCenter, {transform: [{translateY: this.state.offset}]}]}>
           <TouchableOpacity onPress={this.closeModal}>
-            <Text style={{color: '#FFF'}}>Close Menu</Text>
+            <Text style=>Close Menu</Text>
           </TouchableOpacity>
         </Animated.View>
     )

@@ -34,9 +34,7 @@ class ChatView extends React.Component {
       <GiftedChat
         messages={this.state.messages}
         onSend={this.onSend}
-        user={{{
-          _id: 1,
-        }}}
+        user=
       />
     );
   }

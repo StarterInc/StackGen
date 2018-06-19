@@ -139,7 +139,7 @@ class Messenger extends Component {
       this.handleReceive({
             text: "Time to celebrate?!",
             name: 'Max Headroom',
-            image: {uri: 'http://{{appname}}.online/wp-content/uploads/2016/07/iu.jpeg'},
+            image: {uri: 'http://.online/wp-content/uploads/2016/07/iu.jpeg'},
             position: 'left',
             date: new Date(2016, 3, 14, 13, 1),
             uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
@@ -280,7 +280,7 @@ class Messenger extends Component {
     // Eg: Navigate to the user profile
   }
 
-  {{=<% %>=}}
+  
   render() {
     return (
       <View style={[styles.container, {flex: 1, flexDirection: 'column', justifyContent: 'space-between'}]}>
@@ -288,12 +288,7 @@ class Messenger extends Component {
       <GiftedMessenger
         ref={(c) => this._GiftedMessenger = c}
 
-        styles={{
-          bubbleRight: {
-            marginLeft: 70,
-            backgroundColor: '#007aff',
-          },
-        }}
+        styles=
 
         autoFocus={!false}
         messages={this.state.messages}
@@ -322,7 +317,7 @@ class Messenger extends Component {
       </View>
     );
   }
-  <%={{ }}=%>
+  
 
   handleUrlPress(url) {
     Linking.openURL(url);

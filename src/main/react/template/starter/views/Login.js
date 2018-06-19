@@ -42,21 +42,21 @@ var options = {
   fields: {
     username: {
       // name field configuration here..
-      label: strings.{{appname}}_username,
+      label: strings._username,
       autoFocus: true,
-      placeholder: strings.{{appname}}_name_placeholder,
+      placeholder: strings._name_placeholder,
       //onBlur: () => {
         // {(event) => this.state.name = event.nativeEvent.text}
         // console.log('onBlur: ' + this.state.name);
       //}
     },
     password:{
-      label: strings.{{appname}}_password,
+      label: strings._password,
     },
   },
   i18n: {
-    optional: strings.{{appname}}_optional,   // suffix added to optional fields
-    required: strings.{{appname}}_required,               // suffix added to required fields
+    optional: strings._optional,   // suffix added to optional fields
+    required: strings._required,               // suffix added to required fields
   }
 }; // optional rendering options (see documentation)
 // END FORM SCHEMA
@@ -113,7 +113,7 @@ class Login extends Component {
        <View style={[styles.formContainer,{paddingTop:10}]}>
 
 
-       <Text style={styles.titleFormHeader}>{strings.{{appname}}_usersettings}</Text>
+       <Text style={styles.titleFormHeader}>{strings._usersettings}</Text>
 
 
          <ScrollView
@@ -135,7 +135,7 @@ class Login extends Component {
              onPress={(this.loadAssessments.bind(this))}
              >
 
-            <Text>{strings.{{appname}}_assessments}</Text>
+            <Text>{strings._assessments}</Text>
             </TouchableHighlight>
 
             <TouchableHighlight
@@ -177,27 +177,27 @@ class Login extends Component {
            />
 
            <Text style={styles.title}>
-               {strings.{{appname}}_login}
+               {strings._login}
            </Text>
 
           <TouchableHighlight
             onPress={(this.onResetPassword.bind(this))}
           >
-          <Text style={styles.title2}>{strings.{{appname}}_reset_password}</Text>
+          <Text style={styles.title2}>{strings._reset_password}</Text>
           </TouchableHighlight>
 
 
         </View>
 
           <Text style={styles.tiny}>
-              {strings.{{appname}}_username}
+              {strings._username}
            <Text>
            {(typeof(username) !== 'undefined' ? 'Already logged in as: ' + username : '')}
            </Text>
           </Text>
 
           <TextInput
-            placeholder={strings.{{appname}}_username}
+            placeholder={strings._username}
             autoCapitalize={'none'}
             autoCorrect={false}
             autoFocus={true}
@@ -207,11 +207,11 @@ class Login extends Component {
           />
 
           <Text style={styles.tiny}>
-              {strings.{{appname}}_password}
+              {strings._password}
           </Text>
 
           <TextInput
-              placeholder={strings.{{appname}}_password}
+              placeholder={strings._password}
               secureTextEntry={true}
               autoCapitalize={'none'}
               autoCorrect={false}

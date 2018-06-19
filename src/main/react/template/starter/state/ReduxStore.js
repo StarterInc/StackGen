@@ -43,13 +43,7 @@ import promise from 'redux-promise-middleware'
 // ### BEGIN IMPORT REDUCERS and ACTIONS
 
 // begin userdata object state
-{{#objects}}
-
-// generated {{objectname}} Ignite Reducers
-import {{objectname}}Reducer from '../state/{{objectname}}Reducer'
-
-{{/objects}} 		
-
+ 		
 // map pins
 // import maps from '../reducers/MapReducer'
 
@@ -61,16 +55,13 @@ import {{objectname}}Reducer from '../state/{{objectname}}Reducer'
 
 // ### END IMPORT REDUCERS and ACTIONS
 
-// define the state tree for the {{variablename}}
+// define the state tree for the 
 import initialState from "../state/InitialState"
 
 const formReducer= combineForms({
 
 	// begin userdata object state
-	{{#objects}}
-	{{objectname}}Reducer,
-	{{/objects}} 		
-
+ 		
 });
  
 // these reducers will appear in the State as "xyz:resultingvalue()"

@@ -1,8 +1,8 @@
 package io.starter.ignite.generator;
 
-import io.starter.ignite.util.ASCIIArtPrinter;
-
 import java.io.File;
+
+import io.starter.ignite.util.ASCIIArtPrinter;
 
 /**
  * generate an app from swagger YAML
@@ -14,11 +14,13 @@ import java.io.File;
  *   - Swagger CLient -> React-native JS screens
  * </pre>
  * 
- * @author john
+ * @author john mcmahon
  *
  */
 
 public class Main implements Configuration {
+
+	private static boolean skipDBGen = false;
 
 	public static void main(String[] args) {
 
@@ -34,14 +36,15 @@ public class Main implements Configuration {
 
 			// generate swqgger api clients
 			SwaggerGen swaggerGen = new SwaggerGen("StarterIgnite.yml");
+			io.starter.ignite.util.Logger.log("Generated: " + swaggerGen.generate().size() + " Source Files");
 			JavaGen.compile(MODEL_PACKAGE_DIR);
 
-			// System.exit(0);
-			
-			// generate corresponding DML
-			// statements to create a JDBC database
-			// execute DB creation, connect and test
-			DBGen.createDatabaseTablesFromModelFolder();
+			if (!skipDBGen) {
+				// generate corresponding DML
+				// statements to create a JDBC database
+				// execute DB creation, connect and test
+				DBGen.createDatabaseTablesFromModelFolder();
+			}
 
 			// generate MyBatis client classes
 			// XML configuration file
@@ -54,6 +57,9 @@ public class Main implements Configuration {
 			// create wrapper classes which
 			// delegates calls to/from api to the mybatis entity
 			JavaGen.generateClassesFromModelFolder();
+
+			// package the microservice for deployment
+			MavenBuilder.build();
 
 			// generate React Redux apps
 			ReactGen.generateReactNative();

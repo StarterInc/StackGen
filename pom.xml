@@ -13,12 +13,12 @@
 	<name>Starter StarterIgnite</name>
 	<description>StarterIgnite Server Platform</description>
 
-        <properties>
-                <aspectjplugin.version>1.11</aspectjplugin.version>
-                <aspectj.version>1.9.1</aspectj.version>
-                <cxf.version>2.2.3</cxf.version>
-                <swagger.version>1.5.12</swagger.version>
-        </properties>
+	<properties>
+		<aspectjplugin.version>1.8</aspectjplugin.version>
+		<aspectj.version>1.9.1</aspectj.version>
+		<cxf.version>2.2.3</cxf.version>
+		<swagger.version>1.5.12</swagger.version>
+	</properties>
 
 	<!-- <repositories> <repository> <id>org.osaf.caldav4j</id> <name>org.osaf.caldav4j</name> 
 		<url>https://caldav4j.googlecode.com/svn/maven/</url> </repository> </repositories> -->
@@ -571,6 +571,13 @@
 	</dependencyManagement>
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.kuali.maven.wagons</groupId>
+				<artifactId>maven-s3-wagon</artifactId>
+				<version>1.2.1</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
@@ -706,6 +713,24 @@
 			</build>
 		</profile>
 	</profiles>
+
+	<!-- S3 Private Maven Rep -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>repo.starter.io</id>
+			<url>s3://repo.starter.io/snapshot</url>
+		</snapshotRepository>
+		<repository>
+			<id>repo.starter.io</id>
+			<url>s3://repo.teamed.io/release</url>
+		</repository>
+	</distributionManagement>
+	<repositories>
+		<repository>
+			<id>repo.starter.io</id>
+			<url>s3://repo.starter.io/release</url>
+		</repository>
+	</repositories>
 
 	<packaging>jar</packaging>
 	<url>http://ignite.starter.io/ignite</url>

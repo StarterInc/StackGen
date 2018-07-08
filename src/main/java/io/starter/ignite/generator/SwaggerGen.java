@@ -1,10 +1,12 @@
 package io.starter.ignite.generator;
 
-import io.swagger.codegen.*;
-import io.swagger.codegen.config.CodegenConfigurator;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
+
+import io.swagger.codegen.ClientOptInput;
+import io.swagger.codegen.DefaultGenerator;
+import io.swagger.codegen.config.CodegenConfigurator;
 
 /**
  * responsible for generating the Swagger server and clients
@@ -47,6 +49,12 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		configurator.setInvokerPackage(INVOKER_PACKAGE);
 		configurator.setVerbose(VERBOSE);
 		configurator.addDynamicProperty("dynamic-html", "true");
+
+		configurator.addDynamicProperty("developerName", "Starter Inc.");
+		configurator.addDynamicProperty("developerEmail", "info@starter.io");
+		configurator.addDynamicProperty("developerName", "Starter.");
+		configurator.addDynamicProperty("developerOrganization", "Starter Inc.");
+		configurator.addDynamicProperty("developerOrganizationUrl", "http://starter.io");
 
 		// app config
 		configurator.setAuth("oauth");

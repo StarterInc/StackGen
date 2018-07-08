@@ -434,14 +434,17 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.sun</groupId>
-			<artifactId>tools</artifactId>
-			<version>1.8.0</version>
-			<scope>system</scope>
-			<systemPath>${toolsjar}</systemPath>
-		</dependency>
 
+		<!-- <dependency> <groupId>com.sun</groupId> <artifactId>tools</artifactId> 
+			<version>1.8.0</version> <scope>system</scope> <systemPath>${toolsjar}</systemPath> 
+			</dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<version>3.0.1</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -575,13 +578,6 @@
 				<version>7.0.50</version>
 			</dependency>
 
-			<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
-			<dependency>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.1</version>
-			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
 
@@ -594,27 +590,13 @@
 			</extension>
 		</extensions>
 		<plugins>
-
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.1</version>
-				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>aggregate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<doclet>io.starter.ignite.util.ExtractCommentsDoclet</doclet>
-					<docletPath>${project.build.directory}/classes</docletPath>
-					<reportOutputDirectory>${project.build.outputDirectory}/META-INF</reportOutputDirectory>
-					<useStandardDocletOptions>false</useStandardDocletOptions>
-				</configuration>
-			</plugin>
-
+			<!-- <plugin> <artifactId>maven-javadoc-plugin</artifactId> <version>3.0.1</version> 
+				<extensions>true</extensions> <executions> <execution> <phase>compile</phase> 
+				<goals> <goal>aggregate</goal> </goals> </execution> </executions> <configuration> 
+				<doclet>io.starter.ignite.util.ExtractCommentsDoclet</doclet> <docletPath>${project.build.directory}/classes</docletPath> 
+				<reportOutputDirectory>${project.build.outputDirectory}/META-INF</reportOutputDirectory> 
+				<useStandardDocletOptions>false</useStandardDocletOptions> </configuration> 
+				</plugin> -->
 
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>

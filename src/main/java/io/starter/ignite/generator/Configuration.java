@@ -10,7 +10,16 @@ import io.starter.ignite.generator.react.AppEntityObject;
 import io.starter.ignite.util.SystemConstants;
 
 /**
- * Configuration values
+ * Global Configuration
+ * 
+ * The following values can be set as System properties or on the command line:
+ * 
+ * <pre>
+ * JAVA_GEN_FOLDER
+ * REACT_APP_NAME 
+ * REACT_EXPORT_FOLDER
+ * REACT_TEMPLATE_FOLDER
+ * </pre>
  * 
  * @author john
  *
@@ -19,7 +28,10 @@ public interface Configuration extends SystemConstants {
 
 	public static boolean VERBOSE = false;
 	public static boolean DEBUG = false;
+
 	public static String ADD_GEN_CLASS_NAME = "Data";
+	public static String IGNITE_DATAMODEL_PACKAGE = "io.starter.ignite.model.";
+
 	public static String LONG_DATE_FORMAT = "MMM/d/yyyy HH:mm:ss Z";
 	public static String GEN_MODEL_PACKAGE = "io.starter.ignite.model.";
 	static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(LONG_DATE_FORMAT);
@@ -27,7 +39,10 @@ public interface Configuration extends SystemConstants {
 	public static String SOURCE_MAIN = "/src/main";
 	public static String SOURCE_RESOURCES = "/src/resources";
 
-	public static String JAVA_GEN_FOLDER = ROOT_FOLDER + "/gen"; // = JAVA_SRC_FOLDER + "/gen/";
+	public static String JAVA_GEN_FOLDER = (System.getProperty("JAVA_GEN_FOLDER") != null
+			? System.getProperty("JAVA_GEN_FOLDER")
+			: ROOT_FOLDER + "/gen"); // = JAVA_SRC_FOLDER + "/gen/";
+
 	public static String JAVA_GEN_SRC_FOLDER = JAVA_GEN_FOLDER + "/src/main/java";
 	public static File JAVA_GEN_SRC = new File(JAVA_GEN_SRC_FOLDER);
 
@@ -58,21 +73,27 @@ public interface Configuration extends SystemConstants {
 	public static final String SCHEMA_NAME = "ignite";
 
 	// ## React
-	// TODO: make dynamic
-	public static String REACT_APP_NAME = "MyLittlePony";
+	public static String REACT_APP_NAME = (System.getProperty("REACT_APP_NAME") != null
+			? System.getProperty("REACT_APP_NAME")
+			: "MyLittlePony");
 
 	public static String REACT_TEMPLATE_APP_FOLDER = ROOT_FOLDER + SOURCE_MAIN + "/react/IgniteApp/";
-	public static String REACT_TEMPLATE_FOLDER = ROOT_FOLDER + SOURCE_MAIN + "/react/template/";
+
+	public static String REACT_TEMPLATE_FOLDER = (System.getProperty("REACT_TEMPLATE_FOLDER") != null
+			? System.getProperty("REACT_TEMPLATE_FOLDER")
+			: ROOT_FOLDER + SOURCE_MAIN + "/react/template/");
 
 	// external React Project Path
-	public static String REACT_EXPORT_FOLDER = ROOT_FOLDER + "/REACT_EXPORT";
+	public static String REACT_EXPORT_FOLDER = (System.getProperty("REACT_EXPORT_FOLDER") != null
+			? System.getProperty("REACT_EXPORT_FOLDER")
+			: ROOT_FOLDER + "/REACT_EXPORT");
 
 	public static String REACT_APP_OUTPUT_FOLDER = ROOT_FOLDER + "/tmp/react/";
 
-	public static String IGNITE_DATAMODEL_PACKAGE = "io.starter.ignite.model.";
-
 	public List<AppEntityObject> REACT_DATA_OBJECTS = new ArrayList<AppEntityObject>();
+
 	public static List<String> SKIP_LIST = new ArrayList<>(Arrays.asList(".class"));
+
 	public static List<String> FOLDER_SKIP_LIST = new ArrayList<>(
 			Arrays.asList("gen", "org", "swagger", "node_modules"));
 

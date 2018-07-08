@@ -28,7 +28,7 @@ public class MavenBuilder implements Configuration {
 		MavenCli cli = new MavenCli();
 		System.setProperty("maven.multiModuleProjectDirectory", "true");
 		System.setProperty("skipTests", "true");
-		cli.doMain(new String[] { "clean", "install" }, JAVA_GEN_FOLDER, System.out, System.out);
+		cli.doMain(new String[] { "spring-boot:run", "install" }, JAVA_GEN_FOLDER, System.out, System.out);
 		io.starter.ignite.util.Logger.log("========= END MavenBuilder =========");
 	}
 

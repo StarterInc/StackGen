@@ -23,19 +23,43 @@ public class Main implements Configuration {
 	private static boolean skipDBGen = false;
 
 	public static void main(String[] args) {
+		String inputSpecFile = "StarterIgnite.yml";
+
+		// check to see if the String array is empty
+		if (args == null || args.length == 0) {
+			System.out.println("No command line arguments Usage:");
+			System.out.println();
+			System.out.println("io.starter.ignite.generator.Main <input.yml> -P<NAME>=<VALUE> ... ");
+		} else {
+			// For each String in the String array
+			// print out the String.
+			for (String argument : args) {
+				if (argument.toLowerCase().endsWith(".yml") || argument.toLowerCase().endsWith(".yml")) {
+					inputSpecFile = argument;
+				} else if (argument.contains("=")) {
+
+					int p = argument.indexOf("=");
+					String narg = argument.substring(0, argument.indexOf(p));
+					String varg = argument.substring(argument.indexOf(p));
+					System.setProperty(narg, varg);
+
+				}
+			}
+		}
 
 		System.out.print(ASCIIArtPrinter.print());
 		System.out.println();
 		System.out.println();
 		io.starter.ignite.util.Logger.log("Starting Main...");
-
+		io.starter.ignite.util.Logger
+				.log("with: " + inputSpecFile + (args != null ? " and args: " + args.toString() : ""));
 		try {
 
 			// Clear out the gen and
 			initOutputFolders();
 
 			// generate swqgger api clients
-			SwaggerGen swaggerGen = new SwaggerGen("StarterIgnite.yml");
+			SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile);
 			io.starter.ignite.util.Logger.log("Generated: " + swaggerGen.generate().size() + " Source Files");
 			JavaGen.compile(MODEL_PACKAGE_DIR);
 

@@ -20,25 +20,94 @@
     <table schema="${RDS_DB_NAME}" tableName="user">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".BICYCLES">
+    <table schema="ignite" tableName=".TEMPORALQUERY">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".ORGANIZATION">
+    <table schema="ignite" tableName=".LOCALDATE">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".LOCALTIME">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".LOCALDATETIME">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".ZONEOFFSET">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".OFFSETDATETIME">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".ORDER$STATUSENUM">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".ORDER">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".MODELAPIRESPONSE">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".TAG">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".CATEGORY">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName=".USER">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".LOCATION">
+    <table schema="ignite" tableName=".TEMPORALQUERY">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".USER">
+    <table schema="ignite" tableName=".LOCALDATE">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".ORGANIZATION">
+    <table schema="ignite" tableName=".LOCALTIME">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".CONTENT">
+    <table schema="ignite" tableName=".LOCALDATETIME">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".ZONEOFFSET">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".OFFSETDATETIME">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".ACCOUNT$STATUSENUM">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".ACCOUNT">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".JOINPOINT$STATICPART">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".CATEGORY">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".TRADE$STATUSENUM">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".TRADE">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
   </context>

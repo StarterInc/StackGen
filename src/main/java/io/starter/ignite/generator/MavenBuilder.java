@@ -5,6 +5,8 @@ package io.starter.ignite.generator;
 
 import org.apache.maven.cli.MavenCli;
 
+import io.starter.ignite.util.Logger;
+
 /**
  * 
  * @author john mcmahon
@@ -28,8 +30,14 @@ public class MavenBuilder implements Configuration {
 		MavenCli cli = new MavenCli();
 		System.setProperty("maven.multiModuleProjectDirectory", "true");
 		System.setProperty("skipTests", "true");
-		cli.doMain(new String[] { "spring-boot:run", "install" }, JAVA_GEN_FOLDER, System.out, System.out);
-		io.starter.ignite.util.Logger.log("========= END MavenBuilder =========");
+
+		// TODO: use spring-boot
+		try {
+			cli.doMain(new String[] { "clean", "install" }, JAVA_GEN_FOLDER, System.out, System.out);
+			io.starter.ignite.util.Logger.log("========= END MavenBuilder =========");
+		} catch (Exception e) {
+			Logger.warn("Could not build: " + e);
+		}
 	}
 
 }

@@ -1,9 +1,5 @@
 package io.starter.ignite.generator;
 
-import io.starter.ignite.generator.DMLgenerator.Table;
-import io.starter.ignite.security.dao.ConnectionFactory;
-import io.starter.ignite.util.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -17,6 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.extentech.toolkit.StringTool;
+
+import io.starter.ignite.generator.DMLgenerator.Table;
+import io.starter.ignite.security.dao.ConnectionFactory;
+import io.starter.ignite.util.Logger;
 
 /**
  * responsible for generating DB DML and creating RDB
@@ -134,7 +134,8 @@ public class DBGen extends Gen implements Generator {
 		try {
 			ps.execute();
 
-			io.starter.ignite.util.Logger.error("SUCCESS: " + "\r\n" + tableDML + "\r\n" + ConnectionFactory.toConfigString());
+			io.starter.ignite.util.Logger
+					.error("SUCCESS: " + "\r\n" + tableDML + "\r\n" + ConnectionFactory.toConfigString());
 
 		} catch (Exception e) {
 			if (e.toString().contains("already exists")) {
@@ -147,6 +148,7 @@ public class DBGen extends Gen implements Generator {
 
 	}
 
+	@Override
 	public String toString() {
 		return "DB Generator";
 	}
@@ -156,7 +158,8 @@ public class DBGen extends Gen implements Generator {
 		File[] modelFiles = Gen.getModelJavaFiles();
 		DBGen gen = new DBGen();
 		// classes, this should point to the top of the package structure!
-		URLClassLoader classLoader = new URLClassLoader(new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });
+		URL packagedir = new File(JAVA_GEN_SRC_FOLDER).toURI().toURL();
+		URLClassLoader classLoader = new URLClassLoader(new URL[] { packagedir });
 
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));

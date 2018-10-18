@@ -26,8 +26,8 @@ import io.starter.ignite.util.SystemConstants;
  */
 public interface Configuration extends SystemConstants {
 
-	public static boolean VERBOSE = false;
-	public static boolean DEBUG = false;
+	public static boolean VERBOSE = !false;
+	public static boolean DEBUG = !false;
 
 	public static String ADD_GEN_CLASS_NAME = "Data";
 	public static String IGNITE_DATAMODEL_PACKAGE = "io.starter.ignite.model.";

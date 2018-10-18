@@ -23,13 +23,15 @@ public class Main implements Configuration {
 	private static boolean skipDBGen = false;
 
 	public static void main(String[] args) {
-		String inputSpecFile = "StarterIgnite.yml";
+
+		String inputSpecFile = "chainring_api_v1.yml";
+		// String inputSpecFile = "StarterIgnite.yml";
 
 		// check to see if the String array is empty
 		if (args == null || args.length == 0) {
 			System.out.println("No command line arguments Usage:");
 			System.out.println();
-			System.out.println("io.starter.ignite.generator.Main <input.yml> -P<NAME>=<VALUE> ... ");
+			System.out.println("java io.starter.ignite.generator.Main <input.yml> -D<option_name>=<option_value> ... ");
 		} else {
 			// For each String in the String array
 			// print out the String.
@@ -50,7 +52,7 @@ public class Main implements Configuration {
 		System.out.print(ASCIIArtPrinter.print());
 		System.out.println();
 		System.out.println();
-		io.starter.ignite.util.Logger.log("Starting Main...");
+		io.starter.ignite.util.Logger.log("Starting App Generation");
 		io.starter.ignite.util.Logger
 				.log("with: " + inputSpecFile + (args != null ? " and args: " + args.toString() : ""));
 		try {
@@ -88,7 +90,7 @@ public class Main implements Configuration {
 			// generate React Redux apps
 			ReactGen.generateReactNative();
 
-			io.starter.ignite.util.Logger.log("Main Complete.");
+			io.starter.ignite.util.Logger.log("App Generation Complete.");
 		} catch (Exception e) {
 			io.starter.ignite.util.Logger.error("Exception during App Generation: " + e.getMessage());
 			e.printStackTrace();

@@ -5,8 +5,12 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.lang.model.element.Modifier;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
@@ -15,11 +19,13 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import com.extentech.toolkit.StringTool;
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
+
+import io.starter.ignite.util.Logger;
 
 /**
  * Generating Java code
@@ -71,14 +77,17 @@ public class JavaGen extends Gen implements Generator {
 		Class fieldType = fld.getType();
 		String fldName = StringTool.proper(fieldName);
 		fldName = "get" + fldName;
-
-		MethodSpec ret = MethodSpec.methodBuilder(fldName)
-				.addJavadoc("Starter Ignite Generated Method: " + DATE_FORMAT.format(new Date()))
-				.addModifiers(Modifier.PUBLIC).returns(fieldType)
-				// .addAnnotation(AnnotationSpec.builder(DataField.class).build())
-				.addStatement("return " + memberName + "." + fieldName).build();
-
-		return ret;
+		try {
+			MethodSpec ret = MethodSpec.methodBuilder(fldName)
+					.addJavadoc("Starter Ignite Generated Method: " + DATE_FORMAT.format(new Date()))
+					.addModifiers(Modifier.PUBLIC).returns(fieldType)
+					// .addAnnotation(AnnotationSpec.builder(DataField.class).build())
+					.addStatement("return " + memberName + "." + fieldName).build();
+			return ret;
+		} catch (Exception e) {
+			Logger.error("COULD NOT GENERATE METHOD: " + memberName + " " + e.toString());
+		}
+		return null;
 	}
 
 	@Override
@@ -91,13 +100,18 @@ public class JavaGen extends Gen implements Generator {
 		String fldName = StringTool.proper(fieldName);
 		String fldNameSet = "set" + fldName;
 
-		MethodSpec ret = MethodSpec.methodBuilder(fldNameSet)
-				.addJavadoc("Starter Ignite Generated Method: " + DATE_FORMAT.format(new Date()))
-				// .addModifiers(Modifier.PUBLIC).addAnnotation(AnnotationSpec.builder(DataField.class).build())
-				.addParameter(fieldType, fieldName + "Val")
-				.addStatement(memberName + "." + fieldName + " = " + fieldName + "Val").build();
+		try {
+			MethodSpec ret = MethodSpec.methodBuilder(fldNameSet)
+					.addJavadoc("Starter Ignite Generated Method: " + DATE_FORMAT.format(new Date()))
+					// .addModifiers(Modifier.PUBLIC).addAnnotation(AnnotationSpec.builder(DataField.class).build())
+					.addParameter(fieldType, fieldName + "Val")
+					.addStatement(memberName + "." + fieldName + " = " + fieldName + "Val").build();
 
-		return ret;
+			return ret;
+		} catch (Exception e) {
+			Logger.error("ERROR CREATING SETTER for: " + fieldName + " " + e.toString());
+		}
+		return null;
 	}
 
 	@Override
@@ -218,8 +232,8 @@ public class JavaGen extends Gen implements Generator {
 					 * if (obj instanceof DoStuff) { // Cast to the DoStuff interface DoStuff
 					 * stuffToDo = (DoStuff) obj; // Run it baby stuffToDo.doStuff(); }
 					 */
-				} catch (Exception e) {
-					io.starter.ignite.util.Logger.log("Could not verify: " + f.toString());
+				} catch (Throwable t) {
+					io.starter.ignite.util.Logger.log("Could not verify: " + f.toString() + " " + t.toString());
 				}
 			}
 			classLoader.close();

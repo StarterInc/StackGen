@@ -12,15 +12,15 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
     
   termsOfService: http://example.com/terms/
-
+  
 servers:
-- url: https://{username}.gigantic-server.com:{port}/{basePath}
+  url: https://{username}.gigantic-server.com:{port}/{basePath}
   description: The production API server
   variables:
     username:
       # note! no enum here means it is an open value
       default: demo
-      description: this value is assigned by the service provider, in this example `gigantic-server.com`
+      description: this value is assigned by the service provider
     port:
       enum:
         - '8443'
@@ -176,10 +176,10 @@ definitions:
         format: uuid
         example: d290f1ee-6c54-4b01-0851-d701748f90e6
       elevation:
-        type: "double"
+        type: "number"
         example: 37.7564084
       latitude:
-        type: "double"
+        type: "number"
         example: 37.7564084
       longitude:
         type: string
@@ -234,3 +234,4 @@ definitions:
         type: string
         format: url
         example:  https://twitter.com/StarterIO
+  

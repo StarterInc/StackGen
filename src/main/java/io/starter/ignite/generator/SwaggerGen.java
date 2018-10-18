@@ -50,9 +50,10 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		configurator.setVerbose(VERBOSE);
 		configurator.addDynamicProperty("dynamic-html", "true");
 
+		// company info
 		configurator.addDynamicProperty("developerName", "Starter Inc.");
 		configurator.addDynamicProperty("developerEmail", "info@starter.io");
-		configurator.addDynamicProperty("developerName", "Starter.");
+		configurator.addDynamicProperty("developerName", "Starter");
 		configurator.addDynamicProperty("developerOrganization", "Starter Inc.");
 		configurator.addDynamicProperty("developerOrganizationUrl", "http://starter.io");
 

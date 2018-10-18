@@ -40,9 +40,10 @@ public class JSON implements ContextResolver<ObjectMapper> {
     {{/joda}}
     {{#threetenbp}}
     ThreeTenModule module = new ThreeTenModule();
-    module.addDeserializer(Instant.class, CustomInstantDeserializer.INSTANT);
-    module.addDeserializer(OffsetDateTime.class, CustomInstantDeserializer.OFFSET_DATE_TIME);
-    module.addDeserializer(ZonedDateTime.class, CustomInstantDeserializer.ZONED_DATE_TIME);
+    // TODO: fix this
+//    module.addDeserializer(Instant.class, CustomInstantDeserializer.INSTANT);
+//    module.addDeserializer(OffsetDateTime.class, CustomInstantDeserializer.OFFSET_DATE_TIME);
+//    module.addDeserializer(ZonedDateTime.class, CustomInstantDeserializer.ZONED_DATE_TIME);
     mapper.registerModule(module);
     {{/threetenbp}}
   }

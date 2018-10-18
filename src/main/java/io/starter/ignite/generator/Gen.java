@@ -21,7 +21,7 @@ import com.extentech.toolkit.StringTool;
 public class Gen {
 
 	// TODO: potentially cache decrypted values
-	private static final boolean WRITE_LOCAL_FIELDS = false;
+	private static final boolean WRITE_LOCAL_FIELDS = !false;
 
 	/**
 	 * iterate over the Class heirarchy and build a list of public classes and

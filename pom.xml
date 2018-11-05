@@ -282,11 +282,13 @@
 			<artifactId>jersey-servlet</artifactId>
 		</dependency>
 
+<!-- 
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>wadl-resourcedoc-doclet</artifactId>
 		</dependency>
-
+ -->
+ 
 		<dependency>
 			<groupId>org.mybatis.generator</groupId>
 			<artifactId>mybatis-generator-core</artifactId>
@@ -403,13 +405,10 @@
 
 		</dependency>
 
-		<!-- TODO: setup artifactory... for now locally installed per: http://softwarecave.org/2014/06/14/adding-external-jars-into-maven-project/ -->
 		<dependency>
-			<groupId>com.extentech</groupId>
+			<groupId>io.starter</groupId>
 			<artifactId>OpenXLS</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/OpenXLS-1.0.jar</systemPath>
+			<version>11.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -430,10 +429,7 @@
 			<version>4.2</version>
 		</dependency>
 
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
+
 
 		<!-- <dependency> <groupId>com.sun</groupId> <artifactId>tools</artifactId> 
 			<version>1.8.0</version> <scope>system</scope> <systemPath>${toolsjar}</systemPath> 
@@ -535,12 +531,20 @@
 				<artifactId>shiro-quartz</artifactId>
 				<version>1.2.3</version>
 			</dependency>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.16</version>
-			</dependency>
 
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<scope>test</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>org.mozilla</groupId>
@@ -562,11 +566,14 @@
 				<artifactId>quartz-jobs</artifactId>
 				<version>2.2.1</version>
 			</dependency>
+
+<!-- causing javax.xml.parsers error
 			<dependency>
 				<groupId>com.sun.jersey.contribs</groupId>
 				<artifactId>wadl-resourcedoc-doclet</artifactId>
-				<version>1.18.2</version>
+				<version>1.19.4</version>
 			</dependency>
+ -->
 			<dependency>
 				<groupId>org.apache.tomcat</groupId>
 				<artifactId>tomcat-jdbc</artifactId>
@@ -754,7 +761,7 @@
 		</snapshotRepository>
 		<repository>
 			<id>repo.starter.io</id>
-			<url>s3://repo.teamed.io/release</url>
+			<url>s3://repo.starter.io/release</url>
 		</repository>
 	</distributionManagement>
 	<repositories>

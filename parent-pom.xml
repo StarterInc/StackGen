@@ -376,7 +376,7 @@
 
 		<!-- TODO: setup artifactory... for now locally installed per: http://softwarecave.org/2014/06/14/adding-external-jars-into-maven-project/ -->
 		<dependency>
-			<groupId>com.extentech</groupId>
+			<groupId>io.starter</groupId>
 			<artifactId>OpenXLS</artifactId>
 			<version>1.0</version>
 

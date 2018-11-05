@@ -3,10 +3,10 @@ package io.starter.ignite.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extentech.ExtenXLS.CellHandle;
-import com.extentech.ExtenXLS.NameHandle;
-import com.extentech.ExtenXLS.RowHandle;
-import com.extentech.ExtenXLS.WorkBookHandle;
+import io.starter.OpenXLS.CellHandle;
+import io.starter.OpenXLS.NameHandle;
+import io.starter.OpenXLS.RowHandle;
+import io.starter.OpenXLS.WorkBookHandle;
 
 /**
  * a hybrid utility class that emulates a recordset, a table, and a spreadsheet
@@ -168,8 +168,7 @@ public class SheetTable {
 		if (this.isAutoCommit() || force) {
 			mybook.close();
 		} else {
-			System.err
-					.println("AUTO-COMMIT NOT ENABLED. USE 'FORCE' TO WRITE TO BOOK");
+			System.err.println("AUTO-COMMIT NOT ENABLED. USE 'FORCE' TO WRITE TO BOOK");
 		}
 	}
 

@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.extentech.toolkit.StringTool;
+import io.starter.toolkit.StringTool;
 
 import io.starter.ignite.generator.DMLgenerator.Table;
 import io.starter.ignite.security.dao.ConnectionFactory;

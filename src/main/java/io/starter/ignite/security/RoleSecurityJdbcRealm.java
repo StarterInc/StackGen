@@ -31,7 +31,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.CollectionUtils;
 import org.apache.shiro.util.JdbcUtils;
 
-import com.extentech.toolkit.Logger;
+import io.starter.toolkit.Logger;
 
 /**
  * Sub-class of JdbcRealm that defines the Data Source the JdbcRealm should use

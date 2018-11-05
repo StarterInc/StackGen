@@ -3,25 +3,17 @@
  */
 package io.starter.ignite.util;
 
-import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.LoggerFactory;
 
 /**
  * the usual logging stuff
  * 
- * @author John McMahon Copyright 2013 Starter Inc., all rights reserved.
+ * @author John McMahon Copyright 2013-2018 Starter Inc., all rights reserved.
  * 
  */
-public class Logger implements SystemConstants{
+public class Logger implements SystemConstants {
 
-	static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Logger.class);
-
-	// PropertiesConfigurator is used to configure logger from properties file
-	static {
-		// URL lc =
-		// Logger.class.getClassLoader().getResource("resources/log4j.properties");
-		String lc = ROOT_FOLDER+ "/src/resources/log4j.properties";
-		PropertyConfigurator.configure(lc);
-	}
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SystemConstants.class);
 
 	/**
 	 * start with the basics

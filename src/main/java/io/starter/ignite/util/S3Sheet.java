@@ -11,10 +11,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import io.starter.ignite.util.S3FS;
-import io.starter.ignite.util.SystemConstants;
-
-import com.extentech.ExtenXLS.WorkBookHandle;
+import io.starter.OpenXLS.WorkBookHandle;
 
 public class S3Sheet extends WorkBookHandle implements SystemConstants {
 
@@ -36,19 +33,16 @@ public class S3Sheet extends WorkBookHandle implements SystemConstants {
 			// biotch
 			File fos = File.createTempFile("tmp.", "xlsx");
 			fos.deleteOnExit();
-			OutputStream os = new BufferedOutputStream(
-					new FileOutputStream(fos));
+			OutputStream os = new BufferedOutputStream(new FileOutputStream(fos));
 			this.write(os);
 			os.flush();
 			os.close();
 
-			InputStream uploadedInputStream = new BufferedInputStream(
-					new FileInputStream(fos));
+			InputStream uploadedInputStream = new BufferedInputStream(new FileInputStream(fos));
 
 			// S3FS is our friend
 			S3FS s3fs = new S3FS();
-			s3fs.uploadToBucket(S3_STARTER_MEDIA_BUCKET, new DataInputStream(
-					uploadedInputStream), fileName);
+			s3fs.uploadToBucket(S3_STARTER_MEDIA_BUCKET, new DataInputStream(uploadedInputStream), fileName);
 		} catch (Exception ex) {
 			RuntimeException er = new RuntimeException(ex.toString());
 			er.setStackTrace(ex.getStackTrace());

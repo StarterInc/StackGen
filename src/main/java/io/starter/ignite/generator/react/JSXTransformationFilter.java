@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import javax.ws.rs.core.Response;
 import javax.xml.transform.Source;
 
-import com.extentech.toolkit.Logger;
+import io.starter.toolkit.Logger;
 import com.sun.jersey.api.Responses;
 
 /**

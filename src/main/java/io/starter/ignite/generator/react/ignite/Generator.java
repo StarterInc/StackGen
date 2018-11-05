@@ -11,11 +11,11 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.extentech.ExtenXLS.CellRange;
-import com.extentech.ExtenXLS.NameHandle;
-import com.extentech.ExtenXLS.WorkBookHandle;
-import com.extentech.ExtenXLS.WorkSheetHandle;
-import com.extentech.toolkit.StringTool;
+import io.starter.OpenXLS.CellRange;
+import io.starter.OpenXLS.NameHandle;
+import io.starter.OpenXLS.WorkBookHandle;
+import io.starter.OpenXLS.WorkSheetHandle;
+import io.starter.toolkit.StringTool;
 
 /**
  * ## EXPERIMENTAL FEATURE ##
@@ -28,20 +28,13 @@ public class Generator {
 
 	public static String indent = "    ";
 
-	public static String componentInitCodeNative = "export default function () {\n"
-			+ indent
-			+ "return (\n"
-			+ indent
-			+ indent
-			+ "${content}"
-			+ indent
-			+ ");" + "\n}";
+	public static String componentInitCodeNative = "export default function () {\n" + indent + "return (\n" + indent
+			+ indent + "${content}" + indent + ");" + "\n}";
 
-	public static String styleInitCodeNative = "var styles = StyleSheet.create({\n"
-			+ indent + "${styles}" + "});";
+	public static String styleInitCodeNative = "var styles = StyleSheet.create({\n" + indent + "${styles}" + "});";
 
-	public static String componentInitCodeWeb = "/** @jsx React.DOM */ React.renderComponent("
-			+ indent + indent + "${component.content}" + ");";
+	public static String componentInitCodeWeb = "/** @jsx React.DOM */ React.renderComponent(" + indent + indent
+			+ "${component.content}" + ");";
 
 	private static Map<String, String> styleMap = new HashMap<String, String>();
 	private static Map<String, String> componentMapNative = new HashMap<String, String>();
@@ -52,8 +45,7 @@ public class Generator {
 
 	public static void main(String[] args) throws Exception {
 
-		String appWorkBookPath = System.getProperty("user.dir")
-				+ "/src/main/resources/templates/IgniteReact.xlsx";
+		String appWorkBookPath = System.getProperty("user.dir") + "/src/main/resources/templates/IgniteReact.xlsx";
 		WorkBookHandle appWorkBook = new WorkBookHandle(appWorkBookPath);
 		Generator.initFromSpreadsheet(appWorkBook);
 	}
@@ -64,8 +56,7 @@ public class Generator {
 	 * @param book
 	 * @throws Exception
 	 */
-	public static void initFromSpreadsheet(WorkBookHandle book)
-			throws Exception {
+	public static void initFromSpreadsheet(WorkBookHandle book) throws Exception {
 
 		// iterate the sheets
 		WorkSheetHandle[] sheets = book.getWorkSheets();
@@ -147,11 +138,9 @@ public class Generator {
 		styleMap.put("color", "'#222222'");
 		styleMap.put("backgroundColor", "'#FF9900'");
 
-		componentMapNative.put("view",
-				"<View style=${styles.component}>${content.component}</View>");
+		componentMapNative.put("view", "<View style=${styles.component}>${content.component}</View>");
 
-		componentMapWeb.put("view",
-				"<Div style='${styles.component}'>${content.component}</Div>");
+		componentMapWeb.put("view", "<Div style='${styles.component}'>${content.component}</Div>");
 
 		appComponentMap.put("name", "view");
 		appComponentMap.put("description", "view");
@@ -177,9 +166,8 @@ public class Generator {
 				sb.append(indent);
 				sb.append(indent);
 				// look up the component and style for the object
-				componentJSX = StringTool
-						.replaceText(componentJSX, "${styles.component}",
-								"{styles." + componentName + "}");
+				componentJSX = StringTool.replaceText(componentJSX, "${styles.component}",
+						"{styles." + componentName + "}");
 
 				sb.append(componentJSX);
 				sb.append("\n");
@@ -190,8 +178,7 @@ public class Generator {
 		String componentString = sb.toString();
 
 		// replace ${content}
-		String componentCode = StringTool.replaceText(componentInitCodeNative,
-				"${content}", componentString);
+		String componentCode = StringTool.replaceText(componentInitCodeNative, "${content}", componentString);
 
 		sb = new StringBuffer();
 
@@ -224,8 +211,7 @@ public class Generator {
 		String styleString = sb.toString();
 
 		// replace ${styles}
-		String styleCode = StringTool.replaceText(styleInitCodeNative,
-				"${styles}", styleString);
+		String styleCode = StringTool.replaceText(styleInitCodeNative, "${styles}", styleString);
 
 		sb = new StringBuffer(componentCode);
 		sb.append("\n");

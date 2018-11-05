@@ -1,8 +1,8 @@
 # Starter Ignite React
 
-## Document Driven Development (DDD) for the win.
+## OpenAPI and Document Driven Development (DDD)
 
-Generate data-driven React Native apps from an OpenAPI spec file.
+Generate full stack React Native apps with a custom REST api using a text file to define your model.
 
  Generate an app from swagger YAML
  *   - YAML -> Swagger client

@@ -59,9 +59,9 @@ paths:
         405:
           description: "Invalid input"
       security:
-      - http_auth:
-        - "write:Trades"
-        - "read:Trades"
+      - automator_auth:
+        - "write:Accounts"
+        - "read:Accounts"
     put:
       tags:
       - "account"
@@ -89,9 +89,9 @@ paths:
         405:
           description: "Validation exception"
       security:
-      - chainring_auth:
-        - "write:trades"
-        - "read:trades"
+      - automator_auth:
+        - "write:Accounts"
+        - "read:Accounts"
   /account/findByID:
     get:
       tags:
@@ -119,9 +119,9 @@ paths:
         400:
           description: "Invalid id value"
       security:
-      - chainring_auth:
-        - "write:accounts"
-        - "read:accounts"
+      - automator_auth:
+        - "write:Accounts"
+        - "read:Accounts"
   /trade:
     post:
       tags:
@@ -146,9 +146,9 @@ paths:
         405:
           description: "Invalid input"
       security:
-      - chainring_auth:
-        - "write:trades"
-        - "read:trades"
+      - automator_auth:
+        - "write:Trades"
+        - "read:Trades"
     put:
       tags:
       - "trade"
@@ -176,9 +176,9 @@ paths:
         405:
           description: "Validation exception"
       security:
-      - chainring_auth:
-        - "write:trades"
-        - "read:trades"
+      - automator_auth:
+        - "write:Trades"
+        - "read:Trades"
   /trade/findByStatus:
     get:
       tags:
@@ -213,9 +213,9 @@ paths:
         400:
           description: "Invalid status value"
       security:
-      - chainring_auth:
-        - "write:trades"
-        - "read:trades"
+      - automator_auth:
+        - "write:Trades"
+        - "read:Trades"
   /content:
     get:
       tags:
@@ -345,14 +345,12 @@ definitions:
     type: "object"
     properties:
       id:
-        type: "integer"
-        format: "int64"
-      accountId:
-        type: "integer"
-        format: "int64"
-      value:
-        type: "integer"
-        format: "int32"
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      balance:
+        type: "number"
+        format: "double"
       institutionName:
         type: "string"
       accountNumber:
@@ -374,12 +372,62 @@ definitions:
         default: false
     xml:
       name: "Account"
-  Order:
+  LedgerEntry:
     type: "object"
     properties:
       id:
         type: "integer"
         format: "int64"
+      accountId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      orderId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      value:
+        type: "number"
+        format: "double"
+      institutionName:
+        type: "string"
+      description:
+        type: "string"
+      accountBalance:
+        type: "number"
+        format: "double"    
+      modifiedDate:
+        type: "string"
+        format: "date-time"
+      status:
+        type: "string"
+        description: "Transaction Status"
+        enum:
+        - "ready"
+        - "closed"
+        - "executed"
+      transactionType:
+        type: "string"
+        description: "Transaction Type"
+        enum:
+        - "debit"
+        - "credit"
+        - "deposit"        
+        - "void"
+        - "refund"
+      verified:
+        type: "boolean"
+        default: false
+    xml:
+      name: "Account"
+    x-automator-tag: "agd2asccs"
+  Order:
+    type: "object"
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
       tradeId:
         type: "integer"
         format: "int64"
@@ -403,6 +451,7 @@ definitions:
         type:
     xml:
       name: "Order"
+    x-automator-tag: "agd2asccs"
   Content:
     type: object
     required:
@@ -427,6 +476,9 @@ definitions:
         example: 2016-08-29T09:12:33.001Z
       organization:
         $ref: '#/definitions/Organization'
+    xml:
+      name: "Content"
+    x-automator-tag: "agd2asccsd"        
   Organization:
     required:
     - id
@@ -446,6 +498,9 @@ definitions:
       phone:
         type: string
         example: 408-867-5309
+    xml:
+      name: "Organization"
+    x-automator-tag: "agd2ascds"        
   Trades:
     required:
     - id
@@ -461,6 +516,9 @@ definitions:
       type:
         type: string
         example: MARKET
+    xml:
+      name: "Trades"
+    x-automator-tag: "agd2ascdsd"                
   Location:
     required:
     - id
@@ -502,6 +560,9 @@ definitions:
       phone:
         type: string
         example: 222-333-4444
+    xml:
+      name: "Location"
+    x-automator-tag: "agd2asadss"                
   User:
     required:
     - id
@@ -529,6 +590,9 @@ definitions:
         type: string
         format: url
         example:  https://twitter.com/StarterIO
+    xml:
+      name: "User"
+    x-automator-tag: "agd2asczzz"                
   WorkFlows:
     required:
     - id
@@ -556,6 +620,9 @@ definitions:
         example: Sparkyt        
       modifiedDate:
           format: "date-time"
+    xml:
+      name: "Workflows"
+    x-automator-tag: "agd2cddds"                  
   Exchange:
     type: object
     required:
@@ -580,6 +647,9 @@ definitions:
       country:
         type: string
         example: CAN
+    xml:
+      name: "Exchange"
+    x-automator-tag: "agd2aszzzs"                
   ContactMethod:        
     type: object
     required:
@@ -615,6 +685,9 @@ definitions:
       complete:
         type: "boolean"
         default: false
+    xml:
+      name: "ContactMethod"
+    x-automator-tag: "agd2zzcds"                
   AuditLog:
     required:
     - id
@@ -638,7 +711,10 @@ definitions:
         type: string
         example: Sparkyt        
       modifiedDate:
-          format: "date-time"        
+          format: "date-time"     
+    xml:
+      name: "AuditLog"
+    x-automator-tag: "agd2rrcds"                     
   MaketData:
     required:
     - id
@@ -663,3 +739,6 @@ definitions:
         example: Sparkyt        
       modifiedDate:
           format: "date-time"                  
+    xml:
+      name: "MarketData"
+    x-automator-tag: "agd2asyys"                  

@@ -12,11 +12,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.starter.toolkit.StringTool;
-
 import io.starter.ignite.generator.DMLgenerator.Table;
 import io.starter.ignite.security.dao.ConnectionFactory;
 import io.starter.ignite.util.Logger;
+import io.starter.toolkit.StringTool;
 
 /**
  * responsible for generating DB DML and creating RDB
@@ -30,7 +29,8 @@ public class DBGen extends Gen implements Generator {
 		io.starter.ignite.util.Logger.log("Generating DB...");
 		System.out.print("Create DB Connection...");
 		Connection conn = ConnectionFactory.getConnection();
-		io.starter.ignite.util.Logger.log((conn.isValid(DB_TIMEOUT) ? "OK!" : "FAILED!"));
+		io.starter.ignite.util.Logger
+				.log((conn.isValid(DB_TIMEOUT) ? "OK!" : "FAILED!"));
 	}
 
 	/**
@@ -39,8 +39,12 @@ public class DBGen extends Gen implements Generator {
 	 * @param c
 	 * @throws Exception
 	 */
-	public static void createTableFromClass(Class c, DBGen gen) throws Exception {
-		Map classesToGenerate = gen.processClasses(c, null, gen);
+	public static void createTableFromClass(Class<?> c, DBGen gen) throws Exception {
+		Map<String, Object> classesToGenerate = gen
+				.processClasses(c, null, gen);
+		if (classesToGenerate == null) {
+			throw new RuntimeException("DBGen did not generate any classes.");
+		}
 	}
 
 	@Override
@@ -85,8 +89,7 @@ public class DBGen extends Gen implements Generator {
 	/**
 	 * generate DB table from classfile
 	 */
-	public void generate(String className, List fieldList, List getters, List setters)
-			throws IOException, SQLException {
+	public void generate(String className, List fieldList, List getters, List setters) throws IOException, SQLException {
 		String packageName = null;
 		int dotpos = className.lastIndexOf(".");
 		packageName = className.substring(0, dotpos);
@@ -134,15 +137,18 @@ public class DBGen extends Gen implements Generator {
 		try {
 			ps.execute();
 
-			io.starter.ignite.util.Logger
-					.error("SUCCESS: " + "\r\n" + tableDML + "\r\n" + ConnectionFactory.toConfigString());
+			io.starter.ignite.util.Logger.error("SUCCESS: " + "\r\n" + tableDML
+					+ "\r\n" + ConnectionFactory.toConfigString());
 
 		} catch (Exception e) {
 			if (e.toString().contains("already exists")) {
-				Logger.log("Table for: " + className + " already exists. Skipping.");
+				Logger.log("Table for: " + className
+						+ " already exists. Skipping.");
 			} else {
-				Logger.warn("TABLE DML: " + tableDML + " Failed to execute on DB " + ConnectionFactory.toConfigString()
-						+ "\r\n" + e.getMessage());
+				Logger.warn("TABLE DML: " + tableDML
+						+ " Failed to execute on DB "
+						+ ConnectionFactory.toConfigString() + "\r\n"
+						+ e.getMessage());
 			}
 		}
 
@@ -154,18 +160,23 @@ public class DBGen extends Gen implements Generator {
 	}
 
 	static void createDatabaseTablesFromModelFolder() throws Exception {
-		io.starter.ignite.util.Logger.log("Iterate Swagger Entities and create Tables...");
+		io.starter.ignite.util.Logger
+				.log("Iterate Swagger Entities and create Tables...");
 		File[] modelFiles = Gen.getModelJavaFiles();
 		DBGen gen = new DBGen();
-		// classes, this should point to the top of the package structure!
+		// classes, this should point to the top of the package
+		// structure!
+
 		URL packagedir = new File(JAVA_GEN_SRC_FOLDER).toURI().toURL();
-		URLClassLoader classLoader = new URLClassLoader(new URL[] { packagedir });
+		URLClassLoader classLoader = new URLClassLoader(
+				new URL[] { packagedir });
 
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));
 			// cn = cn + ".class";
 			cn = MODEL_PACKAGE + "." + cn;
-			io.starter.ignite.util.Logger.log("Loading Classes from ModelFile: " + cn);
+			io.starter.ignite.util.Logger
+					.log("Loading Classes from ModelFile: " + cn);
 			Class<?> loadedClass = classLoader.loadClass(cn);
 
 			createTableFromClass(loadedClass, gen);

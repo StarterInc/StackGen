@@ -80,6 +80,33 @@
     <table schema="ignite" tableName=".ACCOUNT">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
+    <table schema="ignite" tableName=".TEMPORALQUERY">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".LOCALDATE">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".LOCALTIME">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".LOCALDATETIME">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".ZONEOFFSET">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".OFFSETDATETIME">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".LEDGERENTRY$STATUSENUM">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".LEDGERENTRY$TRANSACTIONTYPEENUM">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName=".LEDGERENTRY">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
     <table schema="ignite" tableName=".WORKFLOWS">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>

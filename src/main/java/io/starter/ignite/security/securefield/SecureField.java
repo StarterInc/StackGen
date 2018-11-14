@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * Annotation to enable security on a field.
  * 
  *  @SecureField
- *  String socialSecurityNumber
+ *  String valuableData
  *  
  * @author John McMahon
  *

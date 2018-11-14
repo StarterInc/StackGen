@@ -16,8 +16,9 @@ import io.swagger.codegen.config.CodegenConfigurator;
  */
 public class SwaggerGen extends DefaultGenerator implements Configuration {
 
-	DefaultGenerator generator = new DefaultGenerator();
-	CodegenConfigurator configurator = CodegenConfigurator.fromFile(CONFIG_FILE);
+	DefaultGenerator	generator		= new DefaultGenerator();
+	CodegenConfigurator	configurator	= CodegenConfigurator
+			.fromFile(CONFIG_FILE);
 
 	/**
 	 * Create and initialize a new SwaggerGen
@@ -29,17 +30,19 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 
 		spec = SPEC_LOCATION + spec;
 
-		io.starter.ignite.util.Logger.log("Create Swagger Client Apis for:" + spec);
+		io.starter.ignite.util.Logger
+				.log("Create Swagger Client Apis for:" + spec);
 		// attempt to read from config file
 
-		// if a config file wasn't specified or we were unable to read it
+		// if a config file wasn't specified or we were unable to
+		// read it
 		if (configurator == null) {
 			// createa a fresh configurator
 			configurator = new CodegenConfigurator();
 		}
 
 		// basic
-		configurator.setLibrary("jersey2");
+		configurator.setLibrary("resttemplate"); // // jersey2
 		configurator.setLang("java");
 		configurator.setArtifactId(ARTIFACT_ID);
 		configurator.setModelPackage(MODEL_PACKAGE);
@@ -54,8 +57,10 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		configurator.addDynamicProperty("developerName", "Starter Inc.");
 		configurator.addDynamicProperty("developerEmail", "info@starter.io");
 		configurator.addDynamicProperty("developerName", "Starter");
-		configurator.addDynamicProperty("developerOrganization", "Starter Inc.");
-		configurator.addDynamicProperty("developerOrganizationUrl", "http://starter.io");
+		configurator
+				.addDynamicProperty("developerOrganization", "Starter Inc.");
+		configurator
+				.addDynamicProperty("developerOrganizationUrl", "http://starter.io");
 
 		// app config
 		configurator.setAuth("oauth");

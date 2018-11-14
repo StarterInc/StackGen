@@ -1,12 +1,7 @@
 package io.starter.ignite.security.crypto;
 
-/* ##LICENSE## */
-
-import io.starter.ignite.util.Logger;
-import io.starter.ignite.util.SystemConstants;
-
-import java.util.Base64;
 import java.util.Arrays;
+import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -15,6 +10,10 @@ import javax.crypto.spec.IvParameterSpec;
 
 import org.apache.shiro.crypto.hash.Sha256Hash;
 
+/* ##LICENSE## */
+
+import io.starter.ignite.util.Logger;
+import io.starter.ignite.util.SystemConstants;
 
 /**
  * JCE implementation for encrypting fields
@@ -26,10 +25,10 @@ import org.apache.shiro.crypto.hash.Sha256Hash;
  */
 public class SecureEncrypter implements SystemConstants {
 
-	private static byte[] iv = null;
-	private static KeyGenerator keyGenerator;
-	private static SecretKey secretKey;
-	private static Cipher cipher;
+	private static byte[]		iv	= null;
+	private static KeyGenerator	keyGenerator;
+	private static SecretKey	secretKey;
+	private static Cipher		cipher;
 
 	/**
 	 * Test the SecureEncryption functionality
@@ -56,7 +55,7 @@ public class SecureEncrypter implements SystemConstants {
 	 * @throws Exception
 	 */
 	private static void init() throws Exception {
-		Logger.debug("SecureEncrypter init: " + SECURE_KEY_PROPERTY
+		Logger.warn("SecureEncrypter init: " + SECURE_KEY_PROPERTY
 				+ " property is set: " + (SECRET_KEY != null));
 		if (SECRET_KEY == null) {
 			throw new RuntimeException(

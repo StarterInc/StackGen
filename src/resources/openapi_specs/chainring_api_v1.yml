@@ -1,40 +1,134 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "This is a chainring server"
-  version: "1.0.0"
-  title: "Swagger Chainring"
-  termsOfService: "http://starter.io/terms/"
+  description: This is the CoinBot API
+  version: 1.0.0
+  title: CoinBot API
+  # put the contact info for your development or API team
   contact:
-    email: "admin@starter.io"
+    email: info@starter.io
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "chainring.pro"
-basePath: "/v1"
+    name: AGPL 3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+  termsOfService: http://starter.io/tos/
+servers:
+  url: https://{username}.automator.ai:{port}/{basePath}
+  description: The production API server
+  variables:
+    username:
+      # note! no enum here means it is an open value
+      default: demo
+      description: this value is assigned by the service provider
+    port:
+      enum:
+        - '8443'
+        - '443'
+      default: '8443'
+    basePath:
+      # open meaning there is the opportunity to use special base paths as assigned by the provider, default is `v2`
+      default: v1
+# tags are used for organizing operations
 tags:
-- name: "trade"
-  description: "Everything about your trades"
-  externalDocs:
-    description: "Find out more"
-    url: "http://starter.io"
-- name: "order"
-  description: "Access to chainring orders"
-- name: "user"
-  description: "Operations about user"
-  externalDocs:
-    description: "Find out more about our order"
-    url: "http://starter.io"
+- name: admins
+  description: Secured Admin-only calls
+- name: users
+  description: Operations available to regular users
 schemes:
-- "https"
-- "http"
+- https
 paths:
+  /account:
+    post:
+      tags:
+      - "trade"
+      summary: "Add a new account to the system"
+      description: ""
+      operationId: "addtrade"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "account object that needs to be added to the system"
+        required: true
+        schema:
+          $ref: '#/definitions/Account'
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - http_auth:
+        - "write:Trades"
+        - "read:Trades"
+    put:
+      tags:
+      - "account"
+      summary: "Update an existing account"
+      description: ""
+      operationId: "updateaccount"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "account object that needs to be edited in the system"
+        required: true
+        schema:
+          $ref: '#/definitions/Account'
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "account not found"
+        405:
+          description: "Validation exception"
+      security:
+      - chainring_auth:
+        - "write:trades"
+        - "read:trades"
+  /account/findByID:
+    get:
+      tags:
+      - "trade"
+      summary: "Finds accounts by ID"
+      description: "Multiple ID values can be provided with comma separated strings"
+      operationId: "findtradesByID"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "query"
+        description: "ID values that need to be considered for filter"
+        required: true
+        type: "array"
+        collectionFormat: "multi"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/account"
+        400:
+          description: "Invalid id value"
+      security:
+      - chainring_auth:
+        - "write:accounts"
+        - "read:accounts"
   /trade:
     post:
       tags:
       - "trade"
       summary: "Add a new trade to the order"
       description: ""
-      operationId: "addtrade"
+      tradeId: "addtrade"
       consumes:
       - "application/json"
       - "application/xml"
@@ -47,7 +141,7 @@ paths:
         description: "trade object that needs to be added to the order"
         required: true
         schema:
-          $ref: "#/definitions/trade"
+          $ref: '#/definitions/Trades'
       responses:
         405:
           description: "Invalid input"
@@ -73,7 +167,7 @@ paths:
         description: "trade object that needs to be added to the order"
         required: true
         schema:
-          $ref: "#/definitions/trade"
+          $ref: '#/definitions/Trades'
       responses:
         400:
           description: "Invalid ID supplied"
@@ -115,538 +209,137 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/trade"
+              $ref: '#/definitions/Trades'
         400:
           description: "Invalid status value"
       security:
       - chainring_auth:
         - "write:trades"
         - "read:trades"
-  /trade/findByTags:
+  /content:
     get:
       tags:
-      - "trade"
-      summary: "Finds trades by tags"
-      description: "Muliple tags can be provided with comma separated strings. Use         tag1, tag2, tag3 for testing."
-      operationId: "findtradesByTags"
+      - users
+      summary: searches content
+      operationId: searchContent
+      description: |
+        By passing in the appropriate options, you can search for
+        available content in the system
       produces:
-      - "application/xml"
-      - "application/json"
+      - application/json
       parameters:
-      - name: "tags"
-        in: "query"
-        description: "Tags to filter by"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
+      - in: query
+        name: searchString
+        description: pass an optional search string for looking up content
+        required: false
+        type: string
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 50
       responses:
         200:
-          description: "successful operation"
+          description: search results matching criteria
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/trade"
+              $ref: '#/definitions/Content'
         400:
-          description: "Invalid tag value"
-      security:
-      - chainring_auth:
-        - "write:trades"
-        - "read:trades"
-      deprecated: true
-  /trade/{tradeId}:
-    get:
-      tags:
-      - "trade"
-      summary: "Find trade by ID"
-      description: "Returns a single trade"
-      operationId: "gettradeById"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "tradeId"
-        in: "path"
-        description: "ID of trade to return"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/trade"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "trade not found"
-      security:
-      - api_key: []
+          description: bad input parameter
     post:
       tags:
-      - "trade"
-      summary: "Updates a trade in the order with form data"
-      description: ""
-      operationId: "updatetradeWithForm"
+      - admins
+      summary: adds an content item
+      operationId: addContent
+      description: Adds an item to the system
       consumes:
-      - "application/x-www-form-urlencoded"
+      - application/json
       produces:
-      - "application/xml"
-      - "application/json"
+      - application/json
       parameters:
-      - name: "tradeId"
-        in: "path"
-        description: "ID of trade that needs to be updated"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "name"
-        in: "formData"
-        description: "Updated name of the trade"
-        required: false
-        type: "string"
-      - name: "status"
-        in: "formData"
-        description: "Updated status of the trade"
-        required: false
-        type: "string"
+      - in: body
+        name: contentItem
+        description: Content item to add
+        schema:
+          $ref: '#/definitions/Content'
       responses:
-        405:
-          description: "Invalid input"
-      security:
-      - chainring_auth:
-        - "write:trades"
-        - "read:trades"
-    delete:
-      tags:
-      - "trade"
-      summary: "Deletes a trade"
-      description: ""
-      operationId: "deletetrade"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "api_key"
-        in: "header"
-        required: false
-        type: "string"
-      - name: "tradeId"
-        in: "path"
-        description: "trade id to delete"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
+        201:
+          description: item created
         400:
-          description: "Invalid ID supplied"
-        404:
-          description: "trade not found"
-      security:
-      - chainring_auth:
-        - "write:trades"
-        - "read:trades"
-  /trade/{tradeId}/uploadImage:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+/data:
+    get:
+      tags:
+      - tickers
+      summary: searches latest market data
+      operationId: searchMarketData
+      description: |
+        By passing in the appropriate options, you can search for
+        available market data in the system
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: searchString
+        description: pass an optional search string for looking up market data
+        required: false
+        type: string
+      - in: query
+        name: skip
+        description: number of records to skip for pagination
+        type: integer
+        format: int32
+        minimum: 0
+      - in: query
+        name: limit
+        description: maximum number of records to return
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 50
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MarketData'
+        400:
+          description: bad input parameter
     post:
       tags:
-      - "trade"
-      summary: "uploads an image"
-      description: ""
-      operationId: "uploadFile"
+      - admins
+      summary: adds an content item
+      operationId: addMarketData
+      description: Adds an item to the system
       consumes:
-      - "multipart/form-data"
+      - application/json
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "tradeId"
-        in: "path"
-        description: "ID of trade to update"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "additionalMetadata"
-        in: "formData"
-        description: "Additional data to pass to server"
-        required: false
-        type: "string"
-      - name: "file"
-        in: "formData"
-        description: "file to upload"
-        required: false
-        type: "file"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-      security:
-      - chainring_auth:
-        - "write:trades"
-        - "read:trades"
-  /order/inventory:
-    get:
-      tags:
-      - "order"
-      summary: "Returns trade inventories by status"
-      description: "Returns a map of status codes to quantities"
-      operationId: "getInventory"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "object"
-            additionalProperties:
-              type: "integer"
-              format: "int32"
-      security:
-      - api_key: []
-  /order/order:
-    post:
-      tags:
-      - "order"
-      summary: "Place an order for a trade"
-      description: ""
-      operationId: "placeOrder"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "order placed for purchasing the trade"
-        required: true
+      - in: body
+        name: contentItem
+        description: MarketData item to add
         schema:
-          $ref: "#/definitions/Order"
+          $ref: '#/definitions/MarketData'
       responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
+        201:
+          description: item created
         400:
-          description: "Invalid Order"
-  /order/order/{orderId}:
-    get:
-      tags:
-      - "order"
-      summary: "Find purchase order by ID"
-      description: "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions"
-      operationId: "getOrderById"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of trade that needs to be fetched"
-        required: true
-        type: "integer"
-        maximum: 10.0
-        minimum: 1.0
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-    delete:
-      tags:
-      - "order"
-      summary: "Delete purchase order by ID"
-      description: "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors"
-      operationId: "deleteOrder"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of the order that needs to be deleted"
-        required: true
-        type: "integer"
-        minimum: 1.0
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-  /user:
-    post:
-      tags:
-      - "user"
-      summary: "Create user"
-      description: "This can only be done by the logged in user."
-      operationId: "createUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Created user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithArray:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithArrayInput"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithList:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithListInput"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/login:
-    get:
-      tags:
-      - "user"
-      summary: "Logs user into the system"
-      description: ""
-      operationId: "loginUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "query"
-        description: "The user name for login"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "string"
-          headers:
-            X-Rate-Limit:
-              type: "integer"
-              format: "int32"
-              description: "calls per hour allowed by the user"
-            X-Expires-After:
-              type: "string"
-              format: "date-time"
-              description: "date in UTC when token expires"
-        400:
-          description: "Invalid username/password supplied"
-  /user/logout:
-    get:
-      tags:
-      - "user"
-      summary: "Logs out current logged in user session"
-      description: ""
-      operationId: "logoutUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters: []
-      responses:
-        default:
-          description: "successful operation"
-  /user/{username}:
-    get:
-      tags:
-      - "user"
-      summary: "Get user by user name"
-      description: ""
-      operationId: "getUserByName"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be fetched. Use user1 for testing. "
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/User"
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-    put:
-      tags:
-      - "user"
-      summary: "Updated user"
-      description: "This can only be done by the logged in user."
-      operationId: "updateUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "name that need to be updated"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "body"
-        description: "Updated user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        400:
-          description: "Invalid user supplied"
-        404:
-          description: "User not found"
-    delete:
-      tags:
-      - "user"
-      summary: "Delete user"
-      description: "This can only be done by the logged in user."
-      operationId: "deleteUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be deleted"
-        required: true
-        type: "string"
-      responses:
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-  /account/{accountId}:
-    get:
-      tags:
-      - "account"
-      summary: "Get account by Account ID"
-      description: ""
-      operationId: "getAccountById"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "accountId"
-        in: "path"
-        description: "The name that needs to be fetched. Use account1 for testing. "
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Account"
-        400:
-          description: "Invalid accountId supplied"
-        404:
-          description: "Account not found"
-    put:
-      tags:
-      - "account"
-      summary: "Updated Account"
-      description: "This can only be done by the owber of the account."
-      operationId: "updateAccount"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "accountId"
-        in: "path"
-        description: "account to be updated"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "body"
-        description: "Updated account object"
-        required: true
-        schema:
-          $ref: "#/definitions/Account"
-      responses:
-        400:
-          description: "Invalid account ID supplied"
-        404:
-          description: "Account not found"
-    delete:
-      tags:
-      - "account"
-      summary: "Delete account"
-      description: "This can only be done by the owner of the account."
-      operationId: "deleteAccount"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "accountId"
-        in: "path"
-        description: "The account that needs to be deleted"
-        required: true
-        type: "string"
-      responses:
-        400:
-          description: "Invalid accountId supplied"
-        404:
-          description: "Account not found"          
-securityDefinitions:
-  chainring_auth:
-    type: "oauth2"
-    authorizationUrl: "http://chainring.starter.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:trades: "modify trades in your account"
-      read:trades: "read your trades"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists          
 definitions:
   Account:
     type: "object"
@@ -664,7 +357,7 @@ definitions:
         type: "string"
       accountNumber:
         type: "string"
-      routingId:
+      BRN:
         type: "string"    
       modifiedDate:
         type: "string"
@@ -706,99 +399,267 @@ definitions:
       complete:
         type: "boolean"
         default: false
+      trades:
+        type:
     xml:
       name: "Order"
-  Category:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Category"
-  User:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      username:
-        type: "string"
-      firstName:
-        type: "string"
-      lastName:
-        type: "string"
-      email:
-        type: "string"
-      password:
-        type: "string"
-      phone:
-        type: "string"
-      userStatus:
-        type: "integer"
-        format: "int32"
-        description: "User Status"
-    xml:
-      name: "User"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  trade:
-    type: "object"
+  Content:
+    type: object
     required:
-    - "name"
-    - "orderUrls"
+    - id
+    - name
+    - author
+    - organization
+    - releaseDate
     properties:
       id:
-        type: "integer"
-        format: "int64"
-      category:
-        $ref: "#/definitions/Category"
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
       name:
+        type: string
+        example: Widget Adapter
+      author:
+        $ref: '#/definitions/User'
+      releaseDate:
+        type: string
+        format: int32
+        example: 2016-08-29T09:12:33.001Z
+      organization:
+        $ref: '#/definitions/Organization'
+  Organization:
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: ACME Corporation
+      homePage:
+        type: string
+        format: url
+        example:  https://www.acme-corp.com
+      phone:
+        type: string
+        example: 408-867-5309
+  Trades:
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: Litespeed
+      type:
+        type: string
+        example: MARKET
+  Location:
+    required:
+    - id
+    - locationname
+    - latitude
+    - longitude
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      owner_id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-0851-d701748f90e6
+      elevation:
+        type: "number"
+        example: 37.7564084
+      latitude:
+        type: "number"
+        example: 37.7564084
+      longitude:
+        type: string
+        example: 122.4717396
+      locationname:
+        type: string
+        example: Grand View Park
+        x-starter-secure: 1.0
+      country:
+        type: string
+        example: USA
+      email:
+        type: string
+        example: sparky@starter.io
+      homePage:
+        type: string
+        format: url
+        example:  https://www.starter.io
+      phone:
+        type: string
+        example: 222-333-4444
+  User:
+    required:
+    - id
+    - username
+    - email
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      fingerprint:
+        type: string
+        example: DK$DFSJaraDD
+      ssn:
+        type: string
+        example: 111-22-3333
+      username:
+        type: string
+        example: Sparky
+      homePage:
+        type: string
+        format: url
+        example:  https://www.acme-corp.com
+      social:
+        type: string
+        format: url
+        example:  https://twitter.com/StarterIO
+  WorkFlows:
+    required:
+    - id
+    - description
+    - json
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      fingerprint:
+        type: string
+        example: DK$DFSJaraDD
+      sourceType:
+        type: string
+        example: user
+      sourceOwner:
+        type: string
+        example: userId:d290f1ee-6c54-4b01-90e6-d701748f0851
+      json:
+        type: string
+        example: Sparkyt
+      xml:
+        type: string
+        example: Sparkyt        
+      modifiedDate:
+          format: "date-time"
+  Exchange:
+    type: object
+    required:
+    - id
+    - name
+    - ticker
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: Bitfinex
+      ticker:
+        type: string
+        example: GDX        
+      lastValidatedDate:
+          format: "date-time"
+      organization:
+        $ref: '#/definitions/Organization'
+      country:
+        type: string
+        example: CAN
+  ContactMethod:        
+    type: object
+    required:
+    - id
+    - name
+    - ticker
+    properties:
+      messageTypeDescription:
+        type: string
+        example: twitter handle
+      messageType:
+        type: string
+        example: email
+        enum:
+        - "github"        
+        - "email"
+        - "twitter"
+        - "mobile"
+        - "sms"
+        - "facebook"
+      createDate:
         type: "string"
-        example: "doggie"
-      orderUrls:
-        type: "array"
-        xml:
-          name: "orderUrl"
-          wrapped: true
-        items:
-          type: "string"
-      tags:
-        type: "array"
-        xml:
-          name: "tag"
-          wrapped: true
-        items:
-          $ref: "#/definitions/Tag"
+        format: "date-time"
       status:
         type: "string"
-        description: "trade status in the order"
+        description: "Contact Method Status"
         enum:
-        - "available"
-        - "pending"
+        - "new"
+        - "validated"
         - "closed"
-    xml:
-      name: "trade"
-  ApiResponse:
-    type: "object"
+        - "DNC"
+        - "ADMIN"
+      complete:
+        type: "boolean"
+        default: false
+  AuditLog:
+    required:
+    - id
+    - sourceType
+    - json
     properties:
-      code:
-        type: "integer"
-        format: "int32"
-      type:
-        type: "string"
-      message:
-        type: "string"
-externalDocs:
-  description: "Find out more about Starter Ignite"
-  url: "http://starter.io"
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      fingerprint:
+        type: string
+        example: DK$DFSJaraDD
+      sourceType:
+        type: string
+        example: user
+      sourceOwner:
+        type: string
+        example: userId:1000
+      json:
+        type: string
+        example: Sparkyt        
+      modifiedDate:
+          format: "date-time"        
+  MaketData:
+    required:
+    - id
+    - sourceType
+    - json
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      fingerprint:
+        type: string
+        example: DK$DFSJaraDD
+      sourceType:
+        type: string
+        example: user
+      sourceOwner:
+        type: string
+        example: userId:1000
+      json:
+        type: string
+        example: Sparkyt        
+      modifiedDate:
+          format: "date-time"                  

@@ -2,6 +2,9 @@ package io.starter.ignite.generator;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.starter.ignite.util.ASCIIArtPrinter;
 
 /**
@@ -20,7 +23,12 @@ import io.starter.ignite.util.ASCIIArtPrinter;
 
 public class Main implements Configuration {
 
-	private static boolean skipDBGen = false;
+	private static boolean			skipDBGen		= false;
+	private static boolean			skipMybatis		= false;
+	private static boolean			skipReactGen	= true;
+
+	protected static final Logger	logger			= LoggerFactory
+			.getLogger(Main.class);
 
 	public static void main(String[] args) {
 
@@ -31,12 +39,14 @@ public class Main implements Configuration {
 		if (args == null || args.length == 0) {
 			System.out.println("No command line arguments Usage:");
 			System.out.println();
-			System.out.println("java io.starter.ignite.generator.Main <input.yml> -D<option_name>=<option_value> ... ");
+			System.out
+					.println("java io.starter.ignite.generator.Main <input.yml> -D<option_name>=<option_value> ... ");
 		} else {
 			// For each String in the String array
 			// print out the String.
 			for (String argument : args) {
-				if (argument.toLowerCase().endsWith(".yml") || argument.toLowerCase().endsWith(".yml")) {
+				if (argument.toLowerCase().endsWith(".yml")
+						|| argument.toLowerCase().endsWith(".yml")) {
 					inputSpecFile = argument;
 				} else if (argument.contains("=")) {
 
@@ -49,12 +59,12 @@ public class Main implements Configuration {
 			}
 		}
 
-		System.out.print(ASCIIArtPrinter.print());
+		System.out.println(ASCIIArtPrinter.print());
 		System.out.println();
 		System.out.println();
-		io.starter.ignite.util.Logger.log("Starting App Generation");
-		io.starter.ignite.util.Logger
-				.log("with: " + inputSpecFile + (args != null ? " and args: " + args.toString() : ""));
+		logger.debug("Starting App Generation");
+		logger.debug("with: " + inputSpecFile
+				+ (args != null ? " and args: " + args.toString() : ""));
 		try {
 
 			// Clear out the gen and
@@ -62,7 +72,8 @@ public class Main implements Configuration {
 
 			// generate swqgger api clients
 			SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile);
-			io.starter.ignite.util.Logger.log("Generated: " + swaggerGen.generate().size() + " Source Files");
+			logger.debug("Generated: " + swaggerGen.generate().size()
+					+ " Source Files");
 			JavaGen.compile(MODEL_PACKAGE_DIR);
 
 			if (!skipDBGen) {
@@ -74,7 +85,11 @@ public class Main implements Configuration {
 
 			// generate MyBatis client classes
 			// XML configuration file
-			MyBatisGen.createMyBatisFromModelFolder();
+			if (!skipMybatis) {
+				MyBatisGen.createMyBatisFromModelFolder();
+			}
+
+			JavaGen.compile(MODEL_DAO_PACKAGE_DIR);
 
 			// annotated wrapper with encryption,
 			// logging, annotations
@@ -88,30 +103,34 @@ public class Main implements Configuration {
 			MavenBuilder.build();
 
 			// generate React Redux apps
-			ReactGen.generateReactNative();
+			if (!skipReactGen) {
+				ReactGen.generateReactNative();
+			}
 
-			io.starter.ignite.util.Logger.log("App Generation Complete.");
+			logger.debug("App Generation Complete.");
 		} catch (Exception e) {
-			io.starter.ignite.util.Logger.error("Exception during App Generation: " + e.getMessage());
+			logger.error("Exception during App Generation: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
 	private static void initOutputFolders() {
-		File genDir = new File(JAVA_GEN_FOLDER);
-		io.starter.ignite.util.Logger
-				.error("Initializing output folder: " + JAVA_GEN_FOLDER + " exists: " + genDir.exists());
+		File genDir = new File(JAVA_GEN_PATH);
+		logger.debug("Initializing output folder: " + JAVA_GEN_PATH
+				+ " exists: " + genDir.exists());
 		if (genDir.exists()) {
-			String fx = JAVA_GEN_FOLDER + "." + System.currentTimeMillis();
-			io.starter.ignite.util.Logger.error("Output Folder: " + JAVA_GEN_FOLDER + " exists. Renaming to: " + fx);
+			String fx = ".." + JAVA_GEN_ARCHIVE_FOLDER + "."
+					+ System.currentTimeMillis();
+			logger.error("Output Folder: " + JAVA_GEN_PATH
+					+ " exists. Renaming to: " + fx);
 			genDir.renameTo(new File(fx));
-			genDir = new File(JAVA_GEN_FOLDER);
-			genDir.mkdirs();
 		}
 
-		boolean outputDir = new File(Configuration.OUTPUT_DIR + "/src/resources/MyBatis_SQL_Maps").mkdirs();
+		boolean outputDir = new File(
+				Configuration.OUTPUT_DIR + "/src/resources/MyBatis_SQL_Maps")
+						.mkdirs();
 		if (!outputDir) {
-			io.starter.ignite.util.Logger.error("Could not init: " + outputDir + ". Exiting.");
+			logger.error("Could not init: " + outputDir + ". Exiting.");
 		}
 	}
 }

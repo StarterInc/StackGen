@@ -1,7 +1,5 @@
 package io.starter.ignite.security.dao;
 
-import io.starter.ignite.util.Logger;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +7,8 @@ import java.io.InputStream;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This differs from the ConnectionFactory in that it is a MyBatis session
@@ -20,33 +20,39 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
  * 
  */
 public class MyBatisConnectionFactory {
-	private static SqlSessionFactory sqlSessionFactory;
-	private static SqlSessionFactory wp_SqlSessionFactory;
+	private static SqlSessionFactory	sqlSessionFactory;
+	private static SqlSessionFactory	wp_SqlSessionFactory;
 
-	public static String DATABASE_CHOICE = "production";
+	protected static final Logger		logger			= LoggerFactory
+			.getLogger(MyBatisConnectionFactory.class);
+
+	public static String				DATABASE_CHOICE	= "production";
 
 	static {
-		if (System.getProperty("PARAM1") != null
-				&& System.getProperty("PARAM1").equalsIgnoreCase("production")) {
+		if (System.getProperty("PARAM1") != null && System.getProperty("PARAM1")
+				.equalsIgnoreCase("production")) {
 			// use default production DB
 		} else { // backup/staging
 			DATABASE_CHOICE = "staging";
 		}
 
 		try {
-			Logger.debug("MyBatisConnectionFactory loading: " + DATABASE_CHOICE);
+			logger.debug("MyBatisConnectionFactory loading: "
+					+ DATABASE_CHOICE);
 
 			String resource = "Configuration.xml";
 			InputStream inputStream = Resources.getResourceAsStream(resource);
 			if (sqlSessionFactory == null) {
-				sqlSessionFactory = new SqlSessionFactoryBuilder().build(
-						inputStream, DATABASE_CHOICE, System.getProperties());
+				sqlSessionFactory = new SqlSessionFactoryBuilder()
+						.build(inputStream, DATABASE_CHOICE, System
+								.getProperties());
 			}
 			inputStream.close();
 			inputStream = Resources.getResourceAsStream(resource);
 			if (wp_SqlSessionFactory == null) {
-				wp_SqlSessionFactory = new SqlSessionFactoryBuilder().build(
-						inputStream, "wordpress", System.getProperties());
+				wp_SqlSessionFactory = new SqlSessionFactoryBuilder()
+						.build(inputStream, "wordpress", System
+								.getProperties());
 			}
 			inputStream.close();
 

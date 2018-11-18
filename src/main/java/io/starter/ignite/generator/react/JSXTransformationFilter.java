@@ -1,6 +1,11 @@
 package io.starter.ignite.generator.react;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.CharArrayWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 import javax.servlet.Filter;
@@ -13,11 +18,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import javax.ws.rs.core.Response;
-import javax.xml.transform.Source;
 
-import io.starter.toolkit.Logger;
-import com.sun.jersey.api.Responses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Convert JSX in the pages into JavaScript using the JSXCompiler from Facebook
@@ -29,27 +32,32 @@ import com.sun.jersey.api.Responses;
  */
 public final class JSXTransformationFilter implements Filter {
 
-	private FilterConfig filterConfig = null;
+	protected static final Logger	logger			= LoggerFactory
+			.getLogger(JSXTransformationFilter.class);
 
+	private FilterConfig			filterConfig	= null;
+
+	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.filterConfig = filterConfig;
 	}
 
+	@Override
 	public void destroy() {
 		this.filterConfig = null;
 	}
 
 	private static JSXTransformer transformer;
 
-	// -------------------------- STATIC METHODS --------------------------
+	// -------------------------- STATIC METHODS
+	// --------------------------
 
 	public static String transform(String jsx) {
 		return transformer.transform("/**@jsx React.DOM */" + jsx);
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		if (filterConfig == null)
 			return;
 
@@ -76,9 +84,7 @@ public final class JSXTransformationFilter implements Filter {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	public void transformHTML(HttpServletRequest request,
-			ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
+	public void transformHTML(HttpServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		String contentType;
 
 		CharResponseWrapper responseWrapper = new CharResponseWrapper(
@@ -110,18 +116,18 @@ public final class JSXTransformationFilter implements Filter {
 					}
 				}
 
-				// OK here we extract any JSX tags -- important not to try to
+				// OK here we extract any JSX tags -- important not to try
+				// to
 				// compile non JSX code
 				// type="text/jsx"
 				int pos = inputText.toLowerCase().indexOf("text/jsx");
 
 				if (pos == -1) { // JSX not embedded in HTML. Look for a JS tag
 					if (requ.contains(".js")) {
-						Logger.logWarn("Transforming JavaScript File: " + requ);
+						logger.warn("Transforming JavaScript File: " + requ);
 						inputText = transformer.transform(inputText);
 					} else {
-						Logger.logWarn("No JSX contained in Parsed File: "
-								+ requ);
+						logger.warn("No JSX contained in Parsed File: " + requ);
 					}
 				} else {
 					while (pos > 0) { // iterate
@@ -168,7 +174,7 @@ public final class JSXTransformationFilter implements Filter {
 		extractedPre += "text/javascript\">";
 		extractedPre += js;
 
-		io.starter.ignite.util.Logger.log("js = " + js);
+		logger.debug("js = " + js);
 
 		return extractedPre + extractedPost;
 	}
@@ -195,13 +201,17 @@ public final class JSXTransformationFilter implements Filter {
  *
  */
 class CharResponseWrapper extends HttpServletResponseWrapper {
-	protected CharArrayWriter charWriter;
 
-	protected PrintWriter writer;
+	protected static final Logger	logger	= LoggerFactory
+			.getLogger(CharResponseWrapper.class);
 
-	protected boolean getOutputStreamCalled;
+	protected CharArrayWriter		charWriter;
 
-	protected boolean getWriterCalled;
+	protected PrintWriter			writer;
+
+	protected boolean				getOutputStreamCalled;
+
+	protected boolean				getWriterCalled;
 
 	/**
 	 * reads from a file in the app deployment
@@ -228,7 +238,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 			}
 			i.close();
 		} catch (Exception e) {
-			io.starter.ignite.util.Logger.error(e);
+			logger.error("Failed to get resource: " + e);
 		}
 		return val;
 	}
@@ -239,6 +249,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 		charWriter = new CharArrayWriter();
 	}
 
+	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
 		if (getWriterCalled) {
 			throw new IllegalStateException("getWriter already called");
@@ -248,6 +259,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 		return super.getOutputStream();
 	}
 
+	@Override
 	public PrintWriter getWriter() throws IOException {
 		if (writer != null) {
 			return writer;
@@ -260,6 +272,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 		return writer;
 	}
 
+	@Override
 	public String toString() {
 		String s = null;
 

@@ -9,26 +9,29 @@ import org.jets3t.service.S3Service;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class S3FileUtils {
 
-	private S3Service s3Service;
+	protected static final Logger	logger	= LoggerFactory
+			.getLogger(S3FileUtils.class);
+
+	private S3Service				s3Service;
 
 	public S3FileUtils(S3Service s) {
 		super();
 		setS3Service(s);
 	}
 
-	public Iterator<File> iterateFiles(File folder, Object object, boolean b)
-			throws S3ServiceException {
-		List ret = new ArrayList();
+	public Iterator<S3Object> iterateFiles(File folder, Object object, boolean b) throws S3ServiceException {
+		List<S3Object> ret = new ArrayList<S3Object>();
 		// List all your buckets.
 		S3Bucket[] buckets = getS3Service().listAllBuckets();
 
 		// List the object contents of each bucket.
 		for (int b1 = 0; b1 < buckets.length; b1++) {
-			io.starter.ignite.util.Logger.log("Bucket '" + buckets[b1].getName()
-					+ "' contains:");
+			logger.debug("Bucket '" + buckets[b1].getName() + "' contains:");
 
 			// List the objects in this bucket.
 			S3Object[] objects = getS3Service().listObjects(buckets[b1]);

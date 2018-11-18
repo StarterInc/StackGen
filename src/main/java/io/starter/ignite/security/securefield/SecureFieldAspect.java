@@ -1,64 +1,95 @@
 package io.starter.ignite.security.securefield;
 
-/* ##LICENSE## */
-
-import io.starter.ignite.security.crypto.SecureEncrypter;
-import io.starter.ignite.util.Logger;
-
 import java.lang.reflect.Field;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.starter.ignite.generator.Configuration;
+
+/* ##LICENSE## */
+
+import io.starter.ignite.security.crypto.SecureEncrypter;
 
 @Aspect
-public class SecureFieldAspect {
+public class SecureFieldAspect implements Configuration {
 
-	private final static boolean SKIP_IBATIS_CALLER = true;
-	private final static String FIELD_GET = "get(@io.starter.ignite.security.securefield.SecureField * *)";
-	private final static String FIELD_SET = "set(@io.starter.ignite.security.securefield.SecureField * *)";
+	protected static final Logger	logger				= LoggerFactory
+			.getLogger(SecureFieldAspect.class);
+
+	private final static boolean	SKIP_IBATIS_CALLER	= true;
+	private final static String		FIELD_GET			= "get(@io.starter.ignite.security.securefield.SecureField * *)";
+	private final static String		FIELD_SET			= "set(@io.starter.ignite.security.securefield.SecureField * *)";
 
 	@Around(FIELD_GET)
 	public Object getSecureField(ProceedingJoinPoint pjp) throws Throwable {
+
+		if (DISABLE_SECURE_FIELD_ASPECT) {
+			logger.warn("SKIPPING SECURE FIELD GETTER");
+			return pjp.proceed();
+		}
+
 		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
 
-		// io.starter.ignite.util.Logger.error("Calling: " + cnm);
+		// logger.error("Calling: " + cnm);
 		// if iBatis is calling, do not decrypt
 		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
 			return pjp.proceed(pjp.getArgs());
 		}
 
-		Logger.debug("Get Secure Field for: " + pjp.toLongString());
+		logger.debug("Get Secure Field for: " + pjp.toLongString());
 		Object targetObject = pjp.getTarget();
 		String secureFieldName = pjp.getSignature().getName();
-		Field secureField = targetObject.getClass().getDeclaredField(
-				secureFieldName);
+		Field secureField = targetObject.getClass()
+				.getDeclaredField(secureFieldName);
 		secureField.setAccessible(true);
 		Object encryptedObject = secureField.get(targetObject);
 		secureField.setAccessible(false);
-		return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
+
+		if (secureField.getType().equals(String.class)) {
+			return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
+		} else {
+			logger.warn("SecureFieldAspect only currently supports Text values: "
+					+ pjp);
+			return pjp.proceed();
+		}
 	}
 
 	@Around(FIELD_SET)
 	public Object setSecureField(ProceedingJoinPoint pjp) throws Throwable {
+
+		if (DISABLE_SECURE_FIELD_ASPECT) {
+			logger.warn("SKIPPING SECURE FIELD SETTER");
+			return pjp.proceed();
+		}
 		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
 
-		// io.starter.ignite.util.Logger.error("Calling: " + cnm);
+		// logger.error("Calling: " + cnm);
 		// if iBatis is calling, do not encrypt
 		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
 			return pjp.proceed(pjp.getArgs());
 		}
-		Logger.debug("Set Secure Field for: " + pjp.toLongString());
+		logger.debug("Set Secure Field for: " + pjp.toLongString());
 		String clearTextValue = String.valueOf(pjp.getArgs()[0]);
 		String encryptedValue = SecureEncrypter.encrypt(clearTextValue);
 		Object targetObject = pjp.getTarget();
 		String secureFieldName = pjp.getSignature().getName();
-		Field secureField = targetObject.getClass().getDeclaredField(
-				secureFieldName);
+		Field secureField = targetObject.getClass()
+				.getDeclaredField(secureFieldName);
 		boolean access = secureField.isAccessible();
-		secureField.setAccessible(true);
-		secureField.set(targetObject, encryptedValue);
-		secureField.setAccessible(access);
+
+		if (secureField.getType().equals(String.class)) {
+			secureField.setAccessible(true);
+			secureField.set(targetObject, encryptedValue);
+			secureField.setAccessible(access);
+		} else {
+			logger.warn("SecureFieldAspect only currently supports Text values: "
+					+ pjp);
+			return pjp.proceed();
+		}
 		return null;
 	}
 }

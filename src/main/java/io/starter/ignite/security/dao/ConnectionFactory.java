@@ -1,9 +1,5 @@
 package io.starter.ignite.security.dao;
 
-import io.starter.ignite.util.SystemConstants;
-import io.starter.ignite.util.Logger;
-import io.starter.ignite.util.SystemConstants;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,8 +9,12 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.apache.tomcat.jdbc.pool.PoolProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+
+import io.starter.ignite.util.SystemConstants;
 
 /**
  *
@@ -25,24 +25,32 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  * @version 1.5
  */
 public class ConnectionFactory {
-	// Connect to the data storage
-	private static int sourcePort = 3306;
-	public static String driverName = "com.mysql.jdbc.Driver";
-	public static String dbName = SystemConstants.DB_NAME;
-	public static String sourceURL = SystemConstants.DB_URL;
-	public static String userName = SystemConstants.DB_USER;
-	private static String password = SystemConstants.DB_PASSWORD;
-	private static String backupURL = SystemConstants.DB_URL;
-	private static String backupPassword = SystemConstants.DB_PASSWORD;
 
-	// Call the private constructor to initialize the DriverManager
+	protected static final Logger		logger			= LoggerFactory
+			.getLogger(ConnectionFactory.class);
+
+	private static final boolean		USE_JNDI_LOOKUP	= false;
+
+	// Connect to the data storage
+	private static int					sourcePort		= 3306;
+	public static String				driverName		= "com.mysql.jdbc.Driver";
+	public static String				dbName			= SystemConstants.DB_NAME;
+	public static String				sourceURL		= SystemConstants.DB_URL;
+	public static String				userName		= SystemConstants.DB_USER;
+	private static String				password		= SystemConstants.DB_PASSWORD;
+	private static String				backupURL		= SystemConstants.DB_URL;
+	private static String				backupPassword	= SystemConstants.DB_PASSWORD;
+
+	// Call the private constructor to initialize the
+	// DriverManager
 	@SuppressWarnings("unused")
-	private static ConnectionFactory ref = new ConnectionFactory();
+	private static ConnectionFactory	ref				= new ConnectionFactory();
 
 	public static String toConfigString() {
-		return "ConnectionFactory v." + SystemConstants.IGNITE_MAJOR_VERSION + "."
-				+ SystemConstants.IGNITE_MINOR_VERSION + " \r\n" + "Settings:" + "\r\n" + "=========" + "\r\n"
-				+ driverName + "\r\n" + sourceURL + "\r\n" + dbName + "\r\n" + userName;
+		return "ConnectionFactory v." + SystemConstants.IGNITE_MAJOR_VERSION
+				+ "." + SystemConstants.IGNITE_MINOR_VERSION + " \r\n"
+				+ "Settings:" + "\r\n" + "=========" + "\r\n" + driverName
+				+ "\r\n" + sourceURL + "\r\n" + dbName + "\r\n" + userName;
 	}
 
 	/**
@@ -52,15 +60,18 @@ public class ConnectionFactory {
 	 */
 	private ConnectionFactory() {
 
-		Logger.debug("ConnectionFactory: initializing:" + ConnectionFactory.driverName);
+		logger.debug("ConnectionFactory: initializing:"
+				+ ConnectionFactory.driverName);
 
 		try {
 
 			Class.forName(ConnectionFactory.driverName);
-			Logger.debug("ConnectionFactory: Got JDBC class " + ConnectionFactory.driverName + " OK!");
+			logger.debug("ConnectionFactory: Got JDBC class "
+					+ ConnectionFactory.driverName + " OK!");
 		} catch (final ClassNotFoundException e) {
 
-			Logger.error("ConnectionFactory: Exception loading driver class: " + e.toString());
+			logger.error("ConnectionFactory: Exception loading driver class: "
+					+ e.toString());
 		} // end try-catch
 
 	} // end default private constructor
@@ -76,23 +87,26 @@ public class ConnectionFactory {
 
 		Connection con = null;
 
-		Logger.debug("ConnectionFactory: returning connection:" + ConnectionFactory.sourceURL);
+		logger.debug("ConnectionFactory: returning connection:"
+				+ ConnectionFactory.sourceURL);
 		final PoolProperties p = new PoolProperties();
 
-		if (true) { // (System.getProperty("PARAM1") != null &&
+		if (USE_JNDI_LOOKUP) { // (System.getProperty("PARAM1") != null &&
 			// System.getProperty("PARAM1").equalsIgnoreCase("production"))
 			// {
 
 			try {
 				final InitialContext ic = new InitialContext();
-				final DataSource dataSource = (DataSource) ic.lookup(SystemConstants.JNDI_DB_LOOKUP_STRING);
+				final DataSource dataSource = (DataSource) ic
+						.lookup(SystemConstants.JNDI_DB_LOOKUP_STRING);
 				final java.sql.Connection c = dataSource.getConnection();
-				Logger.debug("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
+				logger.debug("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
 						+ SystemConstants.JNDI_DB_LOOKUP_STRING + ".");
 				return c;
 			} catch (final Exception e) {
-				Logger.warn("ConnectionFactory.getConnection() failed to get JNDI connection: ["
-						+ SystemConstants.JNDI_DB_LOOKUP_STRING + "] " + "Falling back to non JNDI connection.");
+				logger.warn("ConnectionFactory.getConnection() failed to get JNDI connection: ["
+						+ SystemConstants.JNDI_DB_LOOKUP_STRING + "] "
+						+ "Falling back to non JNDI connection.");
 
 			}
 
@@ -134,7 +148,8 @@ public class ConnectionFactory {
 				con = datasource.getConnectionAsync().get();
 				con = datasource.getConnectionAsync().get();
 				final Statement st = con.createStatement();
-				final ResultSet rs = st.executeQuery("SELECT 1 FROM DUAL"); // Oracle/MySQL only
+				final ResultSet rs = st.executeQuery("SELECT 1 FROM DUAL"); // Oracle/MySQL
+																			// only
 				while (rs.next()) {
 					//
 				}
@@ -144,13 +159,11 @@ public class ConnectionFactory {
 				if (con != null) {
 					try {
 						con.close();
-					} catch (final Exception ignore) {
-					}
+					} catch (final Exception ignore) {}
 				}
 			}
 		} catch (final Exception e) {
-			Logger.warn(
-					"ConnectionFactory Failed to achieve a Pooled DataSource... reverting to Non-Pooled JDBC connection. NOT FOR PRODUCTION.");
+			logger.warn("ConnectionFactory Failed to achieve a Pooled DataSource... reverting to Non-Pooled JDBC connection. NOT FOR PRODUCTION.");
 			return ConnectionFactory.getDataSource().getConnection();
 		}
 		return con;
@@ -161,7 +174,7 @@ public class ConnectionFactory {
 	 *
 	 * TODO: implement FUTURE connections try { Future<Connection> future =
 	 * datasource.getConnectionAsync(); while (!future.isDone()) {
-	 * io.starter.ignite.util.Logger.log( "Connection is not yet available. Do some
+	 * logger.debug( "Connection is not yet available. Do some
 	 * background work"); try { Thread.sleep(100); //simulate work }catch
 	 * (InterruptedException x) { Thread.currentThread().interrupt(); } } con =
 	 * future.get(); //should return instantly Statement st = con.createStatement();
@@ -190,12 +203,14 @@ public class ConnectionFactory {
 				final InitialContext ic = new InitialContext();
 				DataSource dataSource = (DataSource) ic.lookup(lcname);
 				final java.sql.Connection c = dataSource.getConnection();
-				Logger.log("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: " + lcname + ".");
+				logger.debug("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
+						+ lcname + ".");
 				return dataSource;
 
 			} catch (final Exception e) {
-				Logger.warn("ConnectionFactory.getConnection() failed to get JNDI connection: " + lcname + ". "
-						+ e.toString() + " Falling back to non JNDI connection.");
+				logger.warn("ConnectionFactory.getConnection() failed to get JNDI connection: "
+						+ lcname + ". " + e.toString()
+						+ " Falling back to non JNDI connection.");
 
 				ds.setServerName(ConnectionFactory.sourceURL);
 				ds.setPassword(ConnectionFactory.password);
@@ -255,8 +270,8 @@ public class ConnectionFactory {
 		try {
 			rs.close();
 		} catch (final SQLException e) {
-			io.starter.ignite.util.Logger.error("ERROR: Unable to close Result Set");
-			io.starter.ignite.util.Logger.error(e.getMessage());
+			logger.error("ERROR: Unable to close Result Set");
+			logger.error(e.getMessage());
 		} // end try-catch block
 
 	} // end method close
@@ -275,8 +290,8 @@ public class ConnectionFactory {
 
 		} catch (final SQLException e) {
 
-			io.starter.ignite.util.Logger.error("ERROR: Unable to close Statement");
-			io.starter.ignite.util.Logger.error(e.getMessage());
+			logger.error("ERROR: Unable to close Statement");
+			logger.error(e.getMessage());
 
 		} // end try-catch block
 
@@ -297,8 +312,8 @@ public class ConnectionFactory {
 
 		} catch (final SQLException e) {
 
-			io.starter.ignite.util.Logger.log("ERROR: Unable to close Statement");
-			io.starter.ignite.util.Logger.log(e.getMessage());
+			logger.debug("ERROR: Unable to close Statement");
+			logger.debug(e.getMessage());
 
 		} // end try-catch block
 

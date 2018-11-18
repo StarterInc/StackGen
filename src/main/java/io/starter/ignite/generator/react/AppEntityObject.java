@@ -1,14 +1,16 @@
 package io.starter.ignite.generator.react;
 
-import io.starter.ignite.security.securefield.SecureField;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.starter.ignite.security.securefield.SecureField;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Contains and initializes Redux template Mapping info for a passed in
@@ -31,26 +33,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class AppEntityObject {
 
-	private static final Class<SecureField> SECURE_ANNOTATION_CLASS = SecureField.class;
-	private static final Class<JsonProperty> FIELD_ANNOTATION_CLASS = JsonProperty.class;
-	private static final Class<ApiModelProperty> ANNOTATION_CLASS = ApiModelProperty.class;
+	private static final org.slf4j.Logger			logger					= LoggerFactory
+			.getLogger(AppEntityObject.class);
 
-	public String appname;
-	public String objectname;
-	public String objectname_upper;
+	private static final Class<SecureField>			SECURE_ANNOTATION_CLASS	= SecureField.class;
+	private static final Class<JsonProperty>		FIELD_ANNOTATION_CLASS	= JsonProperty.class;
+	private static final Class<ApiModelProperty>	ANNOTATION_CLASS		= ApiModelProperty.class;
 
-	List<Variable> variables = new ArrayList<Variable>();
+	public String									appname;
+	public String									objectname;
+	public String									objectname_upper;
+
+	List<Variable>									variables				= new ArrayList<Variable>();
 
 	static class Variable {
 
-		public String variableval;
-		public String variablename;
+		public String	variableval;
+		public String	variablename;
 
 		Variable(String variablename, String variablebal) {
 			this.variablename = variablename;
 			this.variableval = variablebal;
 		}
 
+		@Override
 		public String toString() {
 			return this.variablename + " : " + this.variableval;
 		}
@@ -63,25 +69,25 @@ public class AppEntityObject {
 	 */
 	private void processMethod(Method s) {
 
-		SecureField fa = (SecureField) s.getAnnotation(SECURE_ANNOTATION_CLASS);
+		SecureField fa = s.getAnnotation(SECURE_ANNOTATION_CLASS);
 
-		JsonProperty jf = (JsonProperty) s
-				.getAnnotation(FIELD_ANNOTATION_CLASS);
+		JsonProperty jf = s.getAnnotation(FIELD_ANNOTATION_CLASS);
 
-		ApiModelProperty apia = (ApiModelProperty) s
-				.getAnnotation(ANNOTATION_CLASS);
+		ApiModelProperty apia = s.getAnnotation(ANNOTATION_CLASS);
 
 		String val = null;
 		if (jf != null)
 			val = jf.value();
+		else
+			val = "";
 
 		if (!apia.hidden() && val != null) {
-			io.starter.ignite.util.Logger.log("Processing Field: " + s.toGenericString()
-					+ " :" + val);
+			logger.debug("Processing Field: " + s.toGenericString() + " :"
+					+ val);
 			variables.add(new Variable(val, apia.example()));
 		} else {
-			io.starter.ignite.util.Logger.error("Skipping Invalid Field: " + s.toGenericString()
-					+ " :" + val);
+			logger.error("Skipping Invalid Field: " + s.toGenericString() + " :"
+					+ val);
 		}
 	}
 
@@ -96,18 +102,14 @@ public class AppEntityObject {
 		objectname = cx.getName().substring(cx.getName().lastIndexOf(".") + 1);
 		objectname_upper = objectname.toUpperCase();
 
-		Stream.of(cx.getDeclaredMethods())
-				.filter(s -> {
-					return (((Method) s).getAnnotation(ANNOTATION_CLASS)) != null;
-				})
-				.forEach(
-						s -> {
-							processMethod((Method) s);
-							if (!isValid())
-								System.err
-										.println("WARNING: AppEntityObject is invalid: "
-												+ s.toString());
-						});
+		Stream.of(cx.getDeclaredMethods()).filter(s -> {
+			return (s.getAnnotation(ANNOTATION_CLASS)) != null;
+		}).forEach(s -> {
+			processMethod(s);
+			if (!isValid())
+				logger.error("WARNING: AppEntityObject is invalid: "
+						+ s.toString());
+		});
 
 	}
 
@@ -133,6 +135,7 @@ public class AppEntityObject {
 	/**
 	 * provide pretty representation
 	 */
+	@Override
 	public String toString() {
 		String sbout = "AppEntityObject: " + this.objectname + "\r\n";
 		for (Variable v : variables) {

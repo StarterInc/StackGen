@@ -32,34 +32,39 @@ import org.jets3t.service.security.AWSCredentials;
 import org.jets3t.service.utils.ByteFormatter;
 import org.jets3t.service.utils.Mimetypes;
 import org.jets3t.service.utils.TimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author John McMahon Copyright 2013 Starter Inc., all rights reserved.
  * 
  */
-public class S3FS extends StorageServiceEventAdaptor implements SystemConstants {
+public class S3FS extends StorageServiceEventAdaptor
+		implements SystemConstants {
+
+	protected static final Logger logger = LoggerFactory.getLogger(S3FS.class);
 
 	public S3FS() {
 		super();
 		try {
 			initialize();
 		} catch (S3ServiceException e) {
-			Logger.error("S3FS.init failed: " + e.getMessage());
+			logger.error("S3FS.init failed: " + e.getMessage());
 		} catch (ServiceException e) {
-			Logger.error("S3FS.init failed: " + e.getMessage());
+			logger.error("S3FS.init failed: " + e.getMessage());
 		}
 	}
 
-	private static S3Service s3service;
-	private static ThreadedS3Service storageService;
-	private static S3Bucket bucket;
-	private List<S3Object> s3Objs = new ArrayList<S3Object>();
-	private final Set<String> s3ObjsCompleted = new HashSet<String>();
-	private boolean isErrorOccured = true;
-	private final ByteFormatter byteFormatter = new ByteFormatter();
-	private final TimeFormatter timeFormatter = new TimeFormatter();
-	private S3FileUtils fileUtils;
+	private static S3Service			s3service;
+	private static ThreadedS3Service	storageService;
+	private static S3Bucket				bucket;
+	private List<S3Object>				s3Objs			= new ArrayList<S3Object>();
+	private final Set<String>			s3ObjsCompleted	= new HashSet<String>();
+	private boolean						isErrorOccured	= true;
+	private final ByteFormatter			byteFormatter	= new ByteFormatter();
+	private final TimeFormatter			timeFormatter	= new TimeFormatter();
+	private S3FileUtils					fileUtils;
 
 	private void initialize() throws ServiceException, S3ServiceException {
 		String awsAccessKey = SystemConstants.AWS_ACCESS_KEY;
@@ -74,30 +79,30 @@ public class S3FS extends StorageServiceEventAdaptor implements SystemConstants 
 
 	}
 
-	public void createBucket(String bucketname)
-			throws NoSuchAlgorithmException, IOException, S3ServiceException {
+	public void createBucket(String bucketname) throws NoSuchAlgorithmException, IOException, S3ServiceException {
 		String[] bkn = { bucketname };
-		this.storageService.createBuckets(bkn);
+		S3FS.storageService.createBuckets(bkn);
 	}
 
 	public void makeBucketPublic(String bkt) throws ServiceException {
-		// Retrieve the bucket's ACL and modify it to grant public access,
+		// Retrieve the bucket's ACL and modify it to grant public
+		// access,
 		// ie READ access to the ALL_USERS group.
 		S3Bucket privateBket = s3service.getBucket(bkt);
 		AccessControlList bucketAcl = s3service.getBucketAcl(privateBket);
-		bucketAcl.grantPermission(GroupGrantee.ALL_USERS,
-				Permission.PERMISSION_READ);
+		bucketAcl
+				.grantPermission(GroupGrantee.ALL_USERS, Permission.PERMISSION_READ);
 
-		// Update the bucket's ACL. Now anyone can view the list of objects in
+		// Update the bucket's ACL. Now anyone can view the list of
+		// objects in
 		// this bucket.
 		privateBket.setAcl(bucketAcl);
 		s3service.putBucketAcl(privateBket);
-		Logger.log("View bucket's object listing here: http://s3.amazonaws.com/"
+		logger.debug("View bucket's object listing here: http://s3.amazonaws.com/"
 				+ privateBket.getName());
 	}
 
-	public String uploadToBucket(String bucketname,
-			DataInputStream dataInputStream, String fx) throws ServiceException {
+	public String uploadToBucket(String bucketname, DataInputStream dataInputStream, String fx) throws ServiceException {
 
 		StorageObject[] sob = { new StorageObject() };
 		sob[0].setDataInputStream(dataInputStream);
@@ -108,57 +113,52 @@ public class S3FS extends StorageServiceEventAdaptor implements SystemConstants 
 
 		sob[0].setAcl(bucketAcl);
 
-		if (this.storageService.putObjects(bucketname, sob)) {
-			StorageObject objectDetailsOnly = s3service.getObjectDetails(
-					bucketname, fx);
-			Logger.log("S3FS.uploadToBucket success: "
+		if (S3FS.storageService.putObjects(bucketname, sob)) {
+			StorageObject objectDetailsOnly = s3service
+					.getObjectDetails(bucketname, fx);
+			logger.debug("S3FS.uploadToBucket success: "
 					+ objectDetailsOnly.getName());
 			return objectDetailsOnly.getName();
 		}
-		Logger.error("S3FS.uploadToBucket: " + bucketname + " failed.");
+		logger.error("S3FS.uploadToBucket: " + bucketname + " failed.");
 		return null;
 	}
 
-	public void uploadFolder(File folder) throws NoSuchAlgorithmException,
-			IOException, S3ServiceException {
+	public void uploadFolder(File folder) throws NoSuchAlgorithmException, IOException, S3ServiceException {
 		readFolderContents(folder);
 		uploadFilesInList(folder);
 	}
 
-	private void readFolderContents(File folder)
-			throws NoSuchAlgorithmException, IOException, S3ServiceException {
+	private void readFolderContents(File folder) throws NoSuchAlgorithmException, IOException, S3ServiceException {
 		Iterator filesinFolder = fileUtils.iterateFiles(folder, null, true);
 		while (filesinFolder.hasNext()) {
 			Object file = filesinFolder.next();
-			Logger.debug("File: " + file);
+			logger.debug("File: " + file);
 			String key = "testfilnamekey";
 			if (folder.isDirectory()) {
 				S3Object s3Obj = new S3Object(bucket, (File) file);
 				s3Obj.setKey(key);
-				s3Obj.setContentType(Mimetypes.getInstance().getMimetype(
-						s3Obj.getKey()));
+				s3Obj.setContentType(Mimetypes.getInstance()
+						.getMimetype(s3Obj.getKey()));
 				s3Objs.add(s3Obj);
 			} else {
-				Logger.warn("S3FS.readFolderContents() File: "
+				logger.warn("S3FS.readFolderContents() File: "
 						+ folder.getName() + " is not a folder.");
 			}
 		}
 	}
 
 	private void uploadFilesInList(File folder) {
-		Logger.debug("Uploading files in folder " + folder.getAbsolutePath());
-		if (true) // disable for now
-			return;
+		logger.debug("Uploading files in folder " + folder.getAbsolutePath());
 		isErrorOccured = false;
 		s3ObjsCompleted.clear();
 
-		storageService.putObjects(bucket.getName(),
-				s3Objs.toArray(new S3Object[s3Objs.size()]));
+		storageService.putObjects(bucket.getName(), s3Objs
+				.toArray(new S3Object[s3Objs.size()]));
 
 		if (isErrorOccured || s3Objs.size() != s3ObjsCompleted.size()) {
-			Logger.debug("Have to try uploading a few objects again for folder "
-					+ folder.getAbsolutePath()
-					+ " - Completed = "
+			logger.debug("Have to try uploading a few objects again for folder "
+					+ folder.getAbsolutePath() + " - Completed = "
 					+ s3ObjsCompleted.size() + " and Total =" + s3Objs.size());
 			List<S3Object> s3ObjsRemaining = new ArrayList<S3Object>();
 			for (S3Object s3Obj : s3Objs) {
@@ -177,10 +177,10 @@ public class S3FS extends StorageServiceEventAdaptor implements SystemConstants 
 		if (ServiceEvent.EVENT_IGNORED_ERRORS == event.getEventCode()) {
 			Throwable[] throwables = event.getIgnoredErrors();
 			for (int i = 0; i < throwables.length; i++) {
-				Logger.error("Ignoring error: " + throwables[i].getMessage());
+				logger.error("Ignoring error: " + throwables[i].getMessage());
 			}
 		} else if (ServiceEvent.EVENT_STARTED == event.getEventCode()) {
-			Logger.debug("**********************************Upload Event Started***********************************");
+			logger.debug("**********************************Upload Event Started***********************************");
 		} else if (event.getEventCode() == ServiceEvent.EVENT_ERROR) {
 			isErrorOccured = true;
 		} else if (event.getEventCode() == ServiceEvent.EVENT_IN_PROGRESS) {
@@ -190,10 +190,10 @@ public class S3FS extends StorageServiceEventAdaptor implements SystemConstants 
 			}
 			ThreadWatcher watcher = event.getThreadWatcher();
 			if (watcher.getBytesTransferred() >= watcher.getBytesTotal()) {
-				Logger.debug("Upload Completed.. Verifying");
+				logger.debug("Upload Completed.. Verifying");
 			} else {
-				int percentage = (int) (((double) watcher.getBytesTransferred() / watcher
-						.getBytesTotal()) * 100);
+				int percentage = (int) (((double) watcher.getBytesTransferred()
+						/ watcher.getBytesTotal()) * 100);
 
 				long bytesPerSecond = watcher.getBytesPerSecond();
 				StringBuilder transferDetailsText = new StringBuilder(
@@ -210,12 +210,12 @@ public class S3FS extends StorageServiceEventAdaptor implements SystemConstants 
 							+ timeFormatter.formatTime(secondsRemaining));
 				}
 
-				Logger.debug(transferDetailsText.toString() + " " + percentage);
+				logger.debug(transferDetailsText.toString() + " " + percentage);
 			}
 		} else if (ServiceEvent.EVENT_COMPLETED == event.getEventCode()) {
-			Logger.debug("**********************************Upload Event Completed***********************************");
+			logger.debug("**********************************Upload Event Completed***********************************");
 			if (isErrorOccured) {
-				Logger.debug("**********************But with errors, have to retry failed uploads**************************");
+				logger.debug("**********************But with errors, have to retry failed uploads**************************");
 			}
 		}
 	}

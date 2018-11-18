@@ -18,13 +18,13 @@ import io.starter.OpenXLS.WorkBookHandle;
 public class SheetTable {
 
 	// 1st row is table headers
-	CellHandle[] headercells = null;
-	List headers = new ArrayList();
+	CellHandle[]	headercells	= null;
+	List<String>	headers		= new ArrayList<String>();
 
-	RowHandle[] rows = null;
-	NameHandle myname = null;
-	WorkBookHandle mybook = null;
-	boolean autoCommit = false;
+	RowHandle[]		rows		= null;
+	NameHandle		myname		= null;
+	WorkBookHandle	mybook		= null;
+	boolean			autoCommit	= false;
 
 	/**
 	 * @return the headers
@@ -168,7 +168,8 @@ public class SheetTable {
 		if (this.isAutoCommit() || force) {
 			mybook.close();
 		} else {
-			System.err.println("AUTO-COMMIT NOT ENABLED. USE 'FORCE' TO WRITE TO BOOK");
+			System.err
+					.println("AUTO-COMMIT NOT ENABLED. USE 'FORCE' TO WRITE TO BOOK");
 		}
 	}
 

@@ -1,8 +1,5 @@
 package io.starter.ignite.security;
 
-import io.starter.ignite.security.dao.ConnectionFactory;
-import io.starter.ignite.util.SystemConstants;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,8 +27,11 @@ import org.apache.shiro.authz.permission.RolePermissionResolver;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.CollectionUtils;
 import org.apache.shiro.util.JdbcUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import io.starter.toolkit.Logger;
+import io.starter.ignite.security.dao.ConnectionFactory;
+import io.starter.ignite.util.SystemConstants;
 
 /**
  * Sub-class of JdbcRealm that defines the Data Source the JdbcRealm should use
@@ -42,17 +42,22 @@ import io.starter.toolkit.Logger;
  * @author John McMahon Copyright 2013 Starter Inc., all rights reserved.
  * 
  */
-public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm {
+public class RoleSecurityJdbcRealm
+		extends io.starter.ignite.security.JdbcRealm {
 
-	protected static final java.lang.String DEFAULT_AUTHENTICATION_QUERY = "select password, id from user where username = ?";
-	protected static final java.lang.String DEFAULT_SALTED_AUTHENTICATION_QUERY = "select password, password_salt from user where username = ?";
-	protected static final java.lang.String USER_ID_QUERY = "select id from user where username = ?";
+	protected static final Logger			logger								= LoggerFactory
+			.getLogger(RoleSecurityJdbcRealm.class);
+
+	protected static final java.lang.String	DEFAULT_AUTHENTICATION_QUERY		= "select password, id from user where username = ?";
+	protected static final java.lang.String	DEFAULT_SALTED_AUTHENTICATION_QUERY	= "select password, password_salt from user where username = ?";
+	protected static final java.lang.String	USER_ID_QUERY						= "select id from user where username = ?";
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.apache.shiro.realm.AuthenticatingRealm#getAuthenticationCacheKey(
+	 * org.apache.shiro.realm.AuthenticatingRealm#
+	 * getAuthenticationCacheKey(
 	 * org.apache.shiro.authc.AuthenticationToken)
 	 */
 	@Override
@@ -65,7 +70,8 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.apache.shiro.realm.AuthenticatingRealm#getAuthenticationCacheKey(
+	 * org.apache.shiro.realm.AuthenticatingRealm#
+	 * getAuthenticationCacheKey(
 	 * org.apache.shiro.subject.PrincipalCollection)
 	 */
 	@Override
@@ -77,13 +83,13 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 
 	public RoleSecurityJdbcRealm() throws NamingException, SQLException {
 		super();
-		Logger.logInfo("Initializing RoleSecurityJdbcRealm");
+		logger.debug("Initializing RoleSecurityJdbcRealm");
 		setAuthenticationQuery(DEFAULT_AUTHENTICATION_QUERY);
 		setPermissionsLookupEnabled(true);
 		setAuthorizationCachingEnabled(true); // ok needs to be reset
 		initializeDB();
 
-		io.starter.ignite.util.Logger.log("Done Initializing RoleSecurityJdbcRealm");
+		logger.debug("Done Initializing RoleSecurityJdbcRealm");
 	}
 
 	public boolean clearCacheForAllActiveUsers() {
@@ -109,12 +115,12 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.apache.shiro.realm.jdbc.JdbcRealm#doGetAuthenticationInfo(org.apache
+	 * org.apache.shiro.realm.jdbc.JdbcRealm#
+	 * doGetAuthenticationInfo(org.apache
 	 * .shiro.authc.AuthenticationToken)
 	 */
 	@Override
-	protected AuthenticationInfo doGetAuthenticationInfo(
-			AuthenticationToken token) throws AuthenticationException {
+	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 
 		Connection conn = null;
 		try {
@@ -126,7 +132,7 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 			try {
 				initializeDB();
 			} catch (Exception ex) {
-				Logger.logErr("RoleSecurityJDBCRealm could not re-init DB.", ex);
+				logger.error("RoleSecurityJDBCRealm could not re-init DB.", ex);
 			}
 		} finally {
 			JdbcUtils.closeConnection(conn);
@@ -136,8 +142,8 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 		return super.doGetAuthenticationInfo(token);
 	}
 
-	public boolean isPermitted(PrincipalCollection principals,
-			Permission permission) {
+	@Override
+	public boolean isPermitted(PrincipalCollection principals, Permission permission) {
 		AuthorizationInfo info = getAuthorizationInfo(principals);
 		return isPermitted(permission, info);
 	}
@@ -187,8 +193,7 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 		}
 	}
 
-	private Collection<Permission> resolveRolePermissions(
-			Collection<String> roleNames) {
+	private Collection<Permission> resolveRolePermissions(Collection<String> roleNames) {
 		Collection<Permission> perms = Collections.emptySet();
 		RolePermissionResolver resolver = getRolePermissionResolver();
 		if (resolver != null && !CollectionUtils.isEmpty(roleNames)) {
@@ -204,8 +209,7 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 		return perms;
 	}
 
-	private Collection<Permission> resolvePermissions(
-			Collection<String> stringPerms) {
+	private Collection<Permission> resolvePermissions(Collection<String> stringPerms) {
 		Collection<Permission> perms = Collections.emptySet();
 		PermissionResolver resolver = getPermissionResolver();
 		if (resolver != null && !CollectionUtils.isEmpty(stringPerms)) {
@@ -221,12 +225,12 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 
 	/*
 	 * @see
-	 * org.apache.shiro.realm.jdbc.JdbcRealm#doGetAuthorizationInfo(org.apache
+	 * org.apache.shiro.realm.jdbc.JdbcRealm#
+	 * doGetAuthorizationInfo(org.apache
 	 * .shiro.subject.PrincipalCollection)
 	 */
 	@Override
-	protected AuthorizationInfo doGetAuthorizationInfo(
-			PrincipalCollection principals) {
+	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		// TODO Auto-generated method stub
 
 		// null usernames are invalid
@@ -248,8 +252,8 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 
 			roleNames = getRoleNamesForUser(conn, String.valueOf(userid));
 			if (permissionsLookupEnabled && roleNames.size() > 0) {
-				permissions = getPermissions(conn, String.valueOf(userid),
-						roleNames);
+				permissions = getPermissions(conn, String
+						.valueOf(userid), roleNames);
 			}
 			conn.close();
 			conn = null;
@@ -258,7 +262,8 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 					+ username + "]";
 
 			JdbcUtils.closeConnection(conn);
-			// Rethrow any SQL exceptions wrapped so they dont need to be
+			// Rethrow any SQL exceptions wrapped so they dont need to
+			// be
 			// defined in throws
 			throw new RuntimeException(e);
 		} finally {
@@ -272,8 +277,7 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 		// return super.doGetAuthorizationInfo(arg0);
 	}
 
-	private int getUserIdFromUserName(Connection conn, String username)
-			throws SQLException {
+	private int getUserIdFromUserName(Connection conn, String username) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int uid = -1;
@@ -312,14 +316,15 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 		if (System.getProperty("PARAM1") != null) {
 			if (System.getProperty("PARAM1").equalsIgnoreCase("production")) {
 				// use default production DB
-			} else if (System.getProperty("PARAM1").equalsIgnoreCase("staging")) {
+			} else if (System.getProperty("PARAM1")
+					.equalsIgnoreCase("staging")) {
 
 				DATABASE_CHOICE = SystemConstants.JNDI_DB_LOOKUP_STRING
 						+ "_staging";
 			}
 		}
 
-		Logger.logInfo("RoleSecurityJdbcRealm: initializing dataSource: "
+		logger.debug("RoleSecurityJdbcRealm: initializing dataSource: "
 				+ DATABASE_CHOICE);
 
 		try {
@@ -330,15 +335,16 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 			c.close();
 
 		} catch (Exception e) {
-			Logger.logWarn("RoleSecurityJdbcRealm.initializeDB() Falling back to non-JNDI "
-					+ "ConnectionFactory connection:" + e.getLocalizedMessage());
+			logger.warn("RoleSecurityJdbcRealm.initializeDB() Falling back to non-JNDI "
+					+ "ConnectionFactory connection:"
+					+ e.getLocalizedMessage());
 			dataSource = ConnectionFactory.getDataSource();
 			java.sql.Connection c = dataSource.getConnection();
 			setDataSource(dataSource);
 			c.close();
 
 		}
-		Logger.logInfo(" Datasource set OK!");
+		logger.debug(" Datasource set OK!");
 	}
 
 	public boolean clearPrincipalCacheForUser(String username) {
@@ -355,7 +361,7 @@ public class RoleSecurityJdbcRealm extends io.starter.ignite.security.JdbcRealm 
 			try {
 				initializeDB();
 			} catch (Exception ex) {
-				Logger.logErr("RoleSecurityJDBCRealm could not re-init DB.", ex);
+				logger.error("RoleSecurityJDBCRealm could not re-init DB.", ex);
 			}
 		} finally {
 			JdbcUtils.closeConnection(conn);

@@ -15,6 +15,8 @@ import org.mozilla.javascript.commonjs.module.Require;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 import org.mozilla.javascript.commonjs.module.provider.SoftCachingModuleScriptProvider;
 import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -24,16 +26,22 @@ import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider;
  * <version>1.7R4</version> </dependency>
  */
 public class JSXTransformer {
-	// ------------------------------ FIELDS ------------------------------
 
-	private List<String> modulePaths;
-	private String jsxTransformerJS;
-	private Context ctx;
-	private Scriptable exports;
-	private Scriptable topLevelScope;
-	private Function transform;
+	protected static final Logger	logger	= LoggerFactory
+			.getLogger(JSXTransformer.class);
 
-	// --------------------------- main() method ---------------------------
+	// ------------------------------ FIELDS
+	// ------------------------------
+
+	private List<String>			modulePaths;
+	private String					jsxTransformerJS;
+	private Context					ctx;
+	private Scriptable				exports;
+	private Scriptable				topLevelScope;
+	private Function				transform;
+
+	// --------------------------- main() method
+	// ---------------------------
 
 	public static void main(String args[]) throws URISyntaxException {
 		JSXTransformer jsxTransformer = new JSXTransformer();
@@ -45,7 +53,7 @@ public class JSXTransformer {
 		jsxTransformer.init();
 		String js = jsxTransformer
 				.transform("/** @jsx React.DOM */ React.renderComponent(<h1>Hello, world!</h1>,document.getElementById('example'));");
-		io.starter.ignite.util.Logger.log("js = " + js);
+		logger.debug("js = " + js);
 	}
 
 	public void setModulePaths(List<String> modulePaths) {
@@ -105,8 +113,8 @@ public class JSXTransformer {
 	public String transform(String jsx) {
 		Context.enter();
 		try {
-			NativeObject result = (NativeObject) transform.call(ctx,
-					topLevelScope, exports, new String[] { jsx });
+			NativeObject result = (NativeObject) transform
+					.call(ctx, topLevelScope, exports, new String[] { jsx });
 			return result.get("code").toString();
 		} finally {
 			Context.exit();

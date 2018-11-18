@@ -10,15 +10,21 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.awt.image.PixelGrabber;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ImageFilter {
 
-	private static final float IMGD1 = 1.0f;
-	private static final float IMGD2 = 16.0f;
-	private int blurLevel = 50;
-	public static final int IMAGE_UNKNOWN = -1;
-	public static final int IMAGE_JPEG = 0;
-	public static final int IMAGE_PNG = 1;
-	public static final int IMAGE_GIF = 2;
+	protected static final Logger	logger			= LoggerFactory
+			.getLogger(ImageFilter.class);
+
+	private static final float		IMGD1			= 1.0f;
+	private static final float		IMGD2			= 16.0f;
+	private int						blurLevel		= 50;
+	public static final int			IMAGE_UNKNOWN	= -1;
+	public static final int			IMAGE_JPEG		= 0;
+	public static final int			IMAGE_PNG		= 1;
+	public static final int			IMAGE_GIF		= 2;
 
 	/**
 	 * @return the blurLevel
@@ -53,8 +59,9 @@ public class ImageFilter {
 		for (int i = 0; i < sqblurLevel; i++)
 			matrix[i] = 1.0f / sqblurLevel;
 
-		BufferedImageOp op = new ConvolveOp(new Kernel(blurLevel, blurLevel,
-				matrix), ConvolveOp.EDGE_ZERO_FILL, null);
+		BufferedImageOp op = new ConvolveOp(
+				new Kernel(blurLevel, blurLevel, matrix),
+				ConvolveOp.EDGE_ZERO_FILL, null);
 		image = op.filter((BufferedImage) sourceImage, image);
 
 		// and a quick soften blur over that
@@ -65,8 +72,9 @@ public class ImageFilter {
 		for (int i = 0; i < sqblurLevel; i++)
 			matrix1[i] = IMGD1 / IMGD2;
 
-		BufferedImageOp op1 = new ConvolveOp(new Kernel(blurLevel, blurLevel,
-				matrix1), ConvolveOp.EDGE_ZERO_FILL, null);
+		BufferedImageOp op1 = new ConvolveOp(
+				new Kernel(blurLevel, blurLevel, matrix1),
+				ConvolveOp.EDGE_ZERO_FILL, null);
 		image = op1.filter(image, null);
 
 		return image;
@@ -80,7 +88,8 @@ public class ImageFilter {
 	 */
 	public BufferedImage negativeBufferedImage(Image sourceImage) {
 
-		// Create a buffered image from the source image with a format that's
+		// Create a buffered image from the source image with a
+		// format that's
 		// compatible with the screen
 
 		BufferedImage image = getImage(sourceImage);
@@ -110,7 +119,8 @@ public class ImageFilter {
 	 */
 	public BufferedImage overexposeBufferedImage(Image sourceImage) {
 
-		// Create a buffered image from the source image with a format that's
+		// Create a buffered image from the source image with a
+		// format that's
 		// compatible with the screen
 
 		BufferedImage image = getImage(sourceImage);
@@ -134,15 +144,16 @@ public class ImageFilter {
 		// Because java.awt.headless property is set to true, this
 		// will be an instance of headless toolkit.
 		Toolkit tk = Toolkit.getDefaultToolkit();
+		logger.debug("Created Toolkit: " + tk);
 
 		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment
 				.getLocalGraphicsEnvironment();
 
-		if (graphicsEnvironment.isHeadless()) {
-			Logger.log("Headless ImageFilter.getImage() called...");
+		if (GraphicsEnvironment.isHeadless()) {
+			logger.debug("Headless ImageFilter.getImage() called...");
 
 		} else {
-			Logger.log("NOT Headless ImageFilter.getImage() called...");
+			logger.debug("NOT Headless ImageFilter.getImage() called...");
 		}
 
 		// Create a buffered image with transparency
@@ -152,10 +163,11 @@ public class ImageFilter {
 		Graphics2D bGr = bimage.createGraphics();
 		bGr.drawImage(sourceImage, 0, 0, null);
 		bGr.dispose();
-		// If the source image has no alpha info use Transparency.OPAQUE instead
+		// If the source image has no alpha info use
+		// Transparency.OPAQUE instead
 
-		bimage = createHeadlessSmoothBufferedImage(bimage, IMAGE_JPEG,
-				sourceImage.getWidth(null), sourceImage.getHeight(null));
+		bimage = createHeadlessSmoothBufferedImage(bimage, IMAGE_JPEG, sourceImage
+				.getWidth(null), sourceImage.getHeight(null));
 
 		// Copy image to buffered image
 		return bimage;
@@ -178,8 +190,7 @@ public class ImageFilter {
 	 * @param type
 	 *            int
 	 */
-	public static BufferedImage createHeadlessSmoothBufferedImage(
-			BufferedImage source, int type, int width, int height) {
+	public static BufferedImage createHeadlessSmoothBufferedImage(BufferedImage source, int type, int width, int height) {
 		if (type == IMAGE_PNG && hasAlpha(source)) {
 			type = BufferedImage.TYPE_INT_ARGB;
 		} else {
@@ -215,10 +226,11 @@ public class ImageFilter {
 				x1 = Math.min(source.getWidth() - 1, sourcex + 1);
 				y1 = Math.min(source.getHeight() - 1, sourcey + 1);
 
-				rgb1 = getRGBInterpolation(source.getRGB(sourcex, sourcey),
-						source.getRGB(x1, sourcey), xdiff);
-				rgb2 = getRGBInterpolation(source.getRGB(sourcex, y1),
-						source.getRGB(x1, y1), xdiff);
+				rgb1 = getRGBInterpolation(source
+						.getRGB(sourcex, sourcey), source
+								.getRGB(x1, sourcey), xdiff);
+				rgb2 = getRGBInterpolation(source.getRGB(sourcex, y1), source
+						.getRGB(x1, y1), xdiff);
 
 				rgb = getRGBInterpolation(rgb1, rgb2, ydiff);
 
@@ -233,8 +245,7 @@ public class ImageFilter {
 		return point / scale;
 	}
 
-	private static int getRGBInterpolation(int value1, int value2,
-			double distance) {
+	private static int getRGBInterpolation(int value1, int value2, double distance) {
 		int alpha1 = (value1 & 0xFF000000) >>> 24;
 		int red1 = (value1 & 0x00FF0000) >> 16;
 		int green1 = (value1 & 0x0000FF00) >> 8;

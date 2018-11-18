@@ -1,6 +1,10 @@
 package io.starter.ignite.generator.DMLgenerator;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.starter.toolkit.StringTool;
 
 /**
  * Create Table: CREATE TABLE `big_table` ( `TABLE_CATALOG` varchar(512)
@@ -42,50 +46,55 @@ import java.util.*;
 
 public class Table {
 
-	public static final Map<String, String> myMap;
-	public static final boolean SETTING_COLUMNS_UPPERCASED = false;
+	public static final Map<String, String>	myMap;
+	public static final boolean				SETTING_COLUMNS_UPPERCASED	= false;
 
 	static {
 		Map<String, String> aMap = new HashMap<String, String>();
 
-		aMap.put("Integer.fkid",
-				"INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Auto Incrementing PK'");
-		aMap.put("Integer",
-				"bigint(21) unsigned NOT NULL DEFAULT '0' COMMENT 'Auto GEN Integer'");
-		aMap.put("int",
-				"bigint(21) unsigned NOT NULL DEFAULT '0' COMMENT 'Auto GEN int'");
-		aMap.put(
-				"String",
-				"varchar(1024) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT 'Auto GEN String'");
-		aMap.put("Double",
-				"bigint(21) unsigned DEFAULT NULL DEFAULT 0.0 COMMENT 'Auto GEN Double'");
-		aMap.put("Long",
-				"bigint(21) unsigned DEFAULT NULL DEFAULT 0 COMMENT 'Auto GEN Long'");
-		aMap.put("Date",
-				"Date unsigned DEFAULT NULL DEFAULT '' COMMENT 'Auto GEN Date'");
-		aMap.put("Ingeter.pkid",
-				"`id` int(14) unsigned NOT NULL AUTO_INCREMENT," + "/r/n"
-						+ "PRIMARY KEY (`id`), COMMENT 'Auto GEN Integer.pkid'");
+		aMap.put("Integer.fkid", "INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Auto Incrementing PK'");
+		aMap.put("Integer", "bigint(21) unsigned NOT NULL DEFAULT '0' COMMENT 'Auto GEN Integer'");
+		aMap.put("int", "bigint(21) unsigned NOT NULL DEFAULT '0' COMMENT 'Auto GEN int'");
+		aMap.put("String", "varchar(1024) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT 'Auto GEN String'");
+		aMap.put("Double", "bigint(21) unsigned DEFAULT NULL DEFAULT 0.0 COMMENT 'Auto GEN Double'");
+		aMap.put("Long", "bigint(21) unsigned DEFAULT NULL DEFAULT 0 COMMENT 'Auto GEN Long'");
+		aMap.put("Date", "Date unsigned DEFAULT NULL DEFAULT '' COMMENT 'Auto GEN Date'");
+		aMap.put("Ingeter.pkid", "`id` int(14) unsigned NOT NULL AUTO_INCREMENT,"
+				+ "/r/n"
+				+ "PRIMARY KEY (`id`), COMMENT 'Auto GEN Integer.pkid'");
 
-		aMap.put("pkid",
-				"PRIMARY KEY (`ID`), UNIQUE INDEX `ID_UNIQUE` (`ID` ASC));");
+		aMap.put("pkid", "PRIMARY KEY (`ID`), UNIQUE INDEX `ID_UNIQUE` (`ID` ASC));");
 
 		myMap = Collections.unmodifiableMap(aMap);
 	}
 
-	public static String CREATE_TABLE = "CREATE TABLE";
-	public static String CREATE_TABLE_BEGIN_BLOCK = "(";
-	public static String CREATE_TABLE_END_BLOCK = ");";
+	public static String	TABLE_NAME_PREFIX			= "ignite_";
+	public static String	CREATE_TABLE				= "CREATE TABLE";
+	public static String	CREATE_TABLE_BEGIN_BLOCK	= "(";
+	public static String	CREATE_TABLE_END_BLOCK		= ");";
+	public static String	DROP_TABLE					= "DROP TABLE";
+
+	public static String generateTableDropDML(String className) {
+		className = convertToDBSyntax(className);
+		return DROP_TABLE + " " + className + " \r\n";
+	}
 
 	public static String generateTableBeginningDML(String className) {
 
+		className = convertToDBSyntax(className);
+
+		return CREATE_TABLE + " " + className + CREATE_TABLE_BEGIN_BLOCK
+				+ " \r\n";
+	}
+
+	public static String convertToDBSyntax(String className) {
+		className = TABLE_NAME_PREFIX
+				+ StringTool.convertJavaStyletoDBConvention(className);
 		if (SETTING_COLUMNS_UPPERCASED)
 			className = className.toUpperCase();
 		else
 			className = className.toLowerCase();
-
-		String dml = CREATE_TABLE + " " + className + CREATE_TABLE_BEGIN_BLOCK
-				+ " \r\n";
-		return dml;
+		return className;
 	}
+
 }

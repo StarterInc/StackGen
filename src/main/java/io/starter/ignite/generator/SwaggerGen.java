@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.codegen.ClientOptInput;
 import io.swagger.codegen.DefaultGenerator;
 import io.swagger.codegen.config.CodegenConfigurator;
@@ -16,8 +19,11 @@ import io.swagger.codegen.config.CodegenConfigurator;
  */
 public class SwaggerGen extends DefaultGenerator implements Configuration {
 
-	DefaultGenerator	generator		= new DefaultGenerator();
-	CodegenConfigurator	configurator	= CodegenConfigurator
+	protected static final Logger	logger			= LoggerFactory
+			.getLogger(SwaggerGen.class);
+
+	DefaultGenerator				generator		= new DefaultGenerator();
+	CodegenConfigurator				configurator	= CodegenConfigurator
 			.fromFile(CONFIG_FILE);
 
 	/**
@@ -30,8 +36,7 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 
 		spec = SPEC_LOCATION + spec;
 
-		io.starter.ignite.util.Logger
-				.log("Create Swagger Client Apis for:" + spec);
+		logger.debug("Create Swagger Client Apis for:" + spec);
 		// attempt to read from config file
 
 		// if a config file wasn't specified or we were unable to

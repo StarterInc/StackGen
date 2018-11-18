@@ -7,10 +7,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class StreamGobbler extends Thread {
-	InputStream is;
-	String type;
-	OutputStream os;
+
+	protected static final Logger	logger	= LoggerFactory
+			.getLogger(StreamGobbler.class);
+
+	InputStream						is;
+	String							type;
+	OutputStream					os;
 
 	StreamGobbler(InputStream is, String type) {
 		this(is, type, null);
@@ -22,6 +29,7 @@ class StreamGobbler extends Thread {
 		this.os = redirect;
 	}
 
+	@Override
 	public void run() {
 		try {
 			PrintWriter pw = null;
@@ -34,7 +42,7 @@ class StreamGobbler extends Thread {
 			while ((line = br.readLine()) != null) {
 				if (pw != null)
 					pw.println(line);
-				io.starter.ignite.util.Logger.log(type + ">" + line);
+				logger.debug(type + ">" + line);
 			}
 			if (pw != null)
 				pw.flush();

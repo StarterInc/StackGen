@@ -4,8 +4,8 @@
 package io.starter.ignite.generator;
 
 import org.apache.maven.cli.MavenCli;
-
-import io.starter.ignite.util.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -13,6 +13,9 @@ import io.starter.ignite.util.Logger;
  *
  */
 public class MavenBuilder implements Configuration {
+
+	protected static final Logger logger = LoggerFactory
+			.getLogger(MavenBuilder.class);
 
 	/**
 	 * @param args
@@ -25,9 +28,8 @@ public class MavenBuilder implements Configuration {
 	 * run the Maven build
 	 */
 	public static void build() {
-		io.starter.ignite.util.Logger
-				.log("========= BEGIN MavenBuilder ========= : "
-						+ JAVA_GEN_FOLDER);
+		logger.debug("========= BEGIN MavenBuilder ========= : "
+				+ JAVA_GEN_PATH);
 
 		MavenCli cli = new MavenCli();
 		System.setProperty("maven.multiModuleProjectDirectory", "true");
@@ -36,11 +38,10 @@ public class MavenBuilder implements Configuration {
 		// TODO: use spring-boot
 		try {
 			cli.doMain(new String[] { "clean",
-					"install" }, JAVA_GEN_FOLDER, System.out, System.out);
-			io.starter.ignite.util.Logger
-					.log("========= END MavenBuilder =========");
+					"install" }, JAVA_GEN_PATH, System.out, System.out);
+			logger.debug("========= END MavenBuilder =========");
 		} catch (Exception e) {
-			Logger.warn("Could not build: " + e);
+			logger.warn("Could not build: " + e);
 		}
 	}
 

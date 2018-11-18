@@ -3,10 +3,9 @@
 
 <generatorConfiguration>
   <context id="context1">
-    <plugin type="io.starter.ignite.generator.MyBatisIgnitePluginAdapter">
-      <property name="annotationClass" value="io.starter.ignite.security.securefield.SecureField" />
-      <property name="annotationString" value="@SecureField" />
-    </plugin>
+    <!-- TODO <plugin type="io.starter.ignite.generator.MyBatisIgnitePluginAdapter"> 
+			<property name="annotationClass" value="io.starter.ignite.security.securefield.SecureField" 
+			/> <property name="annotationString" value="@SecureField" /> </plugin> -->
     <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://${RDS_HOSTNAME}:3306/${RDS_DB_NAME}?autoReconnect=true" userId="${RDS_USERNAME}" password="${RDS_PASSWORD}" />
     <!-- Model Class -->
     <javaModelGenerator targetPackage="io.starter.ignite.model.dao" targetProject="${MYBATIS_MAIN}main/java">
@@ -14,148 +13,59 @@
       <property name="trimStrings" value="true" />
       <property name="rootClass" value="io.starter.ignite.model.DataModelBase" />
       <property name="type" value="io.starter.ignite.process.MyBatisIgnitePluginAdapter" />
+      <property name="addRemarkComments" value="true" />
     </javaModelGenerator>
     <sqlMapGenerator targetPackage="io.starter.ignite.model.sqlmaps" targetProject="${MYBATIS_MAIN}resources/MyBatis_SQL_Maps" />
-    <javaClientGenerator targetPackage="io.starter.ignite.model" targetProject="${MYBATIS_MAIN}main/java" type="XMLMAPPER" />
+    <javaClientGenerator targetPackage="io.starter.ignite.model.dao" targetProject="${MYBATIS_MAIN}main/java" type="XMLMAPPER" />
     <table schema="${RDS_DB_NAME}" tableName="user">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".TEMPORALQUERY">
+    <table schema="ignite" tableName="ignite_order">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".LOCALDATE">
+    <table schema="ignite" tableName="ignite_audit_log">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".LOCALTIME">
+    <table schema="ignite" tableName="ignite_organization">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".LOCALDATETIME">
+    <table schema="ignite" tableName="ignite_user">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".ZONEOFFSET">
+    <table schema="ignite" tableName="ignite_maket_data">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".OFFSETDATETIME">
+    <table schema="ignite" tableName="ignite_account">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".ORDER$STATUSENUM">
+    <table schema="ignite" tableName="ignite_ledger_entry">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".ORDER">
+    <table schema="ignite" tableName="ignite_work_flows">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".AUDITLOG">
+    <table schema="ignite" tableName="ignite_contact_method">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".ORGANIZATION">
+    <table schema="ignite" tableName="ignite_location">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".USER">
+    <table schema="ignite" tableName="ignite_user">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".MAKETDATA">
+    <table schema="ignite" tableName="ignite_organization">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".TEMPORALQUERY">
+    <table schema="ignite" tableName="ignite_content">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".LOCALDATE">
+    <table schema="ignite" tableName="ignite_organization">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".LOCALTIME">
+    <table schema="ignite" tableName="ignite_exchange">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName=".LOCALDATETIME">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".ZONEOFFSET">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".OFFSETDATETIME">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".ACCOUNT$STATUSENUM">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".ACCOUNT">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".TEMPORALQUERY">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LOCALDATE">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LOCALTIME">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LOCALDATETIME">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".ZONEOFFSET">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".OFFSETDATETIME">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LEDGERENTRY$STATUSENUM">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LEDGERENTRY$TRANSACTIONTYPEENUM">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LEDGERENTRY">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".WORKFLOWS">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".CONTACTMETHOD$MESSAGETYPEENUM">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".TEMPORALQUERY">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LOCALDATE">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LOCALTIME">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LOCALDATETIME">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".ZONEOFFSET">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".OFFSETDATETIME">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".CONTACTMETHOD$STATUSENUM">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".CONTACTMETHOD">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".LOCATION">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".USER">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".ORGANIZATION">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".CONTENT">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".ORGANIZATION">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".EXCHANGE">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName=".TRADES">
+    <table schema="ignite" tableName="ignite_trades">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
   </context>
@@ -164,11 +74,11 @@
 		password="abcdefg"> </jdbcConnection> <javaModelGenerator targetPackage="io.starter.wp_model" 
 		targetProject="${RDS_DB_NAME}/src/main/java" /> <sqlMapGenerator targetPackage="io.starter.wp_sqlmaps" 
 		targetProject="${RDS_DB_NAME}/src/main/java"></sqlMapGenerator> <javaClientGenerator 
-		targetPackage="io.starter.wp_dao" targetProject="${RDS_DB_NAME}/src/main/java" type="XMLMAPPER" 
-		/> <table schema="${RDS_DB_NAME}" tableName="wp_posts"> <generatedKey column="ID" 
-		sqlStatement="JDBC" /> </table> <table schema="${RDS_DB_NAME}" tableName="wp_term_taxonomy"> 
-		<generatedKey column="term_taxonomy_id" sqlStatement="JDBC" /> </table> <table 
-		schema="${RDS_DB_NAME}" tableName="wp_postmeta"> <generatedKey column="meta_id" 
-		sqlStatement="JDBC" /> </table> </context> -->
+		targetPackage="io.starter.wp_dao" targetProject="${RDS_DB_NAME}/src/main/java" 
+		type="XMLMAPPER" /> <table schema="${RDS_DB_NAME}" tableName="wp_posts"> 
+		<generatedKey column="ID" sqlStatement="JDBC" /> </table> <table schema="${RDS_DB_NAME}" 
+		tableName="wp_term_taxonomy"> <generatedKey column="term_taxonomy_id" sqlStatement="JDBC" 
+		/> </table> <table schema="${RDS_DB_NAME}" tableName="wp_postmeta"> <generatedKey 
+		column="meta_id" sqlStatement="JDBC" /> </table> </context> -->
 </generatorConfiguration>
 

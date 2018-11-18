@@ -3,21 +3,25 @@
  */
 package io.starter.ignite.generator;
 
-import org.junit.Ignore;
-
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * test the app code generator
  */
 public class MainTest {
 
+	protected static final Logger logger = LoggerFactory
+			.getLogger(MainTest.class);
+
 	@Before
 	public void setUp() {
-		io.starter.ignite.util.Logger.error("Setting up generatorTest");
+		logger.error("Setting up generatorTest");
 	}
 
 	@Test
@@ -39,7 +43,7 @@ public class MainTest {
 		try {
 			ReactGen.main(null);
 		} catch (Exception e) {
-			io.starter.ignite.util.Logger.error("ReactGen failed: " + e);
+			logger.error("ReactGen failed: " + e);
 		}
 	}
 }

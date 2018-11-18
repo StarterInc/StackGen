@@ -1,6 +1,5 @@
 package io.starter.ignite.generator;
 
-import io.starter.ignite.util.DOMEditor;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.lang.reflect.Field;
@@ -12,11 +11,18 @@ import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.Namespace;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
+
+import io.starter.ignite.generator.DMLgenerator.Table;
+import io.starter.ignite.util.DOMEditor;
 
 /**
  * responsible for generating MyBatis config
@@ -26,16 +32,19 @@ import org.mybatis.generator.internal.DefaultShellCallback;
  */
 public class MyBatisGen extends Gen implements Generator {
 
-	Document jdo = null;
+	protected static final Logger	logger	= LoggerFactory
+			.getLogger(MyBatisGen.class);
+
+	Document						jdo		= null;
 
 	public static Map createMyBatis(Class c, MyBatisGen gen) throws Exception {
 
 		// projectDir.mkdirs();
-		io.starter.ignite.util.Logger.log("Generate MyBatis...");
+		logger.debug("Generate MyBatis...");
 
 		Map classesToGenerate = gen.processClasses(c, null, gen);
 
-		io.starter.ignite.util.Logger.log("Write updated XML...");
+		logger.debug("Write updated XML...");
 
 		return classesToGenerate;
 
@@ -51,17 +60,19 @@ public class MyBatisGen extends Gen implements Generator {
 		File configFile = new File(MYBATIS_GEN_CONFIG_OUT);
 
 		ConfigurationParser cp = new ConfigurationParser(warnings);
-		org.mybatis.generator.config.Configuration config = cp.parseConfiguration(configFile);
+		org.mybatis.generator.config.Configuration config = cp
+				.parseConfiguration(configFile);
 
 		DefaultShellCallback callback = new DefaultShellCallback(overwrite);
 
-		MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
+		MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config,
+				callback, warnings);
 
 		ProgressCallback cb = null;
 
 		myBatisGenerator.generate(cb);
 		for (String warning : warnings) {
-			io.starter.ignite.util.Logger.error("WARNING: MyBatis Generation: " + warning);
+			logger.error("WARNING: MyBatis Generation: " + warning);
 		}
 	}
 
@@ -78,12 +89,12 @@ public class MyBatisGen extends Gen implements Generator {
 	}
 
 	@Override
-	public Object createValue(Field f) {
+	public Object createMember(Field f) {
 		return null;
 	}
 
 	@Override
-	public void generate(String className, List fieldList, List getters, List setters) throws Exception {
+	public void generate(String className, List<FieldSpec> fieldList, List<MethodSpec> getters, List<MethodSpec> setters) throws Exception {
 		// create a new JDOM Element
 		// generatorConfiguration
 		// <table schema="patriot" tableName="user">
@@ -94,34 +105,32 @@ public class MyBatisGen extends Gen implements Generator {
 		int dotpos = className.lastIndexOf(".");
 		packageName = className.substring(0, dotpos);
 		packageName = "gen." + packageName;
-		className = className.substring(dotpos);
+		className = className.substring(dotpos + 1);
 
-		io.starter.ignite.util.Logger.log("Load XML template...");
+		logger.debug("Load MyBatis XML template...");
 		File configFile = new File(MYBATIS_GEN_CONFIG);
 
 		if (jdo == null) {
-			io.starter.ignite.util.Logger.error("Reading MyBatis Generator Config Template: " + MYBATIS_GEN_CONFIG);
+			logger.debug("Parse MyBatis Generator Config Template: "
+					+ MYBATIS_GEN_CONFIG);
 			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
 		}
-		Element el = new Element("table").setText("1000").setAttribute("schema", SCHEMA_NAME).setAttribute("tableName",
-				className.toUpperCase());
+		Element el = new Element("table").setText("1000")
+				.setAttribute("schema", SCHEMA_NAME)
+				.setAttribute("tableName", Table.convertToDBSyntax(className));
+
 		if (true) { // (setters.size() > 0) {
-			Element el2 = new Element("generatedKey").setAttribute("column", "id").setAttribute("sqlStatement", "JDBC");
+			Element el2 = new Element("generatedKey")
+					.setAttribute("column", "id")
+					.setAttribute("sqlStatement", "JDBC");
 			el.setContent(el2);
 		}
-
-		final Namespace ns = Namespace.getNamespace("mybatis");
 
 		Element rootElement = jdo.getRootElement();
 		List<Element> listEmpElement = rootElement.getChildren();
 
 		// loop through to edit every Employee element
 		for (Element empElement : listEmpElement) {
-
-			List<Element> listEmpElementChildren = empElement.getChildren();
-
-			// change the name to BLOCK letters
-			String name = empElement.getChildText("table", ns);
 			if (empElement.getName().equals("context"))
 				empElement.addContent(el);
 
@@ -155,22 +164,26 @@ public class MyBatisGen extends Gen implements Generator {
 	}
 
 	static void createMyBatisFromModelFolder() throws Exception {
-		io.starter.ignite.util.Logger.log("Iterate Swagger Entities and create Tables...");
+		logger.debug("Iterate Swagger Entities and create Tables...");
 		File[] modelFiles = Gen.getModelJavaFiles();
 		MyBatisGen gen = new MyBatisGen();
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));
 			cn = Configuration.MODEL_PACKAGE + "." + cn;
-			io.starter.ignite.util.Logger.log("Loading Classes from ModelFile: " + cn);
-			// Create a new custom class loader, pointing to the directory that contains the
+			logger.debug("Loading Classes from ModelFile: " + cn);
+			// Create a new custom class loader, pointing to the
+			// directory that contains the
 			// compiled
-			// classes, this should point to the top of the package structure!
-			URLClassLoader classLoader = new URLClassLoader(new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });
+			// classes, this should point to the top of the package
+			// structure!
+			URLClassLoader classLoader = new URLClassLoader(new URL[] {
+					new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });
 
 			Class<?> loadedClass = classLoader.loadClass(cn);
 			createMyBatis(loadedClass, gen);
+			classLoader.close();
 		}
-		io.starter.ignite.util.Logger.log("Run Generation Script...");
+		logger.debug("Run Generation Script...");
 		generate();
 	}
 

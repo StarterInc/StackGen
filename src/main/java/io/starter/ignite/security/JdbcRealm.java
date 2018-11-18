@@ -1,18 +1,23 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
+ * Licensed to the Apache Software Foundation (ASF) under
+ * one
+ * or more contributor license agreements. See the NOTICE
+ * file
  * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
+ * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * "License"); you may not use this file except in
+ * compliance
+ * with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
+ * Unless required by applicable law or agreed to in
+ * writing,
+ * software distributed under the License is distributed on
+ * an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
+ * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
@@ -69,6 +74,9 @@ import org.slf4j.LoggerFactory;
  */
 public class JdbcRealm extends AuthorizingRealm {
 
+	protected static final Logger	logger								= LoggerFactory
+			.getLogger(JdbcRealm.class);
+
 	// TODO - complete JavaDoc
 
 	/*--------------------------------------------
@@ -77,26 +85,27 @@ public class JdbcRealm extends AuthorizingRealm {
 	/**
 	 * The default query used to retrieve account data for the user.
 	 */
-	protected static final String DEFAULT_AUTHENTICATION_QUERY = "select password from users where username = ?";
+	protected static final String	DEFAULT_AUTHENTICATION_QUERY		= "select password from users where username = ?";
 
 	/**
 	 * The default query used to retrieve account data for the user when
 	 * {@link #saltStyle} is COLUMN.
 	 */
-	protected static final String DEFAULT_SALTED_AUTHENTICATION_QUERY = "select password, password_salt from users where username = ?";
+	protected static final String	DEFAULT_SALTED_AUTHENTICATION_QUERY	= "select password, password_salt from users where username = ?";
 
 	/**
 	 * The default query used to retrieve the roles that apply to a user.
 	 */
-	protected static final String DEFAULT_USER_ROLES_QUERY = "select role_name from user_roles where username = ?";
+	protected static final String	DEFAULT_USER_ROLES_QUERY			= "select role_name from user_roles where username = ?";
 
 	/**
 	 * The default query used to retrieve permissions that apply to a particular
 	 * role.
 	 */
-	protected static final String DEFAULT_PERMISSIONS_QUERY = "select permission from roles_permissions where role_name IN (?)";
+	protected static final String	DEFAULT_PERMISSIONS_QUERY			= "select permission from roles_permissions where role_name IN (?)";
 
-	private static final Logger log = LoggerFactory.getLogger(JdbcRealm.class);
+	private static final Logger		log									= LoggerFactory
+			.getLogger(JdbcRealm.class);
 
 	/**
 	 * Password hash salt configuration.
@@ -115,17 +124,17 @@ public class JdbcRealm extends AuthorizingRealm {
 	/*--------------------------------------------
 	|    I N S T A N C E   V A R I A B L E S    |
 	============================================*/
-	protected DataSource dataSource;
+	protected DataSource	dataSource;
 
-	protected String authenticationQuery = DEFAULT_AUTHENTICATION_QUERY;
+	protected String		authenticationQuery			= DEFAULT_AUTHENTICATION_QUERY;
 
-	protected String userRolesQuery = DEFAULT_USER_ROLES_QUERY;
+	protected String		userRolesQuery				= DEFAULT_USER_ROLES_QUERY;
 
-	protected String permissionsQuery = "select permission from roles_permissions where role_name IN (";
+	protected String		permissionsQuery			= "select permission from roles_permissions where role_name IN (";
 
-	protected boolean permissionsLookupEnabled = false;
+	protected boolean		permissionsLookupEnabled	= false;
 
-	protected SaltStyle saltStyle = SaltStyle.NO_SALT;
+	protected SaltStyle		saltStyle					= SaltStyle.NO_SALT;
 
 	/*--------------------------------------------
 	|         C O N S T R U C T O R S           |
@@ -238,8 +247,7 @@ public class JdbcRealm extends AuthorizingRealm {
 	============================================*/
 
 	@Override
-	protected AuthenticationInfo doGetAuthenticationInfo(
-			AuthenticationToken token) throws AuthenticationException {
+	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 
 		UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 		String username = upToken.getUsername();
@@ -262,7 +270,8 @@ public class JdbcRealm extends AuthorizingRealm {
 				password = getPasswordForUser(conn, username)[0];
 				break;
 			case CRYPT:
-				// TODO: separate password and hash from getPasswordForUser[0]
+				// TODO: separate password and hash from
+				// getPasswordForUser[0]
 				throw new ConfigurationException("Not implemented yet");
 				// break;
 			case COLUMN:
@@ -276,8 +285,8 @@ public class JdbcRealm extends AuthorizingRealm {
 			}
 
 			if (password == null) {
-				throw new UnknownAccountException("No account found for user ["
-						+ username + "]");
+				throw new UnknownAccountException(
+						"No account found for user [" + username + "]");
 			}
 
 			info = new SimpleAuthenticationInfo(username,
@@ -303,8 +312,7 @@ public class JdbcRealm extends AuthorizingRealm {
 		return info;
 	}
 
-	private String[] getPasswordForUser(Connection conn, String username)
-			throws SQLException {
+	private String[] getPasswordForUser(Connection conn, String username) throws SQLException {
 
 		String[] result;
 		boolean returningSeparatedSalt = false;
@@ -328,7 +336,8 @@ public class JdbcRealm extends AuthorizingRealm {
 			// Execute query
 			rs = ps.executeQuery();
 
-			// Loop over results - although we are only expecting one result,
+			// Loop over results - although we are only expecting one
+			// result,
 			// since usernames should be unique
 			boolean foundResult = false;
 			while (rs.next()) {
@@ -336,8 +345,8 @@ public class JdbcRealm extends AuthorizingRealm {
 				// Check to ensure only one row is processed
 				if (foundResult) {
 					throw new AuthenticationException(
-							"More than one user row found for user ["
-									+ username + "]. Usernames must be unique.");
+							"More than one user row found for user [" + username
+									+ "]. Usernames must be unique.");
 				}
 
 				result[0] = rs.getString(1);
@@ -363,8 +372,7 @@ public class JdbcRealm extends AuthorizingRealm {
 	 * @see #getAuthorizationInfo(org.apache.shiro.subject.PrincipalCollection)
 	 */
 	@Override
-	protected AuthorizationInfo doGetAuthorizationInfo(
-			PrincipalCollection principals) {
+	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 
 		// null usernames are invalid
 		if (principals == null) {
@@ -405,8 +413,7 @@ public class JdbcRealm extends AuthorizingRealm {
 
 	}
 
-	protected Set<String> getRoleNamesForUser(Connection conn, String username)
-			throws SQLException {
+	protected Set<String> getRoleNamesForUser(Connection conn, String username) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Set<String> roleNames = new LinkedHashSet<String>();
@@ -450,12 +457,10 @@ public class JdbcRealm extends AuthorizingRealm {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected Set<String> getPermissions(Connection conn, String username,
-			Collection<String> roleNames) throws SQLException {
+	protected Set<String> getPermissions(Connection conn, String username, Collection<String> roleNames) throws SQLException {
 
 		if (cachedPermissions.get(username) != null) {
-			io.starter.ignite.util.Logger.log("JdbcRealm permissions cache hit for: "
-					+ username);
+			logger.debug("JdbcRealm permissions cache hit for: " + username);
 			return (Set) cachedPermissions.get(username);
 		}
 		PreparedStatement ps = null;

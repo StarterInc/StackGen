@@ -1,22 +1,28 @@
 package io.starter.ignite.util;
 
-import io.starter.ignite.generator.Configuration;
-import io.starter.ignite.generator.Main;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.starter.ignite.generator.Configuration;
+import io.starter.ignite.generator.Main;
+
 // class StreamGobbler omitted for brevity
 public class RunCommand {
 
-	// whitelist the commands this thing will run
-	private static List<String> WHITE_LIST = new ArrayList<>(Arrays.asList(
-			"ls", "npm", "react-native", "javac"));
+	protected static final Logger	logger		= LoggerFactory
+			.getLogger(RunCommand.class);
 
-	private static String cmd = "react-native";
+	// whitelist the commands this thing will run
+	private static List<String>		WHITE_LIST	= new ArrayList<>(
+			Arrays.asList("ls", "npm", "react-native", "javac"));
+
+	private static String			cmd			= "react-native";
 
 	public static void main(String args[]) {
 
@@ -32,7 +38,7 @@ public class RunCommand {
 		// args[2] = "/usr/local/bin/react-native run-ios";
 
 		if (args.length < 1) {
-			io.starter.ignite.util.Logger.log("USAGE: java TestExec \"cmd\"");
+			logger.debug("USAGE: java TestExec \"cmd\"");
 			System.exit(1);
 		}
 
@@ -55,24 +61,25 @@ public class RunCommand {
 
 			// any error???
 			int exitVal = proc.waitFor();
-			io.starter.ignite.util.Logger.log("ExitValue: " + exitVal);
+			logger.debug("ExitValue: " + exitVal);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 	}
 
-	public static void runSafe(String string, String[] cmdarray)
-			throws IOException {
-		io.starter.ignite.util.Logger.error("Running: " + string);
-		// check to see if the command is in our list of safe commands
+	public static void runSafe(String string, String[] cmdarray) throws IOException {
+		logger.error("Running: " + string);
+		// check to see if the command is in our list of safe
+		// commands
 		if (!WHITE_LIST.contains(cmd.toLowerCase())) {
-			io.starter.ignite.util.Logger.error("RunCommand could not run: " + cmd
+			logger.error("RunCommand could not run: " + cmd
 					+ ".  Command not whitelisted.");
 			return;
 		}
 
 		ProcessBuilder builder = new ProcessBuilder(cmdarray);
-		builder.directory(new File(Main.REACT_EXPORT_FOLDER + "/starter/").getAbsoluteFile()); // root
+		builder.directory(new File(Main.REACT_EXPORT_FOLDER + "/starter/")
+				.getAbsoluteFile()); // root
 		builder.redirectErrorStream(true);
 		builder.start();
 	}
@@ -85,7 +92,7 @@ public class RunCommand {
 		// test
 		String sourcepath = Main.JAVA_GEN_SRC_FOLDER
 				+ "/gen/io/starter/ignite/model/";
-		io.starter.ignite.util.Logger.log("RunCommand Compiling: " + sourcepath);
+		logger.debug("RunCommand Compiling: " + sourcepath);
 		String[] cmdarray = null;
 		if (args != null)
 			// {

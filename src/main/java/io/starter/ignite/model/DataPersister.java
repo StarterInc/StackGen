@@ -3,19 +3,25 @@
  */
 package io.starter.ignite.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author john
  *
  */
 public class DataPersister {
 
+	protected static final Logger logger = LoggerFactory
+			.getLogger(DataPersister.class);
+
 	public static Object read(String valueOf) {
-		io.starter.ignite.util.Logger.log("DataPersister.read: " + valueOf);
+		logger.debug("DataPersister.read: " + valueOf);
 		return valueOf;
 	}
 
 	public static String persist(String clearTextValue) {
-		io.starter.ignite.util.Logger.log("DataPersister.persist: " + clearTextValue);
+		logger.debug("DataPersister.persist: " + clearTextValue);
 		return clearTextValue;
 	}
 }

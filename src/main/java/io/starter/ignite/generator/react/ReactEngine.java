@@ -5,8 +5,15 @@ import java.io.FileReader;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ReactEngine {
-	private ScriptEngine se;
+
+	protected static final Logger	logger	= LoggerFactory
+			.getLogger(ReactEngine.class);
+
+	private ScriptEngine			se;
 
 	// Constructor, sets up React and the Component
 	public ReactEngine() throws Throwable {
@@ -16,19 +23,23 @@ public class ReactEngine {
 		se.eval("var global = this");
 		// eval react.js
 		String fdir = System.getProperty("user.dir");
-		se.eval(new FileReader(fdir + "/WebContent/react/reactjs/node_modules/react/dist/react.js"));
+		se.eval(new FileReader(fdir
+				+ "/WebContent/react/reactjs/node_modules/react/dist/react.js"));
 		// This would also be an external JS file
-		String component = "var MyComponent = React.createClass({" + "	render: function() {"
-				+ "		return React.DOM.div(null, this.props.text)" + "	}" + "});";
+		String component = "var MyComponent = React.createClass({"
+				+ "	render: function() {"
+				+ "		return React.DOM.div(null, this.props.text)" + "	}"
+				+ "});";
 		se.eval(component);
 	}
 
 	// Render the component, which can be called multiple times
 	public void render(String text) throws Throwable {
-		String render = "React.renderToString(React.createFactory(MyComponent)({" +
-		// using JSONObject here would be cleaner obviosuly
+		String render = "React.renderToString(React.createFactory(MyComponent)({"
+				+
+				// using JSONObject here would be cleaner obviosuly
 				"	text: '" + text + "'" + "}))";
-		io.starter.ignite.util.Logger.error(se.eval(render).toString());
+		logger.error(se.eval(render).toString());
 	}
 
 	public static void main(String... args) throws Throwable {
@@ -37,7 +48,8 @@ public class ReactEngine {
 
 		String fdir = System.getProperty("user.dir");
 		// FileReader fir = new FileReader(fdir
-		// + "/WebContent/react/reactjs/node_modules/react/dist/react.js");
+		// +
+		// "/WebContent/react/reactjs/node_modules/react/dist/react.js");
 		// String fx = new StringReader (fir).
 
 	}

@@ -6,11 +6,30 @@
     <packaging>jar</packaging>
     <name>{{artifactId}}</name>
     <version>{{artifactVersion}}</version>
+    <url>{{artifactUrl}}</url>
+    <description>{{artifactDescription}}</description>
     <scm>
-        <connection>scm:git:git@github.com:swagger-api/swagger-mustache.git</connection>
-        <developerConnection>scm:git:git@github.com:swagger-api/swagger-codegen.git</developerConnection>
-        <url>https://github.com/swagger-api/swagger-codegen</url>
+        <connection>{{scmConnection}}</connection>
+        <developerConnection>{{scmDeveloperConnection}}</developerConnection>
+        <url>{{scmUrl}}</url>
     </scm>
+
+    <licenses>
+        <license>
+            <name>{{licenseName}}</name>
+            <url>{{licenseUrl}}</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>{{developerName}}</name>
+            <email>{{developerEmail}}</email>
+            <organization>{{developerOrganization}}</organization>
+            <organizationUrl>{{developerOrganizationUrl}}</organizationUrl>
+        </developer>
+    </developers>
 
     <build>
         <plugins>
@@ -118,7 +137,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.6.1</version>
                 <configuration>
                     {{#java8}}
                         <source>
@@ -136,26 +155,95 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>sign-artifacts</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
+
+      <!-- STARTER DEPS (resources/Java/libraries/jersey2)-->
+       <dependency>
+         <groupId>io.starter</groupId>
+         <artifactId>StarterIgnite</artifactId>
+         <version>1.2.1-SNAPSHOT</version>
+       </dependency>
+
+       <dependency>
+           <groupId>com.github.joschi.jackson</groupId>
+           <artifactId>jackson-datatype-threetenbp</artifactId>
+           <version>2.5.1-SNAPSHOT</version>
+       </dependency>
+
+       <!-- /STARTER DEPS -->
+
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>${swagger-core-version}</version>
         </dependency>
+
         <!-- HTTP client: jersey-client -->
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>${resteasy-version}</version>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey-version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
-            <version>${resteasy-version}</version>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey-version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+
         <!-- JSON processing: jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -174,69 +262,64 @@
         </dependency>
         {{#withXml}}
 
-        <!-- XML processing: Jackson -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-            <version>${jackson-version}</version>
-        </dependency>
+            <!-- XML processing: JAXB -->
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-jaxb</artifactId>
+                <version>${jersey-version}</version>
+            </dependency>
 
         {{/withXml}}
+        {{#joda}}
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-joda</artifactId>
+                <version>${jackson-version}</version>
+            </dependency>
+        {{/joda}}
         {{#java8}}
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson-version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson-version}</version>
+            </dependency>
         {{/java8}}
+        {{#threetenbp}}
+            <dependency>
+                <groupId>com.github.joschi.jackson</groupId>
+                <artifactId>jackson-datatype-threetenbp</artifactId>
+                <version>${jackson-version}</version>
+            </dependency>
+        {{/threetenbp}}
         {{^java8}}
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-joda</artifactId>
-            <version>${jackson-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${jodatime-version}</version>
-        </dependency>
-
-        <!-- Base64 encoding that works in both JVM and Android -->
-        <dependency>
-            <groupId>com.brsanthu</groupId>
-            <artifactId>migbase64</artifactId>
-            <version>2.2</version>
-        </dependency>
+            <!-- Base64 encoding that works in both JVM and Android -->
+            <dependency>
+                <groupId>com.brsanthu</groupId>
+                <artifactId>migbase64</artifactId>
+                <version>2.2</version>
+            </dependency>
         {{/java8}}
-
         {{#supportJava6}}
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons_lang3_version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons_io_version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons_lang3_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons_io_version}</version>
+            </dependency>
         {{/supportJava6}}
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson2-provider</artifactId>
-            <version>3.1.3.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.joschi.jackson</groupId>
-            <artifactId>jackson-datatype-threetenbp</artifactId>
-            <version>${jackson-version}</version>
-        </dependency>
+        {{#useBeanValidation}}
+            <!-- Bean Validation API support -->
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>1.1.0.Final</version>
+                <scope>provided</scope>
+            </dependency>
+        {{/useBeanValidation}}
         <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -248,15 +331,15 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <swagger-core-version>1.5.18</swagger-core-version>
-        <resteasy-version>3.1.3.Final</resteasy-version>
-        <jackson-version>2.6.4</jackson-version>
-        {{^java8}}
-        <jodatime-version>2.9.9</jodatime-version>
-        {{/java8}}
-        {{#supportJava6}}
-        <commons_io_version>2.5</commons_io_version>
-        <commons_lang3_version>3.6</commons_lang3_version>
+        {{^supportJava6}}
+            <jersey-version>2.25.1</jersey-version>
         {{/supportJava6}}
+        {{#supportJava6}}
+            <jersey-version>2.6</jersey-version>
+            <commons_io_version>2.5</commons_io_version>
+            <commons_lang3_version>3.6</commons_lang3_version>
+        {{/supportJava6}}
+        <jackson-version>{{^threetenbp}}2.7.5{{/threetenbp}}{{#threetenbp}}2.6.4{{/threetenbp}}</jackson-version>
         <maven-plugin-version>1.0.0</maven-plugin-version>
         <junit-version>4.12</junit-version>
     </properties>

@@ -59,7 +59,7 @@ public class FileUtil {
 
 			in.close();
 			out.close();
-			// io.starter.ignite.util.Logger.log("File copied from " + src + " to " + dest);
+			// logger.debug("File copied from " + src + " to " + dest);
 		}
 	}
 

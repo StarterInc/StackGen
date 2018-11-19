@@ -89,10 +89,10 @@ public class DBGen extends Gen implements Generator {
 			colTypeName = "Integer.fkid";
 
 		String dml = Table.myMap.get(colTypeName);
-		if (dml != null)
-			return colName + " " + dml;
+		if (dml == null)
+			dml = Table.myMap.get("String");
 
-		return null;
+		return colName + " " + dml;
 	}
 
 	Connection	conn		= null;

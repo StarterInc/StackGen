@@ -93,6 +93,14 @@ public interface Configuration extends SystemConstants {
 			.getProperty("user.dir")
 			+ "/src/resources/MyBatisGeneratorConfig.xml";
 
+	public static final String		MYBATIS_CONFIG				= System
+			.getProperty("user.dir")
+			+ "/src/resources/templates/MyBatisConfig.xml";
+
+	public static final String		MYBATIS_CONFIG_OUT			= System
+			.getProperty("user.dir") + JAVA_GEN_FOLDER
+			+ "/src/main/resources/MyBatisConfig.xml";
+
 	public static final String		SCHEMA_NAME					= "ignite";
 
 	// ## React

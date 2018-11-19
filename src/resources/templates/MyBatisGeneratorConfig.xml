@@ -26,16 +26,13 @@
 			<property name="addRemarkComments" value="true" />
 		</javaModelGenerator>
 
-		<sqlMapGenerator
-			targetPackage="io.starter.ignite.model.sqlmaps"
-			targetProject="${MYBATIS_MAIN}resources/MyBatis_SQL_Maps" />
+		<sqlMapGenerator targetPackage="io.starter.sqlmaps"
+			targetProject="${MYBATIS_MAIN}main/resources" />
 		<javaClientGenerator
 			targetPackage="io.starter.ignite.model.dao"
 			targetProject="${MYBATIS_MAIN}main/java" type="XMLMAPPER" />
 
-		<table schema="${RDS_DB_NAME}" tableName="user">
-			<generatedKey column="id" sqlStatement="JDBC" />
-		</table>
+		<table schema="ignite" tableName="act_id_user" />
 
 	</context>
 

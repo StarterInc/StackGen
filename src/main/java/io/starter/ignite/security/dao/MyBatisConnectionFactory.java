@@ -23,10 +23,11 @@ public class MyBatisConnectionFactory {
 	private static SqlSessionFactory	sqlSessionFactory;
 	private static SqlSessionFactory	wp_SqlSessionFactory;
 
-	protected static final Logger		logger			= LoggerFactory
+	protected static final Logger		logger				= LoggerFactory
 			.getLogger(MyBatisConnectionFactory.class);
+	private static final String			MYBATIS_CONFIG_FILE	= "MyBatisConfig.xml";
 
-	public static String				DATABASE_CHOICE	= "production";
+	public static String				DATABASE_CHOICE		= "production";
 
 	static {
 		if (System.getProperty("PARAM1") != null && System.getProperty("PARAM1")
@@ -40,7 +41,7 @@ public class MyBatisConnectionFactory {
 			logger.debug("MyBatisConnectionFactory loading: "
 					+ DATABASE_CHOICE);
 
-			String resource = "Configuration.xml";
+			String resource = MYBATIS_CONFIG_FILE;
 			InputStream inputStream = Resources.getResourceAsStream(resource);
 			if (sqlSessionFactory == null) {
 				sqlSessionFactory = new SqlSessionFactoryBuilder()

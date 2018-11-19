@@ -137,7 +137,12 @@ public class JavaGen extends Gen implements Generator {
 		memberName += "Bean";
 
 		// instantiate the delegate class
-		Class<?> cx = Class.forName(className);
+
+		URLClassLoader classLoader = new URLClassLoader(
+				new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });
+
+		Class<?> cx = classLoader.loadClass(className);
+
 		FieldSpec member = FieldSpec.builder(cx, memberName)
 				.addModifiers(Modifier.PRIVATE).build();
 

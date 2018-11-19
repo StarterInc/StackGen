@@ -2,6 +2,7 @@ package io.starter.ignite.generator;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.xml.ConfigurationParser;
@@ -32,10 +34,9 @@ import io.starter.ignite.util.DOMEditor;
  */
 public class MyBatisGen extends Gen implements Generator {
 
-	protected static final Logger	logger	= LoggerFactory
+	protected static final Logger	logger			= LoggerFactory
 			.getLogger(MyBatisGen.class);
-
-	Document						jdo		= null;
+	private static final String		SQL_MAPS_PATH	= "io/starter/sqlmaps/";
 
 	public static Map createMyBatis(Class c, MyBatisGen gen) throws Exception {
 
@@ -93,8 +94,12 @@ public class MyBatisGen extends Gen implements Generator {
 		return null;
 	}
 
+	Document	jdx;
+	Document	jdt;
+
 	@Override
 	public void generate(String className, List<FieldSpec> fieldList, List<MethodSpec> getters, List<MethodSpec> setters) throws Exception {
+
 		// create a new JDOM Element
 		// generatorConfiguration
 		// <table schema="patriot" tableName="user">
@@ -107,14 +112,52 @@ public class MyBatisGen extends Gen implements Generator {
 		packageName = "gen." + packageName;
 		className = className.substring(dotpos + 1);
 
-		logger.debug("Load MyBatis XML template...");
-		File configFile = new File(MYBATIS_GEN_CONFIG);
+		logger.debug("Load MyBatis Generator XML template...");
+		File genConfigFile = new File(MYBATIS_GEN_CONFIG);
+		jdt = createMyBatisXMLGenConfigNodes(jdt, className, genConfigFile);
+		DOMEditor.write(jdt, MYBATIS_GEN_CONFIG_OUT);
 
-		if (jdo == null) {
-			logger.debug("Parse MyBatis Generator Config Template: "
-					+ MYBATIS_GEN_CONFIG);
+		logger.debug("Load MyBatis Generator XML template...");
+		File configFile = new File(MYBATIS_CONFIG);
+		jdx = createMyBatisXMLConfigNodes(jdx, className, configFile);
+		DOMEditor.write(jdx, MYBATIS_CONFIG_OUT); // for runtime
+	}
+
+	// mappers>
+	// <mapper resource="io/starter/sqlmaps/AclMapper.xml" />
+	private Document createMyBatisXMLConfigNodes(Document jdo, String className, File configFile) throws JDOMException, IOException {
+
+		logger.debug("Parse MyBatis Template: " + configFile.getAbsolutePath());
+
+		if (jdo == null)
 			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
+
+		Element el = new Element("mapper").setAttribute("resource", MyBatisGen
+				.convertToMapperSyntax(className));
+
+		Element rootElement = jdo.getRootElement();
+		List<Element> listEmpElement = rootElement.getChildren();
+
+		// loop through to add every sqlf mapping element
+		for (Element empElement : listEmpElement) {
+			if (empElement.getName().equals("mappers"))
+				empElement.addContent(el);
+
 		}
+		return jdo;
+	}
+
+	private static String convertToMapperSyntax(String className) {
+		return SQL_MAPS_PATH + "Ignite" + className + "Mapper.xml";
+	}
+
+	private Document createMyBatisXMLGenConfigNodes(Document jdo, String className, File configFile) throws JDOMException, IOException {
+
+		logger.debug("Parse MyBatis Template: " + configFile.getAbsolutePath());
+
+		if (jdo == null)
+			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
+
 		Element el = new Element("table").setText("1000")
 				.setAttribute("schema", SCHEMA_NAME)
 				.setAttribute("tableName", Table.convertToDBSyntax(className));
@@ -129,13 +172,13 @@ public class MyBatisGen extends Gen implements Generator {
 		Element rootElement = jdo.getRootElement();
 		List<Element> listEmpElement = rootElement.getChildren();
 
-		// loop through to edit every Employee element
+		// loop through to add every sqlf mapping element
 		for (Element empElement : listEmpElement) {
 			if (empElement.getName().equals("context"))
 				empElement.addContent(el);
 
 		}
-		DOMEditor.write(jdo, MYBATIS_GEN_CONFIG_OUT);
+		return jdo;
 	}
 
 	@Override

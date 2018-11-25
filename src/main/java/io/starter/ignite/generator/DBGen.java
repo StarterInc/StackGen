@@ -3,11 +3,13 @@ package io.starter.ignite.generator;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,7 @@ import com.squareup.javapoet.MethodSpec;
 import io.starter.ignite.generator.DMLgenerator.Table;
 import io.starter.ignite.security.dao.ConnectionFactory;
 import io.starter.toolkit.StringTool;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * responsible for generating DB DML and creating RDB
@@ -36,7 +39,7 @@ public class DBGen extends Gen implements Generator {
 	private static final boolean	DROP_EXISTING_TABLES	= (System
 			.getProperty("DBGEN_DROP_TABLE") != null ? Boolean
 					.parseBoolean(System.getProperty("DBGEN_DROP_TABLE"))
-					: false);
+					: !false);
 
 	public void init() throws SQLException, IOException {
 		logger.debug("Generating DB...");
@@ -74,7 +77,8 @@ public class DBGen extends Gen implements Generator {
 
 	@Override
 	public Object createMember(Field f) {
-		String colName = f.getName().toUpperCase();
+
+		String colName = StringTool.convertJavaStyletoDBConvention(f.getName());
 		Class<?> colType = f.getType();
 
 		String colTypeName = colType.getName();
@@ -84,19 +88,106 @@ public class DBGen extends Gen implements Generator {
 		}
 		colTypeName = StringTool.replaceText(colTypeName, ";", "");
 
+		// get the annotation
+
 		// handle special cases
 		if (colName.equalsIgnoreCase("id"))
 			colTypeName = "Integer.fkid";
 
 		String dml = Table.myMap.get(colTypeName);
-		if (dml == null)
+
+		if (colTypeName.contains("Enum")) {
+			dml = Table.myMap.get("Enum");
+		}
+		if (dml == null) {
 			dml = Table.myMap.get("String");
+		}
+
+		dml = configureDML(f, dml);
 
 		return colName + " " + dml;
 	}
 
-	Connection	conn		= null;
-	boolean		dropFlag	= false;
+	/**
+	 * configure DML for column 
+	 * 
+	 * @param f
+	 * @param dml
+	 * @return
+	 */
+	private String configureDML(Field f, String dml) {
+
+		String notes = "";// "COMMENT 'ignite generated column for the "
+							// + f.getName()
+		// + " value'";
+		boolean nullable = true;
+		int leng = 256;
+
+		// ${CHAR_SET} ${DEFAULT}
+		String defaultval = "";
+		String charset = ""; // "'utf8'";
+		int minleng = 0;
+		double minVal = 0d;
+		double maxVal = Double.MAX_VALUE;
+
+		ApiModelProperty anno = null;
+		try {
+			anno = getApiModelPropertyAnnotation(f);
+		} catch (NoSuchMethodException nsme) {
+			// normal, no getter
+		} catch (SecurityException e) {
+			logger.warn("Problem processing Annotation on: " + f.getName() + " "
+					+ e.toString());
+			e.printStackTrace();
+		}
+
+		if (anno != null) {
+			notes = (anno.notes().equals("") ? notes : anno.notes());
+			nullable = anno.required();
+			leng = anno.maxLength();
+
+			// TODO: implement other configs
+			// minleng = anno.minLength();
+			// dml = dml.replace("${MIN_LENGTH}", minLeng);
+
+			// minVal = anno.minValue();
+
+			// maxVal = anno.maxValue();
+		}
+
+		System.out.print(" notes: " + notes);
+		dml = dml.replace("${COMMENT}", notes);
+
+		System.out.print(" nullable: " + nullable);
+		dml = dml.replace("${NOT_NULL}", (nullable ? "" : "NOT NULL"));
+
+		System.out.print(" charset: " + charset);
+		dml = dml.replace("${CHAR_SET}", charset);
+
+		System.out.print(" defaultVal: " + defaultval);
+		dml = dml.replace("${DEFAULT}", defaultval);
+
+		// Column length too big for column 'NAME' (max = 65535);
+		// use BLOB or TEXT instead
+		if (leng > 65534) {
+			dml = Table.myMap.get("Text");
+		} else {
+			dml = dml.replace("${MAX_LENGTH}", (leng > 0 ? leng + "" : ""));
+		}
+
+		return dml;
+	}
+
+	private ApiModelProperty getApiModelPropertyAnnotation(Field f) throws NoSuchMethodException, SecurityException {
+		String methodName = "get" + StringTool.proper(f.getName());
+		Method getter = f.getDeclaringClass().getMethod(methodName);
+		// get the annotation
+		ApiModelProperty anno = getter
+				.getDeclaredAnnotation(ApiModelProperty.class);
+		return anno;
+	}
+
+	Connection conn = null;
 
 	@Override
 	/**
@@ -121,21 +212,18 @@ public class DBGen extends Gen implements Generator {
 			isEmpty = false;
 			Object o = cols.next();
 			tableDML += "	" + o.toString();
-
 			// add the PK for auto-increment ID
 			String colName = o.toString();
 			colName = colName.substring(0, colName.indexOf(" "));
 			if (colName.equalsIgnoreCase("id")) {
 				extraColumnDML += "\r\n" + Table.myMap.get("pkid");
 			}
-
 			tableDML += ",";
 			tableDML += "\r\n";
 		}
 
 		// indexes
 		tableDML += extraColumnDML;
-
 		if (!isEmpty) {
 			tableDML = tableDML.substring(0, tableDML.lastIndexOf(","));
 			tableDML += "\r\n";
@@ -150,6 +238,7 @@ public class DBGen extends Gen implements Generator {
 		}
 
 		PreparedStatement ps = conn.prepareStatement(tableDML);
+		List<String> triedList = new ArrayList<String>();
 		try {
 			ps.execute();
 
@@ -158,12 +247,13 @@ public class DBGen extends Gen implements Generator {
 
 		} catch (Exception e) {
 			if (e.toString().contains("already exists")
-					&& !DROP_EXISTING_TABLES) {
+					&& DROP_EXISTING_TABLES) {
 				logger.warn("Table for: " + className + " already exists.");
-				if (!dropFlag && DROP_EXISTING_TABLES) {
-					dropFlag = true; // just try once
+				if (!triedList.contains(className) && DROP_EXISTING_TABLES) {
 
-					logger.warn("DROPPING TABLE: " + e.toString());
+					logger.warn("DROPPING TABLE: " + className);
+
+					triedList.add(className);
 
 					// drop the table
 					PreparedStatement psx = conn.prepareStatement(dropTableDML);
@@ -171,11 +261,12 @@ public class DBGen extends Gen implements Generator {
 						psx.execute();
 					} catch (Exception ex) {
 						logger.error("Failed to drop table with DML: "
-								+ dropTableDML);
+								+ dropTableDML + "  : " + ex.toString());
 					}
 
 					// try again
 					generate(className, fieldList, getters, setters);
+
 				} else {
 					logger.warn("Skipping...");
 				}
@@ -186,7 +277,6 @@ public class DBGen extends Gen implements Generator {
 						+ e.getMessage());
 			}
 		}
-
 	}
 
 	@Override

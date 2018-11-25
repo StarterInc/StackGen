@@ -29,6 +29,15 @@ public interface Configuration extends SystemConstants {
 	public static boolean			VERBOSE						= !false;
 	public static boolean			DEBUG						= !false;
 
+	// DML section
+	public static String			TABLE_NAME_PREFIX			= "ignite$";
+	public static String			CREATE_TABLE				= "CREATE TABLE";
+	public static String			CREATE_TABLE_BEGIN_BLOCK	= "(";
+	public static String			CREATE_TABLE_END_BLOCK		= ");";
+	public static String			DROP_TABLE					= "DROP TABLE";
+
+	// end DML section
+
 	public static final boolean		DISABLE_DATA_FIELD_ASPECT	= true;
 	public static final boolean		DISABLE_SECURE_FIELD_ASPECT	= false;
 

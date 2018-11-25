@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+  <context id="context1">
+    <!-- TODO <plugin type="io.starter.ignite.generator.MyBatisIgnitePluginAdapter"> 
+			<property name="annotationClass" value="io.starter.ignite.security.securefield.SecureField" 
+			/> <property name="annotationString" value="@SecureField" /> </plugin> -->
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://${RDS_HOSTNAME}:3306/${RDS_DB_NAME}?autoReconnect=true" userId="${RDS_USERNAME}" password="${RDS_PASSWORD}" />
+    <!-- Model Class -->
+    <javaModelGenerator targetPackage="io.starter.ignite.model.dao" targetProject="${MYBATIS_MAIN}main/java">
+      <property name="enableSubPackages" value="false" />
+      <property name="trimStrings" value="true" />
+      <property name="rootClass" value="io.starter.ignite.model.DataModelBase" />
+      <property name="type" value="io.starter.ignite.process.MyBatisIgnitePluginAdapter" />
+      <property name="addRemarkComments" value="true" />
+    </javaModelGenerator>
+    <sqlMapGenerator targetPackage="io.starter.sqlmaps" targetProject="${MYBATIS_MAIN}main/resources" />
+    <javaClientGenerator targetPackage="io.starter.ignite.model.dao" targetProject="${MYBATIS_MAIN}main/java" type="XMLMAPPER" />
+    <table schema="ignite" tableName="act_id_user" />
+    <table schema="ignite" tableName="ignite$order">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$audit_log">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$organization">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$user">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$maket_data">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$account">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$ledger_entry">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$work_flows">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$contact_method">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$location">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$user">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$organization">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$content">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$organization">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$exchange">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$trades">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+  </context>
+  <!-- <context id="wp_context"> <jdbcConnection driverClass="com.mysql.jdbc.Driver" 
+		connectionURL="jdbc:mysql://chukl.es:3306/${RDS_DB_NAME}" userId="${RDS_DB_NAME}_user" 
+		password="abcdefg"> </jdbcConnection> <javaModelGenerator targetPackage="io.starter.wp_model" 
+		targetProject="${RDS_DB_NAME}/src/main/java" /> <sqlMapGenerator targetPackage="io.starter.wp_sqlmaps" 
+		targetProject="${RDS_DB_NAME}/src/main/java"></sqlMapGenerator> <javaClientGenerator 
+		targetPackage="io.starter.wp_dao" targetProject="${RDS_DB_NAME}/src/main/java" 
+		type="XMLMAPPER" /> <table schema="${RDS_DB_NAME}" tableName="wp_posts"> 
+		<generatedKey column="ID" sqlStatement="JDBC" /> </table> <table schema="${RDS_DB_NAME}" 
+		tableName="wp_term_taxonomy"> <generatedKey column="term_taxonomy_id" sqlStatement="JDBC" 
+		/> </table> <table schema="${RDS_DB_NAME}" tableName="wp_postmeta"> <generatedKey 
+		column="meta_id" sqlStatement="JDBC" /> </table> </context> -->
+</generatorConfiguration>
+

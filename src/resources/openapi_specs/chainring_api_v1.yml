@@ -705,7 +705,8 @@ definitions:
         example: userId:1000
       json:
         type: string
-        example: Sparkyt        
+        example: Sparkyt
+        maxLength: 10000
       modifiedDate:
           format: "date-time"     
     xml:

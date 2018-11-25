@@ -4,31 +4,29 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.starter.ignite.generator.Configuration;
 import io.starter.toolkit.StringTool;
 
 /**
  * Create Table: CREATE TABLE `big_table` ( `TABLE_CATALOG` varchar(512)
- * CHARACTER SET utf8 NOT NULL DEFAULT '', `TABLE_SCHEMA` varchar(64) CHARACTER
- * SET utf8 NOT NULL DEFAULT '', `TABLE_NAME` varchar(64) CHARACTER SET utf8 NOT
- * NULL DEFAULT '', `COLUMN_NAME` varchar(64) CHARACTER SET utf8 NOT NULL
- * DEFAULT '', `ORDINAL_POSITION` bigint(21) unsigned NOT NULL DEFAULT '0',
- * `COLUMN_DEFAULT` longtext CHARACTER SET utf8, `IS_NULLABLE` varchar(3)
- * CHARACTER SET utf8 NOT NULL DEFAULT '', `DATA_TYPE` varchar(64) CHARACTER SET
- * utf8 NOT NULL DEFAULT '', `CHARACTER_MAXIMUM_LENGTH` bigint(21) unsigned
- * DEFAULT NULL, `CHARACTER_OCTET_LENGTH` bigint(21) unsigned DEFAULT NULL,
- * `NUMERIC_PRECISION` bigint(21) unsigned DEFAULT NULL, `NUMERIC_SCALE`
- * bigint(21) unsigned DEFAULT NULL, `DATETIME_PRECISION` bigint(21) unsigned
- * DEFAULT NULL, `CHARACTER_SET_NAME` varchar(32) CHARACTER SET utf8 DEFAULT
- * NULL, `COLLATION_NAME` varchar(32) CHARACTER SET utf8 DEFAULT NULL,
- * `COLUMN_TYPE` longtext CHARACTER SET utf8 NOT NULL, `COLUMN_KEY` varchar(3)
- * CHARACTER SET utf8 NOT NULL DEFAULT '', `EXTRA` varchar(30) CHARACTER SET
- * utf8 NOT NULL DEFAULT '', `PRIVILEGES` varchar(80) CHARACTER SET utf8 NOT
- * NULL DEFAULT '', `COLUMN_COMMENT` varchar(1024) CHARACTER SET utf8 NOT NULL
- * DEFAULT '' ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+ * ${CHAR_SET} NOT NULL ${DEFAULT}, `TABLE_SCHEMA` varchar(64) CHARACTER
+ * SET utf8 NOT NULL ${DEFAULT}, `TABLE_NAME` varchar(64) ${CHAR_SET} NOT
+ * NULL ${DEFAULT}, `COLUMN_NAME` varchar(64) ${CHAR_SET} NOT NULL
+ * ${DEFAULT}, `ORDINAL_POSITION` BIGINT(21) unsigned NOT NULL ${DEFAULT},
+ * `COLUMN_DEFAULT` longtext ${CHAR_SET}, `IS_NULLABLE` varchar(3)
+ * ${CHAR_SET} NOT NULL ${DEFAULT}, `DATA_TYPE` varchar(64) CHARACTER SET
+ * utf8 NOT NULL ${DEFAULT}, `CHARACTER_MAXIMUM_LENGTH` BIGINT(21) unsigned
+ * DEFAULT NULL, `CHARACTER_OCTET_LENGTH` BIGINT(21) unsigned DEFAULT NULL,
+ * `NUMERIC_PRECISION` BIGINT(21) unsigned DEFAULT NULL, `NUMERIC_SCALE`
+ * BIGINT(21) unsigned DEFAULT NULL, `DATETIME_PRECISION` BIGINT(21) unsigned
+ * DEFAULT NULL, `CHARACTER_SET_NAME` varchar(32) ${CHAR_SET} DEFAULT
+ * NULL, `COLLATION_NAME` varchar(32) ${CHAR_SET} DEFAULT NULL,
+ * `COLUMN_TYPE` longtext ${CHAR_SET} NOT NULL, `COLUMN_KEY` varchar(3)
+ * ${CHAR_SET} NOT NULL ${DEFAULT}, `EXTRA` varchar(30) CHARACTER SET
+ * utf8 NOT NULL ${DEFAULT}, `PRIVILEGES` varchar(80) ${CHAR_SET} NOT
+ * NULL ${DEFAULT}, `COLUMN_COMMENT` varchar(1024) ${CHAR_SET} NOT NULL
+ * ${DEFAULT} ) ENGINE=InnoDB DEFAULT CHARSET=latin1
  * 
- *
- *
- *
  *
  * <pre>
  * CREATE TABLE `humorme`.`template 1` (
@@ -44,7 +42,7 @@ import io.starter.toolkit.StringTool;
  * </pre>
  */
 
-public class Table {
+public class Table implements Configuration {
 
 	public static final Map<String, String>	myMap;
 	public static final boolean				SETTING_COLUMNS_UPPERCASED	= false;
@@ -52,27 +50,24 @@ public class Table {
 	static {
 		Map<String, String> aMap = new HashMap<String, String>();
 
-		aMap.put("Integer.fkid", "INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Auto Incrementing PK'");
-		aMap.put("Integer", "bigint(21) unsigned NOT NULL DEFAULT '0' COMMENT 'Auto GEN Integer'");
-		aMap.put("int", "bigint(21) unsigned NOT NULL DEFAULT '0' COMMENT 'Auto GEN int'");
-		aMap.put("String", "varchar(1024) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT 'Auto GEN String'");
-		aMap.put("Double", "bigint(21) unsigned DEFAULT NULL DEFAULT 0.0 COMMENT 'Auto GEN Double'");
-		aMap.put("Long", "bigint(21) unsigned DEFAULT NULL DEFAULT 0 COMMENT 'Auto GEN Long'");
-		aMap.put("Date", "Date unsigned DEFAULT NULL DEFAULT '' COMMENT 'Auto GEN Date'");
-		aMap.put("Ingeter.pkid", "`id` int(14) unsigned NOT NULL AUTO_INCREMENT,"
-				+ "/r/n"
-				+ "PRIMARY KEY (`id`), COMMENT 'Auto GEN Integer.pkid'");
+		aMap.put("Integer.fkid", "INT(24) SIGNED NOT NULL AUTO_INCREMENT COMMENT 'Auto Incrementing PK'");
+		aMap.put("Boolean", "BOOLEAN ${NOT_NULL} ${COMMENT}");
+		aMap.put("Enum", "INT(2) ${DEFAULT} ${COMMENT}");
+		aMap.put("Integer", "BIGINT(21) ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+		aMap.put("int", "BIGINT(21) ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+		aMap.put("String", "VARCHAR(${MAX_LENGTH}) ${NOT_NULL} ${CHAR_SET} ${DEFAULT} ${COMMENT}");
+		aMap.put("Text", "TEXT ${CHAR_SET} ${DEFAULT} ${COMMENT}");
+		aMap.put("Double", "BIGINT(21) ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+		aMap.put("Long", "BIGINT(21) ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+		aMap.put("Date", "DATE ${NOT_NULL} ${COMMENT}");
+		aMap.put("OffsetDateTime", "TIMESTAMP ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+		aMap.put("Ingeter.pkid", "`id` INT(24) SIGNED AUTO_INCREMENT," + "/r/n"
+				+ "PRIMARY KEY (`id`), COMMENT 'Ignite-generated Integer.pkid'");
 
 		aMap.put("pkid", "PRIMARY KEY (`ID`), UNIQUE INDEX `ID_UNIQUE` (`ID` ASC));");
 
 		myMap = Collections.unmodifiableMap(aMap);
 	}
-
-	public static String	TABLE_NAME_PREFIX			= "ignite_";
-	public static String	CREATE_TABLE				= "CREATE TABLE";
-	public static String	CREATE_TABLE_BEGIN_BLOCK	= "(";
-	public static String	CREATE_TABLE_END_BLOCK		= ");";
-	public static String	DROP_TABLE					= "DROP TABLE";
 
 	public static String generateTableDropDML(String className) {
 		className = convertToDBSyntax(className);

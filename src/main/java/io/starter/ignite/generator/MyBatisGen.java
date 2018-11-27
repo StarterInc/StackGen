@@ -34,9 +34,8 @@ import io.starter.ignite.util.DOMEditor;
  */
 public class MyBatisGen extends Gen implements Generator {
 
-	protected static final Logger	logger			= LoggerFactory
+	protected static final Logger logger = LoggerFactory
 			.getLogger(MyBatisGen.class);
-	private static final String		SQL_MAPS_PATH	= "io/starter/sqlmaps/";
 
 	public static Map createMyBatis(Class c, MyBatisGen gen) throws Exception {
 
@@ -177,6 +176,12 @@ public class MyBatisGen extends Gen implements Generator {
 			if (empElement.getName().equals("context"))
 				empElement.addContent(el);
 
+			Object pn = empElement.getAttribute("tableName");
+			if (pn != null) {
+				if (pn.toString().equals("PLACEHOLDER_NODE")) {
+					rootElement.removeContent(empElement);
+				}
+			}
 		}
 		return jdo;
 	}
@@ -192,6 +197,8 @@ public class MyBatisGen extends Gen implements Generator {
 			@Override
 			public boolean accept(File dir, String name) {
 				if (name.contains("Example"))
+					return false;
+				if (name.contains("Mapper"))
 					return false;
 				if (name.contains(JavaGen.ADD_GEN_CLASS_NAME))
 					return false;

@@ -3,6 +3,8 @@
 
 <generatorConfiguration>
   <context id="context1">
+    <plugin type="io.starter.ignite.generator.MyBatisIgnitePluginAdapter" />
+    <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
     <!-- TODO <plugin type="io.starter.ignite.generator.MyBatisIgnitePluginAdapter"> 
 			<property name="annotationClass" value="io.starter.ignite.security.securefield.SecureField" 
 			/> <property name="annotationString" value="@SecureField" /> </plugin> -->
@@ -12,12 +14,12 @@
       <property name="enableSubPackages" value="false" />
       <property name="trimStrings" value="true" />
       <property name="rootClass" value="io.starter.ignite.model.DataModelBase" />
-      <property name="type" value="io.starter.ignite.process.MyBatisIgnitePluginAdapter" />
+      <property name="type" value="io.starter.ignite.generator.MyBatisIgnitePluginAdapter" />
       <property name="addRemarkComments" value="true" />
     </javaModelGenerator>
     <sqlMapGenerator targetPackage="io.starter.sqlmaps" targetProject="${MYBATIS_MAIN}main/resources" />
     <javaClientGenerator targetPackage="io.starter.ignite.model.dao" targetProject="${MYBATIS_MAIN}main/java" type="XMLMAPPER" />
-    <table schema="ignite" tableName="act_id_user" />
+    <table schema="ignite" tableName="PLACEHOLDER_NODE" />
     <table schema="ignite" tableName="ignite$order">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>

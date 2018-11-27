@@ -24,7 +24,7 @@ import io.starter.toolkit.StringTool;
  * `COLUMN_TYPE` longtext ${CHAR_SET} NOT NULL, `COLUMN_KEY` varchar(3)
  * ${CHAR_SET} NOT NULL ${DEFAULT}, `EXTRA` varchar(30) CHARACTER SET
  * utf8 NOT NULL ${DEFAULT}, `PRIVILEGES` varchar(80) ${CHAR_SET} NOT
- * NULL ${DEFAULT}, `COLUMN_COMMENT` varchar(1024) ${CHAR_SET} NOT NULL
+ * NULL ${DEFAULT}, `COLUMN_COMMENT` varchar(10" + precision + ") ${CHAR_SET} NOT NULL
  * ${DEFAULT} ) ENGINE=InnoDB DEFAULT CHARSET=latin1
  * 
  *
@@ -50,18 +50,33 @@ public class Table implements Configuration {
 	static {
 		Map<String, String> aMap = new HashMap<String, String>();
 
-		aMap.put("Integer.fkid", "INT(24) SIGNED NOT NULL AUTO_INCREMENT COMMENT 'Auto Incrementing PK'");
+		int precision = 10;
+		aMap.put("Integer.fkid", "BIGINT(" + precision
+				+ ") UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Auto Incrementing PK'");
+
 		aMap.put("Boolean", "BOOLEAN ${NOT_NULL} ${COMMENT}");
-		aMap.put("Enum", "INT(2) ${DEFAULT} ${COMMENT}");
-		aMap.put("Integer", "BIGINT(21) ${NOT_NULL} ${DEFAULT} ${COMMENT}");
-		aMap.put("int", "BIGINT(21) ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+
+		aMap.put("Enum", "VARCHAR(256) ${DEFAULT} COMMENT \"ENUM field to store values\"");
+
+		aMap.put("Integer", "INTEGER ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+
+		aMap.put("int", "INTEGER ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+
 		aMap.put("String", "VARCHAR(${MAX_LENGTH}) ${NOT_NULL} ${CHAR_SET} ${DEFAULT} ${COMMENT}");
+
 		aMap.put("Text", "TEXT ${CHAR_SET} ${DEFAULT} ${COMMENT}");
-		aMap.put("Double", "BIGINT(21) ${NOT_NULL} ${DEFAULT} ${COMMENT}");
-		aMap.put("Long", "BIGINT(21) ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+
+		aMap.put("Double", "DOUBLE ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+
+		aMap.put("Long", "BIGINT(" + precision
+				+ ") UNSIGNED ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+
 		aMap.put("Date", "DATE ${NOT_NULL} ${COMMENT}");
+
 		aMap.put("OffsetDateTime", "TIMESTAMP ${NOT_NULL} ${DEFAULT} ${COMMENT}");
-		aMap.put("Ingeter.pkid", "`id` INT(24) SIGNED AUTO_INCREMENT," + "/r/n"
+
+		aMap.put("Integer.pkid", "'id' BIGINT(" + precision
+				+ ") SIGNED AUTO_INCREMENT," + "/r/n"
 				+ "PRIMARY KEY (`id`), COMMENT 'Ignite-generated Integer.pkid'");
 
 		aMap.put("pkid", "PRIMARY KEY (`ID`), UNIQUE INDEX `ID_UNIQUE` (`ID` ASC));");

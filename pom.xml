@@ -84,12 +84,6 @@
 			<version>2.1</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.github.joschi.jackson/jackson-datatype-threetenbp -->
-		<dependency>
-			<groupId>com.github.joschi.jackson</groupId>
-			<artifactId>jackson-datatype-threetenbp</artifactId>
-			<version>2.4.1</version>
-		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.brsanthu/migbase64 -->
 		<dependency>

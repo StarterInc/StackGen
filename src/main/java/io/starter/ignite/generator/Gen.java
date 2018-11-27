@@ -6,6 +6,7 @@ package io.starter.ignite.generator;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.squareup.javapoet.MethodSpec;
 
 import io.starter.toolkit.StringTool;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @author john
@@ -88,7 +90,7 @@ public class Gen {
 						+ f.getName() + " Type: " + f.getType());
 
 				Object fldObj = impl.createMember(f);
-				if (fldObj != null)
+				if (fldObj != null && impl instanceof DBGen)
 					fieldList.add(fldObj);
 
 				MethodSpec fldAccess = (MethodSpec) impl.createAccessor(f);
@@ -189,6 +191,15 @@ public class Gen {
 			fields.addAll(Arrays.asList(c.getDeclaredFields()));
 		}
 		return fields.toArray();
+	}
+
+	public static ApiModelProperty getApiModelPropertyAnnotation(Field f) throws NoSuchMethodException, SecurityException {
+		String methodName = "get" + StringTool.proper(f.getName());
+		Method getter = f.getDeclaringClass().getMethod(methodName);
+		// get the annotation
+		ApiModelProperty anno = getter
+				.getDeclaredAnnotation(ApiModelProperty.class);
+		return anno;
 	}
 
 }

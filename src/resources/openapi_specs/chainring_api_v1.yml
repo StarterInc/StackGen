@@ -358,7 +358,7 @@ definitions:
         type: "string"
       accountNumber:
         type: "string"
-      BRN:
+      routingNumber:
         type: "string"    
       modifiedDate:
         type: "string"
@@ -576,6 +576,8 @@ definitions:
       ssn:
         type: string
         example: 111-22-3333
+        maxLength: 9
+        x-ignite: secure-field
       username:
         type: string
         example: Sparky

@@ -26,8 +26,8 @@ import io.starter.ignite.util.SystemConstants;
  */
 public interface Configuration extends SystemConstants {
 
-	public static boolean			VERBOSE						= !false;
-	public static boolean			DEBUG						= !false;
+	public static boolean			VERBOSE						= true;
+	public static boolean			DEBUG						= true;
 
 	// DML section
 	public static String			TABLE_NAME_PREFIX			= "ignite$";
@@ -35,17 +35,24 @@ public interface Configuration extends SystemConstants {
 	public static String			CREATE_TABLE_BEGIN_BLOCK	= "(";
 	public static String			CREATE_TABLE_END_BLOCK		= ");";
 	public static String			DROP_TABLE					= "DROP TABLE";
+	// TODO: rename and copy
+	public static String			RENAME_TABLE				= "ALTER TABLE ignite$work_flows "
+			+ "RENAME TO  ignite$work_flows_bk";
 
+	public static boolean			DROP_EXISTING_TABLES		= (System
+			.getProperty("DBGEN_DROP_TABLE") != null ? Boolean
+					.parseBoolean(System.getProperty("DBGEN_DROP_TABLE"))
+					: false);
 	// end DML section
 
 	public static final boolean		DISABLE_DATA_FIELD_ASPECT	= true;
 	public static final boolean		DISABLE_SECURE_FIELD_ASPECT	= false;
 
-	public static String			ADD_GEN_CLASS_NAME			= "Data";
-	public static String			IGNITE_DATAMODEL_PACKAGE	= "io.starter.ignite.model.";
+	public static String			ADD_GEN_CLASS_NAME			= "Impl";
+	public static String			IGNITE_DATAMODEL_PACKAGE	= "io.starter.ignite.model.dao";
 
 	public static String			LONG_DATE_FORMAT			= "MMM/d/yyyy HH:mm:ss Z";
-	public static String			GEN_MODEL_PACKAGE			= "io.starter.ignite.model.";
+	public static String			GEN_MODEL_PACKAGE			= "io.starter.ignite.model.dao";
 	static SimpleDateFormat			DATE_FORMAT					= new SimpleDateFormat(
 			LONG_DATE_FORMAT);
 
@@ -69,7 +76,7 @@ public interface Configuration extends SystemConstants {
 	public static File				JAVA_GEN_SRC				= new File(
 			JAVA_GEN_SRC_FOLDER);
 
-	public static String			MODEL_PACKAGE_DIR			= "/io/starter/ignite/model/";
+	public static String			MODEL_PACKAGE_DIR			= "/io/starter/ignite/model/dao/";
 	public static String			MODEL_DAO_PACKAGE_DIR		= "/io/starter/ignite/model/dao/";
 
 	public static String			API_MODEL_CLASSES			= JAVA_GEN_SRC_FOLDER
@@ -82,16 +89,22 @@ public interface Configuration extends SystemConstants {
 			+ SOURCE_RESOURCES + "/swagger_config.json";
 	public static String			OUTPUT_DIR					= JAVA_GEN_PATH;
 
-	public static String			ORG							= "io.starter.ignite";
-	public static String			API_PACKAGE					= ORG + ".api";
+	public static String			ORG_PACKAGE					= "io.starter.ignite";
+	public static String			API_PACKAGE					= ORG_PACKAGE
+			+ ".api";
 	public static String			ARTIFACT_ID					= "ignite";
-	public static String			MODEL_PACKAGE				= ORG
-			+ ".model";
-	public static String			INVOKER_PACKAGE				= ORG
+	public static String			MODEL_PACKAGE				= ORG_PACKAGE
+			+ ".model.dao";
+	public static String			INVOKER_PACKAGE				= ORG_PACKAGE
 			+ ".invoker";
 
 	// ## Mybatis
 	public static int				DB_TIMEOUT					= 10000;
+
+	public static String			MYBATIS_CLASS_PREFIX		= "Ignite";
+
+	public static String			SQL_MAPS_PATH				= "io/starter/ignite/sqlmaps/";
+
 	public static String			MYBATIS_MODEL_CLASSES		= API_MODEL_CLASSES;
 
 	public static final String		MYBATIS_GEN_CONFIG			= System

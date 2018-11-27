@@ -58,11 +58,12 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		configurator.setInvokerPackage(INVOKER_PACKAGE);
 		configurator.setVerbose(VERBOSE);
 		configurator.addDynamicProperty("dynamic-html", "true");
+		configurator.addDynamicProperty("dateLibrary", "java8");
 
 		// company info
 		configurator.addDynamicProperty("developerName", "Starter Inc.");
 		configurator.addDynamicProperty("developerEmail", "info@starter.io");
-		configurator.addDynamicProperty("developerName", "Starter");
+		configurator.addDynamicProperty("developerName", "Starter Inc.");
 		configurator
 				.addDynamicProperty("developerOrganization", "Starter Inc.");
 		configurator

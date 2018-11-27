@@ -3,7 +3,6 @@ package io.starter.ignite.generator;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
@@ -14,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,13 +33,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class DBGen extends Gen implements Generator {
 
-	protected static final Logger	logger					= LoggerFactory
-			.getLogger(DBGen.class);
-
-	private static final boolean	DROP_EXISTING_TABLES	= (System
-			.getProperty("DBGEN_DROP_TABLE") != null ? Boolean
-					.parseBoolean(System.getProperty("DBGEN_DROP_TABLE"))
-					: !false);
+	protected static final Logger logger = LoggerFactory.getLogger(DBGen.class);
 
 	public void init() throws SQLException, IOException {
 		logger.debug("Generating DB...");
@@ -99,11 +93,16 @@ public class DBGen extends Gen implements Generator {
 		if (colTypeName.contains("Enum")) {
 			dml = Table.myMap.get("Enum");
 		}
-		if (dml == null) {
+		if (dml == null && f.getType().isPrimitive()) {
 			dml = Table.myMap.get("String");
+		} else if (dml == null) {
+			// TODO: handle complex data types
+			logger.warn("Could not map: " + f.getType().getName()
+					+ " of coltype: " + colTypeName + " to a Database Column");
+			return null;
 		}
 
-		dml = configureDML(f, dml);
+		dml = configureDML(f, dml, false);
 
 		return colName + " " + dml;
 	}
@@ -115,7 +114,7 @@ public class DBGen extends Gen implements Generator {
 	 * @param dml
 	 * @return
 	 */
-	private String configureDML(Field f, String dml) {
+	private String configureDML(Field f, String dml, boolean rerun) {
 
 		String notes = "";// "COMMENT 'ignite generated column for the "
 							// + f.getName()
@@ -132,7 +131,7 @@ public class DBGen extends Gen implements Generator {
 
 		ApiModelProperty anno = null;
 		try {
-			anno = getApiModelPropertyAnnotation(f);
+			anno = Gen.getApiModelPropertyAnnotation(f);
 		} catch (NoSuchMethodException nsme) {
 			// normal, no getter
 		} catch (SecurityException e) {
@@ -147,18 +146,20 @@ public class DBGen extends Gen implements Generator {
 			leng = anno.maxLength();
 
 			// TODO: implement other configs
-			// minleng = anno.minLength();
-			// dml = dml.replace("${MIN_LENGTH}", minLeng);
+			minleng = anno.minLength();
 
-			// minVal = anno.minValue();
+			minVal = anno.minValue();
 
-			// maxVal = anno.maxValue();
+			maxVal = anno.maxValue();
 		}
 
-		System.out.print(" notes: " + notes);
+		System.out.println(" notes: " + notes);
+		if (notes != null && !"".equals(notes)) {
+			notes = "COMMENT '" + notes + "'";
+		}
 		dml = dml.replace("${COMMENT}", notes);
 
-		System.out.print(" nullable: " + nullable);
+		System.out.println(" nullable: " + nullable);
 		dml = dml.replace("${NOT_NULL}", (nullable ? "" : "NOT NULL"));
 
 		System.out.print(" charset: " + charset);
@@ -167,10 +168,13 @@ public class DBGen extends Gen implements Generator {
 		System.out.print(" defaultVal: " + defaultval);
 		dml = dml.replace("${DEFAULT}", defaultval);
 
+		// TODO: implement a smarter way to handle crypto expansion
+		leng *= 3;
+
 		// Column length too big for column 'NAME' (max = 65535);
 		// use BLOB or TEXT instead
-		if (leng > 65534) {
-			dml = Table.myMap.get("Text");
+		if (leng > 21844 && !rerun) {
+			dml = configureDML(f, Table.myMap.get("Text"), true);
 		} else {
 			dml = dml.replace("${MAX_LENGTH}", (leng > 0 ? leng + "" : ""));
 		}
@@ -178,28 +182,20 @@ public class DBGen extends Gen implements Generator {
 		return dml;
 	}
 
-	private ApiModelProperty getApiModelPropertyAnnotation(Field f) throws NoSuchMethodException, SecurityException {
-		String methodName = "get" + StringTool.proper(f.getName());
-		Method getter = f.getDeclaringClass().getMethod(methodName);
-		// get the annotation
-		ApiModelProperty anno = getter
-				.getDeclaredAnnotation(ApiModelProperty.class);
-		return anno;
-	}
-
 	Connection conn = null;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	/**
 	 * generate DB table from classfile
 	 */
-	public void generate(String className, List<FieldSpec> fieldList, List<MethodSpec> getters, List<MethodSpec> setters) throws Exception {
-		String packageName = null;
+	public synchronized void generate(String className, List<FieldSpec> fieldList, List<MethodSpec> getters, List<MethodSpec> setters) throws Exception {
+		// String packageName = null;
 		int dotpos = className.lastIndexOf(".");
 		if (dotpos < 0 || dotpos >= className.length()) // skip
 			return;
-		packageName = className.substring(0, dotpos);
-		packageName = "gen." + packageName;
+		// packageName = className.substring(0, dotpos);
+		// packageName = "gen." + packageName;
 		className = className.substring(dotpos + 1);
 
 		// collect the COLUMNs and add to Table then generate
@@ -239,10 +235,17 @@ public class DBGen extends Gen implements Generator {
 
 		PreparedStatement ps = conn.prepareStatement(tableDML);
 		List<String> triedList = new ArrayList<String>();
+
+		// log the DML for troubleshooting
+		if (Configuration.DEBUG) {
+			FileUtils.writeStringToFile(new File("IgniteDML.sql"), tableDML
+					+ "/r/n", true);
+		}
+
 		try {
 			ps.execute();
-
-			logger.error("SUCCESS: " + "\r\n" + tableDML + "\r\n"
+			ps.close();
+			logger.info("SUCCESS: " + "\r\n" + tableDML + "\r\n"
 					+ ConnectionFactory.toConfigString());
 
 		} catch (Exception e) {
@@ -259,13 +262,14 @@ public class DBGen extends Gen implements Generator {
 					PreparedStatement psx = conn.prepareStatement(dropTableDML);
 					try {
 						psx.execute();
+						psx.close();
 					} catch (Exception ex) {
 						logger.error("Failed to drop table with DML: "
 								+ dropTableDML + "  : " + ex.toString());
 					}
 
 					// try again
-					generate(className, fieldList, getters, setters);
+					generate("." + className, fieldList, getters, setters);
 
 				} else {
 					logger.warn("Skipping...");

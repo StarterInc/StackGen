@@ -52,7 +52,7 @@ public class SecureFieldAspect implements Configuration {
 		if (secureField.getType().equals(String.class)) {
 			return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
 		} else {
-			logger.warn("SecureFieldAspect only currently supports Text values: "
+			logger.warn("SecureFieldAspect only currently supports decrypting Text values: "
 					+ pjp);
 			return pjp.proceed();
 		}
@@ -86,7 +86,7 @@ public class SecureFieldAspect implements Configuration {
 			secureField.set(targetObject, encryptedValue);
 			secureField.setAccessible(access);
 		} else {
-			logger.warn("SecureFieldAspect only currently supports Text values: "
+			logger.warn("SecureFieldAspect only currently supports encrypting Text values: "
 					+ pjp);
 			return pjp.proceed();
 		}

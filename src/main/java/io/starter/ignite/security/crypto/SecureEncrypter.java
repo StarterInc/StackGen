@@ -40,13 +40,13 @@ public class SecureEncrypter implements SystemConstants {
 	 */
 	public static void main(String[] args) throws Exception {
 		String cleartext = "AES Symmetric Encryption Decryption";
-		logger.debug("Plain Text Before Encryption: " + cleartext);
+		System.out.println("Plain Text Before Encryption: " + cleartext);
 
 		String ciphertext = SecureEncrypter.encrypt(cleartext);
-		logger.debug("Encrypted Text After Encryption: " + ciphertext);
+		System.out.println("Encrypted Text After Encryption: " + ciphertext);
 
 		String decryptedText = SecureEncrypter.decrypt(ciphertext);
-		logger.debug("Decrypted Text After Decryption: " + decryptedText);
+		System.out.println("Decrypted Text After Decryption: " + decryptedText);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class SecureEncrypter implements SystemConstants {
 					"SecureEncrypter Initialization Failure: "
 							+ SECURE_KEY_PROPERTY + " property is not set.");
 		}
-		keyGenerator = KeyGenerator.getInstance("AES");
+		keyGenerator = KeyGenerator.getInstance(KEYGEN_INSTANCE_NAME);
 		logger.debug("SecureEncrypter init: Crypto Provider ["
 				+ keyGenerator.getProvider().getName() + "]");
 		keyGenerator.init(KEY_SIZE);

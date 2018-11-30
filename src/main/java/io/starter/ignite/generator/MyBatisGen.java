@@ -198,9 +198,11 @@ public class MyBatisGen extends Gen implements Generator {
 			public boolean accept(File dir, String name) {
 				if (name.contains("Example"))
 					return false;
+				if (name.contains(MYBATIS_CLASS_PREFIX))
+					return false;
 				if (name.contains("Mapper"))
 					return false;
-				if (name.contains(JavaGen.ADD_GEN_CLASS_NAME))
+				if (name.contains(ADD_GEN_CLASS_NAME))
 					return false;
 				return name.toLowerCase().endsWith(".java");
 			}

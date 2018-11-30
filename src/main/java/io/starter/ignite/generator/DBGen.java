@@ -169,7 +169,7 @@ public class DBGen extends Gen implements Generator {
 		dml = dml.replace("${DEFAULT}", defaultval);
 
 		// TODO: implement a smarter way to handle crypto expansion
-		leng *= 3;
+		leng *= 5;
 
 		// Column length too big for column 'NAME' (max = 65535);
 		// use BLOB or TEXT instead
@@ -200,7 +200,7 @@ public class DBGen extends Gen implements Generator {
 
 		// collect the COLUMNs and add to Table then generate
 		String tableDML = Table.generateTableBeginningDML(className);
-		String dropTableDML = Table.generateTableDropDML(className);
+		String renameTableDML = Table.generateTableRenameDML(className);
 		Iterator<?> cols = fieldList.iterator();
 		boolean isEmpty = true;
 		String extraColumnDML = "";
@@ -254,29 +254,29 @@ public class DBGen extends Gen implements Generator {
 				logger.warn("Table for: " + className + " already exists.");
 				if (!triedList.contains(className) && DROP_EXISTING_TABLES) {
 
-					logger.warn("DROPPING TABLE: " + className);
+					logger.warn("RENAMING TABLE: " + className);
 
 					triedList.add(className);
 
 					// drop the table
-					PreparedStatement psx = conn.prepareStatement(dropTableDML);
+					PreparedStatement psx = conn
+							.prepareStatement(renameTableDML);
 					try {
 						psx.execute();
 						psx.close();
 					} catch (Exception ex) {
 						logger.error("Failed to drop table with DML: "
-								+ dropTableDML + "  : " + ex.toString());
+								+ renameTableDML + "  : " + ex.toString());
 					}
 
 					// try again
 					generate("." + className, fieldList, getters, setters);
 
 				} else {
-					logger.warn("Skipping...");
+					logger.warn("Skipping Table Creation for: " + className);
 				}
 			} else {
-				logger.warn("TABLE DML: " + tableDML
-						+ " Failed to execute on DB "
+				logger.warn("Failed to execute DML: " + tableDML + " "
 						+ ConnectionFactory.toConfigString() + "\r\n"
 						+ e.getMessage());
 			}

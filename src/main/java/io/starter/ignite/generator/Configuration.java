@@ -35,6 +35,8 @@ public interface Configuration extends SystemConstants {
 	public static String			CREATE_TABLE_BEGIN_BLOCK	= "(";
 	public static String			CREATE_TABLE_END_BLOCK		= ");";
 	public static String			DROP_TABLE					= "DROP TABLE";
+	public static String			ALTER_TABLE					= "ALTER TABLE";
+	
 	// TODO: rename and copy
 	public static String			RENAME_TABLE				= "ALTER TABLE ignite$work_flows "
 			+ "RENAME TO  ignite$work_flows_bk";

@@ -543,7 +543,7 @@ definitions:
       locationname:
         type: string
         example: Grand View Park
-        x-starter-secure: 1.0
+        secureField: true
       country:
         type: string
         example: USA
@@ -573,11 +573,16 @@ definitions:
       fingerprint:
         type: string
         example: DK$DFSJaraDD
+        value: secure
+        secureField: true
       ssn:
+        description: This is the value
         type: string
         example: 111-22-3333
-        maxLength: 9
-        x-ignite: secure-field
+        secureField: true
+        maxLength: 10
+        minLength: 10
+        value: secure
       username:
         type: string
         example: Sparky

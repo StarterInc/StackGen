@@ -1,14 +1,17 @@
 package io.starter.ignite.security.crypto;
 
-import java.util.Arrays;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.bouncycastle.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +30,10 @@ public class SecureEncrypter implements SystemConstants {
 	protected static final Logger	logger	= LoggerFactory
 			.getLogger(SecureEncrypter.class);
 
-	private static byte[]			iv		= null;
 	private static KeyGenerator		keyGenerator;
 	private static SecretKey		secretKey;
 	private static Cipher			cipher;
+	private static SecureRandom		randomSecureRandom;
 
 	/**
 	 * Test the SecureEncryption functionality
@@ -39,6 +42,9 @@ public class SecureEncrypter implements SystemConstants {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+
+		System.out.println("Generate Encryption Key: " + generateKey());
+
 		String cleartext = "AES Symmetric Encryption Decryption";
 		System.out.println("Plain Text Before Encryption: " + cleartext);
 
@@ -47,6 +53,33 @@ public class SecureEncrypter implements SystemConstants {
 
 		String decryptedText = SecureEncrypter.decrypt(ciphertext);
 		System.out.println("Decrypted Text After Decryption: " + decryptedText);
+	}
+
+	public static String generateKey() throws NoSuchAlgorithmException {
+
+		// create new key
+		KeyGenerator keyGenerator = KeyGenerator
+				.getInstance(KEYGEN_INSTANCE_NAME);
+		keyGenerator.init(KEY_SIZE);
+
+		SecretKey secretKey = keyGenerator.generateKey();
+		// get base64 encoded version of the key
+		String encodedKey = Base64.getEncoder()
+				.encodeToString(secretKey.getEncoded());
+
+		return encodedKey;
+	}
+
+	public static SecretKey getKeyFromBytes(byte[] b) {
+		// String to SecretKey:
+
+		// decode the base64 encoded string
+		byte[] decodedKey = Base64.getDecoder().decode(b);
+		// rebuild key using SecretKeySpec
+		SecretKey originalKey = new SecretKeySpec(decodedKey, 0,
+				decodedKey.length, KEYGEN_INSTANCE_NAME);
+
+		return originalKey;
 	}
 
 	/**
@@ -64,14 +97,9 @@ public class SecureEncrypter implements SystemConstants {
 					"SecureEncrypter Initialization Failure: "
 							+ SECURE_KEY_PROPERTY + " property is not set.");
 		}
-		keyGenerator = KeyGenerator.getInstance(KEYGEN_INSTANCE_NAME);
-		logger.debug("SecureEncrypter init: Crypto Provider ["
-				+ keyGenerator.getProvider().getName() + "]");
-		keyGenerator.init(KEY_SIZE);
+		secretKey = getKeyFromBytes(SECRET_KEY.getBytes());
 		cipher = Cipher.getInstance(CIPHER_NAME);
-		secretKey = keyGenerator.generateKey();
-		iv = new byte[16];
-		iv = Arrays.copyOf(SECRET_KEY.getBytes(), 16);
+		randomSecureRandom = SecureRandom.getInstance("SHA1PRNG");
 	}
 
 	/**
@@ -98,13 +126,23 @@ public class SecureEncrypter implements SystemConstants {
 			init();
 		}
 		byte[] cleartextByte = cleartext.getBytes();
+
+		byte[] iv = new byte[cipher.getBlockSize()];
+		randomSecureRandom.nextBytes(iv);
+
 		cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(iv));
 		byte[] encryptedByte = cipher.doFinal(cleartextByte);
+
+		byte[] encryptedByteWithIV = new byte[encryptedByte.length + 16];
+		System.arraycopy(encryptedByte, 0, encryptedByteWithIV, 16, encryptedByte.length);
+
+		System.arraycopy(iv, 0, encryptedByteWithIV, 0, iv.length);
+
 		Base64.Encoder encoder = Base64.getEncoder();
-		return encoder.encodeToString(encryptedByte);
+		return encoder.encodeToString(encryptedByteWithIV);
 	}
 
-	/**
+	/**`
 	 * Decrypt a String
 	 * 
 	 * @param ciphertext
@@ -117,8 +155,14 @@ public class SecureEncrypter implements SystemConstants {
 		}
 		Base64.Decoder decoder = Base64.getDecoder();
 		byte[] ciphertextByte = decoder.decode(ciphertext);
+
+		byte[] iv = Arrays.copyOfRange(ciphertextByte, 0, 16);
+		byte[] decb = Arrays
+				.copyOfRange(ciphertextByte, 16, ciphertextByte.length);
+
 		cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
-		byte[] decryptedByte = cipher.doFinal(ciphertextByte);
+
+		byte[] decryptedByte = cipher.doFinal(decb);
 		return new String(decryptedByte);
 	}
 }

@@ -84,27 +84,41 @@ public class Table implements Configuration {
 		myMap = Collections.unmodifiableMap(aMap);
 	}
 
-	public static String generateTableDropDML(String className) {
-		className = convertToDBSyntax(className);
-		return DROP_TABLE + " " + className + " \r\n";
+	public static String generateTableDropDML(String tableName) {
+		tableName = convertToDBSyntax(tableName);
+		return DROP_TABLE + " " + tableName + " \r\n";
 	}
 
-	public static String generateTableBeginningDML(String className) {
+	/**
+	  	ALTER TABLE `ignite`.`ignite$user` 
+		RENAME TO  `ignite`.`ignite$user_old` ;
+	 * @param tableName
+	 * @return
+	 */
+	public static String generateTableRenameDML(String tableName) {
+		tableName = convertToDBSyntax(tableName);
+		String dml = ALTER_TABLE + " " + tableName + " \r\n";
+		dml += " RENAME TO " + tableName + "_BK";
+		return dml;
 
-		className = convertToDBSyntax(className);
+	}
 
-		return CREATE_TABLE + " " + className + CREATE_TABLE_BEGIN_BLOCK
+	public static String generateTableBeginningDML(String tableName) {
+
+		tableName = convertToDBSyntax(tableName);
+
+		return CREATE_TABLE + " " + tableName + CREATE_TABLE_BEGIN_BLOCK
 				+ " \r\n";
 	}
 
-	public static String convertToDBSyntax(String className) {
-		className = TABLE_NAME_PREFIX
-				+ StringTool.convertJavaStyletoDBConvention(className);
+	public static String convertToDBSyntax(String tableName) {
+		tableName = TABLE_NAME_PREFIX
+				+ StringTool.convertJavaStyletoDBConvention(tableName);
 		if (SETTING_COLUMNS_UPPERCASED)
-			className = className.toUpperCase();
+			tableName = tableName.toUpperCase();
 		else
-			className = className.toLowerCase();
-		return className;
+			tableName = tableName.toLowerCase();
+		return tableName;
 	}
 
 }

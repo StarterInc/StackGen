@@ -47,8 +47,9 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		}
 
 		// basic
-		configurator.setLibrary("jersey2"); // ("resttemplate"); // //
-											// jersey2
+
+		configurator.setLibrary("spring-boot"); // ("resttemplate"); // //
+		// jersey2
 		configurator.setLang("java");
 		configurator.setArtifactId(ARTIFACT_ID);
 		configurator.setModelPackage(MODEL_PACKAGE);

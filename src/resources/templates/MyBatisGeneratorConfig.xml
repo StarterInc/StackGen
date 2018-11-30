@@ -30,7 +30,7 @@
 			<property name="addRemarkComments" value="true" />
 		</javaModelGenerator>
 
-		<sqlMapGenerator targetPackage="io.starter.sqlmaps"
+		<sqlMapGenerator targetPackage="io.starter.ignite.sqlmaps"
 			targetProject="${MYBATIS_MAIN}main/resources" />
 		<javaClientGenerator
 			targetPackage="io.starter.ignite.model.dao"

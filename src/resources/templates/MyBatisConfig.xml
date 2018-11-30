@@ -3,7 +3,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
-
 	<environments default="production">
 
 		<!-- production JDBC data source -->
@@ -15,7 +14,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 					value="jdbc:mysql://${RDS_HOSTNAME}:3306/${RDS_DB_NAME}?autoReconnect=true" />
 				<property name="username" value="${RDS_USERNAME}" />
 				<property name="password" value="${RDS_PASSWORD}" />
-
 				<property name="poolMaximumActiveConnections" value="5" />
 				<property name="poolMaximumIdleConnections" value="3" />
 				<property name="poolPingEnabled" value="true" />
@@ -32,7 +30,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 					value="jdbc:mysql://${RDS_HOSTNAME}:3306/${RDS_DB_NAME}?autoReconnect=true" />
 				<property name="username" value="${RDS_USERNAME}" />
 				<property name="password" value="${RDS_PASSWORD}" />
-
 				<property name="poolMaximumActiveConnections" value="5" />
 				<property name="poolMaximumIdleConnections" value="3" />
 				<property name="poolPingEnabled" value="true" />
@@ -55,11 +52,5 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 
 	<mappers>
 	</mappers>
-
-	<typeHandlers>
-		<typeHandler
-			handler="org.apache.ibatis.type.EnumTypeHandler"
-			javaType="io.starter.ignite.model.dao.Order.StatusEnum" />
-	</typeHandlers>
-
+	
 </configuration>

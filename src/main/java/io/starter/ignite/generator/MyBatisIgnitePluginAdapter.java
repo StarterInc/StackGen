@@ -39,11 +39,14 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+
+		FullyQualifiedJavaType xx = new FullyQualifiedJavaType(
+				getSuperClassName(topLevelClass));
+
 		Field f = new Field();
 		f.setName("delegate");
 		f.setVisibility(JavaVisibility.PRIVATE);
-		FullyQualifiedJavaType xx = new FullyQualifiedJavaType(
-				getSuperClassName(topLevelClass));
+		f.setInitializationString(" new " + xx + "()");
 		f.setType(xx);
 		topLevelClass.addField(f);
 		topLevelClass.addImportedType(xx);

@@ -17,7 +17,7 @@
       <property name="type" value="io.starter.ignite.generator.MyBatisIgnitePluginAdapter" />
       <property name="addRemarkComments" value="true" />
     </javaModelGenerator>
-    <sqlMapGenerator targetPackage="io.starter.sqlmaps" targetProject="${MYBATIS_MAIN}main/resources" />
+    <sqlMapGenerator targetPackage="io.starter.ignite.sqlmaps" targetProject="${MYBATIS_MAIN}main/resources" />
     <javaClientGenerator targetPackage="io.starter.ignite.model.dao" targetProject="${MYBATIS_MAIN}main/java" type="XMLMAPPER" />
     <table schema="ignite" tableName="PLACEHOLDER_NODE" />
     <table schema="ignite" tableName="ignite$order">

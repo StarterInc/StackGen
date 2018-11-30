@@ -51,20 +51,6 @@ public class JavaGen extends Gen implements Generator {
 
 	@Override
 	public Object createMember(Field fld) {
-
-		// UNUSED
-		/*
-		 * String fieldName = fld.getName();
-		 * Class<?> fieldType = fld.getType();
-		 *
-		 * FieldSpec field = FieldSpec
-		 * .builder(fieldType, fieldName, Modifier.PRIVATE)
-		 * .addJavadoc("Starter Ignite Generated Field: "
-		 * + DATE_FORMAT.format(new Date()))
-		 * .build();
-		 *
-		 * return field;
-		 */
 		return null;
 	}
 
@@ -84,7 +70,8 @@ public class JavaGen extends Gen implements Generator {
 		}
 
 		final String fieldName = fld.getName();
-		if (fieldName.startsWith("ajc$")) {
+		if (fieldName.startsWith("ajc$") || fieldName.equals("delegate")
+				|| fieldName.equals("serialVersionUID")) {
 			return null;
 		}
 
@@ -93,14 +80,16 @@ public class JavaGen extends Gen implements Generator {
 		memberName += "Bean";
 
 		final Class<?> fieldType = fld.getType();
-		String fldName = StringTool.proper(fieldName);
-		fldName = "get" + fldName;
+		String fldName = StringTool.getGetMethodNameFromVar(fieldName);
+
 		try {
 			final MethodSpec ret = MethodSpec.methodBuilder(fldName)
 					.addJavadoc("Starter Ignite Generated Method: "
-							+ DATE_FORMAT.format(new Date()) + "/r/n" + "@see "
+							+ DATE_FORMAT.format(new Date()) + "/r/n" + "/r/n"
+							+ "@see "
 							+ fld.getDeclaringClass().getSuperclass().getName()
-							+ "/r/n" + "@return the value of " + fieldName)
+							+ "/r/n" + "/r/n" + "@return the value of "
+							+ fieldName)
 					.addModifiers(Modifier.PUBLIC).returns(fieldType)
 					.addStatement("return " + memberName + "." + fieldName)
 					.build();
@@ -125,18 +114,19 @@ public class JavaGen extends Gen implements Generator {
 		String memberName = className.substring(className.lastIndexOf(".") + 1);
 		memberName += "Bean";
 
-		if (fieldName.startsWith("ajc$")) {
+		if (fieldName.startsWith("ajc$") || fieldName.equals("delegate")
+				|| fieldName.equals("serialVersionUID")) {
 			return null;
 		}
 		final Class<?> fieldType = fld.getType();
-		final String fldName = StringTool.proper(fieldName);
-		final String fldNameSet = "set" + fldName;
+		final String fldNameSet = StringTool.getSetMethodNameFromVar(fieldName);
 
 		try {
 			final MethodSpec ret = MethodSpec.methodBuilder(fldNameSet)
 					.addJavadoc("Starter Ignite Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					// .addModifiers(Modifier.PUBLIC).addAnnotation(AnnotationSpec.builder(DataField.class).build())
+					.addModifiers(Modifier.PUBLIC)
 					.addParameter(fieldType, fieldName + "Val")
 					.addStatement(memberName + "." + fieldName + " = "
 							+ fieldName + "Val")
@@ -158,6 +148,7 @@ public class JavaGen extends Gen implements Generator {
 
 		// packageName = ADD_GEN_PACKAGE_NAME + packageName;
 		String memberName = className.substring(className.lastIndexOf(".") + 1);
+		String memberType = memberName;
 		memberName += "Bean";
 
 		memberName.replace(Configuration.MYBATIS_CLASS_PREFIX, "");
@@ -170,7 +161,8 @@ public class JavaGen extends Gen implements Generator {
 		final Class<?> cx = classLoader.loadClass(className);
 
 		final FieldSpec member = FieldSpec.builder(cx, memberName)
-				.addModifiers(Modifier.PRIVATE).build();
+				.addModifiers(Modifier.PRIVATE)
+				.initializer("new " + memberType + "()").build();
 
 		className = className.substring(dotpos + 1);
 
@@ -186,7 +178,7 @@ public class JavaGen extends Gen implements Generator {
 				.build();
 
 		JavaFile.builder(packageName, type).build().writeTo(JAVA_GEN_SRC);
-
+		classLoader.close();
 	}
 
 	@Override
@@ -205,12 +197,7 @@ public class JavaGen extends Gen implements Generator {
 			logger.debug("Creating Classes from ModelFile: " + cn);
 
 			try {
-
-				// Create a new custom class loader, pointing to the
-				// directory that contains the
-				// compiled
-				// classes, this should point to the top of the package
-				// structure!
+				// this should point to the top of the package structure!
 				final URLClassLoader classLoader = new URLClassLoader(
 						new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI()
 								.toURL() });
@@ -242,9 +229,6 @@ public class JavaGen extends Gen implements Generator {
 		final String sourcepath = JAVA_GEN_SRC_FOLDER + packageDir;
 
 		logger.debug("JavaGen Compiling: " + sourcepath);
-		System.getProperty("java.class.path");
-
-		// RunCommand.runSafe(cmdarray[0], cmdarray);
 
 		// prepare compiler
 		final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
@@ -255,7 +239,7 @@ public class JavaGen extends Gen implements Generator {
 		final List<String> optionList = new ArrayList<>();
 		optionList.add("-classpath");
 		optionList.add(System.getProperty("java.class.path")
-				+ ";gen/src/main/java");
+				+ System.getProperty("path.separator") + JAVA_GEN_SRC_FOLDER);
 
 		// File[] fx = new File(sourcepath).listFiles();
 		final File[] fx = getSourceFilesInFolder(new File(
@@ -316,6 +300,5 @@ public class JavaGen extends Gen implements Generator {
 			}
 		}
 		fileManager.close();
-
 	}
 }

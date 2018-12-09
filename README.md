@@ -1,4 +1,8 @@
-# Starter Ignite React
+<div align="center">
+    <img src="static/logos/logo-1024.png" alt="Logo"/>
+</div>
+
+# Starter Ignite App Generator
 
 ## OpenAPI and Document Driven Development (DDD)
 
@@ -43,9 +47,9 @@ To get started with Starter Ignite you will need to have a minimum:
 *   Java9 JDK
 *   Maven
 *   git
-*   React Native
-*   MacOSX / XCode (for iOS apps)
-*   Running MySQL Database instance (for DB generation)
+*   (optional) React Native
+*   (optional) MacOSX / XCode (for iOS apps)
+*   MySQL instance
 
 To quickly setup a MySQL instance locally install from this page:
 

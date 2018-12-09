@@ -58,12 +58,13 @@ Alternatively you can run a MySQL instance in the cloud inexpensively.
 Run a MySQL server on AWS Lightsail for $5/mo.
 https://lightsail.aws.amazon.com/
 
-## Ract Native Setup
+## React Native Setup
 To build a react native app, you need to have the latest react native libraries and tooling installed including:
 
 *   node
 *   npm
 *   react native
+
     "eslint": "^4.19.1",
     "react": "16.3.1",
     "react-dom": "^16.4.0",
@@ -86,7 +87,6 @@ To build a react native app, you need to have the latest react native libraries 
 # Getting Started
 
 ## Edit your OpenAPI Specification File
-TODO: make dropfolder user configurable
 Dropfolder is /<installationdir>/src/resources/openapi_specs/
 
 ## Run the generator via Maven task
@@ -95,6 +95,6 @@ mvn clean install -DMYBATIS_MAIN=${project_loc}/gen/src/ -DMYBATIS_JAVA=${projec
 
 ## Collect output
 Server App output is
- /<installationdir>/gen/
+${project.dir}/gen/
 React Native App output is
- /<installationdir>/REACT_EXPORT
+${project.dir}/REACT_EXPORT

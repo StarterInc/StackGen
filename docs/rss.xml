@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Starter Ignite]]></title><description><![CDATA[Starter Ignite Documentation Site]]></description><link>https://starterinc.github.io/Ignite</link><image><url>https://starterinc.github.io/Ignite/logos/logo-512.png</url><title>Starter Ignite</title><link>https://starterinc.github.io/Ignite</link></image><generator>GatsbyJS Casper Starter</generator><lastBuildDate>Sun, 09 Dec 2018 06:15:04 GMT</lastBuildDate><atom:link href="https://starterinc.github.io/Ignite/rss.xml" rel="self" type="application/rss+xml"/><author><![CDATA[John McMahon]]></author><copyright><![CDATA[Starter Ignite © 2018]]></copyright><item><title><![CDATA[Swagger and the OpeAPI Specification]]></title><description><![CDATA[Introduction to OpenAPI Specification and Swagger Docs. Swagger was adopted as a standard and is now OpenAPI You may have heard of "Swagger…]]></description><link>https://starterinc.github.io/Ignite/swagger-and-the-ope-api-specification</link><guid isPermaLink="false">https://starterinc.github.io/Ignite/swagger-and-the-ope-api-specification</guid><category><![CDATA[ignite]]></category><category><![CDATA[v1]]></category><category><![CDATA[OpenAPI]]></category><category><![CDATA[Swagger]]></category><category><![CDATA[CodeGen]]></category><dc:creator><![CDATA[John McMahon]]></dc:creator><pubDate>Sat, 08 Dec 2018 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Introduction to OpenAPI Specification and Swagger Docs.&lt;/p&gt;
+&lt;h1 id=&quot;swagger-was-adopted-as-a-standard-and-is-now-openapi&quot;&gt;&lt;a href=&quot;#swagger-was-adopted-as-a-standard-and-is-now-openapi&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Swagger was adopted as a standard and is now OpenAPI&lt;/h1&gt;
+&lt;p&gt;You may have heard of &quot;Swagger&quot; or seen the brightly colored auto-generated Swagger REST api documentation.&lt;/p&gt;
+&lt;p&gt;The ability to declare and define an Application&apos;s data objects and REST services with a simple, human readable file format is a powerful paradigm for development in general.&lt;/p&gt;
+&lt;p&gt;SmartBear came up with the [Swagger] (&lt;a href=&quot;https://swagger.io&quot;&gt;https://swagger.io&lt;/a&gt;) specification a number of years ago and saw a huge increase in REST apis being released, and there were multiple areas of need including standardization of REST apis and management of rapidly changing client applications.&lt;/p&gt;
+&lt;p&gt;The time-consuming work of maintaining REST apis which were largely responsible for database functionality fondly referred to as &lt;a href=&quot;CRUD%20operations&quot;&gt;CRUD Operations&lt;/a&gt; were already being automated through code generating tools such as MyBatis and heavily annotated scanning/decorating frameworks like Java Spring.&lt;/p&gt;
+&lt;p&gt;Here is a simple example:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;swagger: &amp;quot;2.0&amp;quot;
+info:
+  description: &amp;quot;This is a chainring server&amp;quot;
+  version: &amp;quot;1.0.0&amp;quot;
+  title: &amp;quot;Swagger Chainring&amp;quot;
+  termsOfService: &amp;quot;http://starter.io/terms/&amp;quot;
+  contact:
+    email: &amp;quot;admin@starter.io&amp;quot;
+  license:
+    name: &amp;quot;Apache 2.0&amp;quot;
+    url: &amp;quot;http://www.apache.org/licenses/LICENSE-2.0.html&amp;quot;
+host: &amp;quot;chainring.pro&amp;quot;
+basePath: &amp;quot;/v1&amp;quot;
+tags:
+- name: &amp;quot;trade&amp;quot;
+  description: &amp;quot;Everything about your trades&amp;quot;
+  externalDocs:
+    description: &amp;quot;Find out more&amp;quot;
+    url: &amp;quot;http://starter.io&amp;quot;
+- name: &amp;quot;order&amp;quot;
+  description: &amp;quot;Access to chainring orders&amp;quot;
+- name: &amp;quot;user&amp;quot;
+  description: &amp;quot;Operations about user&amp;quot;
+  externalDocs:
+    description: &amp;quot;Find out more about our order&amp;quot;
+    url: &amp;quot;http://starter.io&amp;quot;
+schemes:
+- &amp;quot;https&amp;quot;
+- &amp;quot;http&amp;quot;
+paths:
+  /trade:
+    post:
+      tags:
+      - &amp;quot;trade&amp;quot;
+      summary: &amp;quot;Add a new trade to the order&amp;quot;
+      description: &amp;quot;&amp;quot;
+      operationId: &amp;quot;addtrade&amp;quot;
+      consumes:
+      - &amp;quot;application/json&amp;quot;
+      - &amp;quot;application/xml&amp;quot;
+      produces:
+      - &amp;quot;application/xml&amp;quot;
+      - &amp;quot;application/json&amp;quot;
+      parameters:
+      - in: &amp;quot;body&amp;quot;
+        name: &amp;quot;body&amp;quot;
+        description: &amp;quot;trade object that needs to be added to the order&amp;quot;
+        required: true
+        schema:
+          $ref: &amp;quot;#/definitions/trade&amp;quot;
+      responses:
+        405:
+          description: &amp;quot;Invalid input&amp;quot;
+      security:
+      - chainring_auth:
+        - &amp;quot;write:trades&amp;quot;
+        - &amp;quot;read:trades&amp;quot;
+
+...
+
+definitions:
+  Account:
+    type: &amp;quot;object&amp;quot;
+    properties:
+      id:
+        type: &amp;quot;integer&amp;quot;
+        format: &amp;quot;int64&amp;quot;
+      accountId:
+        type: &amp;quot;integer&amp;quot;
+        format: &amp;quot;int64&amp;quot;
+      value:
+        type: &amp;quot;integer&amp;quot;
+        format: &amp;quot;int32&amp;quot;
+      institutionName:
+        type: &amp;quot;string&amp;quot;
+      accountNumber:
+        type: &amp;quot;string&amp;quot;
+      routingId:
+        type: &amp;quot;string&amp;quot;    
+      modifiedDate:
+        type: &amp;quot;string&amp;quot;
+        format: &amp;quot;date-time&amp;quot;
+      status:
+        type: &amp;quot;string&amp;quot;
+        description: &amp;quot;Account Status&amp;quot;
+        enum:
+        - &amp;quot;ready&amp;quot;
+        - &amp;quot;closed&amp;quot;
+        - &amp;quot;executed&amp;quot;
+      verified:
+        type: &amp;quot;boolean&amp;quot;
+        default: false
+    xml:
+      name: &amp;quot;Account&amp;quot;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Swagger CodeGen has a set of templates covering many of the world&apos;s most popular languages and libraries&lt;/p&gt;
+&lt;h1 id=&quot;swagger-codegen-and-ignite&quot;&gt;&lt;a href=&quot;#swagger-codegen-and-ignite&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Swagger CodeGen and Ignite&lt;/h1&gt;
+&lt;p&gt;Starter Ignite includes a customized version of Swagger CodeGen in order to convert the input OpenAPI/Swagger Specification file into the initial set of Java POJOs (Plain Old Java Objects)&lt;/p&gt;
+&lt;p&gt;Ignite uses either the SpringBoot or the Java Jersey2 CodeGen output to create full blown application stacks which include Database, Encryption, and AI capabilities.&lt;/p&gt;
+&lt;h2 id=&quot;resources&quot;&gt;&lt;a href=&quot;#resources&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Resources&lt;/h2&gt;
+&lt;p&gt;Recommended reading and resources for Swagger and OpenAPI:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.openapis.org&quot;&gt;OpenAPI Initiative&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://app.swaggerhub.com/search&quot;&gt;SwaggerHub Directory&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/swagger-api/swagger-codegen&quot;&gt;Swagger CodeGen Project&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[Generated Code]]></title><description><![CDATA[Starter Ignite Generated Code. Starter Ignite Generated Code: JSON Data Objects The initial code generation step creates Java POJOs (Plain…]]></description><link>https://starterinc.github.io/Ignite/generated-code</link><guid isPermaLink="false">https://starterinc.github.io/Ignite/generated-code</guid><category><![CDATA[ignite]]></category><category><![CDATA[v1]]></category><dc:creator><![CDATA[John McMahon]]></dc:creator><pubDate>Fri, 19 Oct 2018 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Starter Ignite Generated Code.&lt;/p&gt;
+&lt;h1 id=&quot;starter-ignite-generated-code-json-data-objects&quot;&gt;&lt;a href=&quot;#starter-ignite-generated-code-json-data-objects&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Starter Ignite Generated Code: JSON Data Objects&lt;/h1&gt;
+&lt;p&gt;The initial code generation step creates Java POJOs (Plain Old Java Objects) which
+are annotated with JSONObject annotations that expose them to the REST api framework.&lt;/p&gt;
+&lt;p&gt;Here is a simple example:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;package&lt;/span&gt; io&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;starter&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ignite&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;model&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;dao&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; java&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;util&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Objects&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; com&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;fasterxml&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;jackson&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;annotation&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;JsonProperty&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; com&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;fasterxml&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;jackson&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;annotation&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;JsonCreator&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; com&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;fasterxml&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;jackson&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;annotation&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;JsonValue&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; io&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;swagger&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;annotations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ApiModel&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; io&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;swagger&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;annotations&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ApiModelProperty&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; java&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;time&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;OffsetDateTime&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; org&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;springframework&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;validation&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;annotation&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Validated&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; javax&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;validation&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Valid&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; javax&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;validation&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;constraints&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;*&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;/**
+ Account
+ ############################## DO NOT EDIT: GENERATED FILE ##############################
+
+    Generated by Starter Ignite: http://starter.io/ignite
+    Powered by Swagger Codegen: http://swagger.io
+
+############################## DO NOT EDIT: GENERATED FILE ##############################
+ */&lt;/span&gt;
+
+&lt;span class=&quot;token annotation punctuation&quot;&gt;@javax&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;annotation&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;Generated&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;value &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;io.swagger.codegen.languages.SpringCodegen&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; date &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;2018-12-07T09:06:02.896-08:00&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Account&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;// add the Starter Ignite Annotations&lt;/span&gt;
+  &lt;span class=&quot;token annotation punctuation&quot;&gt;@JsonProperty&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;id&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;protected&lt;/span&gt; Long id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; null&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;// add the Starter Ignite Annotations&lt;/span&gt;
+  &lt;span class=&quot;token annotation punctuation&quot;&gt;@JsonProperty&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;balance&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;protected&lt;/span&gt; Double balance &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; null&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; Account &lt;span class=&quot;token function&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;Long id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+   &lt;span class=&quot;token comment&quot;&gt;/**
+   * Get id
+   * @return id
+  **/&lt;/span&gt;
+  &lt;span class=&quot;token annotation punctuation&quot;&gt;@ApiModelProperty&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;      value &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; Long &lt;span class=&quot;token function&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;setId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;Long id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; Account &lt;span class=&quot;token function&quot;&gt;balance&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;Double balance&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; balance&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+   &lt;span class=&quot;token comment&quot;&gt;/**
+   * Get balance
+   * @return balance
+  **/&lt;/span&gt;
+  &lt;span class=&quot;token annotation punctuation&quot;&gt;@ApiModelProperty&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;      value &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; Double &lt;span class=&quot;token function&quot;&gt;getBalance&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; balance&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;setBalance&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;Double balance&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; balance&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; Account &lt;span class=&quot;token function&quot;&gt;institutionName&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;String institutionName&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;institutionName &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; institutionName&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+
+  &lt;span class=&quot;token annotation punctuation&quot;&gt;@Override&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;equals&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;java&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;lang&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Object o&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; o&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;o &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; null &lt;span class=&quot;token operator&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;getClass&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; o&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getClass&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    Account account &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;Account&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; o&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; Objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;equals&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; account&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+        Objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;equals&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; account&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;token annotation punctuation&quot;&gt;@Override&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;hashCode&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; Objects&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; balance&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+
+  &lt;span class=&quot;token annotation punctuation&quot;&gt;@Override&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; String &lt;span class=&quot;token function&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    StringBuilder sb &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;StringBuilder&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    sb&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;class Account {\n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    sb&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;    id: &quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;toIndentedString&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;\n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    sb&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;    balance: &quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;toIndentedString&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;balance&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;\n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+    sb&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;}&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; sb&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;token comment&quot;&gt;/**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; String &lt;span class=&quot;token function&quot;&gt;toIndentedString&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;java&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;lang&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Object o&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;o &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; null&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;null&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; o&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;\n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;\n    &quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;As you can see, the generated code has the basic Java field definitions, annotated
+with &quot;@JsonProperty()&quot; to describe how the JSON mapping is to be handled.&lt;/p&gt;
+&lt;p&gt;Additionally there are convenience methods like toIndentedString and equals() that
+provide for smoother interaction with the JSON data.&lt;/p&gt;
+&lt;p&gt;Here&apos;s a little recommended reading for Starter Ignite.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;REST API definition &lt;a href=&quot;https://en.wikipedia.org/wiki/Representational_state_transfer&quot;&gt;wikipedia&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[Getting Started]]></title><description><![CDATA[Getting Started with Starter Ignite Step 1: Create an OpenAPI Schema for your Application Generating a Starter Ignite application requires…]]></description><link>https://starterinc.github.io/Ignite/getting-started</link><guid isPermaLink="false">https://starterinc.github.io/Ignite/getting-started</guid><category><![CDATA[tag]]></category><dc:creator><![CDATA[John McMahon]]></dc:creator><pubDate>Thu, 23 Mar 2017 00:00:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;getting-started-with-starter-ignite&quot;&gt;&lt;a href=&quot;#getting-started-with-starter-ignite&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Getting Started with Starter Ignite&lt;/h1&gt;
+&lt;h2 id=&quot;step-1-create-an-openapi-schema-for-your-application&quot;&gt;&lt;a href=&quot;#step-1-create-an-openapi-schema-for-your-application&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Step 1: Create an OpenAPI Schema for your Application&lt;/h2&gt;
+&lt;p&gt;Generating a Starter Ignite application requires that you provide/create an
+OpenAPI schema that defines the application&apos;s objects, RESTful APIs and the schema
+for your SQL database.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://openapi.org/&quot;&gt;Learn about OpenAPI&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Inputting your OpenAPI schema to Starter Ignite will result in the creation of a
+Java Maven application residing in the generator output folder (&quot;./gen&quot; by default).&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;Background Knowledge&lt;/strong&gt; [Apache Maven] (&lt;a href=&quot;https://maven.apache.org&quot;&gt;https://maven.apache.org&lt;/a&gt;) is a popular open source Java build tool which manages dependencies, builds the appliction, and allows for
+running Java programs with test and service automation.&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;Background Knowledge&lt;/strong&gt; [MyBatis ORM] (&lt;a href=&quot;http://blog.mybatis.org&quot;&gt;http://blog.mybatis.org&lt;/a&gt;) is a popular open source Java Object Relational Mapping library which allows you to define simple and complex Data Objects that map to your SQL database (in this case MySQL).  Using MyBatis, you can easily insert, update, delete and search for data in your Database using convenient Java Data Objects. If you are new to MyBatis, you should check out this [Excellent Tutorial] (&lt;a href=&quot;http://zetcode.com/db/mybatis/&quot;&gt;http://zetcode.com/db/mybatis/&lt;/a&gt;).&lt;/p&gt;
+&lt;h2 id=&quot;starter-ignite-code-generation-steps&quot;&gt;&lt;a href=&quot;#starter-ignite-code-generation-steps&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Starter Ignite Code Generation Steps:&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;OpenAPI -&gt; Java POJO&lt;/li&gt;
+&lt;li&gt;Java POJO -&gt; SQL Database&lt;/li&gt;
+&lt;li&gt;SQL Database -&gt; ORM Mapping Data Objects (MyBatis)&lt;/li&gt;
+&lt;li&gt;ORM Mapping Data Objects&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;step-2-build-and-launch-your-generated-application&quot;&gt;&lt;a href=&quot;#step-2-build-and-launch-your-generated-application&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Step 2: Build and Launch your Generated Application&lt;/h2&gt;
+&lt;p&gt;After generating your application, you can treat the output as you would any standard
+Maven Java application.&lt;/p&gt;
+&lt;p&gt;One of the benefits of using Maven is the dependence on standardized file paths
+and project defaults, so the layout of the project files should be familiar to anyone
+who has worked with Maven in the past.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;gen
+├── src
+│   └── main
+│       ├── java
+│       │   └── io
+│       │       ├── starter
+│       │       │   └── ignite
+│       │       │       ├── api
+│       │       │       ├── invoker
+│       │       │       └── model
+│       │       │           └── dao &amp;lt;-- THIS IS WHERE THE Data Object Classes Reside
+│       │       └── swagger
+│       │           └── configuration
+│       └── resources
+│           └── io
+│               └── starter
+│                   └── ignite
+│                       └── sqlmaps &amp;lt;-- Generated MyBatis ORM Mappings
+└── target &amp;lt;-- Maven Build Output&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To build the project after generation, use the following commands from the command line:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;mvn clean install -U&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If you have selected the &quot;spring-boot&quot; (default) application framework, you can run
+the service with a single line of code:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;cd &amp;lt;project_folder&amp;gt;gen
+mvn spring-boot:run&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You should see the Starter Ignite banner and assuming the application starts correctly,
+you will see output similar to the following on the console:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[main] INFO springfox.documentation.spring.web.scanners.ApiListingReferenceScanner - Scanning for api listing references
+Dec 07, 2018 10:38:18 AM org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer start
+INFO: Tomcat started on port(s): 8080 (http)
+Dec 07, 2018 10:38:18 AM io.starter.ignite.invoker.Swagger2SpringBoot logStarted
+INFO: Started Swagger2SpringBoot in 20.395 seconds (JVM running for 38.247)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;step-3-access-the-running-application&quot;&gt;&lt;a href=&quot;#step-3-access-the-running-application&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Step 3: Access the Running Application&lt;/h2&gt;
+&lt;p&gt;Once launched, your new Starter Ignite application is ready to serve JSON data from then
+RESTful endpoints that were defined in the OpenAPI schema.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Open a browser: &lt;a href=&quot;http://localhost:8080&quot;&gt;http://localhost:8080&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Verify that the RESTful endpoints match your expectations from the input file&lt;/li&gt;
+&lt;li&gt;If there are problems with your REST api, you can easily fix the OpenAPI schema
+and then re-run the Ignite generation script.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Now is the time to correct any obvious errors in the Schema as it will speed up further
+development the more complete and correct your underlying application is.&lt;/p&gt;
+&lt;p&gt;If you have set the option to overwrite the Database tables if they already exist,
+then any data you have entered in the database will be saved off in the renamed
+original table.&lt;/p&gt;
+&lt;p&gt;Encrypted data can only be recovered from SecureFields™ columns if the SecureFields
+setting is enabled on the field in the OpenAPI schema.&lt;/p&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;As you can see the application data can be accessed from the REST api, however
+Starter Ignite also generates a jar file which is usable as a dependency in your
+projects without running the Spring Boot RESTful service.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;So you can use your generated Java objects from within your application directly,
+through a RESTful api/service or both, depending upon your application architecture.&lt;/p&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;TODO: enable monitoring&lt;/li&gt;
+&lt;li&gt;TODO: describe app testing&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;resources&quot;&gt;&lt;a href=&quot;#resources&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Resources&lt;/h2&gt;
+&lt;p&gt;Using Starter Ignite, you should experience a significant boost in productivity
+when building database applications and services.&lt;/p&gt;
+&lt;p&gt;The benefits of declaring your Object and API definitions in a human-readable
+text file format, and regenerating as much of the &quot;plumbing&quot; code as possible
+when changes are made, become even more compelling as application complexity
+increases.&lt;/p&gt;
+&lt;p&gt;Build on robust, industry-standard libraries and platforms such as Swagger CodeGen
+Apache Spring, and MyBatis ORM, Starter Ignite aims to give you a solid foundation for
+building sophisticated and secure applications for any purpose.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Starter Automator.AI&lt;/em&gt;: Looking for even more rapid development with even less coding?&lt;/p&gt;
+&lt;p&gt;Starter Automator.AI™ is an LCDP (Low Code Development Platform) which combines
+the power of Starter Ignite™ with the massive productivity of an iBPM.&lt;/p&gt;
+&lt;p&gt;Starter Automator.AI Exclusive Features:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Graphical Modeling and Design of App Workflows&lt;/li&gt;
+&lt;li&gt;Enhanced data security using the Starter SecureField™ encryption plugin&lt;/li&gt;
+&lt;li&gt;Data and API Modeling using Starter Ignite™ Code generation&lt;/li&gt;
+&lt;li&gt;Business-friendly spreadsheet logic and reporting plugin&lt;/li&gt;
+&lt;li&gt;AI-enhanced Decisioning&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[Next Steps]]></title><description><![CDATA[Contributing Contributing 👍🎉 First off, thanks for taking the time to contribute! 🎉👍 The project uses  Conventional Commits  which are…]]></description><link>https://starterinc.github.io/Ignite/next-steps</link><guid isPermaLink="false">https://starterinc.github.io/Ignite/next-steps</guid><category><![CDATA[programming]]></category><category><![CDATA[more tags]]></category><category><![CDATA[testing]]></category><category><![CDATA[another one]]></category><category><![CDATA[stuff]]></category><category><![CDATA[other]]></category><dc:creator><![CDATA[John McMahon]]></dc:creator><pubDate>Fri, 17 Mar 2017 00:00:00 GMT</pubDate><content:encoded>&lt;h1 id=&quot;contributing&quot;&gt;&lt;a href=&quot;#contributing&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Contributing&lt;/h1&gt;
+&lt;h2 id=&quot;contributing-1&quot;&gt;&lt;a href=&quot;#contributing-1&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Contributing&lt;/h2&gt;
+&lt;p&gt;👍🎉 First off, thanks for taking the time to contribute! 🎉👍&lt;/p&gt;
+&lt;p&gt;The project uses &lt;a href=&quot;https://conventionalcommits.org/&quot;&gt;Conventional Commits&lt;/a&gt; which are simple and easy to follow. In general, use your best judgment, and feel free to propose changes by creating an issue and then mention the issue in your pull request.&lt;/p&gt;
+&lt;h2 id=&quot;license&quot;&gt;&lt;a href=&quot;#license&quot; aria-hidden=&quot;true&quot; class=&quot;anchor&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;License&lt;/h2&gt;
+&lt;p&gt;The Starter Ignite project is provided AS-IS under the GPL License unless otherwise
+noted in source files.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.en.html&quot;&gt;Gnu GPL General Public License&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Generated Code License&lt;/strong&gt; The output source code and artifacts generated by Starter Ignite
+are provided under the Apache License.&lt;/p&gt;
+&lt;p&gt;Since 2 generated applications from entirely different organizations / authors can
+easily be identical, there can be no claim of copyright based upon the uniqueness of
+generated code.&lt;/p&gt;</content:encoded></item></channel></rss>

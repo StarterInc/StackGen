@@ -200,7 +200,6 @@ public class DBGen extends Gen implements Generator {
 
 		// collect the COLUMNs and add to Table then generate
 		String tableDML = Table.generateTableBeginningDML(className);
-		String renameTableDML = Table.generateTableRenameDML(className);
 		Iterator<?> cols = fieldList.iterator();
 		boolean isEmpty = true;
 		String extraColumnDML = "";
@@ -254,23 +253,13 @@ public class DBGen extends Gen implements Generator {
 				logger.warn("Table for: " + className + " already exists.");
 				if (!triedList.contains(className) && DROP_EXISTING_TABLES) {
 
-					logger.warn("RENAMING TABLE: " + className);
+					if (renameTable(className, triedList)) {
 
-					triedList.add(className);
+						// try again
+						generate("." + className, fieldList, getters, setters);
 
-					// drop the table
-					PreparedStatement psx = conn
-							.prepareStatement(renameTableDML);
-					try {
-						psx.execute();
-						psx.close();
-					} catch (Exception ex) {
-						logger.error("Failed to drop table with DML: "
-								+ renameTableDML + "  : " + ex.toString());
+						migrateData(className);
 					}
-
-					// try again
-					generate("." + className, fieldList, getters, setters);
 
 				} else {
 					logger.warn("Skipping Table Creation for: " + className);
@@ -281,6 +270,30 @@ public class DBGen extends Gen implements Generator {
 						+ e.getMessage());
 			}
 		}
+	}
+
+	private void migrateData(String className) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private boolean renameTable(String className, List<String> triedList) throws SQLException {
+		logger.warn("RENAMING TABLE: " + className);
+
+		triedList.add(className);
+
+		// rename the table
+		String renameTableDML = Table.generateTableRenameDML(className);
+		PreparedStatement psx = conn.prepareStatement(renameTableDML);
+		try {
+			psx.execute();
+			psx.close();
+		} catch (Exception ex) {
+			logger.error("Failed to drop table with DML: " + renameTableDML
+					+ "  : " + ex.toString());
+			return false;
+		}
+		return true;
 	}
 
 	@Override

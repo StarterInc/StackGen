@@ -126,10 +126,13 @@ public class Main implements Configuration {
 			genDir.renameTo(new File(fx));
 		}
 
-		boolean outputDir = new File(Configuration.OUTPUT_DIR
-				+ "/src/main/resources/MyBatis_SQL_Maps").mkdirs();
-		if (!outputDir) {
-			logger.error("Could not init: " + outputDir + ". Exiting.");
-		}
+		/*
+		 * boolean outputDir = new File(Configuration.OUTPUT_DIR
+		 * + "/src/main/resources/MyBatis_SQL_Maps").mkdirs();
+		 * if (!outputDir) {
+		 * logger.error("Could not init: " + outputDir +
+		 * ". Exiting.");
+		 * }
+		 */
 	}
 }

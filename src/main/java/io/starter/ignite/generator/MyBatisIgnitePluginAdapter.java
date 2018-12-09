@@ -45,7 +45,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 		Field f = new Field();
 		f.setName("delegate");
-		f.setVisibility(JavaVisibility.PRIVATE);
+		f.setVisibility(JavaVisibility.PROTECTED);
 		f.setInitializationString(" new " + xx + "()");
 		f.setType(xx);
 		topLevelClass.addField(f);

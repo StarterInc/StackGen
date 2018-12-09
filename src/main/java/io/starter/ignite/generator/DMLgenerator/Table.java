@@ -44,8 +44,7 @@ import io.starter.toolkit.StringTool;
 
 public class Table implements Configuration {
 
-	public static final Map<String, String>	myMap;
-	public static final boolean				SETTING_COLUMNS_UPPERCASED	= false;
+	public static final Map<String, String> myMap;
 
 	static {
 		Map<String, String> aMap = new HashMap<String, String>();
@@ -73,6 +72,8 @@ public class Table implements Configuration {
 
 		aMap.put("Date", "DATE ${NOT_NULL} ${COMMENT}");
 
+		aMap.put("LocalDate", "DATE ${NOT_NULL} ${DEFAULT} ${COMMENT}");
+
 		aMap.put("OffsetDateTime", "TIMESTAMP ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 
 		aMap.put("Integer.pkid", "'id' BIGINT(" + precision
@@ -98,7 +99,8 @@ public class Table implements Configuration {
 	public static String generateTableRenameDML(String tableName) {
 		tableName = convertToDBSyntax(tableName);
 		String dml = ALTER_TABLE + " " + tableName + " \r\n";
-		dml += " RENAME TO " + tableName + "_BK";
+		dml += " RENAME TO " + RENAME_TABLE_SUFFIX + tableName + "_"
+				+ System.currentTimeMillis();
 		return dml;
 
 	}

@@ -32,10 +32,10 @@
     <table schema="ignite" tableName="ignite$user">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName="ignite$maket_data">
+    <table schema="ignite" tableName="ignite$account">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName="ignite$account">
+    <table schema="ignite" tableName="ignite$trade">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName="ignite$ledger_entry">
@@ -50,22 +50,13 @@
     <table schema="ignite" tableName="ignite$location">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName="ignite$user">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName="ignite$organization">
+    <table schema="ignite" tableName="ignite$market_data">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName="ignite$content">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName="ignite$organization">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
     <table schema="ignite" tableName="ignite$exchange">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName="ignite$trades">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
   </context>

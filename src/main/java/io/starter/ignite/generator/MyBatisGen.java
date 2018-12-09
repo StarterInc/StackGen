@@ -34,8 +34,11 @@ import io.starter.ignite.util.DOMEditor;
  */
 public class MyBatisGen extends Gen implements Generator {
 
-	protected static final Logger logger = LoggerFactory
+	protected static final Logger	logger			= LoggerFactory
 			.getLogger(MyBatisGen.class);
+
+	List<String>					alreadyAdded	= new ArrayList<String>();	// dedupe
+																				// list
 
 	public static Map createMyBatis(Class c, MyBatisGen gen) throws Exception {
 
@@ -157,31 +160,37 @@ public class MyBatisGen extends Gen implements Generator {
 		if (jdo == null)
 			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
 
-		Element el = new Element("table").setText("1000")
-				.setAttribute("schema", SCHEMA_NAME)
-				.setAttribute("tableName", Table.convertToDBSyntax(className));
+		// dedupe
+		if (!alreadyAdded.contains(className)) {
+			alreadyAdded.add(className);
+			Element el = new Element("table").setText("1000")
+					.setAttribute("schema", SCHEMA_NAME)
+					.setAttribute("tableName", Table
+							.convertToDBSyntax(className));
 
-		if (true) { // (setters.size() > 0) {
-			Element el2 = new Element("generatedKey")
-					.setAttribute("column", "id")
-					.setAttribute("sqlStatement", "JDBC");
-			el.setContent(el2);
-		}
+			if (true) { // (setters.size() > 0) {
+				Element el2 = new Element("generatedKey")
+						.setAttribute("column", "id")
+						.setAttribute("sqlStatement", "JDBC");
+				el.setContent(el2);
+			}
 
-		Element rootElement = jdo.getRootElement();
-		List<Element> listEmpElement = rootElement.getChildren();
+			Element rootElement = jdo.getRootElement();
+			List<Element> listEmpElement = rootElement.getChildren();
 
-		// loop through to add every sqlf mapping element
-		for (Element empElement : listEmpElement) {
-			if (empElement.getName().equals("context"))
-				empElement.addContent(el);
+			// loop through to add every sqlf mapping element
+			for (Element empElement : listEmpElement) {
+				if (empElement.getName().equals("context"))
+					empElement.addContent(el);
 
-			Object pn = empElement.getAttribute("tableName");
-			if (pn != null) {
-				if (pn.toString().equals("PLACEHOLDER_NODE")) {
-					rootElement.removeContent(empElement);
+				Object pn = empElement.getAttribute("tableName");
+				if (pn != null) {
+					if (pn.toString().equals("PLACEHOLDER_NODE")) {
+						rootElement.removeContent(empElement);
+					}
 				}
 			}
+
 		}
 		return jdo;
 	}

@@ -48,14 +48,17 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 
 		// basic
 
-		configurator.setLibrary("spring-boot"); // ("resttemplate"); // //
+		// configurator.setLibrary("jersey2"); // ("resttemplate");
+		// // //resteasy
+
+		configurator.setLibrary(SWAGGER_LIB);
 		// jersey2
-		configurator.setLang("java");
+		configurator.setLang(SWAGGER_LANG);
 		configurator.setArtifactId(ARTIFACT_ID);
 		configurator.setModelPackage(MODEL_PACKAGE);
 		configurator.setOutputDir(OUTPUT_DIR);
 		configurator.setApiPackage(API_PACKAGE);
-		configurator.setArtifactVersion("1.0");
+		configurator.setArtifactVersion("1.0.1");
 		configurator.setInvokerPackage(INVOKER_PACKAGE);
 		configurator.setVerbose(VERBOSE);
 		configurator.addDynamicProperty("dynamic-html", "true");

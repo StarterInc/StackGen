@@ -118,6 +118,9 @@ public class Gen {
 		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
+				if (name.contains(Configuration.MYBATIS_CLASS_PREFIX))
+					return false;
+
 				return name.toLowerCase().endsWith(".java");
 			}
 		});

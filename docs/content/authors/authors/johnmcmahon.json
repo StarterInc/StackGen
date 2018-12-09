@@ -1,0 +1,13 @@
+{
+  "uid": "johnmcmahon",
+  "name": "John McMahon",
+  "image": "https://api.adorable.io/avatars/150/test.png",
+  "url": "https://randomuser.me/api/?seed=user2",
+  "location": "San Francisco, California",
+  "bio": "iBPM FTW",
+  "socialUrls": [
+    "https://github.com/spaceghost69",
+    "https://twitter.com/TechnoCharms",
+    "mailto:john@starter.io"
+  ]
+}

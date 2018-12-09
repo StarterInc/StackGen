@@ -29,6 +29,18 @@ public interface Configuration extends SystemConstants {
 	public static boolean			VERBOSE						= true;
 	public static boolean			DEBUG						= true;
 
+	// spring, java, resteasy
+	public static final String		SWAGGER_LANG				= (System
+			.getProperty("SWAGGER_LANG") != null
+					? System.getProperty("SWAGGER_LANG")
+					: "spring");
+
+	// spring-boot ,jersey2
+	public static final String		SWAGGER_LIB					= (System
+			.getProperty("SWAGGER_LIB") != null
+					? System.getProperty("SWAGGER_LIB")
+					: "spring-boot");
+
 	// DML section
 	public static String			TABLE_NAME_PREFIX			= "ignite$";
 	public static String			CREATE_TABLE				= "CREATE TABLE";
@@ -36,10 +48,8 @@ public interface Configuration extends SystemConstants {
 	public static String			CREATE_TABLE_END_BLOCK		= ");";
 	public static String			DROP_TABLE					= "DROP TABLE";
 	public static String			ALTER_TABLE					= "ALTER TABLE";
-	
-	// TODO: rename and copy
-	public static String			RENAME_TABLE				= "ALTER TABLE ignite$work_flows "
-			+ "RENAME TO  ignite$work_flows_bk";
+	public static boolean			SETTING_COLUMNS_UPPERCASED	= false;
+	public static String			RENAME_TABLE_SUFFIX			= "BK_";
 
 	public static boolean			DROP_EXISTING_TABLES		= (System
 			.getProperty("DBGEN_DROP_TABLE") != null ? Boolean

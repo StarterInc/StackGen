@@ -42,10 +42,10 @@ paths:
   /account:
     post:
       tags:
-      - "trade"
+      - "account"
       summary: "Add a new account to the system"
       description: ""
-      operationId: "addtrade"
+      operationId: "addaccount"
       consumes:
       - "application/json"
       - "application/xml"
@@ -64,8 +64,8 @@ paths:
           description: "Invalid input"
       security:
       - automator_auth:
-        - "write:Accounts"
-        - "read:Accounts"
+        - "write:Account"
+        - "read:Account"
     put:
       tags:
       - "account"
@@ -81,7 +81,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "account object that needs to be edited in the system"
+        description: "account object that needs to be updated in the system"
         required: true
         schema:
           $ref: '#/definitions/Account'
@@ -89,20 +89,20 @@ paths:
         400:
           description: "Invalid ID supplied"
         404:
-          description: "account not found"
+          description: "Account not found"
         405:
           description: "Validation exception"
       security:
       - automator_auth:
-        - "write:Accounts"
-        - "read:Accounts"
+        - "write:Account"
+        - "read:Account"
   /account/findByID:
     get:
       tags:
-      - "trade"
+      - "account"
       summary: "Finds accounts by ID"
       description: "Multiple ID values can be provided with comma separated strings"
-      operationId: "findtradesByID"
+      operationId: "findAccountsByID"
       produces:
       - "application/xml"
       - "application/json"
@@ -119,13 +119,13 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/account"
+              $ref: "#/definitions/Account"
         400:
           description: "Invalid id value"
       security:
       - automator_auth:
-        - "write:Accounts"
-        - "read:Accounts"
+        - "write:Account"
+        - "read:Account"
   /trade:
     post:
       tags:
@@ -142,17 +142,17 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "trade object that needs to be added to the order"
+        description: "Trade object that needs to be added to the order"
         required: true
         schema:
-          $ref: '#/definitions/Trades'
+          $ref: '#/definitions/Trade'
       responses:
         405:
           description: "Invalid input"
       security:
       - automator_auth:
-        - "write:Trades"
-        - "read:Trades"
+        - "write:Trade"
+        - "read:Trade"
     put:
       tags:
       - "trade"
@@ -168,10 +168,10 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "trade object that needs to be added to the order"
+        description: "Trade object that needs to be added to the order"
         required: true
         schema:
-          $ref: '#/definitions/Trades'
+          $ref: '#/definitions/Trade'
       responses:
         400:
           description: "Invalid ID supplied"
@@ -181,8 +181,8 @@ paths:
           description: "Validation exception"
       security:
       - automator_auth:
-        - "write:Trades"
-        - "read:Trades"
+        - "write:Trade"
+        - "read:Trade"
   /trade/findByStatus:
     get:
       tags:
@@ -213,17 +213,17 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: '#/definitions/Trades'
+              $ref: '#/definitions/Trade'
         400:
           description: "Invalid status value"
       security:
       - automator_auth:
-        - "write:Trades"
-        - "read:Trades"
+        - "write:Trade"
+        - "read:Trade"
   /content:
     get:
       tags:
-      - users
+      - content
       summary: searches content
       operationId: searchContent
       description: |
@@ -261,7 +261,7 @@ paths:
           description: bad input parameter
     post:
       tags:
-      - admins
+      - content
       summary: adds an content item
       operationId: addContent
       description: Adds an item to the system
@@ -285,7 +285,7 @@ paths:
 /data:
     get:
       tags:
-      - tickers
+      - market data
       summary: searches latest market data
       operationId: searchMarketData
       description: |
@@ -323,8 +323,8 @@ paths:
           description: bad input parameter
     post:
       tags:
-      - admins
-      summary: adds an content item
+      - market data
+      summary: adds an marketdata item
       operationId: addMarketData
       description: Adds an item to the system
       consumes:
@@ -358,6 +358,7 @@ definitions:
         type: "string"
       accountNumber:
         type: "string"
+        x-starter-secureField: true
       routingNumber:
         type: "string"    
       modifiedDate:
@@ -479,7 +480,7 @@ definitions:
         $ref: '#/definitions/Organization'
     xml:
       name: "Content"
-    x-automator-tag: "agd2asccsd"        
+      x-automator-tag: "agd2asccsd"        
   Organization:
     required:
     - id
@@ -501,7 +502,7 @@ definitions:
     xml:
       name: "Organization"
     x-automator-tag: "agd2ascds"        
-  Trades:
+  Trade:
     required:
     - id
     - name
@@ -516,7 +517,7 @@ definitions:
         type: string
         example: MARKET
     xml:
-      name: "Trades"
+      name: "Trade"
     x-automator-tag: "agd2ascdsd"                
   Location:
     required:
@@ -575,6 +576,7 @@ definitions:
         example: DK$DFSJaraDD
         value: secure
         secureField: true
+        x-starter-secureField: true
       ssn:
         description: This is the value
         type: string
@@ -583,6 +585,7 @@ definitions:
         maxLength: 10
         minLength: 10
         value: secure
+        x-starter-secureField: true
       username:
         type: string
         example: Sparky
@@ -623,7 +626,8 @@ definitions:
         type: string
         example: Sparkyt        
       modifiedDate:
-          format: "date-time"
+        type:  string
+        format: "date-time"
     xml:
       name: "Workflows"
     x-automator-tag: "agd2cddds"                  
@@ -645,7 +649,8 @@ definitions:
         type: string
         example: GDX        
       lastValidatedDate:
-          format: "date-time"
+        type:  string
+        format: "date-time"
       organization:
         $ref: '#/definitions/Organization'
       country:
@@ -661,6 +666,9 @@ definitions:
     - name
     - ticker
     properties:
+      id:
+        type: "integer"
+        format: "int64"      
       messageTypeDescription:
         type: string
         example: twitter handle
@@ -715,11 +723,12 @@ definitions:
         example: Sparkyt
         maxLength: 10000
       modifiedDate:
-          format: "date-time"     
+        type:  string
+        format: "date-time" 
     xml:
       name: "AuditLog"
     x-automator-tag: "agd2rrcds"                     
-  MaketData:
+  MarketData:
     required:
     - id
     - sourceType
@@ -739,9 +748,11 @@ definitions:
         example: userId:1000
       json:
         type: string
-        example: Sparkyt        
+        example: Sparkyt
+        maxLength: 10000    
       modifiedDate:
-          format: "date-time"                  
+        type:  string
+        format: "date-time"                  
     xml:
       name: "MarketData"
     x-automator-tag: "agd2asyys"                  

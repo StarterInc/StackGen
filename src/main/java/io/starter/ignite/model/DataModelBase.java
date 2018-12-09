@@ -22,6 +22,9 @@ public class DataModelBase {
 	 * save a DataModelBase item to cache or persistence
 	 */
 	public DataModelBase persist() {
+
+		System.out.println("PERSISTING: " + this);
+
 		return null;
 	}
 }

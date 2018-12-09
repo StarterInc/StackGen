@@ -33,7 +33,7 @@ Java Maven application residing in the generator output folder ("./gen" by defau
 2. SQL Database -> ORM Mapping Data Objects (MyBatis)
 3. ORM Mapping Data Objects
 
-## Running your Generated Application
+## Step 2: Build and Launch your Generated Application
 
 After generating your application, you can treat the output as you would any standard
 Maven Java application.
@@ -89,7 +89,7 @@ Dec 07, 2018 10:38:18 AM io.starter.ignite.invoker.Swagger2SpringBoot logStarted
 INFO: Started Swagger2SpringBoot in 20.395 seconds (JVM running for 38.247)
 ```
 
-## Accessing the Running Application
+## Step 3: Access the Running Application
 
 Once launched, your new Starter Ignite application is ready to serve JSON data from then
 RESTful endpoints that were defined in the OpenAPI schema.

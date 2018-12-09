@@ -5,13 +5,13 @@ module.exports = {
   siteTitle: "Starter Ignite", // Site title.
   siteTitleAlt: "Starter Ignite Code Generation Platform", // Alternative site title for SEO.
   siteLogo:
-    "https://haysclark.github.io/gatsby-starter-casper/logos/logo-1024.png", // Logo used for SEO and manifest. e.g. "/logos/logo-1024.png",
+    "/Ignite/raw/master/docs/static/logos/logo-1024.png", // Logo used for SEO and manifest. e.g. "/logos/logo-1024.png",
   siteUrl: "https://starterinc.github.io", // Domain of your website without pathPrefix.
   pathPrefix: "/Ignite", // Prefixes all links. For cases when deployed to example.github.io/gatsby-starter-casper/.
   siteDescription:
     "Starter Ignite Documentation Site", // Website description used for RSS feeds/meta description tag.
   siteCover:
-    "https://haysclark.github.io/gatsby-starter-casper/images/blog-cover.jpg", // Optional, the cover image used in header for home page. e.g: "/images/blog-cover.jpg",
+    "/images/blog_cover.png", // Optional, the cover image used in header for home page. e.g: "/images/blog-cover.jpg",
   siteNavigation: true, // If navigation is enabled the Menu button will be visible
   siteRss: "/rss.xml", // Path to the RSS file.
   siteRssAuthor: "John McMahon", // The author name used in the RSS file

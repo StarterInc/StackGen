@@ -16,7 +16,7 @@ tags:
 
 ## Contributing
 
-👍🎉 First off, thanks for taking the time to contribute! 🎉👍
+First off, thanks for taking the time to contribute!
 
 The project uses [Conventional Commits](https://conventionalcommits.org/) which are simple and easy to follow. In general, use your best judgment, and feel free to propose changes by creating an issue and then mention the issue in your pull request.
 

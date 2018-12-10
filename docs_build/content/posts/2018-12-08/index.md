@@ -1,5 +1,5 @@
 ---
-title: "Swagger and the OpeAPI Specification"
+title: "Swagger and the OpenAPI Specification"
 cover: "images/mission_street.jpeg"
 author: "johnmcmahon"
 date: "2018-12-08"
@@ -17,9 +17,15 @@ Introduction to OpenAPI Specification and Swagger Docs.
 
 You may have heard of "Swagger" or seen the brightly colored auto-generated Swagger REST api documentation.
 
+[Swagger Docs]: https://github.com/StarterInc/Ignite/blob/master/docs/images/CoinBot-Swagger.png?raw=true
+
+Initially conceived as a way to document REST apis, swagger was increasingly used to generate the actual code behind the REST apis themselves.
+
+The Swagger specification is a simple YAML or JSON document which defines the REST endpoints (the URLs used to access the API data) as well as the type of data returned by the REST api.
+
 The ability to declare and define an Application's data objects and REST services with a simple, human readable file format is a powerful paradigm for development in general.
 
-SmartBear came up with the [Swagger] (https://swagger.io) specification a number of years ago and saw a huge increase in REST apis being released, and there were multiple areas of need including standardization of REST apis and management of rapidly changing client applications.
+SmartBear came up with the [Swagger] (https://swagger.io) specification a number of years ago and saw a huge increase in REST apis being released across the industry. It was clear that there were multiple areas of need including standardization of REST apis and management of rapidly changing client applications.
 
 The time-consuming work of maintaining REST apis which were largely responsible for database functionality fondly referred to as [CRUD Operations](CRUD operations) were already being automated through code generating tools such as MyBatis and heavily annotated scanning/decorating frameworks like Java Spring.
 

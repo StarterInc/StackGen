@@ -5,13 +5,13 @@ module.exports = {
   siteTitle: "Starter Ignite", // Site title.
   siteTitleAlt: "Starter Ignite Code Generation Platform", // Alternative site title for SEO.
   siteLogo:
-    "https://github.com/StarterInc/Ignite/raw/master/docs/static/logos/logo-1024.png", // Logo used for SEO and manifest. e.g. "/logos/logo-1024.png",
+    "https://raw.githubusercontent.com/StarterInc/Ignite/master/docs/starter_logo_horizontal_2015_v1.png", // Logo used for SEO and manifest. e.g. "/logos/logo-1024.png",
   siteUrl: "https://starterinc.github.io", // Domain of your website without pathPrefix.
   pathPrefix: "/Ignite", // Prefixes all links. For cases when deployed to example.github.io/gatsby-starter-casper/.
   siteDescription:
-    "Starter Ignite Documentation Site", // Website description used for RSS feeds/meta description tag.
+    "Documentation Site", // Website description used for RSS feeds/meta description tag.
   siteCover:
-    "https://github.com/StarterInc/Ignite/blob/master/docs/static/images/blog-cover.png?raw=true", // Optional, the cover image used in header for home page. e.g: "/images/blog-cover.jpg",
+    "/images/blog-cover.jpg", // Optional, the cover image used in header for home page. e.g: "/images/blog-cover.jpg",
   siteNavigation: true, // If navigation is enabled the Menu button will be visible
   siteRss: "/rss.xml", // Path to the RSS file.
   siteRssAuthor: "John McMahon", // The author name used in the RSS file
@@ -45,11 +45,11 @@ module.exports = {
   ],
   // Copyright string for the footer of the website and RSS feed.
   copyright: {
-    label: "Starter Ignite" // Label used before the year
-    // year: "2018" // optional, set specific copyright year or range of years, defaults to current year
+    label: "Starter Ignite", // Label used before the year
+    year: "2019" // optional, set specific copyright year or range of years, defaults to current year
     // url: "https://www.gatsbyjs.org/" // optional, set link address of copyright, defaults to site root
   },
-  themeColor: "#c62828", // Used for setting manifest and progress theme colors.
+  themeColor: "#ff9900", //  "#c62828", // Used for setting manifest and progress theme colors.
   backgroundColor: "#e0e0e0", // Used for setting manifest background color.
   promoteGatsby: false // Enables the GatsbyJS promotion information in footer.
 };

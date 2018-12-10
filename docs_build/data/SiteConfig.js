@@ -2,16 +2,16 @@ module.exports = {
   blogPostDir: "posts", // The name of directory that contains your posts.
   blogAuthorDir: "authors", // The name of directory that contains your 'authors' folder.
   blogAuthorId: "johnmcmahon", // The default and fallback author ID used for blog posts without a defined author.
-  siteTitle: "Starter Ignite", // Site title.
+  siteTitle: "Ignite", // Site title.
   siteTitleAlt: "Starter Ignite Code Generation Platform", // Alternative site title for SEO.
   siteLogo:
     "https://raw.githubusercontent.com/StarterInc/Ignite/master/docs/starter_logo_horizontal_2015_v1.png", // Logo used for SEO and manifest. e.g. "/logos/logo-1024.png",
   siteUrl: "https://starterinc.github.io", // Domain of your website without pathPrefix.
   pathPrefix: "/Ignite", // Prefixes all links. For cases when deployed to example.github.io/gatsby-starter-casper/.
   siteDescription:
-    "Documentation Site", // Website description used for RSS feeds/meta description tag.
+    "Starter Ignite Documentation Site", // Website description used for RSS feeds/meta description tag.
   siteCover:
-    "/images/blog-cover.jpg", // Optional, the cover image used in header for home page. e.g: "/images/blog-cover.jpg",
+    "/images/blog-cover.png?raw=true", // Optional, the cover image used in header for home page. e.g: "/images/blog-cover.jpg",
   siteNavigation: true, // If navigation is enabled the Menu button will be visible
   siteRss: "/rss.xml", // Path to the RSS file.
   siteRssAuthor: "John McMahon", // The author name used in the RSS file

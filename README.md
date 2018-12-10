@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="docs/static/logos/logo-1024.png" alt="Logo"/>
+    <img src="docs/logos/logo-1024.png" alt="Logo"/>
 </div>
 
 # Starter Ignite App Generator

@@ -3,7 +3,7 @@
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/securefield</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/swagger-and-the-open-api-specification</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://starterinc.github.io/Ignite/Ignite/a-closer-look-at-ignite-generated-code</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/ignite-generated-code</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/getting-started</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/next-steps</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/programming/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -16,6 +16,8 @@
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/swagger/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/code-gen/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/tag/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/tutorials/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/hands-on-guides/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/opensource/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/resources/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/categories/tech/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>

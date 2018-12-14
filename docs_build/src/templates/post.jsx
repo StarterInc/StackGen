@@ -106,11 +106,11 @@ class PostTemplate extends React.Component {
                   onClick={this.handleOnClick}
                 />
               </MainNav>
+              <h1 className="post-title">{title}</h1>
             </MainHeader>
             <MainContent>
               <PostFormatting className={className}>
                 <PostHeader>
-                  <h1 className="post-title">{title}</h1>
                   <section className="post-meta">
                     <PostDate date={date} />
                     <PostTags prefix=" on " tags={tags} />

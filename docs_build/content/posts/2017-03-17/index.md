@@ -1,29 +1,36 @@
 ---
 title: "Next Steps"
-cover: "https://unsplash.it/1152/300/?random?TheButterflyoftheEdge"
+cover: "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA18322-640x350.jpg"
 slug: "next-steps"
 category: "tech"
 date: "2017-03-17"
 tags:
     - programming
-    - more tags
-    - testing
-    - another one
-    - stuff
-    - other
+    - opensource
+    - resources
 ---
-# Contributing
 
-## Contributing
+#### Contributing
 
 First off, thanks for taking the time to contribute!
 
-The project uses [Conventional Commits](https://conventionalcommits.org/) which are simple and easy to follow. In general, use your best judgment, and feel free to propose changes by creating an issue and then mention the issue in your pull request.
+The Starter Ignite project uses [Conventional Commits](https://conventionalcommits.org/) to help generate changelogs and keep things tidy.
 
-## License
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-The Starter Ignite project is provided AS-IS under the GPL License unless otherwise
-noted in source files.
+Pull Requests are always welcome, but we reserve the right to limit and edit code that is merged into the codebase.
+
+We suggest using the same common sense and civility you use IRL.
+
+Please propose changes by: [creating an issue](https://github.com/StarterInc/Ignite/issues) and then mention the issue in your pull request.
+
+Please check for open pull requests that may address your issue before creating a new request ticket.
+
+#### License
+
+The Starter Ignite project is provided AS-IS with absolutely NO WARRANTY implied or otherwise.
+
+Starter Ignite contributed code is copyright Starter Inc. and is licensed to you under the GPL License unless otherwise noted in the source files.
 
 [Gnu GPL General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html)
 

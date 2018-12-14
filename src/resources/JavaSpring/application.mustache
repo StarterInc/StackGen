@@ -1,0 +1,14 @@
+spring.banner.location=classpath:/io/starter/spring/boot/StarterIgnite-Banner.txt
+
+springfox.documentation.swagger.v2.path=/api-docs
+server.contextPath={{^contextPath}}/{{/contextPath}}{{#contextPath}}{{contextPath}}{{/contextPath}}
+server.port={{serverPort}}
+spring.jackson.date-format={{basePackage}}.RFC3339DateFormat
+spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
+
+spring.boot.admin.notify.mail.to=admin@example.com
+spring.boot.admin.notify.mail.enabled=true
+
+spring.boot.admin.client.metadata.user.name=${security.user.name}
+spring.boot.admin.client.metadata.user.password=${security.user.password}
+spring.boot.admin.routes.endpoints=env, metrics, trace, jolokia, info, configprops

@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiModelProperty;
 		
 	</code>
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class AppEntityObject {

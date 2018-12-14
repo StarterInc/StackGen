@@ -5,7 +5,7 @@ package io.starter.ignite.util;
  * 
  * Handle the modification of XCODE project files (unzip, edit, rezip)
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class XCodeProjectHandler {

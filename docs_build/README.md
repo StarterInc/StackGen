@@ -2,7 +2,7 @@
     <img src="static/logos/logo-1024.png" alt="Logo"/>
 </div>
 
-## Starter Ignite Documentation Site
+### Starter Ignite Documentation Site
 
 # Gatsby v2
 

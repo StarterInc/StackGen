@@ -6,7 +6,7 @@
 package io.starter.ignite.generator.react.ignite;
 
 /**
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class ReactComponent {

@@ -17,7 +17,7 @@ import io.starter.ignite.util.ASCIIArtPrinter;
  *   - Swagger CLient -> React-native JS screens
  * </pre>
  * 
- * @author john mcmahon
+ * @author John McMahon (@TechnoCharms) mcmahon
  *
  */
 

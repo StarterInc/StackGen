@@ -1,5 +1,5 @@
 ---
-title: "Swagger and the OpenAPI Specification"
+title: "Swagger and OpenAPI"
 cover: "images/mission_street.jpeg"
 author: "johnmcmahon"
 date: "2018-12-08"
@@ -11,13 +11,13 @@ tags:
     - Swagger
     - CodeGen
 ---
-Introduction to OpenAPI Specification and Swagger Docs.
+Introduction to Swagger and OpenAPI Specification and Docs.
 
-# Swagger was adopted as a standard and is now OpenAPI
+> Swagger REST api specification format was adopted as a standard and is now migrating to OpenAPI standard
 
-You may have heard of "Swagger" or seen the brightly colored auto-generated Swagger REST api documentation.
+You may have heard of "Swagger" or seen the brightly colored auto-generated Swagger REST api documentation:
 
-[Swagger Docs]: https://github.com/StarterInc/Ignite/blob/master/docs/images/CoinBot-Swagger.png?raw=true
+![alt text](https://github.com/StarterInc/Ignite/blob/master/docs/images/CoinBot-Swagger.png?raw=true "Swagger REST api docs")
 
 Initially conceived as a way to document REST apis, swagger was increasingly used to generate the actual code behind the REST apis themselves.
 
@@ -25,9 +25,25 @@ The Swagger specification is a simple YAML or JSON document which defines the RE
 
 The ability to declare and define an Application's data objects and REST services with a simple, human readable file format is a powerful paradigm for development in general.
 
-SmartBear came up with the [Swagger] (https://swagger.io) specification a number of years ago and saw a huge increase in REST apis being released across the industry. It was clear that there were multiple areas of need including standardization of REST apis and management of rapidly changing client applications.
+##### Why Swagger?
+SmartBear came up with the [Swagger](https://swagger.io) specification a number of years ago and saw a huge increase in REST apis being released across the technology industry.
 
-The time-consuming work of maintaining REST apis which were largely responsible for database functionality fondly referred to as [CRUD Operations](CRUD operations) were already being automated through code generating tools such as MyBatis and heavily annotated scanning/decorating frameworks like Java Spring.
+As REST apis proliferated and became the de-facto backend technology powering mobile and web applications, it became clear that there were multiple areas of need for management and automation. These concerns included standardization of REST apis across platforms, supporting agile requirements development, and the management of rapidly changing client applications.
+
+The time-consuming work of maintaining REST apis -- many of which were simple extensions of database functionality -- drove a wave of development towards code generation and "design-first" development.
+
+Since much of what we use REST apis for can fondly referred to as [CRUD Operations](CRUD operations) a large amount of functionality have been automated via code generating tools such as MyBatis and with heavily annotated scanning/decorating frameworks like Java Spring.
+
+> #### A Historical Sidenote
+ As a big proponent of [Service Design](https://en.wikipedia.org/wiki/Service_design) I would say that I always put design first, but what always eventually lagged development was **documentation** and it was the need for generating up-to-date technical documentation for [ExtenXLS](https://en.wikipedia.org/wiki/ExtenXLS) and [Sheetster](https://en.wikipedia.org/wiki/Sheetster) which led me and the team at Extentech to develop one of the very early REST api / Java document site generators.
+
+> In our case we were needed to leverage the JavaDoc in the codebase so that we could document functionality at the source code level and know that it would be reflected and updated throughout.
+
+> Our approach was to convert our JavaDoc to WADL -- an XML variant designed for describing Web Services -- and then to apply a complex XSLT to generate a static version of the code as a somewhat readable and attractive html that for REST apis provided **sample code** and testable endpoints. We ran it from our main build script -- ant -- and presto :fresh docs!
+
+Luckily for us, the team at SmartBear took this very same problem on and crushed it. And we now have Swagger!
+
+#### Show me the Swagger!
 
 Here is a simple example:
 
@@ -130,13 +146,13 @@ definitions:
 ```
 Swagger CodeGen has a set of templates covering many of the world's most popular languages and libraries
 
-# Swagger CodeGen and Ignite
+### Swagger CodeGen and Ignite
 
 Starter Ignite includes a customized version of Swagger CodeGen in order to convert the input OpenAPI/Swagger Specification file into the initial set of Java POJOs (Plain Old Java Objects)
 
 Ignite uses either the SpringBoot or the Java Jersey2 CodeGen output to create full blown application stacks which include Database, Encryption, and AI capabilities.
 
-## Resources
+### Resources
 
 Recommended reading and resources for Swagger and OpenAPI:
 

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * 
  * http://www.oracle.com/technetwork/java/filters-137243.html
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  * 
  */
 public final class JSXTransformationFilter implements Filter {
@@ -197,7 +197,7 @@ public final class JSXTransformationFilter implements Filter {
  * from http://www.java2s.com/Tutorial/Java/
  * 0400__Servlet/Filterthatusesaresponsewrappertoconvertalloutputtouppercase.htm
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 class CharResponseWrapper extends HttpServletResponseWrapper {

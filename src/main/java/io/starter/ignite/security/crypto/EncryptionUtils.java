@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 /**
  * Utilities for working with the encrypted data
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class EncryptionUtils {

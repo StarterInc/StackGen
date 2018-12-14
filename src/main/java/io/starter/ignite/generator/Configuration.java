@@ -15,19 +15,30 @@ import io.starter.ignite.util.SystemConstants;
  * The following values can be set as System properties or on the command line:
  * 
  * <pre>
+ * VERBOSE
+ * DEBUG
+ * SWAGGER_LANG
+ * SWAGGER_LIB
+ * DBGEN_DROP_TABLE
  * JAVA_GEN_PATH
  * REACT_APP_NAME 
  * REACT_EXPORT_FOLDER
  * REACT_TEMPLATE_FOLDER
  * </pre>
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public interface Configuration extends SystemConstants {
 
-	public static boolean			VERBOSE						= true;
-	public static boolean			DEBUG						= true;
+	public static boolean			VERBOSE						= (System
+			.getProperty("VERBOSE") != null
+					? Boolean.parseBoolean(System.getProperty("VERBOSE"))
+					: true);
+	public static final boolean		DEBUG						= (System
+			.getProperty("DEBUG") != null
+					? Boolean.parseBoolean(System.getProperty("DEBUG"))
+					: true);
 
 	// spring, java, resteasy
 	public static final String		SWAGGER_LANG				= (System
@@ -57,20 +68,6 @@ public interface Configuration extends SystemConstants {
 					: false);
 	// end DML section
 
-	public static final boolean		DISABLE_DATA_FIELD_ASPECT	= true;
-	public static final boolean		DISABLE_SECURE_FIELD_ASPECT	= false;
-
-	public static String			ADD_GEN_CLASS_NAME			= "Impl";
-	public static String			IGNITE_DATAMODEL_PACKAGE	= "io.starter.ignite.model.dao";
-
-	public static String			LONG_DATE_FORMAT			= "MMM/d/yyyy HH:mm:ss Z";
-	public static String			GEN_MODEL_PACKAGE			= "io.starter.ignite.model.dao";
-	static SimpleDateFormat			DATE_FORMAT					= new SimpleDateFormat(
-			LONG_DATE_FORMAT);
-
-	public static String			SOURCE_MAIN					= "/src/main";
-	public static String			SOURCE_RESOURCES			= "/src/resources";
-
 	public static String			JAVA_GEN_ARCHIVE_FOLDER		= "/archive/gen";
 	public static String			JAVA_GEN_ARCHIVE_PATH		= (System
 			.getProperty("JAVA_GEN_ARCHIVE_PATH") != null
@@ -88,27 +85,52 @@ public interface Configuration extends SystemConstants {
 	public static File				JAVA_GEN_SRC				= new File(
 			JAVA_GEN_SRC_FOLDER);
 
+	public static String			SOURCE_MAIN					= "/src/main";
+	public static String			SOURCE_RESOURCES			= "/src/resources";
+
+	public static final boolean		DISABLE_DATA_FIELD_ASPECT	= true;
+	public static final boolean		DISABLE_SECURE_FIELD_ASPECT	= false;
+
+	// ## SwaggerGen OPEN API
+	public static String			ADD_GEN_CLASS_NAME			= "Service";
+	public static String			ARTIFACT_ID					= "ignite";
+	public static String			ORG_PACKAGE					= "io.starter."
+			+ ARTIFACT_ID;
+
+	public static String			IGNITE_DATAMODEL_PACKAGE	= ORG_PACKAGE
+			+ ".model.dao";
+
+	public static String			IGNITE_API_PACKAGE			= ORG_PACKAGE
+			+ ".api";
+
+	public static String			SPEC_LOCATION				= ROOT_FOLDER
+			+ SOURCE_RESOURCES + "/openapi_specs/";
+
+	public static String			CONFIG_FILE					= ROOT_FOLDER
+			+ SOURCE_RESOURCES + "/swagger_config.json";
+
+	public static String			OUTPUT_DIR					= JAVA_GEN_PATH;
+
+	public static String			API_PACKAGE					= ORG_PACKAGE
+			+ ".api";
+
+	public static String			MODEL_PACKAGE				= ORG_PACKAGE
+			+ ".model.dao";
+
+	public static String			INVOKER_PACKAGE				= ORG_PACKAGE
+			+ ".invoker";
+
+	public static String			LONG_DATE_FORMAT			= "MMM/d/yyyy HH:mm:ss Z";
+
+	static SimpleDateFormat			DATE_FORMAT					= new SimpleDateFormat(
+			LONG_DATE_FORMAT);
+
 	public static String			MODEL_PACKAGE_DIR			= "/io/starter/ignite/model/dao/";
+
 	public static String			MODEL_DAO_PACKAGE_DIR		= "/io/starter/ignite/model/dao/";
 
 	public static String			API_MODEL_CLASSES			= JAVA_GEN_SRC_FOLDER
 			+ MODEL_PACKAGE_DIR;
-
-	// ## SwaggerGen OPEN API
-	public static String			SPEC_LOCATION				= ROOT_FOLDER
-			+ SOURCE_RESOURCES + "/openapi_specs/";
-	public static String			CONFIG_FILE					= ROOT_FOLDER
-			+ SOURCE_RESOURCES + "/swagger_config.json";
-	public static String			OUTPUT_DIR					= JAVA_GEN_PATH;
-
-	public static String			ORG_PACKAGE					= "io.starter.ignite";
-	public static String			API_PACKAGE					= ORG_PACKAGE
-			+ ".api";
-	public static String			ARTIFACT_ID					= "ignite";
-	public static String			MODEL_PACKAGE				= ORG_PACKAGE
-			+ ".model.dao";
-	public static String			INVOKER_PACKAGE				= ORG_PACKAGE
-			+ ".invoker";
 
 	// ## Mybatis
 	public static int				DB_TIMEOUT					= 10000;
@@ -180,5 +202,6 @@ public interface Configuration extends SystemConstants {
 	// output the javascript here
 	public static String			WEB_JS_ROOT					= SOURCE_MAIN
 			+ "/webapp/js";
+	public static String			SPRING_DELEGATE				= "ApiDelegate";
 
 }

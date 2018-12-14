@@ -24,7 +24,7 @@ import io.starter.toolkit.StringTool;
  * 
  * Generate React Ignite
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  */
 public class Generator {
 

@@ -26,22 +26,34 @@
     box-shadow: #fff 0 0 0 5px;
 }
 
+.post-title {
+
+}
+
 .post-title a {
     text-decoration: none;
 }
 
 /* Possibly not the right home for this, make sure to move sized versions as well */
 h1:not(.post-template) .post-title {
-    font-size: 3.6rem;
+    font-size: 6.6rem;
 }
 
 div.page-template .post-title {
-    font-size: 5rem;
+    font-size: 8rem;
 }
 
 .post-template .post-title,
 .page-template .post-title {
-    margin-bottom: 0;
+  font-size: 40pt;
+  font-weight: 100;
+  margin-top:0px;
+  color: white;
+  text-align: left;
+  padding-bottom:-300px;
+  position: absolute;
+  bottom:-32px;
+  left: 30px;
 }
 
 .post-excerpt p {
@@ -130,11 +142,11 @@ div.page-template .post-title {
     }
 
     h1:not(.post-template) .post-title {
-        font-size: 2.5rem;
+        font-size: 4.5rem;
     }
 
     div.page-template .post-title {
-        font-size: 2.8rem;
+        font-size: 4.8rem;
     }
 
     .post-template .post-date,

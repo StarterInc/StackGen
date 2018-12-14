@@ -14,6 +14,7 @@ import MainNav from "../components/MainNav/MainNav";
 import BlogLogo from "../components/BlogLogo/BlogLogo";
 import MenuButton from "../components/MenuButton/MenuButton";
 import PageTitle from "../components/PageTitle/PageTitle";
+import PageLogo from "../components/PageLogo/PageLogo";
 import PageDescription from "../components/PageDescription/PageDescription";
 import PaginatedContent from "../components/PaginatedContent/PaginatedContent";
 import SocialMediaIcons from "../components/SocialMediaIcons/SocialMediaIcons";
@@ -81,6 +82,7 @@ class IndexTemplate extends React.Component {
                 </MainNav>
                 <div className="vertical">
                   <div className="main-header-content inner">
+                    <PageLogo/>
                     <PageTitle text={config.siteTitle} />
                     <PageDescription text={config.siteDescription} />
                     <SocialMediaIcons

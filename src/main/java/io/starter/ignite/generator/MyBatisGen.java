@@ -29,7 +29,7 @@ import io.starter.ignite.util.DOMEditor;
 /**
  * responsible for generating MyBatis config
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class MyBatisGen extends Gen implements Generator {

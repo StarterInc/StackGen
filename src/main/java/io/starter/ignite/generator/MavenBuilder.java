@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author john mcmahon
+ * @author John McMahon (@TechnoCharms) mcmahon
  *
  */
 public class MavenBuilder implements Configuration {

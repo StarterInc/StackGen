@@ -23,10 +23,19 @@
     <table schema="ignite" tableName="ignite$order">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
+    <table schema="ignite" tableName="ignite$model_api_response">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
     <table schema="ignite" tableName="ignite$audit_log">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
+    <table schema="ignite" tableName="ignite$tag">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
     <table schema="ignite" tableName="ignite$organization">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$category">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName="ignite$user">
@@ -47,13 +56,13 @@
     <table schema="ignite" tableName="ignite$contact_method">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="ignite" tableName="ignite$location">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
     <table schema="ignite" tableName="ignite$market_data">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName="ignite$content">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$item">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName="ignite$exchange">

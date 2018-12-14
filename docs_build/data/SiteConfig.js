@@ -11,7 +11,7 @@ module.exports = {
   siteDescription:
     "Starter Ignite Documentation Site", // Website description used for RSS feeds/meta description tag.
   siteCover:
-    "/images/blog-cover.png?raw=true", // Optional, the cover image used in header for home page. e.g: "/images/blog-cover.jpg",
+    "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA19964-640x350.jpg", // Optional, the cover image used in header for home page. e.g: "/images/blog-cover.jpg",
   siteNavigation: true, // If navigation is enabled the Menu button will be visible
   siteRss: "/rss.xml", // Path to the RSS file.
   siteRssAuthor: "John McMahon", // The author name used in the RSS file

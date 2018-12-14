@@ -1,0 +1,70 @@
+/* The details of your blog. Defined in ghost/settings/ */
+
+.no-cover .page-logo {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+/* Add subtle load-in animation for content on the home page */
+.page-logo {
+    width:25%;
+    margin-top:-250px;
+    -webkit-animation: fade-in-down 1.2s;
+    animation: fade-in-down 1.2s both;
+    -webkit-animation-delay: 0.5s;
+    animation-delay: 0.5s;
+}
+
+/* ==========================================================================
+   12. Media Queries - Smaller than 900px
+   ========================================================================== */
+
+@media only screen and (max-width: 900px) {
+    .page-logo {
+        width:25%;
+        margin-top:-250px;
+    }
+}
+
+/* ==========================================================================
+   13. Media Queries - Smaller than 500px
+   ========================================================================== */
+
+@media only screen and (max-width: 500px) {
+    .page-logo {
+      width:25%;
+      margin-top:-250px;
+    }
+}
+
+/* ==========================================================================
+   14. Animations
+   ========================================================================== */
+
+/* Used to fade in logo/desc on the home page */
+@-webkit-keyframes fade-in-down {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in-down {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+}

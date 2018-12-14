@@ -20,9 +20,9 @@ import io.starter.ignite.util.SystemConstants;
 /**
  * JCE implementation for encrypting fields
  * 
- * Get the key from secure file.
+ * Get the key from System properties (i.e.: command line)
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class SecureEncrypter implements SystemConstants {
@@ -71,8 +71,6 @@ public class SecureEncrypter implements SystemConstants {
 	}
 
 	public static SecretKey getKeyFromBytes(byte[] b) {
-		// String to SecretKey:
-
 		// decode the base64 encoded string
 		byte[] decodedKey = Base64.getDecoder().decode(b);
 		// rebuild key using SecretKeySpec
@@ -108,8 +106,7 @@ public class SecureEncrypter implements SystemConstants {
 	 * @param e
 	 * @return
 	 */
-	public static String secureHash(String e) {
-
+	private static String secureHash(String e) {
 		Sha256Hash sha256Hash = new Sha256Hash(e);
 		return sha256Hash.toHex();
 	}

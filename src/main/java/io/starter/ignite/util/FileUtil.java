@@ -10,7 +10,7 @@ import java.io.OutputStream;
 /**
  * utility methods for files
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class FileUtil {

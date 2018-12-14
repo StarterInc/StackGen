@@ -14,7 +14,7 @@ import io.swagger.codegen.config.CodegenConfigurator;
 /**
  * responsible for generating the Swagger server and clients
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  * 
  */
 public class SwaggerGen extends DefaultGenerator implements Configuration {
@@ -37,23 +37,21 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		spec = SPEC_LOCATION + spec;
 
 		logger.debug("Create Swagger Client Apis for:" + spec);
-		// attempt to read from config file
 
-		// if a config file wasn't specified or we were unable to
-		// read it
+		// read from config file
 		if (configurator == null) {
 			// createa a fresh configurator
 			configurator = new CodegenConfigurator();
 		}
 
-		// basic
-
-		// configurator.setLibrary("jersey2"); // ("resttemplate");
-		// // //resteasy
-
-		configurator.setLibrary(SWAGGER_LIB);
-		// jersey2
+		// main output type
+		// (ie: spring, jersey2)
 		configurator.setLang(SWAGGER_LANG);
+
+		// the JSON serialization library to use
+		// (ie: jersey2, resteasy, resttemplate)
+		configurator.setLibrary(SWAGGER_LIB);
+
 		configurator.setArtifactId(ARTIFACT_ID);
 		configurator.setModelPackage(MODEL_PACKAGE);
 		configurator.setOutputDir(OUTPUT_DIR);
@@ -71,7 +69,13 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		configurator
 				.addDynamicProperty("developerOrganization", "Starter Inc.");
 		configurator
-				.addDynamicProperty("developerOrganizationUrl", "http://starter.io");
+				.addDynamicProperty("developerOrganizationUrl", "https://starterinc.github.io/Ignite/");
+
+		// SPRING props
+		configurator.addAdditionalProperty("java8", "true");
+		configurator.addAdditionalProperty("delegatePattern", "true");
+		configurator.addAdditionalProperty("asynch", "true");
+		configurator.addAdditionalProperty("USE_BEANVALIDATION", "true");
 
 		// app config
 		configurator.setAuth("oauth");

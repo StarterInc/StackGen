@@ -22,7 +22,7 @@ import io.starter.toolkit.StringTool;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class Gen {
@@ -119,6 +119,8 @@ public class Gen {
 			@Override
 			public boolean accept(File dir, String name) {
 				if (name.contains(Configuration.MYBATIS_CLASS_PREFIX))
+					return false;
+				if (name.contains(Configuration.ADD_GEN_CLASS_NAME))
 					return false;
 
 				return name.toLowerCase().endsWith(".java");

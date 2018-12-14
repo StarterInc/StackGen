@@ -29,7 +29,7 @@ import io.starter.toolkit.StringTool;
  * 
  * https://github.com/spullara/mustache.java
  * 
- * @author john
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class ReactGen extends Gen implements Generator {

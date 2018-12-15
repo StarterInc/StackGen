@@ -350,8 +350,9 @@ public class JavaGen extends Gen implements Generator {
 				.get(Configuration.IGNITE_API_PACKAGE, delegateInterfaceName);
 
 		try {
-			Class<?> cx1 = Class.forName(Configuration.IGNITE_API_PACKAGE + "."
-					+ delegateInterfaceName);
+			delegateInterfaceName = Configuration.IGNITE_API_PACKAGE + "."
+					+ delegateInterfaceName;
+			Class<?> cx1 = Class.forName(delegateInterfaceName);
 		} catch (Exception x) {
 			cDD = null;
 		}
@@ -388,8 +389,13 @@ public class JavaGen extends Gen implements Generator {
 				.addMember("value", "$S", getJavaVariableName(className))
 				.build();
 
+		// bean constructor
+		MethodSpec constructor = MethodSpec.constructorBuilder()
+				.addModifiers(Modifier.PUBLIC).build();
+		methodList.add(constructor);
+
 		// create the Java Class
-		com.squareup.javapoet.TypeSpec.Builder buildx = TypeSpec
+		com.squareup.javapoet.TypeSpec.Builder builder = TypeSpec
 				.classBuilder(className).addModifiers(Modifier.PUBLIC)
 				.addField(member)
 				// .superclass(null)
@@ -399,11 +405,11 @@ public class JavaGen extends Gen implements Generator {
 				.addMethods(methodList);
 
 		if (cDD != null) {
-			buildx.addSuperinterface(cDD);
-			buildx.addAnnotation(delegateAnnotation);
+			builder.addSuperinterface(cDD);
+			builder.addAnnotation(delegateAnnotation);
 		}
 
-		JavaFile.builder(packageName, buildx.build()).build()
+		JavaFile.builder(packageName, builder.build()).build()
 				.writeTo(JAVA_GEN_SRC);
 		classLoader.close();
 	}
@@ -411,6 +417,7 @@ public class JavaGen extends Gen implements Generator {
 	String getJavaVariableName(String n) {
 		if (n.length() < 2)
 			return n;
+		n = n.replace(Configuration.ADD_GEN_CLASS_NAME, "");
 		String firstChar = n.substring(0, 1).toLowerCase();
 		return firstChar + n.substring(1) + Configuration.SPRING_DELEGATE;
 	}

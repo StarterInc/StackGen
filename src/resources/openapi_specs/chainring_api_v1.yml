@@ -285,9 +285,9 @@ paths:
   /data:
     get:
       tags:
-      - market data
+      - data
       summary: searches latest market data
-      operationId: searchMarketData
+      operationId: searchData
       description: |
         By passing in the appropriate options, you can search for
         available market data in the system
@@ -318,14 +318,14 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/MarketData'
+              $ref: '#/definitions/Data'
         400:
           description: bad input parameter
     post:
       tags:
-      - market data
-      summary: adds an marketdata item
-      operationId: addMarketData
+      - data
+      summary: adds an data item
+      operationId: addData
       description: Adds an item to the system
       consumes:
       - application/json
@@ -334,9 +334,9 @@ paths:
       parameters:
       - in: body
         name: contentItem
-        description: MarketData item to add
+        description: Data item to add
         schema:
-          $ref: '#/definitions/MarketData'
+          $ref: '#/definitions/Data'
       responses:
         201:
           description: item created
@@ -885,7 +885,7 @@ definitions:
     xml:
       name: "AuditLog"
     x-automator-tag: "agd2rrcds"                     
-  MarketData:
+  Data:
     required:
     - id
     - sourceType
@@ -911,7 +911,7 @@ definitions:
         type:  string
         format: "date-time"                  
     xml:
-      name: "MarketData"
+      name: "Data"
     x-automator-tag: "agd2asyys"                 
   Order:
     type: "object"

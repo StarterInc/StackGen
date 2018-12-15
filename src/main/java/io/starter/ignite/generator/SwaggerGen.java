@@ -56,6 +56,7 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		configurator.setModelPackage(MODEL_PACKAGE);
 		configurator.setOutputDir(OUTPUT_DIR);
 		configurator.setApiPackage(API_PACKAGE);
+
 		configurator.setArtifactVersion("1.0.1");
 		configurator.setInvokerPackage(INVOKER_PACKAGE);
 		configurator.setVerbose(VERBOSE);

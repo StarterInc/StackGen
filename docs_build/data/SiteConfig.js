@@ -24,6 +24,9 @@ module.exports = {
     "https://twitter.com/TechnoCharms",
     "mailto:info@starter.io"
   ],
+  apicloud_logo:"logos/apicloud.png",
+  apicloud_url:"http://apicloud.co",
+  apicloud_title:"APICloud MicroServices",
   postDefaultCategoryID: "Tech", // Default category for posts.
   // Links to social profiles/projects you want to display in the navigation bar.
   userLinks: [
@@ -51,5 +54,5 @@ module.exports = {
   },
   themeColor: "#ff9900", //  "#c62828", // Used for setting manifest and progress theme colors.
   backgroundColor: "#e0e0e0", // Used for setting manifest background color.
-  promoteGatsby: false // Enables the GatsbyJS promotion information in footer.
+  promoteGatsby: true // Enables the GatsbyJS promotion information in footer.
 };

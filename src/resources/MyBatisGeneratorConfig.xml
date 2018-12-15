@@ -44,6 +44,9 @@
     <table schema="ignite" tableName="ignite$account">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
+    <table schema="ignite" tableName="ignite$data">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
     <table schema="ignite" tableName="ignite$trade">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
@@ -54,9 +57,6 @@
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName="ignite$contact_method">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="ignite" tableName="ignite$market_data">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName="ignite$content">

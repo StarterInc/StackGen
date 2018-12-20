@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/swagger-design</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/faq</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/troubleshooting</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/ignite-auto-generated-fields</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/rework-and-starter</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/securefield</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://starterinc.github.io/Ignite/Ignite/swagger-and-open-api</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/swagger-and-openapi</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/ignite-generated-code</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/getting-started</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/next-steps</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/ignite/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/support/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/architecture/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/configuration/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/programming/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/security/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/encryption/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/database/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
-<url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/ignite/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/v-1/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/open-api/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/swagger/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
@@ -20,6 +28,7 @@
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/hands-on-guides/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/opensource/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/tags/resources/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://starterinc.github.io/Ignite/Ignite/categories/ignite/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/categories/tech/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/categories/open-api/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 <url> <loc>https://starterinc.github.io/Ignite/Ignite/categories/starter-ignite/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>

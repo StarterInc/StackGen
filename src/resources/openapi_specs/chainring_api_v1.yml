@@ -9,11 +9,11 @@ info:
   title: CoinBot API
   # put the contact info for your development or API team
   contact:
-    email: info@starter.io
+    email: info@apicloud.co
   license:
     name: AGPL 3.0
     url: https://www.gnu.org/licenses/agpl-3.0.html
-  termsOfService: http://starter.io/tos/
+  termsOfService: http://apicloud.co/tos/
 servers:
   url: https://{username}.automator.ai:{port}/{basePath}
   description: The production API server
@@ -96,15 +96,14 @@ paths:
       - automator_auth:
         - "write:Account"
         - "read:Account"
-  /account/findByID:
+  /account/list:
     get:
       tags:
       - "account"
       summary: "Finds accounts by ID"
       description: "Multiple ID values can be provided with comma separated strings"
-      operationId: "findAccountsByID"
+      operationId: "list"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "id"
@@ -132,6 +131,7 @@ paths:
       - "trade"
       summary: "Add a new trade to the order"
       description: ""
+      operationId: "insert"
       tradeId: "addtrade"
       consumes:
       - "application/json"
@@ -158,12 +158,10 @@ paths:
       - "trade"
       summary: "Update an existing trade"
       description: ""
-      operationId: "updatetrade"
+      operationId: "update"
       consumes:
       - "application/json"
-      - "application/xml"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - in: "body"
@@ -183,7 +181,7 @@ paths:
       - automator_auth:
         - "write:Trade"
         - "read:Trade"
-  /trade/findByStatus:
+  /trade/load:
     get:
       tags:
       - "trade"
@@ -364,35 +362,13 @@ paths:
       responses:
         default:
           description: "successful operation"
-  /user/createWithArray:
+  /user/insert:
     post:
       tags:
       - "user"
       summary: "Creates list of users with given input array"
       description: ""
-      operationId: "createUsersWithArrayInput"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithList:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithListInput"
+      operationId: "insert"
       produces:
       - "application/xml"
       - "application/json"
@@ -465,9 +441,8 @@ paths:
       - "user"
       summary: "Get user by user name"
       description: ""
-      operationId: "getUserByName"
+      operationId: "load"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "username"
@@ -489,9 +464,8 @@ paths:
       - "user"
       summary: "Updated user"
       description: "This can only be done by the logged in user."
-      operationId: "updateUser"
+      operationId: "update"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "username"
@@ -515,25 +489,24 @@ paths:
       - "user"
       summary: "Delete user"
       description: "This can only be done by the logged in user."
-      operationId: "deleteUser"
+      operationId: "delete"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
-      - name: "username"
+      - name: "userId"
         in: "path"
-        description: "The name that needs to be deleted"
+        description: "The user ID for the user that needs to be deleted"
         required: true
         type: "string"
       responses:
         400:
-          description: "Invalid username supplied"
+          description: "Invalid user id supplied"
         404:
           description: "User not found"
 securityDefinitions:
   itemstore_auth:
     type: "oauth2"
-    authorizationUrl: "http://itemstore.swagger.io/oauth/dialog"
+    authorizationUrl: "http://apicloud.co/oauth/dialog"
     flow: "implicit"
     scopes:
       write:items: "modify items in your account"
@@ -552,6 +525,8 @@ definitions:
       balance:
         type: "number"
         format: "double"
+        description: "Account balance point in time"
+        x-starter-dataField: component=AccountBalance/
       institutionName:
         type: "string"
       accountNumber:
@@ -622,7 +597,6 @@ definitions:
         default: false
     xml:
       name: "Account"
-    x-automator-tag: "agd2asccs"
   Order:
     type: "object"
     properties:
@@ -652,7 +626,6 @@ definitions:
         type:
     xml:
       name: "Order"
-    x-automator-tag: "agd2asccs"
   Content:
     type: object
     required:
@@ -677,8 +650,7 @@ definitions:
       organization:
         $ref: '#/definitions/Organization'
     xml:
-      name: "Content"
-      x-automator-tag: "agd2asccsd"        
+      name: "Content"    
   Organization:
     required:
     - id
@@ -699,7 +671,6 @@ definitions:
         example: 408-867-5309
     xml:
       name: "Organization"
-    x-automator-tag: "agd2ascds"        
   Trade:
     required:
     - id
@@ -715,8 +686,7 @@ definitions:
         type: string
         example: MARKET
     xml:
-      name: "Trade"
-    x-automator-tag: "agd2ascdsd"                                
+      name: "Trade"             
   User:
     required:
     - id
@@ -755,7 +725,6 @@ definitions:
         example:  https://twitter.com/StarterIO
     xml:
       name: "User"
-    x-automator-tag: "agd2asczzz"                
   WorkFlows:
     required:
     - id
@@ -763,7 +732,6 @@ definitions:
     - json
     properties:
       id:
-        id:
         type: "integer"
         format: "int64"
       fingerprint:
@@ -787,7 +755,6 @@ definitions:
         format: "date-time"
     xml:
       name: "Workflows"
-    x-automator-tag: "agd2cddds"                  
   Exchange:
     type: object
     required:
@@ -796,7 +763,6 @@ definitions:
     - ticker
     properties:
       id:
-        id:
         type: "integer"
         format: "int64"
       name:
@@ -815,7 +781,6 @@ definitions:
         example: CAN
     xml:
       name: "Exchange"
-    x-automator-tag: "agd2aszzzs"                
   ContactMethod:        
     type: object
     required:
@@ -856,7 +821,6 @@ definitions:
         default: false
     xml:
       name: "ContactMethod"
-    x-automator-tag: "agd2zzcds"                
   AuditLog:
     required:
     - id
@@ -884,7 +848,6 @@ definitions:
         format: "date-time" 
     xml:
       name: "AuditLog"
-    x-automator-tag: "agd2rrcds"                     
   Data:
     required:
     - id
@@ -912,7 +875,6 @@ definitions:
         format: "date-time"                  
     xml:
       name: "Data"
-    x-automator-tag: "agd2asyys"                 
   Order:
     type: "object"
     properties:

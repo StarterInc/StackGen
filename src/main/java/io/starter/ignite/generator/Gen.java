@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author John McMahon (@TechnoCharms)
  *
  */
-public class Gen {
+public class Gen implements Configuration {
 
 	protected static final Logger logger = LoggerFactory.getLogger(Gen.class);
 
@@ -113,8 +113,8 @@ public class Gen {
 	/**
 	 * @return
 	 */
-	static File[] getModelJavaFiles() {
-		File modelDir = new File(Configuration.API_MODEL_CLASSES);
+	static File[] getApiJavaFiles() {
+		File modelDir = new File(Configuration.MODEL_CLASSES);
 		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -122,24 +122,57 @@ public class Gen {
 					return false;
 				if (name.contains(Configuration.ADD_GEN_CLASS_NAME))
 					return false;
-
 				return name.toLowerCase().endsWith(".java");
 			}
 		});
 		return modelFiles;
 	}
 
-	/**
-	 * @return
-	 */
-	static File[] getModelClassFiles() {
-		File modelDir = new File(Configuration.API_MODEL_CLASSES);
-		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
+	public static String[] getModelFileNames() {
+		File modelDir = new File(Configuration.MYBATIS_MODEL_CLASSES);
+		String[] modelFiles = modelDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
+				if (name.contains("Example"))
+					return false;
+				if (name.contains(MYBATIS_CLASS_PREFIX))
+					return false;
+				if (name.contains("Mapper"))
+					return false;
+				if (name.contains(ADD_GEN_CLASS_NAME))
+					return false;
 				return name.toLowerCase().endsWith(".java");
 			}
 		});
+
+		if (modelFiles != null && modelFiles.length < 1) {
+			throw new IllegalStateException(
+					"JavaGen Failure: no model classfiles found. Check the MYBATIS_MODEL_CLASSES value.");
+		}
+		return modelFiles;
+	}
+
+	public static File[] getModelFiles() {
+		File modelDir = new File(Configuration.MODEL_CLASSES);
+		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				if (name.contains("Example"))
+					return false;
+				if (name.contains(MYBATIS_CLASS_PREFIX))
+					return false;
+				if (name.contains("Mapper"))
+					return false;
+				if (name.contains(ADD_GEN_CLASS_NAME))
+					return false;
+				return name.toLowerCase().endsWith(".java");
+			}
+		});
+
+		if (modelFiles != null && modelFiles.length < 1) {
+			throw new IllegalStateException(
+					"JavaGen Failure: no model classfiles found. Check the MYBATIS_MODEL_CLASSES value.");
+		}
 		return modelFiles;
 	}
 
@@ -155,6 +188,14 @@ public class Gen {
 					return true;
 				if (name.toLowerCase().endsWith(".xml"))
 					return true;
+				if (name.toLowerCase().endsWith(".htm"))
+					return true;
+				if (name.toLowerCase().endsWith(".html"))
+					return true;
+				if (name.toLowerCase().endsWith(".css"))
+					return true;
+				if (name.toLowerCase().endsWith(".jsx"))
+					return true;
 				if (name.toLowerCase().endsWith(".js"))
 					return true;
 				if (name.toLowerCase().endsWith(".json"))
@@ -166,6 +207,8 @@ public class Gen {
 				if (name.toLowerCase().endsWith(".md"))
 					return true;
 				if (name.toLowerCase().endsWith(".txt"))
+					return true;
+				if (name.toLowerCase().endsWith(".md"))
 					return true;
 				if (name.toLowerCase().endsWith(".sh"))
 					return true;
@@ -190,6 +233,12 @@ public class Gen {
 		return fret;
 	}
 
+	/**
+	 * returns fields from superclasses as well
+	 * 
+	 * @param type
+	 * @return
+	 */
 	public static Object[] getAllFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 		for (Class<?> c = type; c != null; c = c.getSuperclass()) {

@@ -23,11 +23,10 @@ import io.starter.ignite.util.ASCIIArtPrinter;
 
 public class Main implements Configuration {
 
-	private static boolean			skipDBGen		= false;
-	private static boolean			skipMybatis		= false;
-	private static boolean			skipReactGen	= true;
+	private static boolean			skipDBGen	= false;
+	private static boolean			skipMybatis	= false;
 
-	protected static final Logger	logger			= LoggerFactory
+	protected static final Logger	logger		= LoggerFactory
 			.getLogger(Main.class);
 
 	public static void main(String[] args) {
@@ -37,7 +36,7 @@ public class Main implements Configuration {
 
 		// check to see if the String array is empty
 		if (args == null || args.length == 0) {
-			System.out.println("No command line arguments Usage:");
+			logger.debug("No command line arguments Usage:");
 			System.out.println();
 			System.out
 					.println("java io.starter.ignite.generator.Main <input.yml> -D<option_name>=<option_value> ... ");
@@ -61,7 +60,6 @@ public class Main implements Configuration {
 
 		System.out.println(ASCIIArtPrinter.print());
 		System.out.println();
-		System.out.println();
 		logger.debug("Starting App Generation");
 		logger.debug("with: " + inputSpecFile
 				+ (args != null ? " and args: " + args.toString() : ""));
@@ -72,9 +70,12 @@ public class Main implements Configuration {
 
 			// generate swqgger api clients
 			SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile);
-			logger.debug("Generated: " + swaggerGen.generate().size()
-					+ " Source Files");
-			JavaGen.compile(MODEL_PACKAGE_DIR);
+			logger.info("####### SWAGGER Generated: "
+					+ swaggerGen.generate().size() + " Source Files");
+
+			JavaGen.compile(API_PACKAGE_DIR);
+			// JavaGen.compile(MODEL_DAO_PACKAGE_DIR);
+			// JavaGen.compile(MODEL_PACKAGE_DIR);
 
 			if (!skipDBGen) {
 				// generate corresponding DML
@@ -89,6 +90,7 @@ public class Main implements Configuration {
 				MyBatisGen.createMyBatisFromModelFolder();
 			}
 
+			// compile the DataOgbject Classes
 			JavaGen.compile(MODEL_DAO_PACKAGE_DIR);
 
 			// annotated wrapper with encryption,
@@ -102,10 +104,11 @@ public class Main implements Configuration {
 			// package the microservice for deployment
 			MavenBuilder.build();
 
-			// generate React Redux apps
-			if (!skipReactGen) {
-				ReactGen.generateReactNative();
-			}
+			// TODO: insert dynamkc generators ie: generate React Redux
+			// apps
+			// if (!skipReactGen) {
+			// ReactGen.generateReactNative();
+			// }
 
 			logger.debug("App Generation Complete.");
 		} catch (Exception e) {
@@ -119,20 +122,16 @@ public class Main implements Configuration {
 		logger.debug("Initializing output folder: " + JAVA_GEN_PATH
 				+ " exists: " + genDir.exists());
 		if (genDir.exists()) {
-			String fx = ".." + JAVA_GEN_ARCHIVE_FOLDER + "."
-					+ System.currentTimeMillis();
-			logger.error("Output Folder: " + JAVA_GEN_PATH
-					+ " exists. Renaming to: " + fx);
-			genDir.renameTo(new File(fx));
+			genDir.renameTo(new File(
+					JAVA_GEN_PATH + "." + System.currentTimeMillis()));
+			genDir = new File(JAVA_GEN_PATH);
+			genDir.mkdirs();
 		}
 
-		/*
-		 * boolean outputDir = new File(Configuration.OUTPUT_DIR
-		 * + "/src/main/resources/MyBatis_SQL_Maps").mkdirs();
-		 * if (!outputDir) {
-		 * logger.error("Could not init: " + outputDir +
-		 * ". Exiting.");
-		 * }
-		 */
+		boolean outputDir = new File(Configuration.OUTPUT_DIR + "/src/")
+				.mkdirs();
+		if (!outputDir) {
+			logger.error("Could not init: " + outputDir + ". Exiting.");
+		}
 	}
 }

@@ -2,6 +2,7 @@
 title: "Getting Started"
 cover: "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA17474-640x350.jpg"
 date: "2017-03-23"
+author: "johnmcmahon"
 slug: "getting-started"
 category: "tech"
 tags:
@@ -9,6 +10,7 @@ tags:
     - tutorials
     - hands-on guides
 ---
+
 #### Introduction
 
 Starter Ignite can be used either as a Java command-line program, or as a library called from your own Java code.

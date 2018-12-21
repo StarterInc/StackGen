@@ -37,13 +37,4 @@ public class MainTest {
 	public void testAppGen() {
 		Main.main(null);
 	}
-
-	@Test
-	public void testGenerateReact() {
-		try {
-			ReactGen.main(null);
-		} catch (Exception e) {
-			logger.error("ReactGen failed: " + e);
-		}
-	}
 }

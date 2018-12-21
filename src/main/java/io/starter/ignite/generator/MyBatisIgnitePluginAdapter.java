@@ -78,7 +78,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 		String cn = topLevelClass.getType().getFullyQualifiedName();
 		cn = cn.replace(Configuration.MYBATIS_CLASS_PREFIX, "");
-		System.out.println("MYBATIS member: " + cn);
+		logger.debug("MYBATIS member: " + cn);
 		return cn;
 	}
 
@@ -153,7 +153,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
 
 		// if (Configuration.DEBUG) {
-		logger.error("MyBatisIgnitePluginAdapter Generating: " + field
+		logger.debug("MyBatisIgnitePluginAdapter Generating: " + field
 				+ " class:" + field.getType().getShortName());
 		// }
 
@@ -195,11 +195,11 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 	@Override
 	public boolean validate(List<String> warnings) {
-		logger.warn("MyBatis Warnings: ");
+		logger.debug("MyBatis Warnings: ");
 		for (String w : warnings) {
-			logger.warn(w);
+			logger.debug(w);
 		}
-		logger.warn("End MyBatis Warnings");
+		logger.debug("End MyBatis Warnings");
 		return true;
 	}
 }

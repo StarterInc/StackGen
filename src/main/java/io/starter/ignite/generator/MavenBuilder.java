@@ -41,7 +41,7 @@ public class MavenBuilder implements Configuration {
 					"install" }, JAVA_GEN_PATH, System.out, System.out);
 			logger.debug("========= END MavenBuilder =========");
 		} catch (Exception e) {
-			logger.warn("Could not build: " + e);
+			logger.debug("Could not build: " + e);
 		}
 	}
 

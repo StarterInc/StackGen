@@ -5,7 +5,7 @@ module.exports = {
   siteTitle: "Ignite", // Site title.
   siteTitleAlt: "Starter Ignite Code Generation Platform", // Alternative site title for SEO.
   siteLogo:
-    "https://raw.githubusercontent.com/StarterInc/Ignite/master/docs/starter_logo_horizontal_2015_v1.png", // Logo used for SEO and manifest. e.g. "/logos/logo-1024.png",
+    "https://github.com/StarterInc/Ignite/blob/gh-pages/logos/logo-512x512.png?raw=true", // Logo used for SEO and manifest. e.g. "/logos/logo-1024.png",
   siteUrl: "https://starterinc.github.io", // Domain of your website without pathPrefix.
   pathPrefix: "/Ignite", // Prefixes all links. For cases when deployed to example.github.io/gatsby-starter-casper/.
   siteDescription:
@@ -24,9 +24,6 @@ module.exports = {
     "https://twitter.com/TechnoCharms",
     "mailto:info@starter.io"
   ],
-  apicloud_logo:"logos/apicloud.png",
-  apicloud_url:"http://apicloud.co",
-  apicloud_title:"APICloud MicroServices",
   postDefaultCategoryID: "Tech", // Default category for posts.
   // Links to social profiles/projects you want to display in the navigation bar.
   userLinks: [

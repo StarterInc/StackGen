@@ -745,44 +745,44 @@
 				value is jar</attachArtifactClassifierType> </configuration> </execution> 
 				</executions> </plugin> <plugin> <groupId>org.apache.tomcat.maven</groupId> 
 				<artifactId>tomcat7-maven-plugin</artifactId> <version>2.2</version> </plugin> -->
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<phase>generate-docs</phase>
-						<configuration>
-							<tasks>
-								<delete dir="${user.dir}/build/jersey-doc-dep" />
-								<mkdir dir="${user.dir}/build/jersey-doc-dep" />
-								<javadoc access="public"
-									classpathref="project-classpath">
-									<fileset dir="${user.dir}/src" defaultexcludes="yes">
-										<include name="**/*.java" />
-									</fileset>
-									<doclet
-										name="com.sun.jersey.wadl.resourcedoc.ResourceDoclet"
-										path="${eclipse.plugins.dir}/org.apache.xerces_2.9.0.v201101211617.jar:${webinf.dir}/lib/jersey-server-1.13.jar:${webinf.dir}/lib/wadl-resourcedoc-doclet-1.18.2.jar">
-										<param name="-output"
-											value="${user.dir}/build/jersey-doc-dep/resourcedoc.xml" />
-									</doclet>
-								</javadoc>
-								<copy todir="${webinf.dir}/classes">
-									<fileset dir="${user.dir}/resources/jersey-doc-dep">
-										<include name="*.xml" />
-									</fileset>
-									<fileset dir="${user.dir}/build/jersey-doc-dep">
-										<include name="*.xml" />
-									</fileset>
-								</copy>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-antrun-plugin</artifactId> -->
+<!-- 				<version>1.7</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<phase>generate-docs</phase> -->
+<!-- 						<configuration> -->
+<!-- 							<tasks> -->
+<!-- 								<delete dir="${user.dir}/build/jersey-doc-dep" /> -->
+<!-- 								<mkdir dir="${user.dir}/build/jersey-doc-dep" /> -->
+<!-- 								<javadoc access="public" -->
+<!-- 									classpathref="project-classpath"> -->
+<!-- 									<fileset dir="${user.dir}/src" defaultexcludes="yes"> -->
+<!-- 										<include name="**/*.java" /> -->
+<!-- 									</fileset> -->
+<!-- 									<doclet -->
+<!-- 										name="com.sun.jersey.wadl.resourcedoc.ResourceDoclet" -->
+<!-- 										path="${eclipse.plugins.dir}/org.apache.xerces_2.9.0.v201101211617.jar:${webinf.dir}/lib/jersey-server-1.13.jar:${webinf.dir}/lib/wadl-resourcedoc-doclet-1.18.2.jar"> -->
+<!-- 										<param name="-output" -->
+<!-- 											value="${user.dir}/build/jersey-doc-dep/resourcedoc.xml" /> -->
+<!-- 									</doclet> -->
+<!-- 								</javadoc> -->
+<!-- 								<copy todir="${webinf.dir}/classes"> -->
+<!-- 									<fileset dir="${user.dir}/resources/jersey-doc-dep"> -->
+<!-- 										<include name="*.xml" /> -->
+<!-- 									</fileset> -->
+<!-- 									<fileset dir="${user.dir}/build/jersey-doc-dep"> -->
+<!-- 										<include name="*.xml" /> -->
+<!-- 									</fileset> -->
+<!-- 								</copy> -->
+<!-- 							</tasks> -->
+<!-- 						</configuration> -->
+<!-- 						<goals> -->
+<!-- 							<goal>run</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
 		</plugins>
 	</build>
 
@@ -919,7 +919,7 @@
 		</profile>
 	</profiles>
 
-	<!-- S3 Private Maven Rep -->
+	<!-- S3 Private Maven Rep 
 	<distributionManagement>
 		<snapshotRepository>
 			<id>repo.starter.io</id>
@@ -930,6 +930,7 @@
 			<url>s3://repo.starter.io/release</url>
 		</repository>
 	</distributionManagement>
+	-->
 	<repositories>
 		<repository>
 			<id>repo.starter.io</id>

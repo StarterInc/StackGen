@@ -20,4 +20,6 @@ import java.lang.annotation.Target;
 // can use in method only.
 public @interface DataField {
 
+	public String value() default "";
+
 }

@@ -2,6 +2,7 @@
 title: "Next Steps"
 cover: "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA18322-640x350.jpg"
 slug: "next-steps"
+author: "johnmcmahon"
 category: "tech"
 date: "2017-03-17"
 tags:

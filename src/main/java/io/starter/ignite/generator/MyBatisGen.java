@@ -1,7 +1,6 @@
 package io.starter.ignite.generator;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -75,7 +74,7 @@ public class MyBatisGen extends Gen implements Generator {
 
 		myBatisGenerator.generate(cb);
 		for (String warning : warnings) {
-			logger.error("WARNING: MyBatis Generation: " + warning);
+			logger.warn("WARNING: MyBatis Generation: " + warning);
 		}
 	}
 
@@ -200,33 +199,9 @@ public class MyBatisGen extends Gen implements Generator {
 		return "MyBatis Generator";
 	}
 
-	static String[] getModelFiles() {
-		File modelDir = new File(Configuration.MYBATIS_MODEL_CLASSES);
-		String[] modelFiles = modelDir.list(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.contains("Example"))
-					return false;
-				if (name.contains(MYBATIS_CLASS_PREFIX))
-					return false;
-				if (name.contains("Mapper"))
-					return false;
-				if (name.contains(ADD_GEN_CLASS_NAME))
-					return false;
-				return name.toLowerCase().endsWith(".java");
-			}
-		});
-
-		if (modelFiles != null && modelFiles.length < 1) {
-			throw new IllegalStateException(
-					"JavaGen Failure: no model classfiles found. Check the MYBATIS_MODEL_CLASSES value.");
-		}
-		return modelFiles;
-	}
-
 	static void createMyBatisFromModelFolder() throws Exception {
 		logger.debug("Iterate Swagger Entities and create Tables...");
-		File[] modelFiles = Gen.getModelJavaFiles();
+		File[] modelFiles = Gen.getModelFiles();
 		MyBatisGen gen = new MyBatisGen();
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));

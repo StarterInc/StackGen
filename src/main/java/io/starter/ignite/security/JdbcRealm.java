@@ -434,7 +434,7 @@ public class JdbcRealm extends AuthorizingRealm {
 					roleNames.add(roleName);
 				} else {
 					if (log.isWarnEnabled()) {
-						log.warn("Null role name found while retrieving role names for user ["
+						log.debug("Null role name found while retrieving role names for user ["
 								+ username + "]");
 					}
 				}

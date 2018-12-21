@@ -32,7 +32,7 @@
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "prismjs": "^1.15.0",
-    "react": "^16.5.2",
+    "react": "^16.6.3",
     "react-disqus-comments": "^1.2.0",
     "react-dom": "^16.5.2",
     "react-gravatar": "^2.6.3",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "cli-glob": "^0.1.0",
-    "eslint": "^5.6.1",
+    "eslint": "^5.10.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-import": "^2.14.0",

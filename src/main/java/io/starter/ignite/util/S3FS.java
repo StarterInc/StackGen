@@ -142,7 +142,7 @@ public class S3FS extends StorageServiceEventAdaptor
 						.getMimetype(s3Obj.getKey()));
 				s3Objs.add(s3Obj);
 			} else {
-				logger.warn("S3FS.readFolderContents() File: "
+				logger.debug("S3FS.readFolderContents() File: "
 						+ folder.getName() + " is not a folder.");
 			}
 		}

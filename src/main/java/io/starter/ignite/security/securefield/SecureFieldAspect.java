@@ -28,7 +28,7 @@ public class SecureFieldAspect implements Configuration {
 	public Object getSecureField(ProceedingJoinPoint pjp) throws Throwable {
 
 		if (DISABLE_SECURE_FIELD_ASPECT) {
-			logger.warn("SKIPPING SECURE FIELD GETTER");
+			logger.debug("SKIPPING SECURE FIELD GETTER");
 			return pjp.proceed();
 		}
 
@@ -52,7 +52,7 @@ public class SecureFieldAspect implements Configuration {
 		if (secureField.getType().equals(String.class)) {
 			return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
 		} else {
-			logger.warn("SecureFieldAspect only currently supports decrypting Text values: "
+			logger.debug("SecureFieldAspect only currently supports decrypting Text values: "
 					+ pjp);
 			return pjp.proceed();
 		}
@@ -62,7 +62,7 @@ public class SecureFieldAspect implements Configuration {
 	public Object setSecureField(ProceedingJoinPoint pjp) throws Throwable {
 
 		if (DISABLE_SECURE_FIELD_ASPECT) {
-			logger.warn("SKIPPING SECURE FIELD SETTER");
+			logger.debug("SKIPPING SECURE FIELD SETTER");
 			return pjp.proceed();
 		}
 		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
@@ -86,7 +86,7 @@ public class SecureFieldAspect implements Configuration {
 			secureField.set(targetObject, encryptedValue);
 			secureField.setAccessible(access);
 		} else {
-			logger.warn("SecureFieldAspect only currently supports encrypting Text values: "
+			logger.debug("SecureFieldAspect only currently supports encrypting Text values: "
 					+ pjp);
 			return pjp.proceed();
 		}

@@ -2,6 +2,7 @@
 title: "Swagger and OpenAPI"
 cover: "images/mission_street.jpeg"
 author: "johnmcmahon"
+slug: "swagger-and-openapi"
 date: "2018-12-08"
 category: "OpenAPI"
 tags:
@@ -11,13 +12,14 @@ tags:
     - Swagger
     - CodeGen
 ---
-Introduction to Swagger and OpenAPI Specification and Docs.
+
+### Introduction to Swagger and OpenAPI Specification and Docs.
 
 > Swagger REST api specification format was adopted as a standard and is now migrating to OpenAPI standard
 
 You may have heard of "Swagger" or seen the brightly colored auto-generated Swagger REST api documentation:
 
-![alt text](https://github.com/StarterInc/Ignite/blob/master/docs/images/CoinBot-Swagger.png?raw=true "Swagger REST api docs")
+![alt text](https://github.com/StarterInc/Ignite/blob/gh-pages/images/CoinBot-Swagger.png?raw=true "Swagger REST api docs")
 
 Initially conceived as a way to document REST apis, swagger was increasingly used to generate the actual code behind the REST apis themselves.
 

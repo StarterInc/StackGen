@@ -429,10 +429,15 @@ pre {
     font-family: Inconsolata, monospace, sans-serif;
     font-size: 0.9em;
     white-space: pre;
-    overflow: auto;
-    background: #f7fafb;
-    border-radius: 3px;
+    word-wrap: normal;
+    overflow-x: scroll;
+    background: #444444;
+    border-radius: 10px;
+    padding:10px;
+    color: #DDDDDD;
+    width: 100%;
 }
+
 
 pre code,
 pre tt {

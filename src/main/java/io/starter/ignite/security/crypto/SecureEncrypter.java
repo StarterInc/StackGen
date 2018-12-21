@@ -43,16 +43,16 @@ public class SecureEncrypter implements SystemConstants {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		System.out.println("Generate Encryption Key: " + generateKey());
+		logger.debug("Generate Encryption Key: " + generateKey());
 
 		String cleartext = "AES Symmetric Encryption Decryption";
-		System.out.println("Plain Text Before Encryption: " + cleartext);
+		logger.debug("Plain Text Before Encryption: " + cleartext);
 
 		String ciphertext = SecureEncrypter.encrypt(cleartext);
-		System.out.println("Encrypted Text After Encryption: " + ciphertext);
+		logger.debug("Encrypted Text After Encryption: " + ciphertext);
 
 		String decryptedText = SecureEncrypter.decrypt(ciphertext);
-		System.out.println("Decrypted Text After Decryption: " + decryptedText);
+		logger.debug("Decrypted Text After Decryption: " + decryptedText);
 	}
 
 	public static String generateKey() throws NoSuchAlgorithmException {
@@ -88,7 +88,7 @@ public class SecureEncrypter implements SystemConstants {
 	 * @throws Exception
 	 */
 	private static void init() throws Exception {
-		logger.warn("SecureEncrypter init: " + SECURE_KEY_PROPERTY
+		logger.debug("SecureEncrypter init: " + SECURE_KEY_PROPERTY
 				+ " property is set: " + (SECRET_KEY != null));
 		if (SECRET_KEY == null) {
 			throw new RuntimeException(

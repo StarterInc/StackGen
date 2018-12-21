@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.swagger.codegen.ClientOptInput;
+import io.swagger.codegen.CodegenConstants;
 import io.swagger.codegen.DefaultGenerator;
 import io.swagger.codegen.config.CodegenConfigurator;
 
@@ -17,7 +18,7 @@ import io.swagger.codegen.config.CodegenConfigurator;
  * @author John McMahon (@TechnoCharms)
  * 
  */
-public class SwaggerGen extends DefaultGenerator implements Configuration {
+public class SwaggerGen implements Configuration {
 
 	protected static final Logger	logger			= LoggerFactory
 			.getLogger(SwaggerGen.class);
@@ -63,6 +64,12 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		configurator.addDynamicProperty("dynamic-html", "true");
 		configurator.addDynamicProperty("dateLibrary", "java8");
 
+		// whether to enhance REST api with default Object CRUD
+		configurator
+				.addAdditionalProperty(Configuration.IGNITE_GEN_MODEL_CRUD_OPS, "true");
+		configurator
+				.addAdditionalProperty(Configuration.IGNITE_GEN_MODEL_ENHANCEMENTS, "true");
+
 		// company info
 		configurator.addDynamicProperty("developerName", "Starter Inc.");
 		configurator.addDynamicProperty("developerEmail", "info@starter.io");
@@ -77,6 +84,8 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 		configurator.addAdditionalProperty("delegatePattern", "true");
 		configurator.addAdditionalProperty("asynch", "true");
 		configurator.addAdditionalProperty("USE_BEANVALIDATION", "true");
+		configurator
+				.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
 
 		// app config
 		configurator.setAuth("oauth");
@@ -91,14 +100,13 @@ public class SwaggerGen extends DefaultGenerator implements Configuration {
 
 	}
 
-	@Override
 	public List<File> generate() {
 		final ClientOptInput clientOptInput = configurator.toClientOptInput();
 		return new DefaultGenerator().opts(clientOptInput).generate();
 	}
 
 	static String[] getModelFiles() {
-		File modelDir = new File(Main.API_MODEL_CLASSES);
+		File modelDir = new File(Main.MODEL_CLASSES);
 		String[] modelFiles = modelDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {

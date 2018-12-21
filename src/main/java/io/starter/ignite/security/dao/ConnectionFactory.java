@@ -104,7 +104,7 @@ public class ConnectionFactory {
 						+ SystemConstants.JNDI_DB_LOOKUP_STRING + ".");
 				return c;
 			} catch (final Exception e) {
-				logger.warn("ConnectionFactory.getConnection() failed to get JNDI connection: ["
+				logger.debug("ConnectionFactory.getConnection() failed to get JNDI connection: ["
 						+ SystemConstants.JNDI_DB_LOOKUP_STRING + "] "
 						+ "Falling back to non JNDI connection.");
 
@@ -163,7 +163,7 @@ public class ConnectionFactory {
 				}
 			}
 		} catch (final Exception e) {
-			logger.warn("ConnectionFactory Failed to achieve a Pooled DataSource... reverting to Non-Pooled JDBC connection. NOT FOR PRODUCTION.");
+			logger.debug("ConnectionFactory Failed to achieve a Pooled DataSource... reverting to Non-Pooled JDBC connection. NOT FOR PRODUCTION.");
 			return ConnectionFactory.getDataSource().getConnection();
 		}
 		return con;
@@ -208,7 +208,7 @@ public class ConnectionFactory {
 				return dataSource;
 
 			} catch (final Exception e) {
-				logger.warn("ConnectionFactory.getConnection() failed to get JNDI connection: "
+				logger.debug("ConnectionFactory.getConnection() failed to get JNDI connection: "
 						+ lcname + ". " + e.toString()
 						+ " Falling back to non JNDI connection.");
 

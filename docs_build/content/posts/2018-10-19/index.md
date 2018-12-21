@@ -2,6 +2,7 @@
 title: "Ignite Generated Code"
 cover: "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA17793-640x350.jpg"
 author: "johnmcmahon"
+slug: "ignite-generated-code"
 date: "2018-10-19"
 category: "Starter Ignite"
 tags:

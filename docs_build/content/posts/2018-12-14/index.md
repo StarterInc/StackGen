@@ -1,9 +1,9 @@
 ---
 title: "ReWork and Starter"
 cover: "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA11777-640x350.jpg"
-slug: "securefield"
+slug: "rework-and-starter"
 category: "tech"
-date: "2018-12-10"
+date: "2018-12-14"
 tags:
     - programming
     - security
@@ -17,7 +17,7 @@ Every system and process has its "bottleneck" -- the one point in the workflow t
 
 Often when we optimize a software program, we focus on the bottleneck and implement code that eliminates or otherwise alleviates the inefficiency and thus we "move the bottleneck". As each bottleneck is fixed, the bottleneck of the program "moves" to the next poorly performing section of code.
 
-I named Starter after the new style of entrepreneur
+I named Starter after the new style of entrepreneur defined in the great business classic "Rework".
 
 ### Rework shows you a better, faster, easier way to succeed in business.
 

@@ -1,12 +1,8 @@
 package io.starter.ignite.openapi;
 
-import java.io.File;
-import java.io.FilenameFilter;
-
 import org.json.JSONObject;
 
-import io.starter.ignite.generator.JavaGen;
-import io.starter.ignite.generator.Main;
+import io.starter.ignite.generator.Gen;
 
 public class OpenAPISerializer {
 
@@ -15,7 +11,7 @@ public class OpenAPISerializer {
 		// load folder of classfiles
 
 		// iterate for each class make a JSON model
-		String[] modelFiles = getModelFiles();
+		String[] modelFiles = Gen.getModelFileNames();
 
 		for (String f : modelFiles) {
 			Class c = Class.forName(f);
@@ -35,18 +31,4 @@ public class OpenAPISerializer {
 		return job;
 	}
 
-	static String[] getModelFiles() {
-		File modelDir = new File(Main.API_MODEL_CLASSES);
-		String[] modelFiles = modelDir.list(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.contains("Example"))
-					return false;
-				if (name.contains(JavaGen.ADD_GEN_CLASS_NAME))
-					return false;
-				return name.toLowerCase().endsWith(".java");
-			}
-		});
-		return modelFiles;
-	}
 }

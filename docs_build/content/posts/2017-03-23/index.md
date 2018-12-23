@@ -171,6 +171,23 @@ the service with a single line of code:
 cd <project_folder>gen
 mvn spring-boot:run
 ```
+To distribute the spring boot service, you can simply copy the deployment jar from the "target" folder to your server and launch it directly as an executable jar:
+
+```
+testbed$ java -jar -Dio.starter.ignite.secure_key=W43sdfNpOSDF0madfT40wwjTaaadfaeQo449Qa9rygfrm5fX21Dg= -DRDS_HOSTNAME=db.yourco.com -DRDS_DB_NAME=ignite -DRDS_USERNAME=igniteuser -DRDS_PASSWORD=**********  ignite-1.0.1-exec.jar
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.5.9.RELEASE)
+
+Dec 22, 2018 12:43:47 PM io.starter.ignite.invoker.Swagger2SpringBoot logStarting
+INFO: Starting Swagger2SpringBoot v1.0.1 on Johns-MacBook.local with PID 22593 (/Users/john/workspace2019/testbed/ignite-1.0.1-exec.jar started by john in /Users/john/workspace2019/testbed)
+```
+
 
 You should see the Starter Ignite banner and assuming the application starts correctly,
 you will see output similar to the following on the console:

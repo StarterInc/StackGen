@@ -122,8 +122,10 @@ public class Main implements Configuration {
 		logger.debug("Initializing output folder: " + JAVA_GEN_PATH
 				+ " exists: " + genDir.exists());
 		if (genDir.exists()) {
-			genDir.renameTo(new File(
-					JAVA_GEN_PATH + "." + System.currentTimeMillis()));
+
+			genDir.delete();
+			// genDir.renameTo(new File(
+			// JAVA_GEN_PATH + "." + System.currentTimeMillis()));
 			genDir = new File(JAVA_GEN_PATH);
 			genDir.mkdirs();
 		}

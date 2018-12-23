@@ -64,8 +64,8 @@ paths:
           description: "Invalid input"
       security:
       - automator_auth:
-        - "write:Account"
-        - "read:Account"
+        - "write:items"
+        - "read:items"
     put:
       tags:
       - "account"
@@ -94,8 +94,8 @@ paths:
           description: "Validation exception"
       security:
       - automator_auth:
-        - "write:Account"
-        - "read:Account"
+        - "write:items"
+        - "read:items"
   /account/list:
     get:
       tags:
@@ -110,7 +110,7 @@ paths:
         in: "query"
         description: "ID values that need to be considered for filter"
         required: true
-        type: "array"
+        type: "string"
         collectionFormat: "multi"
       responses:
         200:
@@ -123,101 +123,8 @@ paths:
           description: "Invalid id value"
       security:
       - automator_auth:
-        - "write:Account"
-        - "read:Account"
-  /trade:
-    post:
-      tags:
-      - "trade"
-      summary: "Add a new trade to the order"
-      description: ""
-      operationId: "insert"
-      tradeId: "addtrade"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Trade object that needs to be added to the order"
-        required: true
-        schema:
-          $ref: '#/definitions/Trade'
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - automator_auth:
-        - "write:Trade"
-        - "read:Trade"
-    put:
-      tags:
-      - "trade"
-      summary: "Update an existing trade"
-      description: ""
-      operationId: "update"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Trade object that needs to be added to the order"
-        required: true
-        schema:
-          $ref: '#/definitions/Trade'
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "trade not found"
-        405:
-          description: "Validation exception"
-      security:
-      - automator_auth:
-        - "write:Trade"
-        - "read:Trade"
-  /trade/load:
-    get:
-      tags:
-      - "trade"
-      summary: "Finds trades by status"
-      description: "Multiple status values can be provided with comma separated strings"
-      operationId: "findtradesByStatus"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "status"
-        in: "query"
-        description: "Status values that need to be considered for filter"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "available"
-          - "pending"
-          - "closed"
-          default: "available"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: '#/definitions/Trade'
-        400:
-          description: "Invalid status value"
-      security:
-      - automator_auth:
-        - "write:Trade"
-        - "read:Trade"
+        - "write:items"
+        - "read:items"
   /content:
     get:
       tags:
@@ -280,110 +187,6 @@ paths:
           description: invalid input, object invalid
         409:
           description: an existing item already exists
-  /data:
-    get:
-      tags:
-      - data
-      summary: searches latest market data
-      operationId: searchData
-      description: |
-        By passing in the appropriate options, you can search for
-        available market data in the system
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: searchString
-        description: pass an optional search string for looking up market data
-        required: false
-        type: string
-      - in: query
-        name: skip
-        description: number of records to skip for pagination
-        type: integer
-        format: int32
-        minimum: 0
-      - in: query
-        name: limit
-        description: maximum number of records to return
-        type: integer
-        format: int32
-        minimum: 0
-        maximum: 50
-      responses:
-        200:
-          description: search results matching criteria
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Data'
-        400:
-          description: bad input parameter
-    post:
-      tags:
-      - data
-      summary: adds an data item
-      operationId: addData
-      description: Adds an item to the system
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - in: body
-        name: contentItem
-        description: Data item to add
-        schema:
-          $ref: '#/definitions/Data'
-      responses:
-        201:
-          description: item created
-        400:
-          description: invalid input, object invalid
-        409:
-          description: an existing item already exists
-  /user:
-    post:
-      tags:
-      - "user"
-      summary: "Create user"
-      description: "This can only be done by the logged in user."
-      operationId: "createUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Created user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/insert:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "insert"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
   /user/login:
     get:
       tags:
@@ -435,76 +238,8 @@ paths:
       responses:
         default:
           description: "successful operation"
-  /user/{username}:
-    get:
-      tags:
-      - "user"
-      summary: "Get user by user name"
-      description: ""
-      operationId: "load"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be fetched. Use user1 for testing. "
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/User"
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-    put:
-      tags:
-      - "user"
-      summary: "Updated user"
-      description: "This can only be done by the logged in user."
-      operationId: "update"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "name that need to be updated"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "body"
-        description: "Updated user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        400:
-          description: "Invalid user supplied"
-        404:
-          description: "User not found"
-    delete:
-      tags:
-      - "user"
-      summary: "Delete user"
-      description: "This can only be done by the logged in user."
-      operationId: "delete"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "userId"
-        in: "path"
-        description: "The user ID for the user that needs to be deleted"
-        required: true
-        type: "string"
-      responses:
-        400:
-          description: "Invalid user id supplied"
-        404:
-          description: "User not found"
 securityDefinitions:
-  itemstore_auth:
+  automator_auth:
     type: "oauth2"
     authorizationUrl: "http://apicloud.co/oauth/dialog"
     flow: "implicit"
@@ -556,11 +291,9 @@ definitions:
         type: "integer"
         format: "int64"
       accountId:
-        id:
         type: "integer"
         format: "int64"
       orderId:
-        id:
         type: "integer"
         format: "int64"
       entryValue:
@@ -622,8 +355,6 @@ definitions:
       complete:
         type: "boolean"
         default: false
-      trades:
-        type:
     xml:
       name: "Order"
   Content:
@@ -694,23 +425,18 @@ definitions:
     - email
     properties:
       id:
-        id:
         type: "integer"
         format: "int64"
       fingerprint:
         type: string
         example: DK$DFSJaraDD
-        value: secure
-        secureField: true
         x-starter-secureField: true
       ssn:
         description: This is the value
         type: string
         example: 111-22-3333
-        secureField: true
         maxLength: 10
         minLength: 10
-        value: secure
         x-starter-secureField: true
       username:
         type: string
@@ -875,33 +601,6 @@ definitions:
         format: "date-time"                  
     xml:
       name: "Data"
-  Order:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      itemId:
-        type: "integer"
-        format: "int64"
-      quantity:
-        type: "integer"
-        format: "int32"
-      shipDate:
-        type: "string"
-        format: "date-time"
-      status:
-        type: "string"
-        description: "Order Status"
-        enum:
-        - "placed"
-        - "approved"
-        - "delivered"
-      complete:
-        type: "boolean"
-        default: false
-    xml:
-      name: "Order"
   Category:
     type: "object"
     properties:

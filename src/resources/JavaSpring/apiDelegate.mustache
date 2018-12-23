@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
+import org.json.*;
 {{#jdk8}}
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +97,18 @@ public interface {{classname}}Delegate {
 	        // {{operationId}}({{paramName}});
 			try {
 				Object ret = callMethod("{{operationId}}"{{#allParams}}, {{paramName}}{{#hasMore}} {{/hasMore}}{{/allParams}});
-				return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue(toJSON(), {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
+				if(ret != null){
+					if(ret instanceof List){
+						Object[] a = new Object[((List<?>) ret).size()];
+						a = ((List<?>) ret).toArray(a);
+						JSONArray jarr = new JSONArray(a);
+						return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue(jarr.toString(), {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
+					}else{
+						return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue(toJSON(), {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
+					}
+				}else{
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
 			} catch (NoSuchMethodException | SecurityException
 					| IllegalAccessException | IllegalArgumentException
 					| IOException | InvocationTargetException e) {
@@ -121,19 +132,41 @@ public interface {{classname}}Delegate {
     
 {{/operation}}
 
-	default Object callMethod(String string, Object... args)
-	 throws NoSuchMethodException, SecurityException, IllegalAccessException, 
-	 IllegalArgumentException, InvocationTargetException {
+	/** 
+	* Handle calling the data method on the Starter Ignite Delegate
+	*/
+	default Object callMethod(String string, Object... args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
 		// hande id
 		try {
 			Long id = Long.parseLong(args[0].toString());
+			// TODO: copy vals
 			setId(id);
-			load(); // TODO: implement ModelCache
+
+			// TODO: implement ModelCache
+
 		} catch (Exception e) {
-			// other
+			// other type NP
 		}
+
 		Method method = this.getClass().getDeclaredMethod(string);
 		Object rx = method.invoke(this);
+
+		List<Object> ret = null;
+		if (rx != null && "list".equals(string)) {
+			// if it *is* a list, don't return empty
+			if (rx instanceof List) {
+				if (((List<?>) rx).size() > 0) {
+					return rx;
+				} else {
+					return null;
+				}
+			} else {
+				ret = new ArrayList<Object>();
+				ret.add(rx);
+				return ret;
+			}
+		}
 		return rx;
 	}
 }

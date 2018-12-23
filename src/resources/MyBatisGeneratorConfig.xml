@@ -26,6 +26,9 @@
     <table schema="ignite" tableName="ignite$model_api_response">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
+    <table schema="ignite" tableName="ignite$inline_response200">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
     <table schema="ignite" tableName="ignite$audit_log">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
@@ -45,6 +48,9 @@
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName="ignite$data">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="ignite" tableName="ignite$inline_response2001">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
     <table schema="ignite" tableName="ignite$trade">

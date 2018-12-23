@@ -71,6 +71,56 @@ x-starter-secureField: true
 
 x-ignite-dataField: component=<somecomponent>
 
+These settings are added to Swagger schema definitions like so:
+
+```Java
+definitions:
+  Account:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      balance:
+        type: "number"
+        format: "double"
+        description: "Account balance point in time"
+        x-starter-dataField: component=AccountBalance/
+      institutionName:
+        type: "string"
+      accountNumber:
+        type: "string"
+        x-starter-secureField: true
+```
+
+Which will generate output code like:
+
+```Java
+public class Account {
+
+  @JsonProperty("id")
+  protected Long id = null;
+
+
+// add the Starter Ignite Annotations
+  @io.starter.ignite.model.DataField("component=AccountBalance/")
+  @JsonProperty("balance")
+  protected Double balance = null;
+
+
+  @JsonProperty("institutionName")
+  protected String institutionName = null;
+
+
+// add the Starter Ignite Annotations
+  @io.starter.ignite.security.securefield.SecureField(enabled=true)
+  @JsonProperty("accountNumber")
+  protected String accountNumber = null;
+
+  ...
+```
+
+Swagger Extensions:
 
 // skip this model
 x-codegen-ignore

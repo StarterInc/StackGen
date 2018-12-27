@@ -88,6 +88,8 @@ public interface {{classname}}Delegate {
 
 {{#operation}}
     /**
+     * dispatch the delegate method and handle response
+     
      * @see {{classname}}#{{operationId}}
      */
     {{#jdk8}}default {{/jdk8}}{{#responseWrapper}}{{.}}<{{/responseWrapper}}ResponseEntity<{{>returnTypes}}>{{#responseWrapper}}>{{/responseWrapper}} {{operationId}}({{#allParams}}{{^isFile}} {{>optionalDataType}} {{/isFile}}{{#isFile}}MultipartFile{{/isFile}} {{paramName}}{{#hasMore}},
@@ -97,24 +99,45 @@ public interface {{classname}}Delegate {
 	        // {{operationId}}({{paramName}});
 			try {
 				Object ret = callMethod("{{operationId}}"{{#allParams}}, {{paramName}}{{#hasMore}} {{/hasMore}}{{/allParams}});
-				if(ret != null){
-					if(ret instanceof List){
-						Object[] a = new Object[((List<?>) ret).size()];
-						a = ((List<?>) ret).toArray(a);
-						JSONArray jarr = new JSONArray(a);
-						return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue(jarr.toString(), {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
-					}else{
-						return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue(toJSON(), {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
+				
+				if (ret != null) {
+					if (ret instanceof List) {
+						if (((List) ret).size() > 0) {
+							Object rx = ((List) ret).get(0);
+							if (!(rx instanceof Long)) {
+								Object[] a = new Object[((List<?>) ret).size()];
+								a = ((List<?>) ret).toArray(a);
+								JSONArray jarr = new JSONArray(a);
+								return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue(jarr.toString(), {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
+							} else {
+								return new ResponseEntity<>(HttpStatus.OK);
+							}
+						} else {
+							return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+						}
+					} else {
+						// handle return from delete
+						if(ret instanceof Long){
+							if ((Long) ret > 0) {
+								return new ResponseEntity<>(HttpStatus.OK);
+							}else{
+								return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+							}
+						}
+						return new ResponseEntity<>(HttpStatus.OK);
 					}
-				}else{
+				} else {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				}
 			} catch (NoSuchMethodException | SecurityException
 					| IllegalAccessException | IllegalArgumentException
 					| IOException | InvocationTargetException e) {
-				log.error("Failure running method. {{classname}}.{{operationId}}: " + e);
+				log.error("Failure running method {{classname}}.{{operationId}}: "
+						+ e);
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
         {{#examples}}
+        /* TODO: implement examples
             if (getAcceptHeader().contains("{{{contentType}}}")) {
                 try {
 	                    return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue("{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}", {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
@@ -123,7 +146,9 @@ public interface {{classname}}Delegate {
                     return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR){{#async}}){{/async}};
                 }
             }
+        */    
         {{/examples}}
+        
         } else {
             log.warn("ObjectMapper or HttpServletRequest not configured in default {{classname}} interface so no example is generated");
         }

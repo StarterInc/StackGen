@@ -1,6 +1,8 @@
 package io.starter.ignite.generator;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,8 @@ public class Main implements Configuration {
 
 	public static void main(String[] args) {
 
-		String inputSpecFile = "chainring_api_v1.yml";
+		String inputSpecFile = "trade_automator.yml"; // "chainring_api_v1.yml";
+														// // "simple_cms.yml";
 		// String inputSpecFile = "StarterIgnite.yml";
 
 		// check to see if the String array is empty
@@ -45,7 +48,7 @@ public class Main implements Configuration {
 			// print out the String.
 			for (String argument : args) {
 				if (argument.toLowerCase().endsWith(".yml")
-						|| argument.toLowerCase().endsWith(".yml")) {
+						|| argument.toLowerCase().endsWith(".json")) {
 					inputSpecFile = argument;
 				} else if (argument.contains("=")) {
 
@@ -61,6 +64,7 @@ public class Main implements Configuration {
 		System.out.println(ASCIIArtPrinter.print());
 		System.out.println();
 		logger.debug("Starting App Generation");
+
 		logger.debug("with: " + inputSpecFile
 				+ (args != null ? " and args: " + args.toString() : ""));
 		try {
@@ -69,7 +73,17 @@ public class Main implements Configuration {
 			initOutputFolders();
 
 			// generate swqgger api clients
-			SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile);
+			SwaggerGen swaggerGen = new SwaggerGen(
+					SPEC_LOCATION + inputSpecFile);
+
+			// iterate the files in the plugins folder
+			File[] fin = Main.getPluginFiles();
+			for (File f : fin) {
+				logger.info("Installing Plugin: " + f.getName());
+				SwaggerGen pluginSwag = new SwaggerGen(f.getAbsolutePath());
+				swaggerGen.addSwagger(pluginSwag);
+			}
+
 			logger.info("####### SWAGGER Generated: "
 					+ swaggerGen.generate().size() + " Source Files");
 
@@ -115,6 +129,32 @@ public class Main implements Configuration {
 			logger.error("Exception during App Generation: " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	static File[] getPluginFiles() {
+		ArrayList<File> schemaList = new ArrayList<File>();
+		File pluginDir = new File(Configuration.PLUGIN_FOLDER);
+		File[] pfx = pluginDir.listFiles();
+		for (File f : pfx) {
+			File[] z = getSchemaFiles(f);
+			for (File t : z)
+				schemaList.add(t);
+		}
+		return schemaList.toArray(new File[schemaList.size()]);
+	}
+
+	private static File[] getSchemaFiles(File f) {
+		File[] pluginFiles = f.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".yml")
+						|| name.toLowerCase().endsWith(".json");
+			}
+		});
+		return pluginFiles;
 	}
 
 	private static void initOutputFolders() {

@@ -92,11 +92,18 @@ public interface Configuration extends SystemConstants {
 
 	public static String		SOURCE_MAIN						= "/src/main";
 	public static String		SOURCE_RESOURCES				= "/src/resources";
+	public static String		PLUGIN_FOLDER					= ROOT_FOLDER
+			+ SOURCE_RESOURCES + "/plugins";
 
 	public static final boolean	DISABLE_DATA_FIELD_ASPECT		= true;
 	public static final boolean	DISABLE_SECURE_FIELD_ASPECT		= false;
 
 	// ## SwaggerGen OPEN API
+	public static String		ARTIFACT_VERSION				= (System
+			.getProperty("ARTIFACT_VERSION") != null
+					? System.getProperty("ARTIFACT_VERSION")
+					: "1.0.1");
+
 	public static String		ADD_GEN_CLASS_NAME				= "Service";
 	public static String		ARTIFACT_ID						= "ignite";
 	public static String		ORG_PACKAGE						= "io.starter."

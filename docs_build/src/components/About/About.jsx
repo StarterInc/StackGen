@@ -24,6 +24,7 @@ class About extends Component {
             rapidly building apps, however the choice of framework can be a limitation
             when it inevitable enhancements are required.
 
+			Adopting conventions is useful no matter the language or framework, so 
             Also, there are not a lot of choices that give you the same flexibility
             and compatibility as a JEE stack based on industry standard libraries such
             as Spring Boot.

@@ -381,7 +381,7 @@ public class JavaGen extends Gen implements Generator {
 		String mapperName = getMyBatisName(className);
 		String methodText = "		final org.apache.ibatis.session.SqlSession session = sqlSessionFactory.openSession(true);\n"
 				+ "		final int rows = session.delete(\"" + mapperName
-				+ "Mapper.deleteByPrimaryKey\", this);\n"
+				+ "Mapper.deleteByPrimaryKey\", getId());\n"
 				+ "		// commit performs the actual delete\n"
 				+ "		session.commit();\n" + "		session.close();\n"
 				+ "		return rows";

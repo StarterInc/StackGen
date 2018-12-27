@@ -38,6 +38,11 @@ module.exports = {
       iconClassName: "fa fa-twitter" // Disabled, see Navigation.jsx
     },
     {
+      label: "Swagger Editor",
+      url: "openapi-gui/index.html",
+      iconClassName: "fa fa-close" // Disabled, see Navigation.jsx
+    },
+    {
       label: "Email",
       url: "mailto:info@starter.io",
       iconClassName: "fa fa-envelope" // Disabled, see Navigation.jsx

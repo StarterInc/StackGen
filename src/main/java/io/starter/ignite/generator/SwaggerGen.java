@@ -2,15 +2,22 @@ package io.starter.ignite.generator;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.starter.ignite.generator.swagger.IgniteGenerator;
 import io.swagger.codegen.ClientOptInput;
 import io.swagger.codegen.CodegenConstants;
-import io.swagger.codegen.DefaultGenerator;
 import io.swagger.codegen.config.CodegenConfigurator;
+import io.swagger.models.Model;
+import io.swagger.models.Scheme;
+import io.swagger.models.Swagger;
+import io.swagger.models.Tag;
+import io.swagger.models.parameters.Parameter;
 
 /**
  * responsible for generating the Swagger server and clients
@@ -23,9 +30,11 @@ public class SwaggerGen implements Configuration {
 	protected static final Logger	logger			= LoggerFactory
 			.getLogger(SwaggerGen.class);
 
-	DefaultGenerator				generator		= new DefaultGenerator();
+	IgniteGenerator					generator		= new IgniteGenerator();
 	CodegenConfigurator				configurator	= CodegenConfigurator
 			.fromFile(CONFIG_FILE);
+
+	private List<SwaggerGen>		pluginSwaggers	= new ArrayList<SwaggerGen>();
 
 	/**
 	 * Create and initialize a new SwaggerGen
@@ -34,8 +43,6 @@ public class SwaggerGen implements Configuration {
 	 *            filename of spec (file in templateDirectory)
 	 */
 	public SwaggerGen(String spec) {
-
-		spec = SPEC_LOCATION + spec;
 
 		logger.debug("Create Swagger Client Apis for:" + spec);
 
@@ -58,7 +65,7 @@ public class SwaggerGen implements Configuration {
 		configurator.setOutputDir(OUTPUT_DIR);
 		configurator.setApiPackage(API_PACKAGE);
 
-		configurator.setArtifactVersion("1.0.1");
+		configurator.setArtifactVersion(ARTIFACT_VERSION);
 		configurator.setInvokerPackage(INVOKER_PACKAGE);
 		configurator.setVerbose(VERBOSE);
 		configurator.addDynamicProperty("dynamic-html", "true");
@@ -102,7 +109,68 @@ public class SwaggerGen implements Configuration {
 
 	public List<File> generate() {
 		final ClientOptInput clientOptInput = configurator.toClientOptInput();
-		return new DefaultGenerator().opts(clientOptInput).generate();
+
+		// merge swagger
+		Swagger x = clientOptInput.getSwagger();
+		for (SwaggerGen t : pluginSwaggers) {
+			try {
+				logger.info("Merging Swagger: " + t);
+				Swagger s = t.configurator.toClientOptInput().getSwagger();
+				if (s != null)
+					mergeSwagger(s, x);
+			} catch (Throwable e) {
+				logger.warn("Loading plugin " + t + " failed: " + e);
+			}
+		}
+		return new IgniteGenerator().opts(clientOptInput).generate();
+	}
+
+	/**
+	 * merge the plugins
+	 * 
+	 * @param swag
+	 */
+	void addSwagger(SwaggerGen swag) {
+		this.pluginSwaggers.add(swag);
+	}
+
+	/**
+	 * manual copy of swaggers into target
+	 * 
+	 * @param plugin
+	 * @param target
+	 */
+	void mergeSwagger(Swagger plugin, Swagger target) {
+
+		List<Scheme> schemes = plugin.getSchemes();
+		for (Scheme c : schemes)
+			target.addScheme(c);
+
+		List<String> consumes = plugin.getConsumes();
+		if (consumes != null)
+			for (String c : consumes)
+				target.addConsumes(c);
+
+		List<String> produces = plugin.getProduces();
+		if (produces != null)
+			for (String c : produces)
+				target.addProduces(c);
+
+		Map<String, Model> definitions = plugin.getDefinitions();
+		if (definitions != null)
+			for (String c : definitions.keySet())
+				target.addDefinition(c, definitions.get(c));
+
+		Map<String, Parameter> parameters = plugin.getParameters();
+		if (parameters != null)
+			for (String c : parameters.keySet())
+				target.addParameter(c, parameters.get(c));
+
+		// target.addSecurity(securityRequirement);
+		List<Tag> tags = plugin.getTags();
+		if (tags != null)
+			for (Tag c : tags)
+				target.addTag(c);
 	}
 
 	static String[] getModelFiles() {

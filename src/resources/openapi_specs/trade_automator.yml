@@ -4,9 +4,9 @@ swagger: '2.0'
         # format: uuid
         # example: d290f1ee-6c54-4b01-90e6-d701748f0851
 info:
-  description: This is the CoinBot API
+  description: This is the TradeAutomator API
   version: 1.0.0
-  title: CoinBot API
+  title: TradeAutomator API
   # put the contact info for your development or API team
   contact:
     email: info@apicloud.co

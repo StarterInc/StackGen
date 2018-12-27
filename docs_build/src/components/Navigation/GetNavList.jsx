@@ -28,6 +28,12 @@ function GetNavList(config) {
   NavList.push({ divider: true });
 
   NavList.push({
+    primaryText: "OpenAPI Editor",
+    // LeftIcon: <FontIcon>person</FontIcon>,
+    component: Link,
+    to: "/openapi-gui/"
+  });
+  NavList.push({
     primaryText: "About",
     // LeftIcon: <FontIcon>person</FontIcon>,
     component: Link,

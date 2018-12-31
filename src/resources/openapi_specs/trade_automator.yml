@@ -434,7 +434,7 @@ definitions:
       ssn:
         description: This is the value
         type: string
-        example: 111-22-3333
+        example: 1112233334
         maxLength: 10
         minLength: 10
         x-starter-secureField: true

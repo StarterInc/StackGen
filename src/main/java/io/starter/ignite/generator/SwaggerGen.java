@@ -62,7 +62,7 @@ public class SwaggerGen implements Configuration {
 
 		configurator.setArtifactId(ARTIFACT_ID);
 		configurator.setModelPackage(MODEL_PACKAGE);
-		configurator.setOutputDir(OUTPUT_DIR);
+		configurator.setOutputDir(JAVA_GEN_PATH);
 		configurator.setApiPackage(API_PACKAGE);
 
 		configurator.setArtifactVersion(ARTIFACT_VERSION);

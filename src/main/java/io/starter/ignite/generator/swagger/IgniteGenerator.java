@@ -76,6 +76,7 @@ public class IgniteGenerator extends DefaultGenerator {
 		Map<String, Object> bundle = buildSupportFileBundle(allOperations, allModels);
 		generateSupportingFiles(files, bundle);
 		config.processSwagger(swagger);
+
 		return files;
 	}
 
@@ -102,6 +103,8 @@ public class IgniteGenerator extends DefaultGenerator {
 	 */
 	private void enhanceSwagger() {
 		Set<String> keys = this.swagger.getDefinitions().keySet();
+		Map<String, Path> priorPaths = this.swagger.getPaths();
+		this.swagger.setPaths(new HashMap<String, Path>());
 		for (String k : keys) {
 			Model m = this.swagger.getDefinitions().get(k);
 
@@ -113,8 +116,8 @@ public class IgniteGenerator extends DefaultGenerator {
 				String path = "/" + k;
 				// Path existing =
 				// this.swagger.getPaths().get(path.toLowerCase());
-				// handle special reserved word case
-				if (!"ApiResponse".equals(k)) {
+
+				if (!"ApiResponse".equals(k)) { // handle reserved word case(s)
 					Path ops = addCrudOps(k, m);
 					if (ops != null) {
 						this.swagger.getPaths().put(path + "/{param}", ops);
@@ -127,6 +130,10 @@ public class IgniteGenerator extends DefaultGenerator {
 				}
 			}
 		}
+		// for (String f : priorPaths.keySet()) {
+		// Path px = priorPaths.get(f);
+		// this.swagger.getPaths().put("logic/" + f, px);
+		// }
 	}
 
 	/**
@@ -171,7 +178,7 @@ public class IgniteGenerator extends DefaultGenerator {
 		p.type("integer");
 		p.setMinimum(new BigDecimal(0));
 		// p.setName(k + "ID");
-		p.setName("id");
+		p.setName("param");
 		p.setAccess("public");
 		p.setDescription("Retreive a single result by ID");
 		p.setRequired(true);
@@ -188,22 +195,21 @@ public class IgniteGenerator extends DefaultGenerator {
 
 	private Operation createCRUDOp(String opName, String opType, String opDesc, Parameter p) {
 		Operation insertOp = new Operation();
-		// insertOp.addConsumes("application/xml");
-		// insertOp.addConsumes("application/json");
-		// insertOp.addProduces("application/xml");
-		insertOp.addProduces("application/json");
 		insertOp.setDescription("Starter Ignite Auto Generated " + opName + ":"
 				+ opType);
 		insertOp.setSummary(opDesc);
 		// insertOp.addTag("insert-tag"); insert of alternate tag
+
 		// name causes dupe method gen
 		insertOp.addTag(opType);
+
 		insertOp.operationId(opType);
 		insertOp.addParameter(p);
-		insertOp.getVendorExtensions().put("x-contentType", "application/json");
-		insertOp.getVendorExtensions().put("x-accepts", "application/json");
+		// insertOp.getVendorExtensions().put("x-contentType",
+		// "application/json");
+		// insertOp.getVendorExtensions().put("x-accepts",
+		// "application/json");
 		insertOp.getVendorExtensions().put("x-tags", "[{tag=" + opType + "}]");
-
 		addSecurity(opDesc, insertOp);
 		return insertOp;
 	}
@@ -222,36 +228,39 @@ public class IgniteGenerator extends DefaultGenerator {
 		BodyParameter up = getBodyPathParameter(k, r);
 		Operation insertOp = createCRUDOp(k, "insert", "Insert a new " + k
 				+ " into the system", up);
+		insertOp.addConsumes("application/json");
+		insertOp.addProduces("application/json");
 		insertOp.response(200, r);
 		ops.setPost(insertOp);
 
 		// Update
+		r = new Response();
+		up = getBodyPathParameter(k, r);
 		Operation updateOp = createCRUDOp(k, "update", "Update a " + k
 				+ " in the system", up);
+		updateOp.addConsumes("application/json");
+		updateOp.addProduces("text/plain");
 		up = getBodyPathParameter(k, r);
 		updateOp.addParameter(up);
 		updateOp.addConsumes("application/json");
 		updateOp.response(200, r);
 		ops.setPut(updateOp);
 
-		// PathParameter p = ;
-
 		// Delete
-		Response dr = new Response();
-		RefModel m = new RefModel();
-		m.set$ref("#/definitions/" + k);
-		m.setReference(k);
-		r.responseSchema(m);
-		r.setDescription("Results fetched OK");
-		Operation deleteOp = createCRUDOp(k, "delete", "Deleta a " + k
+		Operation deleteOp = createCRUDOp(k, "delete", "Delete an " + k
 				+ " from the system", getIdPathParameter());
+		deleteOp.addConsumes("text/plain");
+		deleteOp.addProduces("text/plain");
+		updateOp.response(200, r);
 		ops.setDelete(deleteOp);
 
 		// Load
 		Operation loadOp = createCRUDOp(k, "load", "Load a " + k
 				+ " from the system", getIdPathParameter());
-		ops.setGet(loadOp);
+		loadOp.addConsumes("text/plain");
+		loadOp.addProduces("application/json");
 		loadOp.response(200, r);
+		ops.setGet(loadOp);
 		return ops;
 	}
 
@@ -289,14 +298,14 @@ public class IgniteGenerator extends DefaultGenerator {
 
 		// List createa a new list path
 		Operation listOp = new Operation();
-		// listOp.addConsumes("application/xml");
+		listOp.addConsumes("application/xml");
 		listOp.addConsumes("application/json");
-		// listOp.addProduces("application/xml");
+		listOp.addProduces("application/xml");
 		listOp.addProduces("application/json");
 		listOp.setDescription("Starter Ignite Auto Generated Listing");
 		listOp.setSummary("Listing");
 		// listOp.addTag("list-tag"); // causes dupe method gen
-		listOp.operationId("list=it");
+		listOp.operationId("list");
 		listOp.addParameter(p);
 		listOp.addResponse("200", r);
 

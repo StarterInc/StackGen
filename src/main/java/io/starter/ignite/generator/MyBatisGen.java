@@ -201,7 +201,8 @@ public class MyBatisGen extends Gen implements Generator {
 
 	static void createMyBatisFromModelFolder() throws Exception {
 		logger.debug("Iterate Swagger Entities and create Tables...");
-		File[] modelFiles = Gen.getModelFiles();
+		File[] modelFiles = Gen
+				.getJavaGenFiles(JAVA_GEN_SRC_FOLDER + MODEL_DAO_PACKAGE_DIR);
 		MyBatisGen gen = new MyBatisGen();
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));

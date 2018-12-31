@@ -77,6 +77,8 @@ public interface {{classname}}Delegate {
     public int delete();
     
     public String toJSON();
+    
+    public void setBean(Object o);
 
     public List<{{classname}}Delegate> list();
     
@@ -172,6 +174,7 @@ public interface {{classname}}Delegate {
 
 		} catch (Exception e) {
 			// other type NP
+			setBean(args[0]);
 		}
 
 		Method method = this.getClass().getDeclaredMethod(string);

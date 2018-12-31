@@ -90,7 +90,7 @@ public class JavaGen extends Gen implements Generator {
 							+ DATE_FORMAT.format(new Date()) + "/r/n" + "/r/n"
 							+ "@see "
 							+ fld.getDeclaringClass().getSuperclass().getName()
-							+ "/r/n" + "/r/n" + "@return the value of "
+							+ "/r/n" + "/r/n" + "@return the value of: "
 							+ fieldName)
 					.addModifiers(Modifier.PUBLIC).returns(fieldType)
 					.addStatement("return " + memberName + "." + fieldName)
@@ -138,15 +138,17 @@ public class JavaGen extends Gen implements Generator {
 		return null;
 	}
 
+	public FieldSpec createLoggerField(String className) throws ClassNotFoundException {
+
+		final Class<?> cx = Class.forName("org.slf4j.Logger");
+		return FieldSpec.builder(cx, "log").addModifiers(Modifier.PRIVATE)
+				.initializer("org.slf4j.LoggerFactory\n"
+						+ "			.getLogger(" + className + "Service.class)")
+				.build();
+	}
+
 	// ## MYBATIS INSERT/UPDATE/DELETE/LIST
 
-	/**
-	 * 
-	 * @param className
-	 * @param fieldList
-	 * @param methodList
-	 * @throws ClassNotFoundException
-	 */
 	public FieldSpec createSQLSessionFactoryField() throws ClassNotFoundException {
 
 		final Class<?> cx = Class
@@ -231,6 +233,29 @@ public class JavaGen extends Gen implements Generator {
 	}
 
 	/**
+	 * create setBean method
+	 * 
+	 * @param className
+	 * @return
+	 */
+	public MethodSpec createSetBean(String className) {
+
+		String bname = getBaseJavaName(className);
+		String methodText = bname + "Bean = (" + bname + ")bx";
+		try {
+			return MethodSpec.methodBuilder("setBean")
+					.addJavadoc("Starter Ignite Generated Method: "
+							+ DATE_FORMAT.format(new Date()))
+					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
+					.addParameter(Object.class, "bx").build();
+		} catch (final Exception e) {
+			logger.error("ERROR creating setBean method for: " + className + " "
+					+ e.toString());
+		}
+		return null;
+	}
+
+	/**
 	 * create MyBatis list method
 	 * 
 	 * @param className
@@ -273,11 +298,14 @@ public class JavaGen extends Gen implements Generator {
 	public MethodSpec createInsert(String className) {
 		String mapperName = getMyBatisName(className);
 		String methodText = "		final org.apache.ibatis.session.SqlSession session = sqlSessionFactory.openSession(true);\n"
-				+ "		final int rows = session\n" + "				.insert(\""
-				+ mapperName + "Mapper.insertSelective\", this);\n"
+				+ "		int rows = -1;\n" + "		try {\n"
+				+ "			rows = session.insert(\"" + mapperName
+				+ "Mapper.insertSelective\", this);\n"
 				+ "		// commit performs the actual insert\n"
 				+ "		session.commit();\n" + "		session.close();\n"
-				+ "		return rows";
+				+ "} catch (Exception e) {\n"
+				+ "			log.error(\"Could not run INSERT: \" + e.toString());\n"
+				+ "		}" + "		return rows";
 
 		try {
 			return MethodSpec.methodBuilder("insert")
@@ -340,11 +368,15 @@ public class JavaGen extends Gen implements Generator {
 	public MethodSpec createUpdate(String className) {
 		String mapperName = getMyBatisName(className);
 		String methodText = "		final org.apache.ibatis.session.SqlSession session = sqlSessionFactory.openSession(true);\n"
-				+ "		final int rows = session.update(\"" + mapperName
+				+ "		int rows = -1;\n" + "		try {\n"
+				+ "			rows = session.insert(\"" + mapperName
+
 				+ "Mapper.updateByPrimaryKeySelective\", this);\n"
 				+ "		// commit performs the actual update\n"
 				+ "		session.commit();\n" + "		session.close();\n"
-				+ "		return rows";
+				+ "} catch (Exception e) {\n"
+				+ "			log.error(\"Could not run INSERT: \" + e.toString());\n"
+				+ "}" + "		return rows";
 
 		try {
 			return MethodSpec.methodBuilder("update")
@@ -380,11 +412,14 @@ public class JavaGen extends Gen implements Generator {
 
 		String mapperName = getMyBatisName(className);
 		String methodText = "		final org.apache.ibatis.session.SqlSession session = sqlSessionFactory.openSession(true);\n"
-				+ "		final int rows = session.delete(\"" + mapperName
+				+ "		int rows = -1;\n" + "		try {\n"
+				+ "			rows = session.insert(\"" + mapperName
 				+ "Mapper.deleteByPrimaryKey\", getId());\n"
 				+ "		// commit performs the actual delete\n"
 				+ "		session.commit();\n" + "		session.close();\n"
-				+ "		return rows";
+				+ "} catch (Exception e) {\n"
+				+ "			log.error(\"Could not run INSERT: \" + e.toString());\n"
+				+ "		}" + "		return rows";
 		try {
 			return MethodSpec.methodBuilder("delete")
 					.addJavadoc("Starter Ignite Generated Method: "
@@ -436,36 +471,26 @@ public class JavaGen extends Gen implements Generator {
 		memberName += "Bean";
 		memberName.replace(Configuration.MYBATIS_CLASS_PREFIX, "");
 
-		String delegateInterfaceName = memberType;
-		delegateInterfaceName = delegateInterfaceName
-				.substring(delegateInterfaceName.lastIndexOf(".") + 1);
-		delegateInterfaceName += Configuration.SPRING_DELEGATE;
-		ClassName cDD = ClassName
-				.get(Configuration.IGNITE_API_PACKAGE, delegateInterfaceName);
-
-		try {
-			delegateInterfaceName = Configuration.IGNITE_API_PACKAGE + "."
-					+ delegateInterfaceName;
-			Class<?> cx1 = Class.forName(delegateInterfaceName);
-		} catch (Exception x) {
-			cDD = null;
-		}
-
 		// add the spring mvc fields
 		FieldSpec objectMapper = createObjectMapperField();
 		FieldSpec httpServletRequest = createHttpServletRequestField();
 
-		// add the MyBatis persistene methods
+		// add the builtins
+		FieldSpec logr = createLoggerField(className);
+
+		// add the MyBatis persistence methods
 		FieldSpec ssf = createSQLSessionFactoryField();
 
 		List<MethodSpec> methodList = new ArrayList<MethodSpec>();
 		if (ssf != null) {
+			fieldList.add(logr);
 			fieldList.add(ssf);
 			fieldList.add(objectMapper);
 			fieldList.add(httpServletRequest);
 			methodList.add(createGetHttpServletRequest(className));
 			methodList.add(createGetObjectMapper(className));
 			methodList.add(createGetAcceptHeader(className));
+			methodList.add(createSetBean(className));
 			methodList.add(createList(className));
 			methodList.add(createLoad(className));
 			methodList.add(createInsert(className));
@@ -477,11 +502,26 @@ public class JavaGen extends Gen implements Generator {
 			logger.debug("Created " + methodList.size()
 					+ " MyBatis persistence methods");
 		}
+		// classes, this should point to the top of the package
+		final URLClassLoader classLoader = new URLClassLoader(
+				new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI().toURL(),
+						new File(JAVA_GEN_RESOURCES_FOLDER).toURI().toURL() });
+
+		String delegateInterfaceName = memberType;
+		delegateInterfaceName = delegateInterfaceName
+				.substring(delegateInterfaceName.lastIndexOf(".") + 1);
+		delegateInterfaceName += Configuration.SPRING_DELEGATE;
+		ClassName cDD = ClassName
+				.get(Configuration.IGNITE_API_PACKAGE, delegateInterfaceName);
+		try {
+			delegateInterfaceName = Configuration.IGNITE_API_PACKAGE + "."
+					+ delegateInterfaceName;
+			Class<?> cx1 = classLoader.loadClass(delegateInterfaceName);
+		} catch (Exception x) {
+			cDD = null;
+		}
 
 		// instantiate the delegate class
-		final URLClassLoader classLoader = new URLClassLoader(
-				new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });
-
 		final Class<?> cxt = classLoader.loadClass(className);
 
 		final FieldSpec member = FieldSpec.builder(cxt, memberName)
@@ -619,7 +659,7 @@ public class JavaGen extends Gen implements Generator {
 		// test
 		final String sourcepath = JAVA_GEN_SRC_FOLDER + packageDir;
 
-		logger.debug("JavaGen Compiling: " + sourcepath);
+		logger.info("JavaGen Compiling: " + sourcepath);
 
 		// prepare compiler
 		final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
@@ -630,9 +670,10 @@ public class JavaGen extends Gen implements Generator {
 		final List<String> optionList = new ArrayList<>();
 		optionList.add("-classpath");
 		optionList.add(System.getProperty("java.class.path")
-				+ System.getProperty("path.separator") + JAVA_GEN_SRC_FOLDER);
+				+ System.getProperty("path.separator") + JAVA_GEN_SRC_FOLDER
+				+ System.getProperty("path.separator") + SOURCE_MAIN_JAVA);
 
-		final File[] fx = Gen.getModelFiles();
+		final File[] fx = Gen.getJavaGenFiles(sourcepath);
 
 		final Iterable<? extends JavaFileObject> compilationUnit = fileManager
 				.getJavaFileObjectsFromFiles(Arrays.asList(fx));
@@ -641,9 +682,9 @@ public class JavaGen extends Gen implements Generator {
 				.getTask(null, fileManager, diagnostics, optionList, null, compilationUnit);
 
 		// Compilation Requirements
-		logger.debug("Compiling: " + sourcepath);
+		logger.info("Compiling: " + sourcepath);
 		if (compilerTask.call()) {
-			logger.debug("Compilation Complete.");
+			logger.info("Compilation Complete.");
 
 			// classes, this should point to the top of the package
 			// structure
@@ -661,8 +702,14 @@ public class JavaGen extends Gen implements Generator {
 					final Class<?> loadedClass = classLoader
 							.loadClass(loadClassName);
 					// Create a new instance...
-					final Object obj = loadedClass.newInstance();
-					logger.info("Successfully compiled: " + obj.toString());
+					if (!loadedClass.isInterface()) {
+						final Object obj = loadedClass.newInstance();
+						logger.info("Successfully compiled class: "
+								+ obj.toString());
+					} else {
+						logger.info("Successfully compiled interface: "
+								+ loadClassName);
+					}
 				} catch (final ClassNotFoundException e) {
 					// normal
 				} catch (final Throwable t) {

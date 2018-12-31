@@ -88,7 +88,7 @@ public class Main implements Configuration {
 					+ swaggerGen.generate().size() + " Source Files");
 
 			JavaGen.compile(API_PACKAGE_DIR);
-			// JavaGen.compile(MODEL_DAO_PACKAGE_DIR);
+			JavaGen.compile(MODEL_DAO_PACKAGE_DIR);
 			// JavaGen.compile(MODEL_PACKAGE_DIR);
 
 			if (!skipDBGen) {
@@ -109,7 +109,7 @@ public class Main implements Configuration {
 
 			// annotated wrapper with encryption,
 			// logging, annotations
-			JavaGen.compile(MODEL_PACKAGE_DIR);
+			// JavaGen.compile(MODEL_PACKAGE_DIR);
 
 			// create wrapper classes which
 			// delegates calls to/from api to the mybatis entity
@@ -159,18 +159,20 @@ public class Main implements Configuration {
 
 	private static void initOutputFolders() {
 		File genDir = new File(JAVA_GEN_PATH);
-		logger.debug("Initializing output folder: " + JAVA_GEN_PATH
-				+ " exists: " + genDir.exists());
+		logger.info("Initializing output folder: " + JAVA_GEN_PATH + " exists: "
+				+ genDir.exists());
 		if (genDir.exists()) {
 
-			genDir.delete();
-			// genDir.renameTo(new File(
-			// JAVA_GEN_PATH + "." + System.currentTimeMillis()));
+			if (!genDir.renameTo(new File(JAVA_GEN_ARCHIVE_PATH + "."
+					+ System.currentTimeMillis()))) {
+				throw new IgniteException("Could not rename: " + JAVA_GEN_PATH);
+			}
+
 			genDir = new File(JAVA_GEN_PATH);
 			genDir.mkdirs();
 		}
 
-		boolean outputDir = new File(Configuration.OUTPUT_DIR + "/src/")
+		boolean outputDir = new File(Configuration.JAVA_GEN_PATH + "/src/")
 				.mkdirs();
 		if (!outputDir) {
 			logger.error("Could not init: " + outputDir + ". Exiting.");

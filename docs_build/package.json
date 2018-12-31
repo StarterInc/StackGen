@@ -7,7 +7,7 @@
     "babel-eslint": "^10.0.1",
     "classnames": "^2.2.6",
     "gatsby": "^2.0.20",
-    "gatsby-cli": "^2.4.6",
+    "gatsby-cli": "^2.4.8",
     "gatsby-pagination": "^1.2.0",
     "gatsby-plugin-catch-links": "^2.0.4",
     "gatsby-plugin-feed": "^2.0.8",
@@ -40,7 +40,10 @@
     "react-scroll": "^1.7.10",
     "react-share": "^1.15.1",
     "react-social-icons": "^2.7.0",
-    "react-twitter-widgets": "^1.4.0"
+    "react-twitter-widgets": "^1.4.0",
+    "shins": "^2.3.2-3",
+    "update": "^0.7.4",
+    "widdershins": "^3.6.7"
   },
   "devDependencies": {
     "cli-glob": "^0.1.0",

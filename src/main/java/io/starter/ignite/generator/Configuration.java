@@ -91,6 +91,8 @@ public interface Configuration extends SystemConstants {
 			+ "/src/main/resources";
 
 	public static String		SOURCE_MAIN						= "/src/main";
+	public static String		SOURCE_MAIN_JAVA				= SOURCE_MAIN
+			+ "/java";
 	public static String		SOURCE_RESOURCES				= "/src/resources";
 	public static String		PLUGIN_FOLDER					= ROOT_FOLDER
 			+ SOURCE_RESOURCES + "/plugins";
@@ -120,8 +122,6 @@ public interface Configuration extends SystemConstants {
 
 	public static String		CONFIG_FILE						= ROOT_FOLDER
 			+ SOURCE_RESOURCES + "/swagger_config.json";
-
-	public static String		OUTPUT_DIR						= JAVA_GEN_PATH;
 
 	public static String		API_PACKAGE						= ORG_PACKAGE
 			+ ".api";

@@ -230,6 +230,104 @@ through a RESTful api/service or both, depending upon your application architect
 5. TODO: enable monitoring
 6. TODO: describe app testing
 
+### Configuration Variables
+
+```
+ADD_GEN_CLASS_NAME= "Service"
+ALTER_TABLE= "ALTER TABLE"
+ANON_USERID= null
+API_CLASSES= "/projects/StarterIgnite/gen/src/main/java/io/starter/ignite/api/"
+API_PACKAGE= "io.starter.ignite.api" (id=22)
+API_PACKAGE_DIR= "/io/starter/ignite/api/" (id=23)
+ARTIFACT_ID= "ignite" (id=27)
+ARTIFACT_VERSION= "1.0.1" (id=28)
+AWS_ACCESS_KEY= null
+AWS_SECRET_KEY= null
+CIPHER_NAME= "AES/CBC/PKCS5PADDING" (id=29)
+CONFIG_FILE= "/projects/StarterIgnite/src/resources/swagger_config.json" (id=30)
+CREATE_TABLE= "CREATE TABLE" (id=31)
+CREATE_TABLE_BEGIN_BLOCK= "(" (id=32)
+CREATE_TABLE_END_BLOCK= ");" (id=34)
+DATE_FORMAT= java.text.SimpleDateFormat  (id=36)
+DB_NAME= "ignite" (id=41)
+DB_PASSWORD= "xxxxxxxxxx" (id=42)
+DB_TIMEOUT= 10000
+DB_URL= "db.us-west-2.rds.amazonaws.com" (id=43)
+DB_USER= "igniteuser" (id=44)
+DEBUG= false
+DISABLE_DATA_FIELD_ASPECT= true
+DISABLE_SECURE_FIELD_ASPECT= false
+DROP_EXISTING_TABLES= true
+DROP_TABLE= "DROP TABLE" (id=45)
+FOLDER_SKIP_LIST= java.util.ArrayList<E>  (id=46)
+IGNITE_API_PACKAGE= "io.starter.ignite.api" (id=22)
+IGNITE_DATAMODEL_PACKAGE= "io.starter.ignite.model.dao" (id=54)
+IGNITE_GEN_MODEL_CRUD_OPS= "igniteGenerateCRUDOps" (id=55)
+IGNITE_GEN_MODEL_ENHANCEMENTS= "igniteGenerateModelEnhancements" (id=56)
+IGNITE_MAJOR_VERSION= 1
+IGNITE_MINOR_VERSION= 1
+INVOKER_PACKAGE= "io.starter.ignite.invoker" (id=57)
+JAVA_GEN_ARCHIVE_FOLDER= "/archive/gen" (id=58)
+JAVA_GEN_ARCHIVE_PATH= "/projects/StarterIgnite/archive/gen" (id=59)
+JAVA_GEN_FOLDER= "/gen" (id=60)
+JAVA_GEN_PATH= "/projects/StarterIgnite/gen" (id=61)
+JAVA_GEN_RESOURCES_FOLDER= "/projects/StarterIgnite/gen/src/main/resources" (id=62)
+JAVA_GEN_SRC= java.io.File  (id=63)
+JAVA_GEN_SRC_FOLDER= "/projects/StarterIgnite/gen/src/main/java" (id=65)
+JNDI_DB_LOOKUP_STRING= "jndi/ignite" (id=66)
+KEY_SIZE= 256
+KEYGEN_INSTANCE_NAME= "AES" (id=67)
+logger= org.slf4j.impl.SimpleLogger  (id=68)
+LONG_DATE_FORMAT= "MMM/d/yyyy HH:mm:ss Z" (id=73)
+MODEL_CLASSES= "/projects/StarterIgnite/gen/src/main/java/io/starter/ignite/model/dao/" (id=74)
+MODEL_DAO_PACKAGE_DIR= "/io/starter/ignite/model/dao/" (id=75)
+MODEL_PACKAGE= "io.starter.ignite.model.dao" (id=54)
+MODEL_PACKAGE_DIR= "/io/starter/ignite/model/" (id=76)
+MYBATIS_CLASS_PREFIX= "Ignite" (id=77)
+MYBATIS_CONFIG= "/projects/StarterIgnite/src/resources/templates/MyBatisConfig.xml" (id=78)
+MYBATIS_CONFIG_OUT= "/projects/StarterIgnite/gen/src/main/resources/MyBatisConfig.xml" (id=79)
+MYBATIS_GEN_CONFIG= "/projects/StarterIgnite/src/resources/templates/MyBatisGeneratorConfig.xml" (id=80)
+MYBATIS_GEN_CONFIG_OUT= "/projects/StarterIgnite/src/resources/MyBatisGeneratorConfig.xml" (id=81)
+MYBATIS_MODEL_CLASSES= "/projects/StarterIgnite/gen/src/main/java/io/starter/ignite/model/dao/" (id=74)
+ORG_PACKAGE= "io.starter.ignite" (id=82)
+OUTPUT_DIR= "/projects/StarterIgnite/gen" (id=61)
+PLUGIN_FOLDER= "/projects/StarterIgnite/src/resources/plugins"
+REACT_APP_NAME= "MyLittlePony"
+REACT_APP_OUTPUT_FOLDER= "/projects/StarterIgnite/tmp/react/"
+REACT_EXPORT_FOLDER= "/projects/StarterIgnite/REACT_EXPORT"
+REACT_TEMPLATE_APP_FOLDER= "/projects/StarterIgnite/src/main/react/IgniteApp/"
+REACT_TEMPLATE_FOLDER= "/projects/StarterIgnite/src/main/react/template/"
+RENAME_TABLE_SUFFIX= "BK_"
+ROOT_FOLDER= "/projects/StarterIgnite"
+S3_STARTER_MEDIA_BUCKET= null
+S3_STARTER_MEDIA_FOLDER= null
+S3_STARTER_SERVICE= null
+S3_STARTER_SYSTEM_BUCKET= null
+SCHEMA_NAME= "ignite"
+SECRET_KEY= "W3ngNBCp80mgG0wwjTslfeQoG2hQa9ryqbemTEX01Wg="
+SECURE_KEY_PROPERTY= "io.starter.ignite.secure_key"
+SESSION_VAR_SQLSESSION= null
+SESSION_VAR_USER= null
+SETTING_COLUMNS_UPPERCASED= false
+SKIP_LIST= java.util.ArrayList<E>
+skipDBGen= false
+skipMybatis= false
+SOURCE_MAIN= "/src/main"
+SOURCE_RESOURCES= "/src/resources"
+SPEC_LOCATION= "/projects/StarterIgnite/src/resources/openapi_specs/"
+SPRING_DELEGATE= "ApiDelegate"
+SQL_MAPS_PATH= "io/starter/ignite/sqlmaps/"
+SWAGGER_LANG= "spring"
+SWAGGER_LIB= "spring-boot"
+TABLE_NAME_PREFIX= "ignite$"
+VERBOSE= false
+WEB_JS_ROOT= "/src/main/webapp/js"
+WEB_ROOT= "/src/main/webapp"
+WP_PLUGIN_ROOT= "/src/main/src/main/wp"
+
+```
+
+
 #### Resources
 
 Using Starter Ignite, you should experience a significant boost in productivity

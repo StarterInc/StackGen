@@ -62,12 +62,21 @@ import java.util.concurrent.Callable;
     Template file: JavaSpring/apiController.mustache
 
 ############################## DO NOT EDIT: GENERATED FILE ##############################
+ 
+ xxx
  */
 public class {{classname}}Controller implements {{classname}} {
 
 {{#isDelegate}}
     private final {{classname}}Delegate delegate;
 
+	/**
+	* No-Args Constructor for classloading.
+	*/
+	public {{classname}}Controller() {
+		// do not use
+    }
+    
     @org.springframework.beans.factory.annotation.Autowired
     public {{classname}}Controller({{classname}}Delegate delegate) {
         this.delegate = delegate;

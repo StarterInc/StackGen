@@ -110,24 +110,6 @@ public class Gen implements Configuration {
 		return results;
 	}
 
-	/**
-	 * @return
-	 */
-	static File[] getApiJavaFiles() {
-		File modelDir = new File(Configuration.MODEL_CLASSES);
-		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.contains(Configuration.MYBATIS_CLASS_PREFIX))
-					return false;
-				if (name.contains(Configuration.ADD_GEN_CLASS_NAME))
-					return false;
-				return name.toLowerCase().endsWith(".java");
-			}
-		});
-		return modelFiles;
-	}
-
 	public static String[] getModelFileNames() {
 		File modelDir = new File(Configuration.MYBATIS_MODEL_CLASSES);
 		String[] modelFiles = modelDir.list(new FilenameFilter() {
@@ -152,8 +134,9 @@ public class Gen implements Configuration {
 		return modelFiles;
 	}
 
-	public static File[] getModelFiles() {
-		File modelDir = new File(Configuration.MODEL_CLASSES);
+	public static File[] getJavaGenFiles(String path) {
+		// ie: Configuration.MODEL_CLASSES
+		File modelDir = new File(path);
 		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -171,7 +154,7 @@ public class Gen implements Configuration {
 
 		if (modelFiles != null && modelFiles.length < 1) {
 			throw new IllegalStateException(
-					"JavaGen Failure: no model classfiles found. Check the MYBATIS_MODEL_CLASSES value.");
+					"JavaGen Failure: no java files found in " + path);
 		}
 		return modelFiles;
 	}

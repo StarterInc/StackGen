@@ -161,3 +161,4 @@ Recommended reading and resources for Swagger and OpenAPI:
 * [OpenAPI Initiative](https://www.openapis.org)
 * [SwaggerHub Directory](https://app.swaggerhub.com/search)
 * [Swagger CodeGen Project](https://github.com/swagger-api/swagger-codegen)
+* [A Brief History of the OpenAPI Specification](https://dev.to/mikeralphson/a-brief-history-of-the-openapi-specification-3g27)

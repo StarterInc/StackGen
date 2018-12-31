@@ -311,11 +311,11 @@ public class DBGen extends Gen implements Generator {
 
 	static void createDatabaseTablesFromModelFolder() throws Exception {
 		logger.debug("Iterate Swagger Entities and create Tables...");
-		File[] modelFiles = Gen.getModelFiles();
+		File[] modelFiles = Gen
+				.getJavaGenFiles(JAVA_GEN_SRC_FOLDER + MODEL_DAO_PACKAGE_DIR);
 		DBGen gen = new DBGen();
 		// classes, this should point to the top of the package
 		// structure!
-
 		URL packagedir = new File(JAVA_GEN_SRC_FOLDER).toURI().toURL();
 		URLClassLoader classLoader = new URLClassLoader(
 				new URL[] { packagedir });

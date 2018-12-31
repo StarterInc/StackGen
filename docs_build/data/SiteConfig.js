@@ -5,11 +5,11 @@ module.exports = {
   siteTitle: "Ignite", // Site title.
   siteTitleAlt: "Starter Ignite Code Generation Platform", // Alternative site title for SEO.
   siteLogo:
-    "https://github.com/StarterInc/Ignite/blob/gh-pages/logos/logo-512x512.png?raw=true", // Logo used for SEO and manifest. e.g. "/logos/logo-1024.png",
-  siteUrl: "https://starterinc.github.io", // Domain of your website without pathPrefix.
-  pathPrefix: "/Ignite", // Prefixes all links. For cases when deployed to example.github.io/gatsby-starter-casper/.
+    "http://ignite.starter.io/logos/logo-512x512.png?raw=true", // Logo used for SEO and manifest. e.g. "/logos/logo-1024.png",
+  siteUrl: "http://ignite.starter.io", // Domain of your website without pathPrefix.
+  // pathPrefix: "/Ignite", // Prefixes all links. For cases when deployed to example.github.io/gatsby-starter-casper/.
   siteDescription:
-    "Starter Ignite Documentation Site", // Website description used for RSS feeds/meta description tag.
+    "Starter Ignite Documentation", // Website description used for RSS feeds/meta description tag.
   siteCover:
     "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA19964-640x350.jpg", // Optional, the cover image used in header for home page. e.g: "/images/blog-cover.jpg",
   siteNavigation: true, // If navigation is enabled the Menu button will be visible
@@ -22,11 +22,21 @@ module.exports = {
   siteSocialUrls: [
     "https://github.com/StarterInc/Ignite",
     "https://twitter.com/TechnoCharms",
-    "mailto:info@starter.io"
+    "mailto:support@starter.io"
   ],
   postDefaultCategoryID: "Tech", // Default category for posts.
   // Links to social profiles/projects you want to display in the navigation bar.
   userLinks: [
+    {
+      label: "Example Ignite API",
+      url: "api_schema/index.html#tradeautomator-api",
+      iconClassName: "fa fa-close" // Disabled, see Navigation.jsx
+    },
+    {
+      label: "Swagger Editor",
+      url: "openapi-gui/index.html",
+      iconClassName: "fa fa-close" // Disabled, see Navigation.jsx
+    },
     {
       label: "GitHub",
       url: "https://github.com/StarterInc/Ignite",
@@ -36,11 +46,6 @@ module.exports = {
       label: "Twitter",
       url: "https://twitter.com/TechnoCharms",
       iconClassName: "fa fa-twitter" // Disabled, see Navigation.jsx
-    },
-    {
-      label: "Swagger Editor",
-      url: "openapi-gui/index.html",
-      iconClassName: "fa fa-close" // Disabled, see Navigation.jsx
     },
     {
       label: "Email",

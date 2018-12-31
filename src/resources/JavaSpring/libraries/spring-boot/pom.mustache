@@ -30,19 +30,22 @@
         </developer>
     </developers>
 
-    <properties>
-        <aspectjplugin.version>1.8</aspectjplugin.version>
-        <aspectj.version>1.9.1</aspectj.version>
-        <java.version>{{#java8}}1.8{{/java8}}{{^java8}}1.7{{/java8}}</java.version>
+   <properties>
+    	<aspectjplugin.version>1.11</aspectjplugin.version>
+        <aspectj.version>1.9.2</aspectj.version>
+        <java.version>1.9</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <springfox-version>2.7.0</springfox-version>
     </properties>
+	<!-- <version>2.1.1.RELEASE</version> -->
+    
     <parent>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.9.RELEASE</version>
+        <artifactId>spring-boot-starter-parent</artifactId> 
+     	<version>2.0.1.RELEASE</version>
     </parent>
+    
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         {{^interfaceOnly}}
@@ -68,6 +71,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- disable for now 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -84,6 +88,7 @@
                     <forkMode>pertest</forkMode>
                 </configuration>
             </plugin>
+            -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -200,6 +205,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                 	<classifier>exec</classifier>
+                	<mainClass>io.starter.ignite.invoker.Swagger2SpringBoot</mainClass>                	
             	</configuration>
                 <executions>
                     <execution>
@@ -221,7 +227,7 @@
                     <source>
                       <basedir>src/main/java</basedir>
                       <includes>
-                        <include>**/*.java</include>
+						<include>io/starter/ignite/**/*.java</include>
                       </includes>
                     </source>
                   </sources>
@@ -246,11 +252,17 @@
     </build>
     <dependencies>
 
-      <!-- STARTER DEPS -->
-    <dependency>
+     	 <!-- STARTER DEPS -->
+    	<dependency>
 			<groupId>io.starter</groupId>
 			<artifactId>StarterIgnite</artifactId>
 			<version>1.2.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.swagger</groupId>
+					<artifactId>swagger-codegen</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -300,7 +312,20 @@
 				</exclusion>
 			</exclusions>
         </dependency>
-
+        
+        <!-- Spring Security & Monitoring 
+		<dependency>
+		    <groupId>de.codecentric</groupId>
+		    <artifactId>spring-boot-admin-starter-client</artifactId>
+		    <version>2.1.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		-->
+		<!-- End Spring Security & Monitoring -->
+		
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
@@ -374,6 +399,7 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
+            <version>2.0.1.FINAL</version>
         </dependency>
 {{/useBeanValidation}}
     </dependencies>

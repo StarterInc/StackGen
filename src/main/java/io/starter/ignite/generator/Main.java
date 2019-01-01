@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
+import org.codehaus.plexus.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,6 +116,9 @@ public class Main implements Configuration {
 			// delegates calls to/from api to the mybatis entity
 			JavaGen.generateClassesFromModelFolder();
 
+			// copy misc files into gen project
+			copyStaticFiles();
+
 			// package the microservice for deployment
 			MavenBuilder.build();
 
@@ -177,5 +181,39 @@ public class Main implements Configuration {
 		if (!outputDir) {
 			logger.error("Could not init: " + outputDir + ". Exiting.");
 		}
+	}
+
+	/**
+	 * a list of file paths to copy
+	 * relative to project root
+	 */
+	private static String[][] staticFiles = {
+			{ "/src/resources/templates/application.yml",
+					"/src/main/resources/application.yml" } };
+
+	private static void copyStaticFiles() {
+		File genDir = new File(JAVA_GEN_PATH);
+		logger.info("Copying static files to folder: " + JAVA_GEN_PATH
+				+ " exists: " + genDir.exists());
+		if (genDir.exists()) {
+			for (String[] fx : staticFiles) {
+				File fromF = new File(ROOT_FOLDER + fx[0]);
+				File toF = new File(JAVA_GEN_PATH + fx[1]);
+				if (fromF.exists()) {
+					logger.info("Copying static file : " + fromF + " to: "
+							+ toF);
+					try {
+						FileUtils.copyFile(fromF, toF);
+					} catch (Exception e) {
+						logger.error("Could not copy static file. "
+								+ e.toString());
+					}
+				} else {
+					logger.warn("Missing expected static file : "
+							+ fromF.getAbsolutePath());
+				}
+			}
+		}
+		logger.info("Done copying static files to " + JAVA_GEN_PATH);
 	}
 }

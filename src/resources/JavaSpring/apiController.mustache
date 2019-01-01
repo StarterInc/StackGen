@@ -63,12 +63,15 @@ import java.util.concurrent.Callable;
 
 ############################## DO NOT EDIT: GENERATED FILE ##############################
  
- xxx
+ Ignite Version: {{ignite.version}}
+ 
  */
 public class {{classname}}Controller implements {{classname}} {
 
 {{#isDelegate}}
-    private final {{classname}}Delegate delegate;
+    
+    @org.springframework.beans.factory.annotation.Autowired
+    private {{classname}}Delegate delegate = null;
 
 	/**
 	* No-Args Constructor for classloading.

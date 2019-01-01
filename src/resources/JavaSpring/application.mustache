@@ -1,3 +1,4 @@
+# AUTO-GENERATED SPRING CONFIG
 spring.banner.location=classpath:/io/starter/spring/boot/starter-ignite-banner.txt
 
 springfox.documentation.swagger.v2.path=/api-docs
@@ -12,3 +13,24 @@ spring.boot.admin.notify.mail.enabled=true
 spring.boot.admin.client.metadata.user.name=${security.user.name}
 spring.boot.admin.client.metadata.user.password=${security.user.password}
 spring.boot.admin.routes.endpoints=env, metrics, trace, jolokia, info, configprops
+
+
+#
+# SECURITY
+#
+# The default domain for generating ObjectNames must be specified. Otherwise when multiple Spring Boot applications start in the same servlet container
+# all would be created with the same name (com.zaxxer.hikari:name=dataSource,type=HikariDataSource) for example
+spring.jmx.default-domain=${spring.application.name}
+spring.security.filter.dispatcher-types=REQUEST,FORWARD,ASYNC
+spring.liquibase.enabled=false
+# Expose all actuator endpoints to the web
+# They are exposed, but only authenticated users can see /info and /health abd users with access-admin can see the others
+management.endpoints.web.exposure.include=*
+# Full health details should only be displayed when a user is authorized
+management.endpoint.health.show-details=when_authorized
+# Only users with role access-admin can access full health details
+management.endpoint.health.roles=access-admin
+
+# important load local files first
+# locations of static resources
+spring.resources.static-locations=file:static/,classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/webapp/,classpath:/public/ 

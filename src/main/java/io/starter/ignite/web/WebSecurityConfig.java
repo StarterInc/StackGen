@@ -23,6 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         successHandler.setTargetUrlParameter("redirectTo");
 
         http.authorizeRequests()
+        	.antMatchers(adminContextPath + "/ignite").permitAll()
             .antMatchers(adminContextPath + "/assets/**").permitAll()
             .antMatchers(adminContextPath + "/login").permitAll()
             .anyRequest().authenticated()

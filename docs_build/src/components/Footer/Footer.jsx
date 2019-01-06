@@ -23,6 +23,9 @@ class Footer extends Component {
           <a href={url || "/"}>{label}</a> &copy;{" "}
           {year || new Date().getFullYear()}
         </section>
+        <div>
+        Starter Ignite is an application generation and automation platform that uses robust, scalable data-based service engines with built-in encryption to deliver amazing software in less time for less money.
+        </div>
         <PoweredBy show={promoteGatsby} />
       </footer>
     );

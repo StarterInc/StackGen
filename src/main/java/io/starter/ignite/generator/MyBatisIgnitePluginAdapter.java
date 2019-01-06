@@ -26,12 +26,8 @@ import io.starter.toolkit.StringTool;
 public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		implements Configuration {
 
-	protected static final Logger	logger					= LoggerFactory
+	protected static final Logger logger = LoggerFactory
 			.getLogger(MyBatisIgnitePluginAdapter.class);
-
-	public static final String		TIMEZONE_OFFSET			= "-08:00";
-	private static final String		MYBATIS_COL_ENUM_FLAG	= "ENUM";
-	private String					ANNOTATAION_CLASS		= "io.starter.ignite.security.securefield.SecureField";
 
 	public MyBatisIgnitePluginAdapter() {
 		logger.error("Instantiating MyBatisIgnitePluginAdapter...");
@@ -74,11 +70,17 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		return true;
 	}
 
+	/**
+	 * get the superclass name
+	 * 
+	 * @param topLevelClass
+	 * @return
+	 */
 	private String getSuperClassName(TopLevelClass topLevelClass) {
 
 		String cn = topLevelClass.getType().getFullyQualifiedName();
-		cn = cn.replace(Configuration.MYBATIS_CLASS_PREFIX, "");
-		logger.debug("MYBATIS member: " + cn);
+		cn = cn.replace(Configuration.MYBATIS_CLASS_POSTFIX, "");
+		logger.debug("SuperClass Name MYBATIS member: " + cn);
 		return cn;
 	}
 

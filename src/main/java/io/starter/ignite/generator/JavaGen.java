@@ -346,7 +346,7 @@ public class JavaGen extends Gen implements Generator {
 
 		try {
 			ClassName cx = ClassName
-					.get(Configuration.IGNITE_DATAMODEL_PACKAGE, getJavaServiceName(className));
+					.get(Configuration.IGNITE_MODEL_PACKAGE, getJavaServiceName(className));
 			return MethodSpec.methodBuilder("load")
 					.addJavadoc("Starter Ignite Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
@@ -453,8 +453,8 @@ public class JavaGen extends Gen implements Generator {
 	private String getMyBatisName(String className) {
 		String mapperName = className
 				.substring(0, className.lastIndexOf(".") + 1)
-				+ Configuration.MYBATIS_CLASS_PREFIX
-				+ className.substring(className.lastIndexOf(".") + 1);
+				+ className.substring(className.lastIndexOf(".") + 1)
+				+ Configuration.MYBATIS_CLASS_POSTFIX;
 		// Configuration.GEN_MODEL_PACKAGE
 		return mapperName;
 	}
@@ -469,7 +469,7 @@ public class JavaGen extends Gen implements Generator {
 		String memberName = className.substring(className.lastIndexOf(".") + 1);
 		String memberType = memberName;
 		memberName += "Bean";
-		memberName.replace(Configuration.MYBATIS_CLASS_PREFIX, "");
+		memberName.replace(Configuration.MYBATIS_CLASS_POSTFIX, "");
 
 		// add the spring mvc fields
 		FieldSpec objectMapper = createObjectMapperField();
@@ -512,9 +512,9 @@ public class JavaGen extends Gen implements Generator {
 				.substring(delegateInterfaceName.lastIndexOf(".") + 1);
 		delegateInterfaceName += Configuration.SPRING_DELEGATE;
 		ClassName cDD = ClassName
-				.get(Configuration.IGNITE_API_PACKAGE, delegateInterfaceName);
+				.get(Configuration.API_PACKAGE, delegateInterfaceName);
 		try {
-			delegateInterfaceName = Configuration.IGNITE_API_PACKAGE + "."
+			delegateInterfaceName = Configuration.API_PACKAGE + "."
 					+ delegateInterfaceName;
 			Class<?> cx1 = classLoader.loadClass(delegateInterfaceName);
 		} catch (Exception x) {
@@ -600,14 +600,14 @@ public class JavaGen extends Gen implements Generator {
 	}
 
 	String getMyBatisJavaName(String n) {
-		return Configuration.MYBATIS_CLASS_PREFIX + getBaseJavaName(n);
+		return getBaseJavaName(n) + Configuration.MYBATIS_CLASS_POSTFIX;
 	}
 
 	String getBaseJavaName(String n) {
 		if (n.length() < 2)
 			return n;
 		n = n.replace(Configuration.ADD_GEN_CLASS_NAME, "");
-		n = n.replace(Configuration.IGNITE_DATAMODEL_PACKAGE, "");
+		n = n.replace(Configuration.IGNITE_MODEL_PACKAGE, "");
 		// String firstChar = n.substring(0, 1).toLowerCase();
 		return n.substring(1);
 	}
@@ -624,7 +624,7 @@ public class JavaGen extends Gen implements Generator {
 		for (final String mf : modelFiles) {
 			String cn = mf.substring(0, mf.indexOf("."));
 			// cn = cn + ".class";
-			cn = Configuration.IGNITE_DATAMODEL_PACKAGE + "." + cn;
+			cn = Configuration.MODEL_PACKAGE + "." + cn;
 			logger.warn("Creating Classes from ModelFile: " + cn);
 
 			try {
@@ -673,7 +673,7 @@ public class JavaGen extends Gen implements Generator {
 				+ System.getProperty("path.separator") + JAVA_GEN_SRC_FOLDER
 				+ System.getProperty("path.separator") + SOURCE_MAIN_JAVA);
 
-		final File[] fx = Gen.getJavaGenFiles(sourcepath);
+		final File[] fx = Gen.getJavaFiles(sourcepath);
 
 		final Iterable<? extends JavaFileObject> compilationUnit = fileManager
 				.getJavaFileObjectsFromFiles(Arrays.asList(fx));
@@ -686,8 +686,8 @@ public class JavaGen extends Gen implements Generator {
 		if (compilerTask.call()) {
 			logger.info("Compilation Complete.");
 
-			// classes, this should point to the top of the package
-			// structure
+			// load the newly compiled classes this should point to the
+			// top of the package structure
 			final URLClassLoader classLoader = new URLClassLoader(new URL[] {
 					new File(JAVA_GEN_SRC_FOLDER).toURI().toURL(),
 					new File(JAVA_GEN_RESOURCES_FOLDER).toURI().toURL() });

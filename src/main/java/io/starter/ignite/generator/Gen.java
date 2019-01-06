@@ -111,13 +111,13 @@ public class Gen implements Configuration {
 	}
 
 	public static String[] getModelFileNames() {
-		File modelDir = new File(Configuration.MYBATIS_MODEL_CLASSES);
+		File modelDir = new File(Configuration.MODEL_CLASSES);
 		String[] modelFiles = modelDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				if (name.contains("Example"))
 					return false;
-				if (name.contains(MYBATIS_CLASS_PREFIX))
+				if (name.contains(MYBATIS_CLASS_POSTFIX))
 					return false;
 				if (name.contains("Mapper"))
 					return false;
@@ -134,15 +134,20 @@ public class Gen implements Configuration {
 		return modelFiles;
 	}
 
-	public static File[] getJavaGenFiles(String path) {
+	public static File[] getJavaFiles(String path) {
 		// ie: Configuration.MODEL_CLASSES
 		File modelDir = new File(path);
+
+		if (!modelDir.exists()) {
+			throw new IllegalStateException(
+					"getJavaFiles Failure: patch " + path + " does not exist.");
+		}
 		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				if (name.contains("Example"))
 					return false;
-				if (name.contains(MYBATIS_CLASS_PREFIX))
+				if (name.contains(MYBATIS_CLASS_POSTFIX))
 					return false;
 				if (name.contains("Mapper"))
 					return false;
@@ -152,9 +157,10 @@ public class Gen implements Configuration {
 			}
 		});
 
-		if (modelFiles != null && modelFiles.length < 1) {
+		if ((modelFiles != null && modelFiles.length < 1)
+				|| (modelFiles == null)) {
 			throw new IllegalStateException(
-					"JavaGen Failure: no java files found in " + path);
+					"getJavaFiles Failure: no java files found in " + path);
 		}
 		return modelFiles;
 	}

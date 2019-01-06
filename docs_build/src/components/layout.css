@@ -275,27 +275,27 @@ h6 {
 }
 
 h1 {
-    font-size: 5rem;
+    font-size: 4rem;
     letter-spacing: -2px;
     text-indent: -3px;
 }
 
 h2 {
-    font-size: 3.6rem;
+    font-size: 2.6rem;
     letter-spacing: -1px;
 }
 
 h3 {
-    font-size: 3rem;
+    font-size: 1rem;
     letter-spacing: -0.6px;
 }
 
 h4 {
-    font-size: 2.5rem;
+    font-size: .75rem;
 }
 
 h5 {
-    font-size: 2rem;
+    font-size: .5rem;
 }
 
 h6 {
@@ -719,6 +719,7 @@ button {
     h5,
     h6 {
         margin: 0 0 0.3em;
+        font-weight: lighter;
     }
 
     h1 {

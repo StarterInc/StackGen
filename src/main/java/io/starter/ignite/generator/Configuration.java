@@ -51,11 +51,20 @@ public interface Configuration extends SystemConstants {
 					? System.getProperty("SWAGGER_LIB")
 					: "spring-boot");
 
-	public static String		IGNITE_GEN_MODEL_ENHANCEMENTS	= "igniteGenerateModelEnhancements";
-	public static String		IGNITE_GEN_MODEL_CRUD_OPS		= "igniteGenerateCRUDOps";
+	public static String		ARTIFACT_ID						= (System
+			.getProperty("ARTIFACT_ID") != null
+					? System.getProperty("ARTIFACT_ID")
+					: "ignite").toLowerCase();
+
+	public static final String	SCHEMA_NAME						= (System
+			.getProperty("SCHEMA_NAME") != null
+					? System.getProperty("SCHEMA_NAME")
+					: "ignite");
+
+	public static String		TABLE_NAME_PREFIX				= SCHEMA_NAME
+			+ "$";
 
 	// DML section
-	public static String		TABLE_NAME_PREFIX				= "ignite$";
 	public static String		CREATE_TABLE					= "CREATE TABLE";
 	public static String		CREATE_TABLE_BEGIN_BLOCK		= "(";
 	public static String		CREATE_TABLE_END_BLOCK			= ");";
@@ -107,14 +116,14 @@ public interface Configuration extends SystemConstants {
 					: "1.0.1");
 
 	public static String		ADD_GEN_CLASS_NAME				= "Service";
-	public static String		ARTIFACT_ID						= "ignite";
+
 	public static String		ORG_PACKAGE						= "io.starter."
 			+ ARTIFACT_ID;
 
-	public static String		IGNITE_DATAMODEL_PACKAGE		= ORG_PACKAGE
+	public static String		IGNITE_MODEL_PACKAGE			= ORG_PACKAGE
 			+ ".model.dao";
 
-	public static String		IGNITE_API_PACKAGE				= ORG_PACKAGE
+	public static String		API_MODEL_PACKAGE				= ORG_PACKAGE
 			+ ".api";
 
 	public static String		SPEC_LOCATION					= ROOT_FOLDER
@@ -137,11 +146,14 @@ public interface Configuration extends SystemConstants {
 	static SimpleDateFormat		DATE_FORMAT						= new SimpleDateFormat(
 			LONG_DATE_FORMAT);
 
-	public static String		MODEL_PACKAGE_DIR				= "/io/starter/ignite/model/";
+	public static String		MODEL_PACKAGE_DIR				= "/io/starter/"
+			+ ARTIFACT_ID + "/model/";
 
-	public static String		API_PACKAGE_DIR					= "/io/starter/ignite/api/";
+	public static String		API_PACKAGE_DIR					= "/io/starter/"
+			+ ARTIFACT_ID + "/api/";
 
-	public static String		MODEL_DAO_PACKAGE_DIR			= "/io/starter/ignite/model/dao/";
+	public static String		MODEL_DAO_PACKAGE_DIR			= "/io/starter/"
+			+ ARTIFACT_ID + "/model/dao/";
 
 	public static String		MODEL_CLASSES					= JAVA_GEN_SRC_FOLDER
 			+ MODEL_DAO_PACKAGE_DIR;
@@ -152,11 +164,14 @@ public interface Configuration extends SystemConstants {
 	// ## Mybatis
 	public static int			DB_TIMEOUT						= 10000;
 
-	public static String		MYBATIS_CLASS_PREFIX			= "Ignite";
+	public static final String	TIMEZONE_OFFSET					= "-08:00";
+	public static final String	MYBATIS_COL_ENUM_FLAG			= "ENUM";
+	public String				ANNOTATAION_CLASS				= "io.starter.ignite.security.securefield.SecureField";
 
-	public static String		SQL_MAPS_PATH					= "io/starter/ignite/sqlmaps/";
+	public static String		MYBATIS_CLASS_POSTFIX			= "dao";
 
-	public static String		MYBATIS_MODEL_CLASSES			= MODEL_CLASSES;
+	public static String		SQL_MAPS_PATH					= "io/starter/"
+			+ ARTIFACT_ID + "/sqlmaps/";
 
 	public static final String	MYBATIS_GEN_CONFIG				= System
 			.getProperty("user.dir")
@@ -173,8 +188,6 @@ public interface Configuration extends SystemConstants {
 	public static final String	MYBATIS_CONFIG_OUT				= System
 			.getProperty("user.dir") + JAVA_GEN_FOLDER
 			+ "/src/main/resources/MyBatisConfig.xml";
-
-	public static final String	SCHEMA_NAME						= "ignite";
 
 	// ## React
 	public static String		REACT_APP_NAME					= (System
@@ -218,5 +231,10 @@ public interface Configuration extends SystemConstants {
 	public static String		WEB_JS_ROOT						= SOURCE_MAIN
 			+ "/webapp/js";
 	public static String		SPRING_DELEGATE					= "ApiDelegate";
+
+	public static String		IGNITE_GEN_MODEL_ENHANCEMENTS	= "igniteGenerateModelEnhancements";
+	public static String		IGNITE_GEN_MODEL_CRUD_OPS		= "igniteGenerateCRUDOps";
+
+	public static String		IGNITE_GEN_REST_PATH_PREFIX		= "data/";
 
 }

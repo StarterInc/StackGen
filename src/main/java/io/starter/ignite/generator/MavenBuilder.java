@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author John McMahon (@TechnoCharms) mcmahon
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class MavenBuilder implements Configuration {
@@ -38,7 +38,10 @@ public class MavenBuilder implements Configuration {
 		// TODO: use spring-boot
 		try {
 			cli.doMain(new String[] { "clean",
-					"install" }, JAVA_GEN_PATH, System.out, System.out);
+					"install" }, JAVA_GEN_PATH, System.out, System.err);
+			logger.debug("========= END MavenBuilder =========");
+			cli.doMain(new String[] { "clean", "install",
+					"spring-boot:run" }, JAVA_GEN_PATH, System.out, System.err);
 			logger.debug("========= END MavenBuilder =========");
 		} catch (Exception e) {
 			logger.debug("Could not build: " + e);

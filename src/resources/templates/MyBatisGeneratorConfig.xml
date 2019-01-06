@@ -18,7 +18,7 @@
 
 		<!-- Model Class -->
 		<javaModelGenerator
-			targetPackage="io.starter.ignite.model.dao"
+			targetPackage="io.starter.${ARTIFACT_ID}.model.dao"
 
 			targetProject="${MYBATIS_MAIN}main/java">
 			<property name="enableSubPackages" value="false" />
@@ -30,13 +30,13 @@
 			<property name="addRemarkComments" value="true" />
 		</javaModelGenerator>
 
-		<sqlMapGenerator targetPackage="io.starter.ignite.sqlmaps"
+		<sqlMapGenerator targetPackage="io.starter.${ARTIFACT_ID}.sqlmaps"
 			targetProject="${MYBATIS_MAIN}main/resources" />
 		<javaClientGenerator
-			targetPackage="io.starter.ignite.model.dao"
+			targetPackage="io.starter.${ARTIFACT_ID}.model.dao"
 			targetProject="${MYBATIS_MAIN}main/java" type="XMLMAPPER" />
 
-		<table schema="ignite" tableName="PLACEHOLDER_NODE" />
+		<table schema="${ARTIFACT_ID}" tableName="PLACEHOLDER_NODE" />
 		
 
 	</context>

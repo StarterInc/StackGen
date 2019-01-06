@@ -126,7 +126,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-embedder</artifactId>
-			<version>3.6.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -134,18 +134,25 @@
 			<version>3.6.0</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.sonatype.aether/aether-connector-wagon -->
+		<!-- https://mvnrepository.com/artifact/org.sonatype.aether/aether-connector-wagon 
 		<dependency>
 			<groupId>org.sonatype.aether</groupId>
 			<artifactId>aether-connector-wagon</artifactId>
 			<version>1.13.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-connector-wagon</artifactId>
+			<version>0.9.0.M2</version>
+		</dependency>
+-->
+
 		<!-- https://mvnrepository.com/artifact/org.apache.maven.wagon/wagon-http-lightweight -->
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
 			<artifactId>wagon-http-lightweight</artifactId>
-			<version>3.1.0</version>
+			<version>3.2.0</version>
 		</dependency>
 
 		<dependency>
@@ -283,7 +290,6 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -488,7 +494,7 @@
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-codegen</artifactId>
 			<version>${swaggergenerator.version}</version>
-			
+
 		</dependency>
 
 		<!-- TODO: setup artifactory... for now locally installed per: http://softwarecave.org/2014/06/14/adding-external-jars-into-maven-project/ 
@@ -747,7 +753,7 @@
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				 <version>3.8.0</version>
+				<version>3.8.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>

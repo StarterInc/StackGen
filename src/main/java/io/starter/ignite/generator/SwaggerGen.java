@@ -59,14 +59,14 @@ public class SwaggerGen implements Configuration {
 		// the JSON serialization library to use
 		// (ie: jersey2, resteasy, resttemplate)
 		configurator.setLibrary(SWAGGER_LIB);
+		configurator.setOutputDir(JAVA_GEN_PATH);
 
 		configurator.setArtifactId(ARTIFACT_ID);
-		configurator.setModelPackage(MODEL_PACKAGE);
-		configurator.setOutputDir(JAVA_GEN_PATH);
 		configurator.setApiPackage(API_PACKAGE);
+		configurator.setModelPackage(API_MODEL_PACKAGE);
+		configurator.setInvokerPackage(INVOKER_PACKAGE);
 
 		configurator.setArtifactVersion(ARTIFACT_VERSION);
-		configurator.setInvokerPackage(INVOKER_PACKAGE);
 		configurator.setVerbose(VERBOSE);
 		configurator.addDynamicProperty("dynamic-html", "true");
 		configurator.addDynamicProperty("dateLibrary", "java8");
@@ -78,19 +78,19 @@ public class SwaggerGen implements Configuration {
 				.addAdditionalProperty(Configuration.IGNITE_GEN_MODEL_ENHANCEMENTS, "true");
 
 		// company info
-		configurator.addDynamicProperty("developerName", "Starter Inc.");
+		configurator
+				.addDynamicProperty("developerName", "John McMahon @TechnoCharms");
 		configurator.addDynamicProperty("developerEmail", "info@starter.io");
-		configurator.addDynamicProperty("developerName", "Starter Inc.");
 		configurator
 				.addDynamicProperty("developerOrganization", "Starter Inc.");
 		configurator
-				.addDynamicProperty("developerOrganizationUrl", "https://starterinc.github.io/Ignite/");
+				.addDynamicProperty("developerOrganizationUrl", "http://ignite.starter.io/");
 
 		// SPRING props
 		configurator.addAdditionalProperty("java8", "true");
 		configurator.addAdditionalProperty("delegatePattern", "true");
 		configurator.addAdditionalProperty("asynch", "true");
-		configurator.addAdditionalProperty("USE_BEANVALIDATION", "true");
+		configurator.addAdditionalProperty("useBeanValidation", "true");
 		configurator
 				.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
 

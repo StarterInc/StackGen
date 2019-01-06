@@ -51,9 +51,10 @@ public class IgniteServlet implements Servlet {
 	}
 
 	@Override
-	public void service(ServletRequest arg0, ServletResponse arg1) throws ServletException, IOException {
+	public void service(ServletRequest arg0, ServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
+		PrintWriter out = response.getWriter();
+		out.println("<h1>" + message + "</h1>");
 	}
 
 }

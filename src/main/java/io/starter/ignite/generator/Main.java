@@ -189,7 +189,9 @@ public class Main implements Configuration {
 	 */
 	private static String[][] staticFiles = {
 			{ "/src/resources/templates/application.yml",
-					"/src/main/resources/application.yml" } };
+					"/src/main/resources/application.yml" },
+			{ "/logs/logfile_placeholder.txt",
+					"/logs/logfile_placeholder.txt" } };
 
 	private static void copyStaticFiles() {
 		File genDir = new File(JAVA_GEN_PATH);

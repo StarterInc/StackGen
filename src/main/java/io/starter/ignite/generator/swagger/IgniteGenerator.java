@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.starter.ignite.generator.Configuration;
 import io.starter.ignite.generator.SwaggerGen;
 import io.swagger.codegen.DefaultGenerator;
 import io.swagger.codegen.InlineModelResolver;
@@ -31,7 +32,7 @@ import io.swagger.models.properties.PropertyBuilder;
  * @author john
  *
  */
-public class IgniteGenerator extends DefaultGenerator {
+public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 	// Starter Enhancements
 	private Boolean				generateStarterCRUDOps				= true;
@@ -120,12 +121,13 @@ public class IgniteGenerator extends DefaultGenerator {
 				if (!"ApiResponse".equals(k)) { // handle reserved word case(s)
 					Path ops = addCrudOps(k, m);
 					if (ops != null) {
-						this.swagger.getPaths().put(path + "/{param}", ops);
+						this.swagger.getPaths().put(IGNITE_GEN_REST_PATH_PREFIX
+								+ path + "/{param}", ops);
 					}
 					Path opsl = addListOp(k, m);
 					if (opsl != null) {
-						this.swagger.getPaths()
-								.put(path + "/list/{param}", opsl);
+						this.swagger.getPaths().put(IGNITE_GEN_REST_PATH_PREFIX
+								+ path + "/list/{param}", opsl);
 					}
 				}
 			}

@@ -48,7 +48,7 @@ public class Table implements Configuration {
 		aMap.put("LocalDate", "DATE ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 		aMap.put("OffsetDateTime", "TIMESTAMP ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 		aMap.put("Integer.pkid", "'id' BIGINT(" + precision
-				+ ") SIGNED AUTO_INCREMENT," + "/r/n"
+				+ ") SIGNED AUTO_INCREMENT," + "Configuration.LINEFEED"
 				+ "PRIMARY KEY (`id`), COMMENT 'Ignite-generated Integer.pkid'");
 		aMap.put("pkid", "PRIMARY KEY (`ID`), UNIQUE INDEX `ID_UNIQUE` (`ID` ASC));");
 		myMap = Collections.unmodifiableMap(aMap);
@@ -56,7 +56,7 @@ public class Table implements Configuration {
 
 	public static String generateTableDropDML(String tableName) {
 		tableName = convertToDBSyntax(tableName);
-		return DROP_TABLE + " " + tableName + " \r\n";
+		return DROP_TABLE + " " + tableName + " Configuration.LINEFEED";
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class Table implements Configuration {
 	 */
 	public static String generateTableRenameDML(String tableName) {
 		tableName = convertToDBSyntax(tableName);
-		String dml = ALTER_TABLE + " " + tableName + " \r\n";
+		String dml = ALTER_TABLE + " " + tableName + " Configuration.LINEFEED";
 		dml += " RENAME TO " + RENAME_TABLE_SUFFIX + tableName + "_"
 				+ System.currentTimeMillis();
 		return dml;
@@ -77,7 +77,7 @@ public class Table implements Configuration {
 	public static String generateTableBeginningDML(String tableName) {
 		tableName = convertToDBSyntax(tableName);
 		return CREATE_TABLE + " " + tableName + CREATE_TABLE_BEGIN_BLOCK
-				+ " \r\n";
+				+ " Configuration.LINEFEED";
 	}
 
 	public static String convertToDBSyntax(String tableName) {

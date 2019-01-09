@@ -17,19 +17,19 @@ public class ASCIIArtPrinter {
 		StringBuffer ret = new StringBuffer();
 
 		ret.append(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
-		ret.append("\r\n");
+		ret.append("Configuration.LINEFEED");
 		ret.append(ln1);
-		ret.append("\r\n");
+		ret.append("Configuration.LINEFEED");
 		ret.append(ln2);
-		ret.append("\r\n");
+		ret.append("Configuration.LINEFEED");
 		ret.append(ln3);
-		ret.append("\r\n");
+		ret.append("Configuration.LINEFEED");
 		ret.append(ln4);
-		ret.append("\r\n");
+		ret.append("Configuration.LINEFEED");
 		ret.append(ln5);
-		ret.append("\r\n");
+		ret.append("Configuration.LINEFEED");
 		ret.append(ln6);
-		ret.append("\r\n");
+		ret.append("Configuration.LINEFEED");
 
 		ret.append("::::::::::::::::: Starter Ignite (v." + SystemConstants.IGNITE_MAJOR_VERSION + "."
 				+ SystemConstants.IGNITE_MINOR_VERSION + ") - http://starter.io/ignite :::::::::::::::::");

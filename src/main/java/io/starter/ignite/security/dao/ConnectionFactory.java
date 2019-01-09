@@ -48,9 +48,9 @@ public class ConnectionFactory {
 
 	public static String toConfigString() {
 		return "ConnectionFactory v." + SystemConstants.IGNITE_MAJOR_VERSION
-				+ "." + SystemConstants.IGNITE_MINOR_VERSION + " \r\n"
-				+ "Settings:" + "\r\n" + "=========" + "\r\n" + driverName
-				+ "\r\n" + sourceURL + "\r\n" + dbName + "\r\n" + userName;
+				+ "." + SystemConstants.IGNITE_MINOR_VERSION + " Configuration.LINEFEED"
+				+ "Settings:" + "Configuration.LINEFEED" + "=========" + "Configuration.LINEFEED" + driverName
+				+ "Configuration.LINEFEED" + sourceURL + "Configuration.LINEFEED" + dbName + "Configuration.LINEFEED" + userName;
 	}
 
 	/**

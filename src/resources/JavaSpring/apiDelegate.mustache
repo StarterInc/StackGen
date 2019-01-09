@@ -79,7 +79,9 @@ public interface {{classname}}Delegate {
     public String toJSON();
     
     public void setBean(Object o);
-
+    
+    public Object getBean();
+    
     public List<{{classname}}Delegate> list();
     
     public {{classname}}Delegate load();
@@ -119,6 +121,14 @@ public interface {{classname}}Delegate {
 						}
 					} else {
 						// handle return from delete
+						if(ret instanceof Integer){
+							if ((Integer) ret > 0) {
+								return new ResponseEntity<>(HttpStatus.OK);
+							}else{
+								return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+							}
+						}
+						
 						if(ret instanceof Long){
 							if ((Long) ret > 0) {
 								return new ResponseEntity<>(HttpStatus.OK);
@@ -126,7 +136,10 @@ public interface {{classname}}Delegate {
 								return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 							}
 						}
-						return new ResponseEntity<>(HttpStatus.OK);
+						
+						// returns single result
+						JSONObject job = new JSONObject((({{classname}}Delegate)ret).getBean());
+						return new ResponseEntity<>(getObjectMapper().readValue(job.toString(), {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED);
 					}
 				} else {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -163,6 +176,10 @@ public interface {{classname}}Delegate {
 	* Handle calling the data method on the Starter Ignite Delegate
 	*/
 	default Object callMethod(String string, Object... args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		if ("update".equals(string) && args.length == 2) {
+			this.setBean(args[1]);
+		}
 
 		// hande id
 		try {

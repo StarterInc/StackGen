@@ -246,5 +246,6 @@ public interface Configuration extends SystemConstants {
 	public static String		IGNITE_GEN_MODEL_CRUD_OPS		= "igniteGenerateCRUDOps";
 
 	public static String		IGNITE_GEN_REST_PATH_PREFIX		= "data/";
+	public static String		LINEFEED						= "\r\n";
 
 }

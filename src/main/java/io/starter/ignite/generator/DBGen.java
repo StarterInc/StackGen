@@ -216,17 +216,17 @@ public class DBGen extends Gen implements Generator {
 			String colName = o.toString();
 			colName = colName.substring(0, colName.indexOf(" "));
 			if (colName.equalsIgnoreCase("id")) {
-				extraColumnDML += "\r\n" + Table.myMap.get("pkid");
+				extraColumnDML += "Configuration.LINEFEED" + Table.myMap.get("pkid");
 			}
 			tableDML += ",";
-			tableDML += "\r\n";
+			tableDML += "Configuration.LINEFEED";
 		}
 
 		// indexes
 		tableDML += extraColumnDML;
 		if (!isEmpty) {
 			tableDML = tableDML.substring(0, tableDML.lastIndexOf(","));
-			tableDML += "\r\n";
+			tableDML += "Configuration.LINEFEED";
 		} else {
 			return;
 		}
@@ -243,7 +243,7 @@ public class DBGen extends Gen implements Generator {
 		// log the DML for troubleshooting
 		if (Configuration.DEBUG) {
 			FileUtils.writeStringToFile(new File("IgniteDML.sql"), tableDML
-					+ "/r/n", true);
+					+ "Configuration.LINEFEED", true);
 		}
 
 		try {
@@ -271,7 +271,7 @@ public class DBGen extends Gen implements Generator {
 				}
 			} else {
 				logger.warn("Failed to execute DML for: " + className + " -- "
-						+ ConnectionFactory.toConfigString() + "\r\n"
+						+ ConnectionFactory.toConfigString() + "Configuration.LINEFEED"
 						+ e.getMessage());
 			}
 		}

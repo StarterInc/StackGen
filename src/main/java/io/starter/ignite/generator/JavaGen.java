@@ -87,11 +87,12 @@ public class JavaGen extends Gen implements Generator {
 		try {
 			final MethodSpec ret = MethodSpec.methodBuilder(fldName)
 					.addJavadoc("Starter Ignite Generated Method: "
-							+ DATE_FORMAT.format(new Date()) + "/r/n" + "/r/n"
+							+ DATE_FORMAT.format(new Date())
+							+ Configuration.LINEFEED + Configuration.LINEFEED
 							+ "@see "
 							+ fld.getDeclaringClass().getSuperclass().getName()
-							+ "/r/n" + "/r/n" + "@return the value of: "
-							+ fieldName)
+							+ Configuration.LINEFEED + Configuration.LINEFEED
+							+ "@return the value of: " + fieldName)
 					.addModifiers(Modifier.PUBLIC).returns(fieldType)
 					.addStatement("return " + memberName + "." + fieldName)
 					.build();
@@ -235,9 +236,6 @@ public class JavaGen extends Gen implements Generator {
 
 	/**
 	 * create setBean method
-	 * 
-	 * @param className
-	 * @return
 	 */
 	public MethodSpec createSetBean(String className) {
 
@@ -251,6 +249,27 @@ public class JavaGen extends Gen implements Generator {
 					.addParameter(Object.class, "bx").build();
 		} catch (final Exception e) {
 			logger.error("ERROR creating setBean method for: " + className + " "
+					+ e.toString());
+		}
+		return null;
+	}
+
+	/**
+	 * create getBean method
+	 * 
+	 */
+	public MethodSpec createGetBean(String className) {
+
+		String bname = getBaseJavaName(className);
+		String methodText = "return " + bname + "Bean";
+		try {
+			return MethodSpec.methodBuilder("getBean")
+					.addJavadoc("Starter Ignite Generated Method: "
+							+ DATE_FORMAT.format(new Date()))
+					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
+					.returns(ClassName.get("java.lang", "Object")).build();
+		} catch (final Exception e) {
+			logger.error("ERROR creating getBean method for: " + className + " "
 					+ e.toString());
 		}
 		return null;
@@ -323,7 +342,8 @@ public class JavaGen extends Gen implements Generator {
 
 	/**
 	 * create MyBatis load method
-	 * 
+	 *         		final io.starter.ignite.model.dao.StarterUser ret = session
+	    				.selectOne("io.starter.ignite.model.dao.StarterUserMapper.selectByPrimaryKey", getId());
 	 * @param className
 	 * @return
 	 */
@@ -331,18 +351,21 @@ public class JavaGen extends Gen implements Generator {
 		String mapperName = getMyBatisName(className);
 		String methodText = "		final org.apache.ibatis.session.SqlSession session = sqlSessionFactory\n"
 				+ "				.openSession(true);\n" + "\n" + "		"
-				+ mapperName + "Example example = new " + mapperName
-				+ "Example();\n" + "		" + mapperName
-				+ "Example.Criteria cx = example\n"
-				+ "				.createCriteria();\n"
-				+ "		cx.andIdEqualTo(getId());\n" + "\n" + "		final "
+
+				// TODO: open up to non-id search values
+				// + mapperName + "Example example = new " + mapperName
+				// + "Example();\n" + " " + mapperName
+				// + "Example.Criteria cx = example\n"
+				// + " .createCriteria();\n"
+				// + " cx.andIdEqualTo(getId());\n" + "\n" + " final "
+
 				+ mapperName + " ret = session\n"
 				+ "				.selectOne(\"" + mapperName
-				+ "Mapper.selectByExample\", example);\n" + "\n"
+				+ "Mapper.selectByPrimaryKey\", getId());\n" + "\n"
 				+ "if(ret!=null){ " + "\n" + "this."
 				+ getBaseJavaName(className) + "Bean = ret.delegate;} else {\n"
-				+ "\n" + " System.err.println(\"no results searching "
-				+ className + " field for : \"+getId());" + "\n" + "}" + "\n"
+				+ "\n" + " log.error(\"no results searching " + className
+				+ " field for : \"+getId());" + "\n" + "}" + "\n"
 				+ "		session.close();\n" + "		return this";
 
 		try {
@@ -378,7 +401,7 @@ public class JavaGen extends Gen implements Generator {
 				+ "		session.commit();\n" + "		session.close();\n"
 				+ "} catch (Exception e) {\n"
 				+ "			log.error(\"Could not run UPDATE: \" + e.toString());\n"
-				+ "}" + "\r\n" + "		return rows";
+				+ "}" + Configuration.LINEFEED + "		return rows";
 
 		try {
 			return MethodSpec.methodBuilder("update")
@@ -488,6 +511,7 @@ public class JavaGen extends Gen implements Generator {
 			methodList.add(createGetObjectMapper(className));
 			methodList.add(createGetAcceptHeader(className));
 			methodList.add(createSetBean(className));
+			methodList.add(createGetBean(className));
 			methodList.add(createList(className));
 			methodList.add(createLoad(className));
 			methodList.add(createInsert(className));

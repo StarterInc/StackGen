@@ -24,8 +24,7 @@ public class IgniteServlet implements Servlet, Configuration {
 	protected static final Logger	logger			= LoggerFactory
 			.getLogger(IgniteServlet.class);
 
-	String							inputSpecFile	= SPEC_LOCATION
-			+ "trade_automator.yml",
+	String							inputSpecFile	= "trade_automator.yml",
 
 			pluginSpecFile1 = PLUGIN_SPEC_LOCATION + "ignite/eStore.yml",
 

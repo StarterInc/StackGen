@@ -36,7 +36,7 @@ import io.starter.ignite.util.ASCIIArtPrinter;
 
 public class Main implements Configuration {
 
-	private static boolean			skipDBGen				= false;
+	private static boolean			skipDBGen				= !false;
 	private static boolean			skipMybatis				= false;
 	private static boolean			skipBuildGeneratedApp	= true;
 
@@ -225,6 +225,8 @@ public class Main implements Configuration {
 	private static String[][] staticFiles = {
 			{ "/src/resources/templates/application.yml",
 					"/src/main/resources/application.yml" },
+			{ "/src/resources/templates/log4j.properties",
+					"/src/main/resources/log4j.properties" },
 			{ "/logs/logfile_placeholder.txt",
 					"/logs/logfile_placeholder.txt" },
 			{ "/src/main/java/io/starter/spring/boot/starter-ignite-banner.txt",

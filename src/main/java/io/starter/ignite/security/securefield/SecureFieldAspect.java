@@ -28,7 +28,7 @@ public class SecureFieldAspect implements Configuration {
 	public Object getSecureField(ProceedingJoinPoint pjp) throws Throwable {
 
 		if (DISABLE_SECURE_FIELD_ASPECT) {
-			logger.debug("SKIPPING SECURE FIELD GETTER");
+			logger.info("SKIPPING SECURE FIELD GETTER");
 			return pjp.proceed();
 		}
 
@@ -40,7 +40,7 @@ public class SecureFieldAspect implements Configuration {
 			return pjp.proceed(pjp.getArgs());
 		}
 
-		logger.debug("Get Secure Field for: " + pjp.toLongString());
+		logger.info("Get Secure Field for: " + pjp.toLongString());
 		Object targetObject = pjp.getTarget();
 		String secureFieldName = pjp.getSignature().getName();
 		Field secureField = targetObject.getClass()
@@ -52,7 +52,7 @@ public class SecureFieldAspect implements Configuration {
 		if (secureField.getType().equals(String.class)) {
 			return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
 		} else {
-			logger.debug("SecureFieldAspect only currently supports decrypting Text values: "
+			logger.info("SecureFieldAspect only currently supports decrypting Text values: "
 					+ pjp);
 			return pjp.proceed();
 		}
@@ -62,7 +62,7 @@ public class SecureFieldAspect implements Configuration {
 	public Object setSecureField(ProceedingJoinPoint pjp) throws Throwable {
 
 		if (DISABLE_SECURE_FIELD_ASPECT) {
-			logger.debug("SKIPPING SECURE FIELD SETTER");
+			logger.info("SKIPPING SECURE FIELD SETTER");
 			return pjp.proceed();
 		}
 		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
@@ -72,7 +72,7 @@ public class SecureFieldAspect implements Configuration {
 		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
 			return pjp.proceed(pjp.getArgs());
 		}
-		logger.debug("Set Secure Field for: " + pjp.toLongString());
+		logger.info("Set Secure Field for: " + pjp.toLongString());
 		String clearTextValue = String.valueOf(pjp.getArgs()[0]);
 		String encryptedValue = SecureEncrypter.encrypt(clearTextValue);
 		Object targetObject = pjp.getTarget();
@@ -86,7 +86,7 @@ public class SecureFieldAspect implements Configuration {
 			secureField.set(targetObject, encryptedValue);
 			secureField.setAccessible(access);
 		} else {
-			logger.debug("SecureFieldAspect only currently supports encrypting Text values: "
+			logger.info("SecureFieldAspect only currently supports encrypting Text values: "
 					+ pjp);
 			return pjp.proceed();
 		}

@@ -2,6 +2,7 @@ package io.starter.ignite.generator;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import org.codehaus.plexus.util.FileUtils;
@@ -11,8 +12,12 @@ import org.slf4j.LoggerFactory;
 import io.starter.ignite.util.ASCIIArtPrinter;
 
 /**
- * generate an app from swagger YAML
+ * <h2>Generates an app from a Swagger Spec</h2>
  *
+ * Features the ability to merge spec files from a templates 
+ * directory as well as auto-creation of CRUD methods hooked 
+ * up to Ignite Data Objects.
+ * 	
  * <pre>
  *   - YAML -> Swagger client
  *   - Swagger Client -> entity classes
@@ -20,19 +25,25 @@ import io.starter.ignite.util.ASCIIArtPrinter;
  *   - Swagger CLient -> React-native JS screens
  * </pre>
  * 
- * @author John McMahon (@TechnoCharms) mcmahon
+ * <h2>NOTE: Generate a SecureField key</h2>
+ *<pre>
+ *	java io.starter.ignite.generator.Main -Dio.starter.generateKey=<secretkey> -jar StarterIgnite-1.0.1.jar
+ *</pre>
+ *
+ * @author John McMahon (@TechnoCharms)
  *
  */
 
 public class Main implements Configuration {
 
-	private static boolean			skipDBGen	= false;
-	private static boolean			skipMybatis	= false;
+	private static boolean			skipDBGen				= false;
+	private static boolean			skipMybatis				= false;
+	private static boolean			skipBuildGeneratedApp	= true;
 
-	protected static final Logger	logger		= LoggerFactory
+	protected static final Logger	logger					= LoggerFactory
 			.getLogger(Main.class);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		String inputSpecFile = "trade_automator.yml"; // "chainring_api_v1.yml";
 														// // "simple_cms.yml";
@@ -40,7 +51,7 @@ public class Main implements Configuration {
 
 		// check to see if the String array is empty
 		if (args == null || args.length == 0) {
-			logger.debug("No command line arguments Usage:");
+			logger.info("No command line arguments Usage:");
 			System.out.println();
 			System.out
 					.println("java io.starter.ignite.generator.Main <input.yml> -D<option_name>=<option_value> ... ");
@@ -62,12 +73,34 @@ public class Main implements Configuration {
 			}
 		}
 
+		if (System.getProperty("io.starter.generateKey") != null) {
+			if (args.length == 2) {
+				System.out.println("--- Begin Generated Key ---");
+				System.out.println(generateEncryptionKey(args[1]));
+				System.out.println("-- End Generated Key ---");
+			} else {
+				System.out.println("Usage:");
+				System.out
+						.println("java io.starter.ignite.generator.Main -Dio.starter.generateKey=<secretkey> -jar StarterIgnite-1.0.1.jar");
+			}
+			return;
+		}
+		logger.info("with: " + inputSpecFile
+				+ (args != null ? " and args: " + args.toString() : ""));
+
+		generateApp(inputSpecFile);
+	}
+
+	/**
+	 * Step by step process to create Ignite app from spec file
+	 * 
+	 * @param inputSpecFile
+	 */
+	public static void generateApp(String inputSpecFile) {
 		System.out.println(ASCIIArtPrinter.print());
 		System.out.println();
-		logger.debug("Starting App Generation");
+		logger.info("Starting App Generation");
 
-		logger.debug("with: " + inputSpecFile
-				+ (args != null ? " and args: " + args.toString() : ""));
 		try {
 
 			// Clear out the gen and
@@ -88,9 +121,9 @@ public class Main implements Configuration {
 			logger.info("####### SWAGGER Generated: "
 					+ swaggerGen.generate().size() + " Source Files");
 
+			JavaGen.compile(PACKAGE_DIR);
 			JavaGen.compile(API_PACKAGE_DIR);
-			JavaGen.compile(MODEL_DAO_PACKAGE_DIR);
-			// JavaGen.compile(MODEL_PACKAGE_DIR);
+			JavaGen.compile(MODEL_PACKAGE_DIR);
 
 			if (!skipDBGen) {
 				// generate corresponding DML
@@ -99,20 +132,14 @@ public class Main implements Configuration {
 				DBGen.createDatabaseTablesFromModelFolder();
 			}
 
-			// generate MyBatis client classes
-			// XML configuration file
+			// generate MyBatis client classes XML configuration file
 			if (!skipMybatis) {
 				MyBatisGen.createMyBatisFromModelFolder();
 			}
 
 			// compile the DataOgbject Classes
-			JavaGen.compile(MODEL_DAO_PACKAGE_DIR);
+			JavaGen.compile(PACKAGE_DIR);
 
-			// annotated wrapper with encryption,
-			// logging, annotations
-			// JavaGen.compile(MODEL_PACKAGE_DIR);
-
-			// create wrapper classes which
 			// delegates calls to/from api to the mybatis entity
 			JavaGen.generateClassesFromModelFolder();
 
@@ -120,19 +147,27 @@ public class Main implements Configuration {
 			copyStaticFiles();
 
 			// package the microservice for deployment
-			MavenBuilder.build();
+			if (!skipBuildGeneratedApp) {
+				MavenBuilder.build();
+			}
 
-			// TODO: insert dynamkc generators ie: generate React Redux
-			// apps
-			// if (!skipReactGen) {
-			// ReactGen.generateReactNative();
-			// }
-
-			logger.debug("App Generation Complete.");
+			logger.info("App Generation Complete.");
 		} catch (Exception e) {
 			logger.error("Exception during App Generation: " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * generates an encryption key suitable for use by the SecureField encryption algorithm
+	 * 
+	 * @param salt
+	 * @return
+	 * @throws NoSuchAlgorithmException 
+	 * @see io.starter.ignite.security.securefield.SecureField
+	 */
+	public static String generateEncryptionKey(String salt) throws NoSuchAlgorithmException {
+		return io.starter.ignite.security.crypto.EncryptionUtil.generateKey();
 	}
 
 	/**
@@ -191,7 +226,9 @@ public class Main implements Configuration {
 			{ "/src/resources/templates/application.yml",
 					"/src/main/resources/application.yml" },
 			{ "/logs/logfile_placeholder.txt",
-					"/logs/logfile_placeholder.txt" } };
+					"/logs/logfile_placeholder.txt" },
+			{ "/src/main/java/io/starter/spring/boot/starter-ignite-banner.txt",
+					"/src/main/java/io/starter/spring/boot/starter-ignite-banner.txt" } };
 
 	private static void copyStaticFiles() {
 		File genDir = new File(JAVA_GEN_PATH);
@@ -204,6 +241,11 @@ public class Main implements Configuration {
 				if (fromF.exists()) {
 					logger.info("Copying static file : " + fromF + " to: "
 							+ toF);
+
+					if (!toF.exists()) { // prep dest folder
+						toF.mkdirs();
+						toF.delete();
+					}
 					try {
 						FileUtils.copyFile(fromF, toF);
 					} catch (Exception e) {

@@ -59,7 +59,7 @@ public interface Configuration extends SystemConstants {
 	public static final String	SCHEMA_NAME						= (System
 			.getProperty("SCHEMA_NAME") != null
 					? System.getProperty("SCHEMA_NAME")
-					: "ignite");
+					: "ignite").toLowerCase();
 
 	public static String		TABLE_NAME_PREFIX				= SCHEMA_NAME
 			+ "$";
@@ -121,13 +121,16 @@ public interface Configuration extends SystemConstants {
 			+ ARTIFACT_ID;
 
 	public static String		IGNITE_MODEL_PACKAGE			= ORG_PACKAGE
-			+ ".model.dao";
+			+ ".model";
 
 	public static String		API_MODEL_PACKAGE				= ORG_PACKAGE
-			+ ".api";
+			+ ".model";
 
 	public static String		SPEC_LOCATION					= ROOT_FOLDER
 			+ SOURCE_RESOURCES + "/openapi_specs/";
+
+	public static String		PLUGIN_SPEC_LOCATION			= SPEC_LOCATION
+			+ "plugins/";
 
 	public static String		CONFIG_FILE						= ROOT_FOLDER
 			+ SOURCE_RESOURCES + "/swagger_config.json";
@@ -136,7 +139,10 @@ public interface Configuration extends SystemConstants {
 			+ ".api";
 
 	public static String		MODEL_PACKAGE					= ORG_PACKAGE
-			+ ".model.dao";
+			+ ".model";
+
+	public static String		MODEL_DAO_PACKAGE				= MODEL_PACKAGE
+			+ ".dao";
 
 	public static String		INVOKER_PACKAGE					= ORG_PACKAGE
 			+ ".invoker";
@@ -146,16 +152,22 @@ public interface Configuration extends SystemConstants {
 	static SimpleDateFormat		DATE_FORMAT						= new SimpleDateFormat(
 			LONG_DATE_FORMAT);
 
-	public static String		MODEL_PACKAGE_DIR				= "/io/starter/"
-			+ ARTIFACT_ID + "/model/";
+	public static String		PACKAGE_DIR						= "/io/starter/"
+			+ ARTIFACT_ID;
 
-	public static String		API_PACKAGE_DIR					= "/io/starter/"
-			+ ARTIFACT_ID + "/api/";
+	public static String		MODEL_PACKAGE_DIR				= PACKAGE_DIR
+			+ "/model/";
 
-	public static String		MODEL_DAO_PACKAGE_DIR			= "/io/starter/"
-			+ ARTIFACT_ID + "/model/dao/";
+	public static String		API_PACKAGE_DIR					= PACKAGE_DIR
+			+ "/api/";
+
+	public static String		MODEL_DAO_PACKAGE_DIR			= PACKAGE_DIR
+			+ "/model/dao/";
 
 	public static String		MODEL_CLASSES					= JAVA_GEN_SRC_FOLDER
+			+ MODEL_PACKAGE_DIR;
+
+	public static String		MODEL_DAO_CLASSES				= JAVA_GEN_SRC_FOLDER
 			+ MODEL_DAO_PACKAGE_DIR;
 
 	public static String		API_CLASSES						= JAVA_GEN_SRC_FOLDER
@@ -167,8 +179,6 @@ public interface Configuration extends SystemConstants {
 	public static final String	TIMEZONE_OFFSET					= "-08:00";
 	public static final String	MYBATIS_COL_ENUM_FLAG			= "ENUM";
 	public String				ANNOTATAION_CLASS				= "io.starter.ignite.security.securefield.SecureField";
-
-	public static String		MYBATIS_CLASS_POSTFIX			= "dao";
 
 	public static String		SQL_MAPS_PATH					= "io/starter/"
 			+ ARTIFACT_ID + "/sqlmaps/";
@@ -196,7 +206,7 @@ public interface Configuration extends SystemConstants {
 					: "MyLittlePony");
 
 	public static String		REACT_TEMPLATE_APP_FOLDER		= ROOT_FOLDER
-			+ SOURCE_MAIN + "/react/IgniteApp/";
+			+ SOURCE_MAIN + "/react/" + ARTIFACT_ID + "App/";
 
 	public static String		REACT_TEMPLATE_FOLDER			= (System
 			.getProperty("REACT_TEMPLATE_FOLDER") != null

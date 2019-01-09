@@ -118,24 +118,24 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 				// Path existing =
 				// this.swagger.getPaths().get(path.toLowerCase());
 
+				// IGNITE_GEN_REST_PATH_PREFIX
+
 				if (!"ApiResponse".equals(k)) { // handle reserved word case(s)
 					Path ops = addCrudOps(k, m);
 					if (ops != null) {
-						this.swagger.getPaths().put(IGNITE_GEN_REST_PATH_PREFIX
-								+ path + "/{param}", ops);
+						this.swagger.getPaths().put(path + "/", ops);
 					}
 					Path opsl = addListOp(k, m);
 					if (opsl != null) {
-						this.swagger.getPaths().put(IGNITE_GEN_REST_PATH_PREFIX
-								+ path + "/list/{param}", opsl);
+						this.swagger.getPaths().put(path + "/list/", opsl);
 					}
 				}
 			}
 		}
-		// for (String f : priorPaths.keySet()) {
-		// Path px = priorPaths.get(f);
-		// this.swagger.getPaths().put("logic/" + f, px);
-		// }
+		for (String f : priorPaths.keySet()) {
+			Path px = priorPaths.get(f);
+			// this.swagger.getPaths().put(f, px);
+		}
 	}
 
 	/**

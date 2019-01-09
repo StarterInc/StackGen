@@ -63,7 +63,7 @@ public class Gen implements Configuration {
 		if (results.get(className) != null) // skip dupes
 			return null;
 
-		logger.debug("Crawling Class Heirarchy for Root Class: " + packageName
+		logger.info("Crawling Class Heirarchy for Root Class: " + packageName
 				+ "." + className);
 
 		results.put(className, ob);
@@ -86,7 +86,7 @@ public class Gen implements Configuration {
 
 			// Uses the appropriate adapter:
 			if (!f.getName().startsWith("ajc$")) { // skip aspects
-				logger.debug(this.toString() + " generating Field : "
+				logger.info(this.toString() + " generating Field : "
 						+ f.getName() + " Type: " + f.getType());
 
 				Object fldObj = impl.createMember(f);
@@ -111,13 +111,13 @@ public class Gen implements Configuration {
 	}
 
 	public static String[] getModelFileNames() {
-		File modelDir = new File(Configuration.MODEL_CLASSES);
+		File modelDir = new File(MODEL_CLASSES);
 		String[] modelFiles = modelDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				if (name.contains("Example"))
 					return false;
-				if (name.contains(MYBATIS_CLASS_POSTFIX))
+				if (name.toLowerCase().contains(SCHEMA_NAME))
 					return false;
 				if (name.contains("Mapper"))
 					return false;
@@ -129,7 +129,9 @@ public class Gen implements Configuration {
 
 		if (modelFiles != null && modelFiles.length < 1) {
 			throw new IllegalStateException(
-					"JavaGen Failure: no model classfiles found. Check the MYBATIS_MODEL_CLASSES value.");
+					"JavaGen Failure: no model classfiles found: "
+							+ MODEL_CLASSES
+							+ ". Check the MODEL_CLASSES value.");
 		}
 		return modelFiles;
 	}
@@ -140,29 +142,35 @@ public class Gen implements Configuration {
 
 		if (!modelDir.exists()) {
 			throw new IllegalStateException(
-					"getJavaFiles Failure: patch " + path + " does not exist.");
+					"getJavaFiles Failure: no path here " + path);
 		}
 		File[] modelFiles = modelDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				if (name.contains("Example"))
-					return false;
-				if (name.contains(MYBATIS_CLASS_POSTFIX))
-					return false;
-				if (name.contains("Mapper"))
-					return false;
-				if (name.contains(ADD_GEN_CLASS_NAME))
-					return false;
-				return name.toLowerCase().endsWith(".java");
+				if (new File(dir.getPath() + "/" + name).isDirectory()
+						|| name.toLowerCase().endsWith(".java"))
+					return true;
+				return false;
 			}
 		});
 
-		if ((modelFiles != null && modelFiles.length < 1)
-				|| (modelFiles == null)) {
-			throw new IllegalStateException(
-					"getJavaFiles Failure: no java files found in " + path);
+		List<File> folderFiles = new ArrayList<File>();
+		for (File fx : modelFiles) {
+			if (fx.isDirectory()) {
+				File[] subdirFiles = getJavaFiles(fx.getAbsolutePath());
+				folderFiles.addAll(Arrays.asList(subdirFiles));
+			} else {
+				folderFiles.add(fx);
+			}
 		}
-		return modelFiles;
+
+		Object[] ob = folderFiles.toArray();
+		File[] fret = new File[ob.length];
+		int i = 0;
+		for (Object ft : ob)
+			fret[i++] = (File) ft;
+
+		return fret;
 	}
 
 	static File[] getSourceFilesInFolder(File f, List<String> skipList) {

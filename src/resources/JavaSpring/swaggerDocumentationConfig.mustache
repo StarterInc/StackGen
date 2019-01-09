@@ -5,6 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +25,27 @@ import java.util.Optional;
 
 {{>generatedAnnotation}}
 @Configuration
-public class SwaggerDocumentationConfig {
+public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
+
+	private final String adminContextPath = "";
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		// @formatter:off
+        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        successHandler.setTargetUrlParameter("redirectTo");
+
+        http.authorizeRequests()
+            .antMatchers(adminContextPath + "/**").permitAll()
+            .antMatchers(adminContextPath + "/login").permitAll()
+            .anyRequest().authenticated()
+            .and()
+        .formLogin().loginPage(adminContextPath + "/login").successHandler(successHandler).and()
+        .logout().logoutUrl(adminContextPath + "/logout").and()
+        .httpBasic().and()
+        .csrf().disable();
+        // @formatter:on
+	}
 
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()

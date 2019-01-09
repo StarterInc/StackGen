@@ -38,7 +38,7 @@ public class MyBatisConnectionFactory {
 		}
 
 		try {
-			logger.debug("MyBatisConnectionFactory loading: "
+			logger.info("MyBatisConnectionFactory loading: "
 					+ DATABASE_CHOICE);
 
 			String resource = MYBATIS_CONFIG_FILE;

@@ -36,10 +36,10 @@ public class DBGen extends Gen implements Generator {
 	protected static final Logger logger = LoggerFactory.getLogger(DBGen.class);
 
 	public void init() throws SQLException, IOException {
-		logger.debug("Generating DB...");
-		logger.debug("Create DB Connection...");
+		logger.info("Generating DB...");
+		logger.info("Create DB Connection...");
 		Connection conn = ConnectionFactory.getConnection();
-		logger.debug((conn.isValid(DB_TIMEOUT) ? "OK!" : "FAILED!"));
+		logger.info((conn.isValid(DB_TIMEOUT) ? "OK!" : "FAILED!"));
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class DBGen extends Gen implements Generator {
 			dml = Table.myMap.get("String");
 		} else if (dml == null) {
 			// TODO: handle complex data types
-			logger.debug("Could not map: " + f.getType().getName()
+			logger.info("Could not map: " + f.getType().getName()
 					+ " of coltype: " + colTypeName + " to a Database Column");
 			return null;
 		}
@@ -139,7 +139,7 @@ public class DBGen extends Gen implements Generator {
 		} catch (NoSuchMethodException nsme) {
 			// normal, no getter
 		} catch (SecurityException e) {
-			logger.debug("Problem processing Annotation on: " + f.getName()
+			logger.info("Problem processing Annotation on: " + f.getName()
 					+ " " + e.toString());
 			e.printStackTrace();
 		}
@@ -158,19 +158,19 @@ public class DBGen extends Gen implements Generator {
 			maxVal = anno.maxValue();
 		}
 
-		logger.debug(" notes: " + notes);
+		logger.info(" notes: " + notes);
 		if (notes != null && !"".equals(notes)) {
 			notes = "COMMENT '" + notes + "'";
 		}
 		dml = dml.replace("${COMMENT}", notes);
 
-		logger.debug(" nullable: " + nullable);
+		logger.info(" nullable: " + nullable);
 		dml = dml.replace("${NOT_NULL}", (nullable ? "" : "NOT NULL"));
 
-		logger.debug(" charset: " + charset);
+		logger.info(" charset: " + charset);
 		dml = dml.replace("${CHAR_SET}", charset);
 
-		logger.debug(" defaultVal: " + defaultval);
+		logger.info(" defaultVal: " + defaultval);
 		dml = dml.replace("${DEFAULT}", defaultval);
 
 		// TODO: implement a smarter way to handle crypto expansion
@@ -254,7 +254,7 @@ public class DBGen extends Gen implements Generator {
 		} catch (Exception e) {
 			if (e.toString().contains("already exists")
 					&& DROP_EXISTING_TABLES) {
-				logger.debug("Table for: " + className + " already exists.");
+				logger.info("Table for: " + className + " already exists.");
 				if (!triedList.contains(className) && DROP_EXISTING_TABLES) {
 
 					if (renameTable(className, triedList)) {
@@ -286,7 +286,7 @@ public class DBGen extends Gen implements Generator {
 	}
 
 	private boolean renameTable(String className, List<String> triedList) throws SQLException {
-		logger.debug("RENAMING TABLE: " + className);
+		logger.info("RENAMING TABLE: " + className);
 
 		triedList.add(className);
 
@@ -310,22 +310,22 @@ public class DBGen extends Gen implements Generator {
 	}
 
 	static void createDatabaseTablesFromModelFolder() throws Exception {
-		logger.debug("Iterate Swagger Entities and create Tables...");
+		logger.info("Iterate Swagger Entities and create Tables...");
 		File[] modelFiles = Gen
-				.getJavaFiles(JAVA_GEN_SRC_FOLDER + MODEL_DAO_PACKAGE_DIR);
+				.getJavaFiles(JAVA_GEN_SRC_FOLDER + MODEL_PACKAGE_DIR);
 		DBGen gen = new DBGen();
 		// classes, this should point to the top of the package
 		// structure!
 		URL packagedir = new File(JAVA_GEN_SRC_FOLDER).toURI().toURL();
 		URLClassLoader classLoader = new URLClassLoader(
 				new URL[] { packagedir });
-		logger.debug("Created Classloader: " + classLoader);
+		logger.info("Created Classloader: " + classLoader);
 
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));
 			// cn = cn + ".class";
-			cn = MODEL_PACKAGE + "." + cn;
-			logger.debug("Loading Classes from ModelFile: " + cn);
+			cn = IGNITE_MODEL_PACKAGE + "." + cn;
+			logger.info("Loading Classes from ModelFile: " + cn);
 			Class<?> loadedClass = classLoader.loadClass(cn);
 
 			createTableFromClass(loadedClass, gen);

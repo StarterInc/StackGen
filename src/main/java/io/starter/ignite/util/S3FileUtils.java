@@ -31,7 +31,7 @@ public class S3FileUtils {
 
 		// List the object contents of each bucket.
 		for (int b1 = 0; b1 < buckets.length; b1++) {
-			logger.debug("Bucket '" + buckets[b1].getName() + "' contains:");
+			logger.info("Bucket '" + buckets[b1].getName() + "' contains:");
 
 			// List the objects in this bucket.
 			S3Object[] objects = getS3Service().listObjects(buckets[b1]);

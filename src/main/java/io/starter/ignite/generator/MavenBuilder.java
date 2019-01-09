@@ -28,7 +28,7 @@ public class MavenBuilder implements Configuration {
 	 * run the Maven build
 	 */
 	public static void build() {
-		logger.debug("========= BEGIN MavenBuilder ========= : "
+		logger.info("========= BEGIN MavenBuilder ========= : "
 				+ JAVA_GEN_PATH);
 
 		MavenCli cli = new MavenCli();
@@ -39,12 +39,12 @@ public class MavenBuilder implements Configuration {
 		try {
 			cli.doMain(new String[] { "clean",
 					"install" }, JAVA_GEN_PATH, System.out, System.err);
-			logger.debug("========= END MavenBuilder =========");
+			logger.info("========= END MavenBuilder =========");
 			cli.doMain(new String[] { "clean", "install",
 					"spring-boot:run" }, JAVA_GEN_PATH, System.out, System.err);
-			logger.debug("========= END MavenBuilder =========");
+			logger.info("========= END MavenBuilder =========");
 		} catch (Exception e) {
-			logger.debug("Could not build: " + e);
+			logger.info("Could not build: " + e);
 		}
 	}
 

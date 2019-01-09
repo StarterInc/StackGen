@@ -1,7 +1,6 @@
 package io.starter.ignite.generator;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,7 @@ public class SwaggerGen implements Configuration {
 	 */
 	public SwaggerGen(String spec) {
 
-		logger.debug("Create Swagger Client Apis for:" + spec);
+		logger.info("Create Swagger Client Apis for:" + spec);
 
 		// read from config file
 		if (configurator == null) {
@@ -108,21 +107,31 @@ public class SwaggerGen implements Configuration {
 	}
 
 	public List<File> generate() {
+		final ClientOptInput clientOptInput = mergePluginSwaggers();
+		return new IgniteGenerator().opts(clientOptInput).generate();
+	}
+
+	/**
+	 * Merge all of the loaded plugin swagger specs into this one
+	 * 
+	 * @see addSwagger(SwaggerGen x)
+	 */
+	ClientOptInput mergePluginSwaggers() {
 		final ClientOptInput clientOptInput = configurator.toClientOptInput();
 
 		// merge swagger
 		Swagger x = clientOptInput.getSwagger();
 		for (SwaggerGen t : pluginSwaggers) {
 			try {
-				logger.info("Merging Swagger: " + t);
+				logger.info("Merging plugin swagger: " + t);
 				Swagger s = t.configurator.toClientOptInput().getSwagger();
 				if (s != null)
 					mergeSwagger(s, x);
 			} catch (Throwable e) {
-				logger.warn("Loading plugin " + t + " failed: " + e);
+				logger.warn("Merging plugin swagger " + t + " failed: " + e);
 			}
 		}
-		return new IgniteGenerator().opts(clientOptInput).generate();
+		return clientOptInput;
 	}
 
 	/**
@@ -173,20 +182,4 @@ public class SwaggerGen implements Configuration {
 				target.addTag(c);
 	}
 
-	static String[] getModelFiles() {
-		File modelDir = new File(Main.MODEL_CLASSES);
-		String[] modelFiles = modelDir.list(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.toLowerCase().contains("example"))
-					return false;
-				if (name.toLowerCase().contains("mapper"))
-					return false;
-				if (name.contains(JavaGen.ADD_GEN_CLASS_NAME))
-					return false;
-				return name.toLowerCase().endsWith(".java");
-			}
-		});
-		return modelFiles;
-	}
 }

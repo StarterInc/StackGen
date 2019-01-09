@@ -14,27 +14,70 @@ import org.slf4j.LoggerFactory;
 /**
  * test the app code generator
  */
-public class MainTest {
+public class MainTest implements Configuration {
 
-	protected static final Logger logger = LoggerFactory
+	protected static final Logger	logger			= LoggerFactory
 			.getLogger(MainTest.class);
+
+	String							inputSpecFile	= SPEC_LOCATION
+			+ "trade_automator.yml",
+
+			pluginSpecFile1 = PLUGIN_SPEC_LOCATION + "ignite/eStore.yml",
+
+			pluginSpecFile2 = PLUGIN_SPEC_LOCATION + "location_services.yml";
+
+	// experimental
+	// pluginSpecFile3 = PLUGIN_SPEC_LOCATION +
+	// "/ignite/ecommerce.yml";
 
 	@Before
 	public void setUp() {
-		logger.error("Setting up generatorTest");
+		logger.error("Setting up Starter Ignite Generator Tests");
 	}
 
 	@Test
-	@Ignore
+	@Ignore(value = "should not be run as a unit test")
 	public void swaggerGen() {
-		// generate swqgger api clients
-		// (for now just use swaggerhub generated)
-		SwaggerGen swaggerGen = new SwaggerGen("StarterIgnite.yml");
+		SwaggerGen swaggerGen = new SwaggerGen(
+				SPEC_LOCATION + "trade_automator.yml");
 		assertNotNull(swaggerGen.generate());
 	}
 
 	@Test
-	public void testAppGen() {
+	@Ignore(value = "should not be run as a unit test")
+	public void testAppGen() throws Exception {
 		Main.main(null);
+	}
+
+	@Test
+	public void swaggerPluginMerge() {
+		SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile),
+				gx1 = new SwaggerGen(pluginSpecFile1),
+				gx2 = new SwaggerGen(pluginSpecFile2);
+		// gx3 = new SwaggerGen(pluginSpecFile3); experimental
+		// partial input
+
+		swaggerGen.addSwagger(gx1);
+		swaggerGen.addSwagger(gx2);
+		// swaggerGen.addSwagger(gx3); experimental
+
+		assertNotNull(swaggerGen.mergePluginSwaggers());
+
+	}
+
+	@Test
+	public void swaggerPluginMergeGenerate() {
+		SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile),
+				gx1 = new SwaggerGen(pluginSpecFile1),
+				gx2 = new SwaggerGen(pluginSpecFile2);
+		// gx3 = new SwaggerGen(pluginSpecFile3); experimental
+		// partial input
+
+		swaggerGen.addSwagger(gx1);
+		swaggerGen.addSwagger(gx2);
+		// swaggerGen.addSwagger(gx3); experimental
+
+		// TODO: mock this assertNotNull(swaggerGen.generate());
+
 	}
 }

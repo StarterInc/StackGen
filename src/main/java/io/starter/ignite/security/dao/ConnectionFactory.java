@@ -60,13 +60,13 @@ public class ConnectionFactory {
 	 */
 	private ConnectionFactory() {
 
-		logger.debug("ConnectionFactory: initializing:"
+		logger.info("ConnectionFactory: initializing:"
 				+ ConnectionFactory.driverName);
 
 		try {
 
 			Class.forName(ConnectionFactory.driverName);
-			logger.debug("ConnectionFactory: Got JDBC class "
+			logger.info("ConnectionFactory: Got JDBC class "
 					+ ConnectionFactory.driverName + " OK!");
 		} catch (final ClassNotFoundException e) {
 
@@ -87,7 +87,7 @@ public class ConnectionFactory {
 
 		Connection con = null;
 
-		logger.debug("ConnectionFactory: returning connection:"
+		logger.info("ConnectionFactory: returning connection:"
 				+ ConnectionFactory.sourceURL);
 		final PoolProperties p = new PoolProperties();
 
@@ -100,11 +100,11 @@ public class ConnectionFactory {
 				final DataSource dataSource = (DataSource) ic
 						.lookup(SystemConstants.JNDI_DB_LOOKUP_STRING);
 				final java.sql.Connection c = dataSource.getConnection();
-				logger.debug("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
+				logger.info("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
 						+ SystemConstants.JNDI_DB_LOOKUP_STRING + ".");
 				return c;
 			} catch (final Exception e) {
-				logger.debug("ConnectionFactory.getConnection() failed to get JNDI connection: ["
+				logger.info("ConnectionFactory.getConnection() failed to get JNDI connection: ["
 						+ SystemConstants.JNDI_DB_LOOKUP_STRING + "] "
 						+ "Falling back to non JNDI connection.");
 
@@ -163,7 +163,7 @@ public class ConnectionFactory {
 				}
 			}
 		} catch (final Exception e) {
-			logger.debug("ConnectionFactory Failed to achieve a Pooled DataSource... reverting to Non-Pooled JDBC connection. NOT FOR PRODUCTION.");
+			logger.info("ConnectionFactory Failed to achieve a Pooled DataSource... reverting to Non-Pooled JDBC connection. NOT FOR PRODUCTION.");
 			return ConnectionFactory.getDataSource().getConnection();
 		}
 		return con;
@@ -174,7 +174,7 @@ public class ConnectionFactory {
 	 *
 	 * TODO: implement FUTURE connections try { Future<Connection> future =
 	 * datasource.getConnectionAsync(); while (!future.isDone()) {
-	 * logger.debug( "Connection is not yet available. Do some
+	 * logger.info( "Connection is not yet available. Do some
 	 * background work"); try { Thread.sleep(100); //simulate work }catch
 	 * (InterruptedException x) { Thread.currentThread().interrupt(); } } con =
 	 * future.get(); //should return instantly Statement st = con.createStatement();
@@ -203,12 +203,12 @@ public class ConnectionFactory {
 				final InitialContext ic = new InitialContext();
 				DataSource dataSource = (DataSource) ic.lookup(lcname);
 				final java.sql.Connection c = dataSource.getConnection();
-				logger.debug("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
+				logger.info("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
 						+ lcname + ".");
 				return dataSource;
 
 			} catch (final Exception e) {
-				logger.debug("ConnectionFactory.getConnection() failed to get JNDI connection: "
+				logger.info("ConnectionFactory.getConnection() failed to get JNDI connection: "
 						+ lcname + ". " + e.toString()
 						+ " Falling back to non JNDI connection.");
 
@@ -312,8 +312,8 @@ public class ConnectionFactory {
 
 		} catch (final SQLException e) {
 
-			logger.debug("ERROR: Unable to close Statement");
-			logger.debug(e.getMessage());
+			logger.info("ERROR: Unable to close Statement");
+			logger.info(e.getMessage());
 
 		} // end try-catch block
 

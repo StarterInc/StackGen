@@ -1,4 +1,4 @@
-spring.boot.admin.client.url: "http://{{serverhost}}:{{serverPort}}"  
+spring.boot.admin.client.url: "http://${hostname}:${hostport}"  
 management.endpoints.web.exposure.include: "*"
 
 info:

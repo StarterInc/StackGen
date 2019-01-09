@@ -1,6 +1,5 @@
 package io.starter.ignite.security.crypto;
 
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -43,31 +42,17 @@ public class SecureEncrypter implements SystemConstants {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		logger.debug("Generate Encryption Key: " + generateKey());
+		logger.info("Generate Encryption Key: "
+				+ EncryptionUtil.generateKey());
 
 		String cleartext = "AES Symmetric Encryption Decryption";
-		logger.debug("Plain Text Before Encryption: " + cleartext);
+		logger.info("Plain Text Before Encryption: " + cleartext);
 
 		String ciphertext = SecureEncrypter.encrypt(cleartext);
-		logger.debug("Encrypted Text After Encryption: " + ciphertext);
+		logger.info("Encrypted Text After Encryption: " + ciphertext);
 
 		String decryptedText = SecureEncrypter.decrypt(ciphertext);
-		logger.debug("Decrypted Text After Decryption: " + decryptedText);
-	}
-
-	public static String generateKey() throws NoSuchAlgorithmException {
-
-		// create new key
-		KeyGenerator keyGenerator = KeyGenerator
-				.getInstance(KEYGEN_INSTANCE_NAME);
-		keyGenerator.init(KEY_SIZE);
-
-		SecretKey secretKey = keyGenerator.generateKey();
-		// get base64 encoded version of the key
-		String encodedKey = Base64.getEncoder()
-				.encodeToString(secretKey.getEncoded());
-
-		return encodedKey;
+		logger.info("Decrypted Text After Decryption: " + decryptedText);
 	}
 
 	public static SecretKey getKeyFromBytes(byte[] b) {
@@ -88,7 +73,7 @@ public class SecureEncrypter implements SystemConstants {
 	 * @throws Exception
 	 */
 	private static void init() throws Exception {
-		logger.debug("SecureEncrypter init: " + SECURE_KEY_PROPERTY
+		logger.info("SecureEncrypter init: " + SECURE_KEY_PROPERTY
 				+ " property is set: " + (SECRET_KEY != null));
 		if (SECRET_KEY == null) {
 			throw new RuntimeException(

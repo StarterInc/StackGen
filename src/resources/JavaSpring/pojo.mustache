@@ -78,10 +78,10 @@ public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{{#parcela
   @SerializedName("{{baseName}}")
   {{/gson}}
   {{#isContainer}}
-  protected {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}} = null{{/required}};
+  public {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}} = null{{/required}};
   {{/isContainer}}
   {{^isContainer}}
-  protected {{{datatypeWithEnum}}} {{name}} = {{{defaultValue}}};
+  public {{{datatypeWithEnum}}} {{name}} = {{{defaultValue}}};
   {{/isContainer}}
 
   {{/vars}}

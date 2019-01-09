@@ -41,7 +41,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 		Field f = new Field();
 		f.setName("delegate");
-		f.setVisibility(JavaVisibility.PROTECTED);
+		f.setVisibility(JavaVisibility.PUBLIC);
 		f.setInitializationString(" new " + xx + "()");
 		f.setType(xx);
 		topLevelClass.addField(f);
@@ -79,8 +79,27 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 	private String getSuperClassName(TopLevelClass topLevelClass) {
 
 		String cn = topLevelClass.getType().getFullyQualifiedName();
-		cn = cn.replace(Configuration.MYBATIS_CLASS_POSTFIX, "");
-		logger.debug("SuperClass Name MYBATIS member: " + cn);
+
+		// handle stripping out the Schema name in the delegate
+		// class
+		if (cn.toLowerCase().contains(SCHEMA_NAME)) {
+			// the schema is always lowercase, so adjust it for
+			// Camelcase
+			String ccsn = StringTool.proper(SCHEMA_NAME);
+			cn = cn.replace(ccsn, "");
+
+			// replace package with actual delegate model package
+			cn = cn.replace(MODEL_DAO_PACKAGE, MODEL_PACKAGE);
+
+			if (cn.contains("..")) {
+				throw new IllegalStateException(
+						"Could not get getSuperClassName due to package collision: "
+								+ cn + ". Change value of SCHEMA_NAME: "
+								+ SCHEMA_NAME);
+			}
+		}
+
+		logger.info("SuperClass Name MYBATIS member: " + cn);
 		return cn;
 	}
 
@@ -155,7 +174,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
 
 		// if (Configuration.DEBUG) {
-		logger.debug("MyBatisIgnitePluginAdapter Generating: " + field
+		logger.info("MyBatisIgnitePluginAdapter Generating: " + field
 				+ " class:" + field.getType().getShortName());
 		// }
 
@@ -178,8 +197,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 	}
 
 	private String getEnumHandling(String enumName, String tableName) {
-		tableName = tableName
-				.substring(Configuration.TABLE_NAME_PREFIX.length());
+		tableName = tableName.substring(TABLE_NAME_PREFIX.length());
 		tableName = StringTool.convertDBtoJavaStyleConvention(tableName);
 		tableName = StringTool.getUpperCaseFirstLetter(tableName.trim());
 
@@ -197,11 +215,11 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 	@Override
 	public boolean validate(List<String> warnings) {
-		logger.debug("MyBatis Warnings: ");
+		logger.info("MyBatis Warnings: ");
 		for (String w : warnings) {
-			logger.debug(w);
+			logger.info(w);
 		}
-		logger.debug("End MyBatis Warnings");
+		logger.info("End MyBatis Warnings");
 		return true;
 	}
 }

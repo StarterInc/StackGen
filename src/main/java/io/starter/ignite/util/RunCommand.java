@@ -38,7 +38,7 @@ public class RunCommand {
 		// args[2] = "/usr/local/bin/react-native run-ios";
 
 		if (args.length < 1) {
-			logger.debug("USAGE: java TestExec \"cmd\"");
+			logger.info("USAGE: java TestExec \"cmd\"");
 			System.exit(1);
 		}
 
@@ -61,7 +61,7 @@ public class RunCommand {
 
 			// any error???
 			int exitVal = proc.waitFor();
-			logger.debug("ExitValue: " + exitVal);
+			logger.info("ExitValue: " + exitVal);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -92,7 +92,7 @@ public class RunCommand {
 		// test
 		String sourcepath = Main.JAVA_GEN_SRC_FOLDER
 				+ "/gen/io/starter/ignite/model/";
-		logger.debug("RunCommand Compiling: " + sourcepath);
+		logger.info("RunCommand Compiling: " + sourcepath);
 		String[] cmdarray = null;
 		if (args != null)
 			// {

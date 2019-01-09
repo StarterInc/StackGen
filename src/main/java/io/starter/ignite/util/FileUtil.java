@@ -59,7 +59,7 @@ public class FileUtil {
 
 			in.close();
 			out.close();
-			// logger.debug("File copied from " + src + " to " + dest);
+			// logger.info("File copied from " + src + " to " + dest);
 		}
 	}
 

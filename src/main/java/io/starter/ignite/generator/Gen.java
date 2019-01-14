@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import com.squareup.javapoet.MethodSpec;
 
+import io.starter.ignite.model.DataField;
+import io.starter.ignite.security.securefield.SecureField;
 import io.starter.toolkit.StringTool;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -117,7 +119,7 @@ public class Gen implements Configuration {
 			public boolean accept(File dir, String name) {
 				if (name.contains("Example"))
 					return false;
-				if (name.toLowerCase().contains(SCHEMA_NAME))
+				if (name.toLowerCase().contains(schemaName))
 					return false;
 				if (name.contains("Mapper"))
 					return false;
@@ -242,6 +244,18 @@ public class Gen implements Configuration {
 			fields.addAll(Arrays.asList(c.getDeclaredFields()));
 		}
 		return fields.toArray();
+	}
+
+	public static DataField getDataFieldAnnotation(Field f) throws NoSuchMethodException, SecurityException {
+		// get the annotation
+		DataField anno = f.getDeclaredAnnotation(DataField.class);
+		return anno;
+	}
+
+	public static SecureField getSecureFieldAnnotation(Field f) throws NoSuchMethodException, SecurityException {
+		// get the annotation
+		SecureField anno = f.getDeclaredAnnotation(SecureField.class);
+		return anno;
 	}
 
 	public static ApiModelProperty getApiModelPropertyAnnotation(Field f) throws NoSuchMethodException, SecurityException {

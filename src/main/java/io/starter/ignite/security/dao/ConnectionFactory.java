@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
+import io.starter.ignite.generator.Configuration;
 import io.starter.ignite.util.SystemConstants;
 
 /**
@@ -34,12 +35,12 @@ public class ConnectionFactory {
 	// Connect to the data storage
 	private static int					sourcePort		= 3306;
 	public static String				driverName		= "com.mysql.jdbc.Driver";
-	public static String				dbName			= SystemConstants.DB_NAME;
-	public static String				sourceURL		= SystemConstants.DB_URL;
-	public static String				userName		= SystemConstants.DB_USER;
-	private static String				password		= SystemConstants.DB_PASSWORD;
-	private static String				backupURL		= SystemConstants.DB_URL;
-	private static String				backupPassword	= SystemConstants.DB_PASSWORD;
+	public static String				dbName			= SystemConstants.dbName;
+	public static String				sourceURL		= SystemConstants.dbUrl;
+	public static String				userName		= SystemConstants.dbUser;
+	private static String				password		= SystemConstants.dbPassword;
+	private static String				backupURL		= SystemConstants.dbUrl;
+	private static String				backupPassword	= SystemConstants.dbPassword;
 
 	// Call the private constructor to initialize the
 	// DriverManager
@@ -48,9 +49,11 @@ public class ConnectionFactory {
 
 	public static String toConfigString() {
 		return "ConnectionFactory v." + SystemConstants.IGNITE_MAJOR_VERSION
-				+ "." + SystemConstants.IGNITE_MINOR_VERSION + " Configuration.LINEFEED"
-				+ "Settings:" + "Configuration.LINEFEED" + "=========" + "Configuration.LINEFEED" + driverName
-				+ "Configuration.LINEFEED" + sourceURL + "Configuration.LINEFEED" + dbName + "Configuration.LINEFEED" + userName;
+				+ "." + SystemConstants.IGNITE_MINOR_VERSION
+				+ Configuration.LINE_FEED + "Settings:" + Configuration.LINE_FEED
+				+ "=========" + Configuration.LINE_FEED + driverName
+				+ Configuration.LINE_FEED + sourceURL + Configuration.LINE_FEED
+				+ dbName + Configuration.LINE_FEED + userName;
 	}
 
 	/**

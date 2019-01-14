@@ -67,8 +67,8 @@ public class S3FS extends StorageServiceEventAdaptor
 	private S3FileUtils					fileUtils;
 
 	private void initialize() throws ServiceException, S3ServiceException {
-		String awsAccessKey = SystemConstants.AWS_ACCESS_KEY;
-		String awsSecretKey = SystemConstants.AWS_SECRET_KEY;
+		String awsAccessKey = SystemConstants.awsAccessKey;
+		String awsSecretKey = SystemConstants.awsSecretKey;
 
 		AWSCredentials credentials = new AWSCredentials(awsAccessKey,
 				awsSecretKey);

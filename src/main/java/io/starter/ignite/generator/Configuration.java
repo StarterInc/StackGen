@@ -14,12 +14,12 @@ import io.starter.ignite.util.SystemConstants;
  * The following values can be set as System properties or on the command line:
  * 
  * <pre>
- * VERBOSE
- * DEBUG
- * SWAGGER_LANG
- * SWAGGER_LIB
- * DBGEN_DROP_TABLE
- * JAVA_GEN_PATH
+ * verbose
+ * debug
+ * swaggerLang
+ * swaggerLib
+ * dbGenDropTable
+ * javaGenPath
  * REACT_APP_NAME 
  * REACT_EXPORT_FOLDER
  * REACT_TEMPLATE_FOLDER
@@ -30,38 +30,57 @@ import io.starter.ignite.util.SystemConstants;
  */
 public interface Configuration extends SystemConstants {
 
-	public static boolean		VERBOSE							= (System
-			.getProperty("VERBOSE") != null
-					? Boolean.parseBoolean(System.getProperty("VERBOSE"))
+	public static String		defaultPort						= "8099";
+
+	public static boolean		skipDBGen						= (System
+			.getProperty("skipDBGen") != null
+					? Boolean.parseBoolean(System.getProperty("skipDBGen"))
 					: false);
-	public static final boolean	DEBUG							= (System
-			.getProperty("DEBUG") != null
-					? Boolean.parseBoolean(System.getProperty("DEBUG"))
+	public static boolean		skipMybatis						= (System
+			.getProperty("skipMybatis") != null
+					? Boolean.parseBoolean(System.getProperty("skipMybatis"))
+					: false);
+	public static boolean		skipBuildGeneratedApp			= (System
+			.getProperty("skipBuildGeneratedApp") != null ? Boolean
+					.parseBoolean(System.getProperty("skipBuildGeneratedApp"))
+					: true);
+	public static boolean		overwriteMode					= (System
+			.getProperty("overwriteMode") != null
+					? Boolean.parseBoolean(System.getProperty("overwriteMode"))
+					: true);
+
+	public static boolean		verbose							= (System
+			.getProperty("verbose") != null
+					? Boolean.parseBoolean(System.getProperty("verbose"))
+					: false);
+	public static final boolean	debug							= (System
+			.getProperty("debug") != null
+					? Boolean.parseBoolean(System.getProperty("debug"))
 					: false);
 
 	// spring, java, resteasy
-	public static final String	SWAGGER_LANG					= (System
-			.getProperty("SWAGGER_LANG") != null
-					? System.getProperty("SWAGGER_LANG")
+	public static final String	swaggerLang						= (System
+			.getProperty("swaggerLang") != null
+					? System.getProperty("swaggerLang")
 					: "spring");
 
 	// spring-boot ,jersey2
-	public static final String	SWAGGER_LIB						= (System
-			.getProperty("SWAGGER_LIB") != null
-					? System.getProperty("SWAGGER_LIB")
+	public static final String	swaggerLib						= (System
+			.getProperty("swaggerLib") != null
+					? System.getProperty("swaggerLib")
 					: "spring-boot");
 
-	public static String		ARTIFACT_ID						= (System
-			.getProperty("ARTIFACT_ID") != null
-					? System.getProperty("ARTIFACT_ID")
+	public static String		artifactId						= (System
+			.getProperty("artifactId") != null
+					? System.getProperty("artifactId")
 					: "ignite").toLowerCase();
 
-	public static final String	SCHEMA_NAME						= (System
-			.getProperty("SCHEMA_NAME") != null
-					? System.getProperty("SCHEMA_NAME")
+	public static final String	schemaName						= (System
+			.getProperty("schemaName") != null
+					? System.getProperty("schemaName")
 					: "ignite").toLowerCase();
 
-	public static String		TABLE_NAME_PREFIX				= SCHEMA_NAME
+	public static String		TABLE_NAME_PREFIX				= schemaName
 			+ "$";
 
 	// DML section
@@ -70,55 +89,62 @@ public interface Configuration extends SystemConstants {
 	public static String		CREATE_TABLE_END_BLOCK			= ");";
 	public static String		DROP_TABLE						= "DROP TABLE";
 	public static String		ALTER_TABLE						= "ALTER TABLE";
-	public static boolean		SETTING_COLUMNS_UPPERCASED		= false;
+	public static boolean		COLUMNS_UPPERCASE				= false;
 	public static String		RENAME_TABLE_SUFFIX				= "BK_";
 
-	public static boolean		DROP_EXISTING_TABLES			= (System
-			.getProperty("DBGEN_DROP_TABLE") != null ? Boolean
-					.parseBoolean(System.getProperty("DBGEN_DROP_TABLE"))
+	public static boolean		dbGenDropTable					= (System
+			.getProperty("dbGenDropTable") != null
+					? Boolean.parseBoolean(System.getProperty("dbGenDropTable"))
 					: false);
 	// end DML section
 
-	public static String		JAVA_GEN_ARCHIVE_FOLDER			= "/archive/gen";
-	public static String		JAVA_GEN_ARCHIVE_PATH			= (System
-			.getProperty("JAVA_GEN_ARCHIVE_PATH") != null
-					? System.getProperty("JAVA_GEN_ARCHIVE_PATH")
-					: ROOT_FOLDER + JAVA_GEN_ARCHIVE_FOLDER);
+	public static String		javaGenFolder					= (System
+			.getProperty("javaGenFolder") != null
+					? System.getProperty("javaGenFolder")
+					: "/gen");
 
-	public static String		JAVA_GEN_FOLDER					= "/gen";
-	public static String		JAVA_GEN_PATH					= (System
-			.getProperty("JAVA_GEN_PATH") != null
-					? System.getProperty("JAVA_GEN_PATH")
-					: ROOT_FOLDER + JAVA_GEN_FOLDER);
+	public static String		javaGenPath						= (System
+			.getProperty("javaGenPath") != null
+					? System.getProperty("javaGenPath")
+					: rootFolder)
+			+ javaGenFolder;
 
-	public static String		JAVA_GEN_SRC_FOLDER				= JAVA_GEN_PATH
+	public static String		JAVA_GEN_ARCHIVE_FOLDER			= "/archive"
+			+ javaGenFolder;
+
+	public static String		javaGenArchivePath				= (System
+			.getProperty("javaGenArchivePath") != null
+					? System.getProperty("javaGenArchivePath")
+					: rootFolder + JAVA_GEN_ARCHIVE_FOLDER);
+
+	public static String		JAVA_GEN_SRC_FOLDER				= javaGenPath
 			+ "/src/main/java";
 	public static File			JAVA_GEN_SRC					= new File(
 			JAVA_GEN_SRC_FOLDER);
 
-	public static String		JAVA_GEN_RESOURCES_FOLDER		= JAVA_GEN_PATH
+	public static String		JAVA_GEN_RESOURCES_FOLDER		= javaGenPath
 			+ "/src/main/resources";
 
 	public static String		SOURCE_MAIN						= "/src/main";
 	public static String		SOURCE_MAIN_JAVA				= SOURCE_MAIN
 			+ "/java";
 	public static String		SOURCE_RESOURCES				= "/src/resources";
-	public static String		PLUGIN_FOLDER					= ROOT_FOLDER
+	public static String		PLUGIN_FOLDER					= rootFolder
 			+ SOURCE_RESOURCES + "/plugins";
 
 	public static final boolean	DISABLE_DATA_FIELD_ASPECT		= true;
 	public static final boolean	DISABLE_SECURE_FIELD_ASPECT		= false;
 
 	// ## SwaggerGen OPEN API
-	public static String		ARTIFACT_VERSION				= (System
-			.getProperty("ARTIFACT_VERSION") != null
-					? System.getProperty("ARTIFACT_VERSION")
+	public static String		artifactVersion					= (System
+			.getProperty("artifactVersion") != null
+					? System.getProperty("artifactVersion")
 					: "1.0.1");
 
 	public static String		ADD_GEN_CLASS_NAME				= "Service";
 
 	public static String		ORG_PACKAGE						= "io.starter."
-			+ ARTIFACT_ID;
+			+ artifactId;
 
 	public static String		IGNITE_MODEL_PACKAGE			= ORG_PACKAGE
 			+ ".model";
@@ -126,13 +152,13 @@ public interface Configuration extends SystemConstants {
 	public static String		API_MODEL_PACKAGE				= ORG_PACKAGE
 			+ ".model";
 
-	public static String		SPEC_LOCATION					= ROOT_FOLDER
+	public static String		SPEC_LOCATION					= rootFolder
 			+ SOURCE_RESOURCES + "/openapi_specs/";
 
 	public static String		PLUGIN_SPEC_LOCATION			= SPEC_LOCATION
 			+ "plugins/";
 
-	public static String		CONFIG_FILE						= ROOT_FOLDER
+	public static String		CONFIG_FILE						= rootFolder
 			+ SOURCE_RESOURCES + "/swagger_config.json";
 
 	public static String		API_PACKAGE						= ORG_PACKAGE
@@ -153,7 +179,7 @@ public interface Configuration extends SystemConstants {
 			LONG_DATE_FORMAT);
 
 	public static String		PACKAGE_DIR						= "/io/starter/"
-			+ ARTIFACT_ID;
+			+ artifactId;
 
 	public static String		MODEL_PACKAGE_DIR				= PACKAGE_DIR
 			+ "/model/";
@@ -181,7 +207,10 @@ public interface Configuration extends SystemConstants {
 	public String				ANNOTATAION_CLASS				= "io.starter.ignite.security.securefield.SecureField";
 
 	public static String		SQL_MAPS_PATH					= "io/starter/"
-			+ ARTIFACT_ID + "/sqlmaps/";
+			+ artifactId + "/sqlmaps/";
+
+	// TODO: fix experimental use case
+	public static boolean		MYBATIS_CASE_SENSITIVE_FIX		= false;
 
 	public static final String	MYBATIS_GEN_CONFIG				= System
 			.getProperty("user.dir")
@@ -196,7 +225,7 @@ public interface Configuration extends SystemConstants {
 			+ "/src/resources/templates/MyBatisConfig.xml";
 
 	public static final String	MYBATIS_CONFIG_OUT				= System
-			.getProperty("user.dir") + JAVA_GEN_FOLDER
+			.getProperty("user.dir") + javaGenFolder
 			+ "/src/main/resources/MyBatisConfig.xml";
 
 	// ## React
@@ -205,28 +234,28 @@ public interface Configuration extends SystemConstants {
 					? System.getProperty("REACT_APP_NAME")
 					: "MyLittlePony");
 
-	public static String		REACT_TEMPLATE_APP_FOLDER		= ROOT_FOLDER
-			+ SOURCE_MAIN + "/react/" + ARTIFACT_ID + "App/";
+	public static String		REACT_TEMPLATE_APP_FOLDER		= rootFolder
+			+ SOURCE_MAIN + "/react/" + artifactId + "App/";
 
 	public static String		REACT_TEMPLATE_FOLDER			= (System
 			.getProperty("REACT_TEMPLATE_FOLDER") != null
 					? System.getProperty("REACT_TEMPLATE_FOLDER")
-					: ROOT_FOLDER + SOURCE_MAIN + "/react/template/");
+					: rootFolder + SOURCE_MAIN + "/react/template/");
 
 	// external React Project Path
 	public static String		REACT_EXPORT_FOLDER				= (System
 			.getProperty("REACT_EXPORT_FOLDER") != null
 					? System.getProperty("REACT_EXPORT_FOLDER")
-					: ROOT_FOLDER + "/REACT_EXPORT");
+					: rootFolder + "/REACT_EXPORT");
 
-	public static String		REACT_APP_OUTPUT_FOLDER			= ROOT_FOLDER
+	public static String		REACT_APP_OUTPUT_FOLDER			= rootFolder
 			+ "/tmp/react/";
 
 	public static List<String>	SKIP_LIST						= new ArrayList<>(
 			Arrays.asList(".class"));
 
 	public static List<String>	FOLDER_SKIP_LIST				= new ArrayList<>(
-			Arrays.asList("gen", "org", "swagger", "node_modules"));
+			Arrays.asList(javaGenFolder, "org", "swagger", "node_modules"));
 
 	// ## WEB
 	// output generated WP PHP code here
@@ -246,6 +275,8 @@ public interface Configuration extends SystemConstants {
 	public static String		IGNITE_GEN_MODEL_CRUD_OPS		= "igniteGenerateCRUDOps";
 
 	public static String		IGNITE_GEN_REST_PATH_PREFIX		= "data/";
-	public static String		LINEFEED						= "\r\n";
+	public static String		LINE_FEED						= "\r\n";
+
+	public static int			DB_ENCRYPTED_COLUMN_MULTIPLIER	= 5;
 
 }

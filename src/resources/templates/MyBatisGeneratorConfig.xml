@@ -12,15 +12,16 @@
 			<property name="annotationClass" value="io.starter.ignite.security.securefield.SecureField" 
 			/> <property name="annotationString" value="@SecureField" /> </plugin> -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://${RDS_HOSTNAME}:3306/${RDS_DB_NAME}?autoReconnect=true"
-			userId="${RDS_USERNAME}" password="${RDS_PASSWORD}">
+			connectionURL="jdbc:mysql://${dbUrl}:3306/${dbName}?autoReconnect=true"
+			userId="${dbUser}" password="${dbPassword}">
 		</jdbcConnection>
 
 		<!-- Model Class -->
 		<javaModelGenerator
-			targetPackage="io.starter.${ARTIFACT_ID}.model.dao"
+			targetPackage="io.starter.${artifactId}.model.dao"
 
-			targetProject="${MYBATIS_MAIN}main/java">
+			targetProject="${myBatisMain}main/java">
+			<property name="useActualColumnNames" value="true"/>
 			<property name="enableSubPackages" value="false" />
 			<property name="trimStrings" value="true" />
 			<property name="rootClass"
@@ -30,27 +31,31 @@
 			<property name="addRemarkComments" value="true" />
 		</javaModelGenerator>
 
-		<sqlMapGenerator targetPackage="io.starter.${ARTIFACT_ID}.sqlmaps"
-			targetProject="${MYBATIS_MAIN}main/resources" />
-		<javaClientGenerator
-			targetPackage="io.starter.${ARTIFACT_ID}.model.dao"
-			targetProject="${MYBATIS_MAIN}main/java" type="XMLMAPPER" />
+		<sqlMapGenerator targetPackage="io.starter.${artifactId}.sqlmaps"
+			targetProject="${myBatisMain}main/resources" />
 
-		<table schema="${ARTIFACT_ID}" tableName="PLACEHOLDER_NODE" />
+		<javaClientGenerator
+			targetPackage="io.starter.${artifactId}.model.dao"
+			targetProject="${myBatisMain}main/java" type="XMLMAPPER" >
+			<property name="useActualColumnNames" value="true"/>
+		</javaClientGenerator>
+		
+		<table schema="${artifactId}" tableName="PLACEHOLDER_NODE"
+		 modelType="hierarchical" />
 		
 
 	</context>
 
 	<!-- <context id="wp_context"> <jdbcConnection driverClass="com.mysql.jdbc.Driver" 
-		connectionURL="jdbc:mysql://chukl.es:3306/${RDS_DB_NAME}" userId="${RDS_DB_NAME}_user" 
+		connectionURL="jdbc:mysql://chukl.es:3306/${dbName}" userId="${dbName}_user" 
 		password="abcdefg"> </jdbcConnection> <javaModelGenerator targetPackage="io.starter.wp_model" 
-		targetProject="${RDS_DB_NAME}/src/main/java" /> <sqlMapGenerator targetPackage="io.starter.wp_sqlmaps" 
-		targetProject="${RDS_DB_NAME}/src/main/java"></sqlMapGenerator> <javaClientGenerator 
-		targetPackage="io.starter.wp_dao" targetProject="${RDS_DB_NAME}/src/main/java" 
-		type="XMLMAPPER" /> <table schema="${RDS_DB_NAME}" tableName="wp_posts"> 
-		<generatedKey column="ID" sqlStatement="JDBC" /> </table> <table schema="${RDS_DB_NAME}" 
+		targetProject="${dbName}/src/main/java" /> <sqlMapGenerator targetPackage="io.starter.wp_sqlmaps" 
+		targetProject="${dbName}/src/main/java"></sqlMapGenerator> <javaClientGenerator 
+		targetPackage="io.starter.wp_dao" targetProject="${dbName}/src/main/java" 
+		type="XMLMAPPER" /> <table schema="${dbName}" tableName="wp_posts"> 
+		<generatedKey column="ID" sqlStatement="JDBC" /> </table> <table schema="${dbName}" 
 		tableName="wp_term_taxonomy"> <generatedKey column="term_taxonomy_id" sqlStatement="JDBC" 
-		/> </table> <table schema="${RDS_DB_NAME}" tableName="wp_postmeta"> <generatedKey 
+		/> </table> <table schema="${dbName}" tableName="wp_postmeta"> <generatedKey 
 		column="meta_id" sqlStatement="JDBC" /> </table> </context> -->
 
 </generatorConfiguration>

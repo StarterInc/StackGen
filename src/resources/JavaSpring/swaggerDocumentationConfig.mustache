@@ -4,6 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -29,6 +32,17 @@ public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
 
 	private final String adminContextPath = "";
 	
+	@Bean
+	// TODO: implement fine grained lookup for CORS
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**");
+            }
+        };
+    }
+    
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// @formatter:off
@@ -39,7 +53,7 @@ public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(adminContextPath + "/**").permitAll()
             .antMatchers(adminContextPath + "/login").permitAll()
             .anyRequest().authenticated()
-            .and()
+            .and().cors().and()
         .formLogin().loginPage(adminContextPath + "/login").successHandler(successHandler).and()
         .logout().logoutUrl(adminContextPath + "/logout").and()
         .httpBasic().and()

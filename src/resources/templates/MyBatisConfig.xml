@@ -11,9 +11,9 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 			<dataSource type="POOLED">
 				<property name="driver" value="com.mysql.jdbc.Driver" />
 				<property name="url"
-					value="jdbc:mysql://${RDS_HOSTNAME}:3306/${RDS_DB_NAME}?autoReconnect=true" />
-				<property name="username" value="${RDS_USERNAME}" />
-				<property name="password" value="${RDS_PASSWORD}" />
+					value="jdbc:mysql://${dbUrl}:3306/${dbName}?autoReconnect=true" />
+				<property name="username" value="${dbUser}" />
+				<property name="password" value="${dbPassword}" />
 				<property name="poolMaximumActiveConnections" value="5" />
 				<property name="poolMaximumIdleConnections" value="3" />
 				<property name="poolPingEnabled" value="true" />
@@ -27,9 +27,9 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 			<dataSource type="POOLED">
 				<property name="driver" value="com.mysql.jdbc.Driver" />
 				<property name="url"
-					value="jdbc:mysql://${RDS_HOSTNAME}:3306/${RDS_DB_NAME}?autoReconnect=true" />
-				<property name="username" value="${RDS_USERNAME}" />
-				<property name="password" value="${RDS_PASSWORD}" />
+					value="jdbc:mysql://${dbUrl}:3306/${dbName}?autoReconnect=true" />
+				<property name="username" value="${dbUser}" />
+				<property name="password" value="${dbPassword}" />
 				<property name="poolMaximumActiveConnections" value="5" />
 				<property name="poolMaximumIdleConnections" value="3" />
 				<property name="poolPingEnabled" value="true" />
@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 			<transactionManager type="JDBC" />
 			<dataSource type="JNDI">
 				<property name="initial_context" value="java:comp/env" />
-				<property name="data_source" value="jdbc/${RDS_DB_NAME}" />
+				<property name="data_source" value="jdbc/${dbName}" />
 			</dataSource>
 		</environment>
 

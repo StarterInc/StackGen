@@ -30,6 +30,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import io.starter.ignite.generator.DMLgenerator.Table;
 import io.starter.toolkit.StringTool;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -77,6 +78,9 @@ public class JavaGen extends Gen implements Generator {
 			return null;
 		}
 
+		// validate the column names for round trip compatibility
+		validateColumn(fieldName);
+
 		final String className = fld.getDeclaringClass().getName();
 		String memberName = className.substring(className.lastIndexOf(".") + 1);
 		memberName += "Bean";
@@ -88,10 +92,10 @@ public class JavaGen extends Gen implements Generator {
 			final MethodSpec ret = MethodSpec.methodBuilder(fldName)
 					.addJavadoc("Starter Ignite Generated Method: "
 							+ DATE_FORMAT.format(new Date())
-							+ Configuration.LINEFEED + Configuration.LINEFEED
+							+ Configuration.LINE_FEED + Configuration.LINE_FEED
 							+ "@see "
 							+ fld.getDeclaringClass().getSuperclass().getName()
-							+ Configuration.LINEFEED + Configuration.LINEFEED
+							+ Configuration.LINE_FEED + Configuration.LINE_FEED
 							+ "@return the value of: " + fieldName)
 					.addModifiers(Modifier.PUBLIC).returns(fieldType)
 					.addStatement("return " + memberName + "." + fieldName)
@@ -102,6 +106,28 @@ public class JavaGen extends Gen implements Generator {
 					+ e.toString());
 		}
 		return null;
+	}
+
+	/**
+	 * check validity of the column name (it will survive round trip codegen camel/decamel)
+	 * 
+	 * @param fieldName
+	 * @throws IgniteException
+	 */
+	private void validateColumn(final String fieldName) throws IgniteException {
+		if (fieldName.equals(fieldName.toLowerCase())
+				|| fieldName.equals(fieldName.toUpperCase())) { // case
+																// insensitive
+			return;
+		}
+		String checkName = Table.convertToDBSyntax(fieldName);
+		String nameRoundTrip = Table.convertToJavaSyntax(checkName);
+		String syntaxCheck = Table.convertToDBSyntax(nameRoundTrip);
+
+		if (!checkName.equals(syntaxCheck)) {
+			throw new IgniteException("COLUMN NAME IS UNSUPPORTED: " + checkName
+					+ ":" + nameRoundTrip + ":" + syntaxCheck);
+		}
 	}
 
 	@Override
@@ -289,7 +315,7 @@ public class JavaGen extends Gen implements Generator {
 				+ "Example();\n" + "		" + mapperName
 				+ "Example.Criteria cx = example\n"
 				+ "				.createCriteria();\n"
-				+ "		cx.andIdEqualTo(getId());\n" + "\n"
+				+ "		cx.andIdLessThan(getId());\n" + "\n"
 				+ "		final java.util.List<" + mapperName
 				+ "> rows = session\n" + "				.selectList(\""
 				+ mapperName + "Mapper.selectByExample\", example);\n" + "\n"
@@ -325,6 +351,7 @@ public class JavaGen extends Gen implements Generator {
 				+ "		session.commit();\n" + "		session.close();\n"
 				+ "} catch (Exception e) {\n"
 				+ "			log.error(\"Could not run INSERT: \" + e.toString());\n"
+				+ "			throw new io.starter.ignite.generator.IgniteException(\"Could not run INSERT: \" + e.toString());\n"
 				+ "		}" + "		return rows";
 
 		try {
@@ -366,7 +393,8 @@ public class JavaGen extends Gen implements Generator {
 				+ getBaseJavaName(className) + "Bean = ret.delegate;} else {\n"
 				+ "\n" + " log.error(\"no results searching " + className
 				+ " field for : \"+getId());" + "\n" + "}" + "\n"
-				+ "		session.close();\n" + "		return this";
+				+ "		session.close();\n"
+				+ "		return (ret != null ? this : null)";
 
 		try {
 			ClassName cx = ClassName
@@ -401,7 +429,8 @@ public class JavaGen extends Gen implements Generator {
 				+ "		session.commit();\n" + "		session.close();\n"
 				+ "} catch (Exception e) {\n"
 				+ "			log.error(\"Could not run UPDATE: \" + e.toString());\n"
-				+ "}" + Configuration.LINEFEED + "		return rows";
+				+ "			throw new io.starter.ignite.generator.IgniteException(\"Could not run INSERT: \" + e.toString());\n"
+				+ "}" + Configuration.LINE_FEED + "		return rows";
 
 		try {
 			return MethodSpec.methodBuilder("update")
@@ -444,6 +473,7 @@ public class JavaGen extends Gen implements Generator {
 				+ "		session.commit();\n" + "		session.close();\n"
 				+ "} catch (Exception e) {\n"
 				+ "			log.error(\"Could not run DELETE: \" + e.toString());\n"
+				+ "			throw new io.starter.ignite.generator.IgniteException(\"Could not run INSERT: \" + e.toString());\n"
 				+ "		}" + "		return rows";
 		try {
 			return MethodSpec.methodBuilder("delete")
@@ -517,7 +547,6 @@ public class JavaGen extends Gen implements Generator {
 			methodList.add(createInsert(className));
 			methodList.add(createUpdate(className));
 			methodList.add(createDelete(className));
-
 			methodList.add(createToJSON(className));
 
 			logger.info("Created " + methodList.size()
@@ -672,7 +701,7 @@ public class JavaGen extends Gen implements Generator {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	static void compile(String packageDir) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+	static void compile(String packageDir) throws IOException, ClassNotFoundException, InstantiationException, IgniteException, IllegalAccessException {
 		// test
 		final String sourcepath = JAVA_GEN_SRC_FOLDER + packageDir;
 

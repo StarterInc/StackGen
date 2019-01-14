@@ -53,20 +53,20 @@ public class SwaggerGen implements Configuration {
 
 		// main output type
 		// (ie: spring, jersey2)
-		configurator.setLang(SWAGGER_LANG);
+		configurator.setLang(swaggerLang);
 
 		// the JSON serialization library to use
 		// (ie: jersey2, resteasy, resttemplate)
-		configurator.setLibrary(SWAGGER_LIB);
-		configurator.setOutputDir(JAVA_GEN_PATH);
+		configurator.setLibrary(swaggerLib);
+		configurator.setOutputDir(javaGenPath);
 
-		configurator.setArtifactId(ARTIFACT_ID);
+		configurator.setArtifactId(artifactId);
 		configurator.setApiPackage(API_PACKAGE);
 		configurator.setModelPackage(API_MODEL_PACKAGE);
 		configurator.setInvokerPackage(INVOKER_PACKAGE);
 
-		configurator.setArtifactVersion(ARTIFACT_VERSION);
-		configurator.setVerbose(VERBOSE);
+		configurator.setArtifactVersion(artifactVersion);
+		configurator.setVerbose(verbose);
 		configurator.addDynamicProperty("dynamic-html", "true");
 		configurator.addDynamicProperty("dateLibrary", "java8");
 
@@ -103,7 +103,6 @@ public class SwaggerGen implements Configuration {
 		// github
 		configurator.setGitRepoId("StarterIgnite");
 		configurator.setGitUserId("Spaceghost69");
-
 	}
 
 	public List<File> generate() {

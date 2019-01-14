@@ -36,16 +36,13 @@ import io.starter.ignite.util.ASCIIArtPrinter;
 
 public class Main implements Configuration {
 
-	private static boolean			skipDBGen				= !false;
-	private static boolean			skipMybatis				= false;
-	private static boolean			skipBuildGeneratedApp	= true;
-
-	protected static final Logger	logger					= LoggerFactory
-			.getLogger(Main.class);
+	protected static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) throws Exception {
 
-		String inputSpecFile = "trade_automator.yml"; // "chainring_api_v1.yml";
+		String inputSpecFile = "starter_ignite.yml"; // "trade_automator.yml";
+														// //
+														// "chainring_api_v1.yml";
 														// // "simple_cms.yml";
 		// String inputSpecFile = "StarterIgnite.yml";
 
@@ -77,7 +74,7 @@ public class Main implements Configuration {
 			if (args.length == 2) {
 				System.out.println("--- Begin Generated Key ---");
 				System.out.println(generateEncryptionKey(args[1]));
-				System.out.println("-- End Generated Key ---");
+				System.out.println("--- End Generated Key ---");
 			} else {
 				System.out.println("Usage:");
 				System.out
@@ -104,7 +101,9 @@ public class Main implements Configuration {
 		try {
 
 			// Clear out the gen and
-			initOutputFolders();
+			if (overwriteMode) {
+				initOutputFolders();
+			}
 
 			// generate swqgger api clients
 			SwaggerGen swaggerGen = new SwaggerGen(
@@ -197,21 +196,21 @@ public class Main implements Configuration {
 	}
 
 	private static void initOutputFolders() {
-		File genDir = new File(JAVA_GEN_PATH);
-		logger.info("Initializing output folder: " + JAVA_GEN_PATH + " exists: "
+		File genDir = new File(javaGenPath);
+		logger.info("Initializing output folder: " + javaGenPath + " exists: "
 				+ genDir.exists());
 		if (genDir.exists()) {
 
-			if (!genDir.renameTo(new File(JAVA_GEN_ARCHIVE_PATH + "."
-					+ System.currentTimeMillis()))) {
-				throw new IgniteException("Could not rename: " + JAVA_GEN_PATH);
+			if (!genDir.renameTo(new File(
+					javaGenArchivePath + "." + System.currentTimeMillis()))) {
+				throw new IgniteException("Could not rename: " + javaGenPath);
 			}
 
-			genDir = new File(JAVA_GEN_PATH);
+			genDir = new File(javaGenPath);
 			genDir.mkdirs();
 		}
 
-		boolean outputDir = new File(Configuration.JAVA_GEN_PATH + "/src/")
+		boolean outputDir = new File(Configuration.javaGenPath + "/src/")
 				.mkdirs();
 		if (!outputDir) {
 			logger.error("Could not init: " + outputDir + ". Exiting.");
@@ -233,13 +232,13 @@ public class Main implements Configuration {
 					"/src/main/java/io/starter/spring/boot/starter-ignite-banner.txt" } };
 
 	private static void copyStaticFiles() {
-		File genDir = new File(JAVA_GEN_PATH);
-		logger.info("Copying static files to folder: " + JAVA_GEN_PATH
+		File genDir = new File(javaGenPath);
+		logger.info("Copying static files to folder: " + javaGenPath
 				+ " exists: " + genDir.exists());
 		if (genDir.exists()) {
 			for (String[] fx : staticFiles) {
-				File fromF = new File(ROOT_FOLDER + fx[0]);
-				File toF = new File(JAVA_GEN_PATH + fx[1]);
+				File fromF = new File(rootFolder + fx[0]);
+				File toF = new File(javaGenPath + fx[1]);
 				if (fromF.exists()) {
 					logger.info("Copying static file : " + fromF + " to: "
 							+ toF);
@@ -260,6 +259,6 @@ public class Main implements Configuration {
 				}
 			}
 		}
-		logger.info("Done copying static files to " + JAVA_GEN_PATH);
+		logger.info("Done copying static files to " + javaGenPath);
 	}
 }

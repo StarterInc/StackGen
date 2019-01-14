@@ -82,10 +82,10 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 		// handle stripping out the Schema name in the delegate
 		// class
-		if (cn.toLowerCase().contains(SCHEMA_NAME)) {
+		if (cn.toLowerCase().contains(schemaName)) {
 			// the schema is always lowercase, so adjust it for
 			// Camelcase
-			String ccsn = StringTool.proper(SCHEMA_NAME);
+			String ccsn = StringTool.proper(schemaName);
 			cn = cn.replace(ccsn, "");
 
 			// replace package with actual delegate model package
@@ -94,8 +94,8 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 			if (cn.contains("..")) {
 				throw new IllegalStateException(
 						"Could not get getSuperClassName due to package collision: "
-								+ cn + ". Change value of SCHEMA_NAME: "
-								+ SCHEMA_NAME);
+								+ cn + ". Change value of schemaName: "
+								+ schemaName);
 			}
 		}
 
@@ -110,22 +110,14 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		List<String> ln = method.getBodyLines();
 		for (String l : ln) {
 			method.getBodyLines().remove(l);
-
 			String cnm = introspectedColumn.getJdbcTypeName().toUpperCase();
 			l = l.replace("return ", "return delegate.");
 			if (cnm.contains("DATE") || cnm.contains("TIMESTAMP")) {
-
-				// return new
-				// Date(delegate.executionDate.toInstant().getNano() /
-				// 1000000);
-
 				l = l.replace(";", ".toInstant().getNano() / 1000000);");
 				l = l.replace("return delegate.", "return new Date(delegate.");
-
 			} else if (secn.contains(MYBATIS_COL_ENUM_FLAG)) {
 				l = l.replace(";", ".getValue();");
 			}
-
 			method.addBodyLine(l);
 		}
 		return super.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, modelClassType);
@@ -173,10 +165,9 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 	@Override
 	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
 
-		// if (Configuration.DEBUG) {
-		logger.info("MyBatisIgnitePluginAdapter Generating: " + field
-				+ " class:" + field.getType().getShortName());
-		// }
+		logger.info("MyBatisIgnitePluginAdapter Generating: " + field + " name:"
+				+ field.getName() + LINE_FEED + " class:"
+				+ field.getType().getShortName());
 
 		field.setVisibility(JavaVisibility.PROTECTED);
 		if (ANNOTATAION_CLASS != null) {
@@ -192,13 +183,11 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		}
 
 		return false;
-		// super.modelFieldGenerated(field, topLevelClass,
-		// introspectedColumn, introspectedTable, modelClassType);
 	}
 
 	private String getEnumHandling(String enumName, String tableName) {
 		tableName = tableName.substring(TABLE_NAME_PREFIX.length());
-		tableName = StringTool.convertDBtoJavaStyleConvention(tableName);
+		tableName = DBGen.camelize(tableName);
 		tableName = StringTool.getUpperCaseFirstLetter(tableName.trim());
 
 		enumName = enumName.trim();

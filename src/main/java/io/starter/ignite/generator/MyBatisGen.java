@@ -38,7 +38,6 @@ public class MyBatisGen extends Gen implements Generator {
 			.getLogger(MyBatisGen.class);
 
 	List<String>					alreadyAdded	= new ArrayList<String>();	// dedupe
-																				// list
 
 	public static Map createMyBatis(Class c, MyBatisGen gen) throws Exception {
 
@@ -61,7 +60,7 @@ public class MyBatisGen extends Gen implements Generator {
 	 */
 	public static String getMyBatisModelClassName(String apiClassName) {
 		String apibn = getBaseJavaName(apiClassName);
-		String ret = StringTool.proper(SCHEMA_NAME);
+		String ret = StringTool.proper(schemaName);
 		return ret + apibn;
 	}
 
@@ -180,7 +179,7 @@ public class MyBatisGen extends Gen implements Generator {
 	}
 
 	private static String convertToMapperSyntax(String className) {
-		return SQL_MAPS_PATH + StringTool.proper(SCHEMA_NAME) + className
+		return SQL_MAPS_PATH + StringTool.proper(schemaName) + className
 				+ "Mapper.xml";
 	}
 
@@ -194,17 +193,22 @@ public class MyBatisGen extends Gen implements Generator {
 		// dedupe
 		if (!alreadyAdded.contains(className)) {
 			alreadyAdded.add(className);
-			Element el = new Element("table").setText("1000")
-					.setAttribute("schema", SCHEMA_NAME)
+			Element el = new Element("table")
+					.setAttribute("schema", schemaName)
 					.setAttribute("tableName", Table
 							.convertToDBSyntax(className));
 
-			if (true) { // (setters.size() > 0) {
-				Element el2 = new Element("generatedKey")
-						.setAttribute("column", "id")
-						.setAttribute("sqlStatement", "JDBC");
-				el.setContent(el2);
-			}
+			// important setting for round-trip robustness
+			Element ep = new Element("property")
+					.setAttribute("name", "useActualColumnNames")
+					.setAttribute("value", "true");
+			if (MYBATIS_CASE_SENSITIVE_FIX)
+				el.addContent(ep);
+
+			Element el2 = new Element("generatedKey")
+					.setAttribute("column", "id")
+					.setAttribute("sqlStatement", "JDBC");
+			el.addContent(el2);
 
 			Element rootElement = jdo.getRootElement();
 			List<Element> listEmpElement = rootElement.getChildren();

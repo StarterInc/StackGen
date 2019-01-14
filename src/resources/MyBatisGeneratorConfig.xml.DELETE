@@ -8,77 +8,77 @@
     <!-- TODO <plugin type="io.starter.ignite.generator.MyBatisIgnitePluginAdapter"> 
 			<property name="annotationClass" value="io.starter.ignite.security.securefield.SecureField" 
 			/> <property name="annotationString" value="@SecureField" /> </plugin> -->
-    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://${dbUrl}:3306/${dbName}?autoReconnect=true" userId="${dbUser}" password="${dbPassword}" />
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://${RDS_HOSTNAME}:3306/${RDS_DB_NAME}?autoReconnect=true" userId="${RDS_USERNAME}" password="${RDS_PASSWORD}" />
     <!-- Model Class -->
-    <javaModelGenerator targetPackage="io.starter.${artifactId}.model.dao" targetProject="${myBatisMain}main/java">
-      <property name="useActualColumnNames" value="true" />
+    <javaModelGenerator targetPackage="io.starter.${ARTIFACT_ID}.model.dao" targetProject="${MYBATIS_MAIN}main/java">
       <property name="enableSubPackages" value="false" />
       <property name="trimStrings" value="true" />
       <property name="rootClass" value="io.starter.ignite.model.DataModelBase" />
       <property name="type" value="io.starter.ignite.generator.MyBatisIgnitePluginAdapter" />
       <property name="addRemarkComments" value="true" />
     </javaModelGenerator>
-    <sqlMapGenerator targetPackage="io.starter.${artifactId}.sqlmaps" targetProject="${myBatisMain}main/resources" />
-    <javaClientGenerator targetPackage="io.starter.${artifactId}.model.dao" targetProject="${myBatisMain}main/java" type="XMLMAPPER">
-      <property name="useActualColumnNames" value="true" />
-    </javaClientGenerator>
-    <table schema="${artifactId}" tableName="PLACEHOLDER_NODE" modelType="hierarchical" />
-    <table schema="starter" tableName="starter$_order">
+    <sqlMapGenerator targetPackage="io.starter.${ARTIFACT_ID}.sqlmaps" targetProject="${MYBATIS_MAIN}main/resources" />
+    <javaClientGenerator targetPackage="io.starter.${ARTIFACT_ID}.model.dao" targetProject="${MYBATIS_MAIN}main/java" type="XMLMAPPER" />
+    <table schema="${ARTIFACT_ID}" tableName="PLACEHOLDER_NODE" />
+    <table schema="starter" tableName="starter$order">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_model_api_response">
+    <table schema="starter" tableName="starter$model_api_response">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_audit_log">
+    <table schema="starter" tableName="starter$audit_log">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_tag">
+    <table schema="starter" tableName="starter$tag">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_organization">
+    <table schema="starter" tableName="starter$organization">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_category">
+    <table schema="starter" tableName="starter$category">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_user">
+    <table schema="starter" tableName="starter$user">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_account">
+    <table schema="starter" tableName="starter$account">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_data">
+    <table schema="starter" tableName="starter$data">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_ledger_entry">
+    <table schema="starter" tableName="starter$trade">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_work_flows">
+    <table schema="starter" tableName="starter$ledger_entry">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_contact_method">
+    <table schema="starter" tableName="starter$work_flows">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_api_spec">
+    <table schema="starter" tableName="starter$contact_method">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_content">
+    <table schema="starter" tableName="starter$content">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_item">
+    <table schema="starter" tableName="starter$item">
+      <generatedKey column="id" sqlStatement="JDBC" />
+    </table>
+    <table schema="starter" tableName="starter$exchange">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
   </context>
   <!-- <context id="wp_context"> <jdbcConnection driverClass="com.mysql.jdbc.Driver" 
-		connectionURL="jdbc:mysql://chukl.es:3306/${dbName}" userId="${dbName}_user" 
+		connectionURL="jdbc:mysql://chukl.es:3306/${RDS_DB_NAME}" userId="${RDS_DB_NAME}_user" 
 		password="abcdefg"> </jdbcConnection> <javaModelGenerator targetPackage="io.starter.wp_model" 
-		targetProject="${dbName}/src/main/java" /> <sqlMapGenerator targetPackage="io.starter.wp_sqlmaps" 
-		targetProject="${dbName}/src/main/java"></sqlMapGenerator> <javaClientGenerator 
-		targetPackage="io.starter.wp_dao" targetProject="${dbName}/src/main/java" 
-		type="XMLMAPPER" /> <table schema="${dbName}" tableName="wp_posts"> 
-		<generatedKey column="ID" sqlStatement="JDBC" /> </table> <table schema="${dbName}" 
+		targetProject="${RDS_DB_NAME}/src/main/java" /> <sqlMapGenerator targetPackage="io.starter.wp_sqlmaps" 
+		targetProject="${RDS_DB_NAME}/src/main/java"></sqlMapGenerator> <javaClientGenerator 
+		targetPackage="io.starter.wp_dao" targetProject="${RDS_DB_NAME}/src/main/java" 
+		type="XMLMAPPER" /> <table schema="${RDS_DB_NAME}" tableName="wp_posts"> 
+		<generatedKey column="ID" sqlStatement="JDBC" /> </table> <table schema="${RDS_DB_NAME}" 
 		tableName="wp_term_taxonomy"> <generatedKey column="term_taxonomy_id" sqlStatement="JDBC" 
-		/> </table> <table schema="${dbName}" tableName="wp_postmeta"> <generatedKey 
+		/> </table> <table schema="${RDS_DB_NAME}" tableName="wp_postmeta"> <generatedKey 
 		column="meta_id" sqlStatement="JDBC" /> </table> </context> -->
 </generatorConfiguration>
 

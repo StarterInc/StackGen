@@ -21,8 +21,9 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 
 import io.starter.ignite.generator.DMLgenerator.Table;
+import io.starter.ignite.model.DataField;
 import io.starter.ignite.security.dao.ConnectionFactory;
-import io.starter.toolkit.StringTool;
+import io.starter.ignite.security.securefield.SecureField;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -72,7 +73,7 @@ public class DBGen extends Gen implements Generator {
 	@Override
 	public Object createMember(Field f) {
 
-		String colName = StringTool.convertJavaStyletoDBConvention(f.getName());
+		String colName = decamelize(f.getName());
 		Class<?> colType = f.getType();
 
 		String colTypeName = colType.getName();
@@ -80,7 +81,7 @@ public class DBGen extends Gen implements Generator {
 		if (pos > 0) {
 			colTypeName = colTypeName.substring(pos);
 		}
-		colTypeName = StringTool.replaceText(colTypeName, ";", "");
+		colTypeName = colTypeName.replace(";", "");
 
 		// get the annotation
 
@@ -132,29 +133,50 @@ public class DBGen extends Gen implements Generator {
 		int minleng = 0;
 		double minVal = 0d;
 		double maxVal = Double.MAX_VALUE;
+		boolean isSecure = false;
+		boolean isDataField = false;
 
+		SecureField sanno = null;
+		try {
+			sanno = Gen.getSecureFieldAnnotation(f);
+			isSecure = sanno != null && sanno.enabled();
+		} catch (NoSuchMethodException nsme) {
+			// normal, no SecureField
+		} catch (SecurityException e) {
+			logger.warn("Problem getting SecureField Annotation on: "
+					+ f.getName() + " " + e.toString());
+			e.printStackTrace();
+		}
+
+		DataField danno = null;
+		try {
+			danno = Gen.getDataFieldAnnotation(f);
+			isDataField = danno != null; // danno.annotationType();
+		} catch (NoSuchMethodException nsme) {
+			// normal, no SecureField
+		} catch (SecurityException e) {
+			logger.warn("Problem getting DataField Annotation on: "
+					+ f.getName() + " " + e.toString());
+			e.printStackTrace();
+		}
 		ApiModelProperty anno = null;
 		try {
 			anno = Gen.getApiModelPropertyAnnotation(f);
 		} catch (NoSuchMethodException nsme) {
 			// normal, no getter
 		} catch (SecurityException e) {
-			logger.info("Problem processing Annotation on: " + f.getName()
-					+ " " + e.toString());
+			logger.warn("Problem getting Annotation on: " + f.getName() + " "
+					+ e.toString());
 			e.printStackTrace();
 		}
 
 		if (anno != null) {
-
 			notes = (anno.notes().equals("") ? notes : anno.notes());
 			nullable = anno.required();
 			leng = anno.maxLength();
-
 			// TODO: implement other configs
 			minleng = anno.minLength();
-
 			minVal = anno.minValue();
-
 			maxVal = anno.maxValue();
 		}
 
@@ -174,11 +196,12 @@ public class DBGen extends Gen implements Generator {
 		dml = dml.replace("${DEFAULT}", defaultval);
 
 		// TODO: implement a smarter way to handle crypto expansion
-		leng *= 5;
+		if (isSecure) // give extra room for ciphertext bytes
+			leng *= DB_ENCRYPTED_COLUMN_MULTIPLIER;
 
 		// Column length too big for column 'NAME' (max = 65535);
 		// use BLOB or TEXT instead
-		if (leng > 21844 && !rerun) {
+		if (leng > 1280 && !rerun) {
 			dml = configureDML(f, Table.myMap.get("Text"), true);
 		} else {
 			dml = dml.replace("${MAX_LENGTH}", (leng > 0 ? leng + "" : ""));
@@ -216,17 +239,18 @@ public class DBGen extends Gen implements Generator {
 			String colName = o.toString();
 			colName = colName.substring(0, colName.indexOf(" "));
 			if (colName.equalsIgnoreCase("id")) {
-				extraColumnDML += "Configuration.LINEFEED" + Table.myMap.get("pkid");
+				extraColumnDML += Configuration.LINE_FEED
+						+ Table.myMap.get("pkid");
 			}
 			tableDML += ",";
-			tableDML += "Configuration.LINEFEED";
+			tableDML += Configuration.LINE_FEED;
 		}
 
 		// indexes
 		tableDML += extraColumnDML;
 		if (!isEmpty) {
 			tableDML = tableDML.substring(0, tableDML.lastIndexOf(","));
-			tableDML += "Configuration.LINEFEED";
+			tableDML += Configuration.LINE_FEED;
 		} else {
 			return;
 		}
@@ -241,9 +265,9 @@ public class DBGen extends Gen implements Generator {
 		List<String> triedList = new ArrayList<String>();
 
 		// log the DML for troubleshooting
-		if (Configuration.DEBUG) {
+		if (Configuration.debug) {
 			FileUtils.writeStringToFile(new File("IgniteDML.sql"), tableDML
-					+ "Configuration.LINEFEED", true);
+					+ Configuration.LINE_FEED, true);
 		}
 
 		try {
@@ -252,10 +276,9 @@ public class DBGen extends Gen implements Generator {
 			logger.info("SUCCESS: creating table for: " + className);
 
 		} catch (Exception e) {
-			if (e.toString().contains("already exists")
-					&& DROP_EXISTING_TABLES) {
+			if (e.toString().contains("already exists") && dbGenDropTable) {
 				logger.info("Table for: " + className + " already exists.");
-				if (!triedList.contains(className) && DROP_EXISTING_TABLES) {
+				if (!triedList.contains(className) && dbGenDropTable) {
 
 					if (renameTable(className, triedList)) {
 
@@ -270,9 +293,10 @@ public class DBGen extends Gen implements Generator {
 							+ className);
 				}
 			} else {
-				logger.warn("Failed to execute DML for: " + className + " -- "
-						+ ConnectionFactory.toConfigString() + "Configuration.LINEFEED"
-						+ e.getMessage());
+				logger.error("Failed to execute DML for: " + className + " -- "
+						+ ConnectionFactory.toConfigString()
+						+ Configuration.LINE_FEED + e.getMessage()
+						+ Configuration.LINE_FEED + tableDML);
 			}
 		}
 	}
@@ -331,5 +355,62 @@ public class DBGen extends Gen implements Generator {
 			createTableFromClass(loadedClass, gen);
 		}
 		classLoader.close();
+	}
+
+	/**
+	 * converts java member naming convention
+	 * to underscored DB-style naming convention
+	 * 
+	 * ie: take upperCamelCase and turn into upper_camel_case
+	 */
+	public static String decamelize(String name) {
+		if (name.equals(name.toLowerCase())
+				|| name.equals(name.toUpperCase())) { // case insensitive
+			return name;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		int x = 0;
+		for (char c : name.toCharArray()) {
+			if (Character.isUpperCase(c)) {
+				sb.append('_');
+				sb.append(c);
+			} else {
+				if (c != '_')
+					sb.append(c);
+			}
+			x++;
+		}
+		String ret = sb.toString();
+		if (COLUMNS_UPPERCASE) {
+			ret = ret.toUpperCase();
+		} else {
+			ret = ret.toLowerCase();
+		}
+		return ret;
+	}
+
+	/**
+	 * converts java member naming convention to underscored DB-style naming
+	 * convention
+	 * 
+	 * ie: take upperCamelCase and turn into upper_camel_case
+	 */
+	public static String camelize(String in) {
+		StringBuilder sb = new StringBuilder();
+		boolean capitalizeNext = false;
+		for (char c : in.toCharArray()) {
+			if (c == '_') {
+				capitalizeNext = true;
+			} else {
+				if (capitalizeNext) {
+					sb.append(Character.toUpperCase(c));
+					capitalizeNext = false;
+				} else {
+					sb.append(c);
+				}
+			}
+		}
+		return sb.toString();
 	}
 }

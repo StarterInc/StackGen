@@ -13,6 +13,7 @@ import io.starter.ignite.generator.SwaggerGen;
 import io.swagger.codegen.DefaultGenerator;
 import io.swagger.codegen.InlineModelResolver;
 import io.swagger.models.ArrayModel;
+import io.swagger.models.ComposedModel;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.Operation;
@@ -45,6 +46,13 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		return this;
 	}
 
+	public void preprocessSwagger() {
+		String port = (System.getProperty("hostPort") != null
+				? System.getProperty("hostPort")
+				: Configuration.defaultPort);
+		config.additionalProperties().put("serverPort", port);
+	}
+
 	@Override
 	public List<File> generate() {
 
@@ -59,6 +67,9 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		if (generateStarterModelEnhancements) {
 			enhanceSwagger();
 		}
+
+		// some static settings
+		preprocessSwagger();
 
 		// resolve inline models
 		InlineModelResolver inlineModelResolver = new InlineModelResolver();
@@ -257,6 +268,9 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		// Load
 		Operation loadOp = createCRUDOp(k, "load", "Load a " + k
 				+ " from the system", getIdPathParameter());
+		ComposedModel mxt = new ComposedModel();
+		mxt.setReference(k);
+		r.setResponseSchema(mxt);
 		loadOp.response(200, r);
 		ops.setGet(loadOp);
 		return ops;
@@ -283,16 +297,21 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		 * items:
 		 * $ref: '#/definitions/Data'
 		 */
+		// RefModel m = new RefModel();
+		// m.set$ref("#/definitions/" + k);
+		// m.setReference(k);
+		// r.responseSchema(m); // (Model) apx);
+
 		ArrayModel mx = new ArrayModel();
+		mx.setReference(k);
+		StringProperty p = new StringProperty("#/definitions/" + k);
+		mx.setItems(p);
+		r.setResponseSchema(mx);
+
 		ArrayProperty apx = new ArrayProperty();
 		// apx.setItems(new Property().description("yo").);
 
-		RefModel m = new RefModel();
-		m.set$ref("#/definitions/" + k);
-		m.setReference(k);
-		r.responseSchema(m); // (Model) apx);
-
-		PathParameter p = getSearchPathParameter();
+		PathParameter px = getSearchPathParameter();
 
 		// List createa a new list path
 		Operation listOp = new Operation();
@@ -300,7 +319,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		listOp.setSummary("Listing");
 		// listOp.addTag("list-tag"); // causes dupe method gen
 		listOp.operationId("list");
-		listOp.addParameter(p);
+		listOp.addParameter(px);
 		listOp.addResponse("200", r);
 
 		// security
@@ -339,16 +358,14 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		Property value = PropertyBuilder.build("integer", "int64", args);
 		m.addProperty("keyVersion", value);
 
-		// keyVersion
+		// keySpec
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The spec of the SecureField key used to crypt this row (generated)");
 		// args.put(PropertyBuilder.PropertyId.MIN_LENGTH, "200");
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "dev");
 		args.put(PropertyBuilder.PropertyId.EXAMPLE, "{keyOwner:111, keySource:'session | system'}");
-
 		value = PropertyBuilder.build("string", "", args);
-		m.addProperty("keyVersion", value);
-		// maprops.put("keySpec", value);
+		m.addProperty("keySpec", value);
 
 		// OwnerId
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();

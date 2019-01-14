@@ -16,7 +16,7 @@ spring.boot.admin.notify.mail.to=admin@example.com
 spring.boot.admin.notify.mail.enabled=true
 
 spring.boot.admin.routes.endpoints=env, metrics, trace, jolokia, info, configprops
-
+spring.boot.admin.client.url: "http://${admin.server.host}:${admin.server.port}"
 
 #
 # SECURITY

@@ -44,10 +44,9 @@ configurator.setLibrary(SWAGGER_LIB);
 #### Step 0: Download and Install Ignite Dev Prerequisites
 
 - Java8+ JDK Installed
-[Linux] (TODO LINUX) | [OSX] (TODO OSX) | [Windows] (TODO WIN)
 
 - Apache Maven Installed
-[Linux] (TODO LINUX) | [Windows] (TODO WIN)
+
 INSTALL Maven (for building latest and running Spring boot)
 
 Linux:
@@ -69,7 +68,6 @@ git clone https://github.com/StarterInc/Ignite.git
 ```
 
 - Install Node and NPM
-[Linux] (TODO LINUX) | [OSX] (TODO OSX) | [Windows] (TODO WIN)
 
 OSX (Homebrew install prerequisite):
 ```
@@ -77,15 +75,7 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 brew install node
 ```
 
-- (optional) Install IDE(s)
-
-- (optional) Install MySQL Workbench
-[Linux] (TODO LINUX) | [OSX] (TODO OSX) | [Windows] (TODO WIN)
-
-- (optional) Create LightSail AWS Development Server
-[Linux] (TODO LINUX) | [OSX] (TODO OSX) | [Windows] (TODO WIN)
-
-> NOTE: Currently Ignite supports generation of MySQL database schemas.
+> NOTE: Currently Ignite is configured for generation of MySQL database schemas.
 
 **Roadmap** Support for PostgreSQL, Oracle, and noSQL databases TBD
 
@@ -239,14 +229,4 @@ through a RESTful api/service or both, depending upon your application architect
 
 #### Resources
 
-Using Starter Ignite, you should experience a significant boost in productivity
-when building database applications and services.
-
-The benefits of declaring your Object and API definitions in a human-readable
-text file format, and regenerating as much of the "plumbing" code as possible
-when changes are made, become even more compelling as application complexity
-increases.
-
-Build on robust, industry-standard libraries and platforms such as Swagger CodeGen
-Apache Spring, and MyBatis ORM, Starter Ignite aims to give you a solid foundation for
-building sophisticated and secure applications for any purpose.
+The benefits of declaring your Object and API definitions in a human-readable text file format, and regenerating as much code as possible when changes are made, is even more compelling as application complexity increases.

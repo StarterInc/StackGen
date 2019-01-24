@@ -2,20 +2,21 @@
     <img src="https://github.com/StarterInc/Ignite/blob/gh-pages/logos/logo-1024.png?raw=true" alt="Logo"/>
 </div>
 
-# Starter Ignite App Generator
+# Starter Ignite Service Model Generator
 
-## Use OpenAPI for Design-First Low Code Development
+## Generate Apps from OpenAPI/Swagger spec files for Design-First Low Code Development (LCDP)
 
-Generate full stack RESTful MicroServices using simple text files to define your model.
+Delivers on the power of automation by taking input OpenAPI/Swagger spec file and generating a full-stack Spring Boot microservice.
 
-# Don't refactor... Regenerate!!
+Generates Spring MVC/Model Objects and publishes via REST apis. Full stack RESTful MicroServices using simple text files to define your data models.
+
+### Don't refactor... Regenerate!
 
  Generate an app from swagger YAML
  *   - YAML -> Swagger client
  *   - Swagger Client -> entity classes
  *   - Swagger Client -> DML for database
  *   - Swagger CLient -> React-native JS screens
-
 
 #### Introduction
 

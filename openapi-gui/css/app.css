@@ -1,0 +1,113 @@
+body {
+  padding-bottom: 40px;
+  color:'red';
+  background-color:'#222222';
+}
+
+.resource {
+  clear: both;
+  padding-bottom:10px;
+}
+
+.method-container {
+  padding-bottom:10px;
+}
+
+.method-body {
+  padding-bottom:10px;
+}
+
+.service-input {
+  width:100%;
+  height:400px;
+}
+
+.accordion-heading  {
+  display:table;
+  vertical-align: middle;
+  width:100%;
+}
+
+.accordion-heading > .accordion-handle {
+  display:table-cell;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+.accordion-heading > .accordion-toggle {
+  display:table-cell;
+  padding: 10px;
+  width:100%;
+  vertical-align: middle;
+}
+
+.accordion-heading > .accordion-buttons {
+  display:table-cell;
+  padding-right: 5px;
+  vertical-align: middle;
+  float: right;
+}
+
+.block-container {
+  display: block;
+  white-space:nowrap;
+}
+
+.tab-container {
+  justify-content: flex-start;
+}
+
+.btn {
+  padding-left: 15px;
+}
+
+.navbar-brand {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+summary:focus {
+  outline: none;
+}
+
+#loading {
+  padding-top: 50px;
+  width: 40%;
+}
+
+.menu-small {
+  font-size: 18px;
+  line-height: 1em;
+}
+
+.menu-small .menu-list a {
+  word-wrap : break-word;
+  padding: 0px;
+}
+
+.hidden {
+  display: none;
+}
+
+.box {
+  color: '#ffffff';
+  font-size: 13pt;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.boxsep {
+  margin-bottom: 10px;
+}
+
+#schemaContainer {
+  width: 400px;
+  height: 400px;
+}
+
+a {
+  color: #222222; /* OAI green1, 2 is #45512c, 3 is #8ad000 */
+}
+
+.tabs li.is-active a {
+  color: #aaaaaa; /* OAI green1 */
+}

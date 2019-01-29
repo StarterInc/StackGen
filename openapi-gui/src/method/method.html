@@ -1,0 +1,461 @@
+<div class="accordion-group box">
+    <div class='accordion-heading'>
+
+        <a class="icon" data-toggle="collapse" data-balloon="Toggle operation" :data-target="hashUid" v-on:click="toggleBody()">
+            <i class="fa fa-reorder accordion-handle method-handle"></i>
+        </a>
+
+        <span><b>Operation:</b>
+            <span class="control">
+            <a class="icon" data-balloon="Add operation" v-on:click="addOperation()"><i class="fa fa-fw fa-plus"></i></a>
+            </span>
+            <a class='icon' data-balloon="Duplicate operation" v-on:click="duplicateOperation(method)"><i class="fa fa-fw fa-copy"></i></a>
+            <a class='icon is-danger' data-balloon="Remove operation" v-on:click="removeOperation(index)"><i class="fa fa-fw fa-trash"></i></a>
+            <a class="accordion-toggle" data-balloon="Toggle operation" data-toggle="collapse" :data-target="hashUid" v-on:click="toggleBody()">
+                <span class='methodNameSpan'>{{httpMethod}} {{method.operationId}}</span>
+            </a>
+        </span>
+
+        <div class="accordion-buttons">
+            <div class="block-container">
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-body collapse method-body" :id="_uid">
+        <div v-if="visible" class="accordion-inner">
+
+            <ul id="method-tabs" class='tabs is-boxed tab-container'>
+                <li class="tabItem method-tab is-active tabItem-method-main">
+                    <a class="tabSelect" href="#" v-on:click="selectTab('main',$event)">
+                        <span class="icon is-small"><i class="fa fa-cog"></i></span>
+                        <span>Main</span>
+                    </a>
+                </li>
+                <li class="tabItem method-tab tabItem-method-description">
+                    <a class="tabSelect" href="#" v-on:click="selectTab('description',$event)">
+                        <span class="icon is-small"><i class="fa fa-comment"></i></span>
+                        <span>Description</span>
+                    </a>
+                </li>
+                <li class="tabItem method-tab tabItem-method-docs">
+                    <a class="tabSelect" href="#" v-on:click="selectTab('docs',$event)">
+                        <span class="icon is-small"><i class="fa fa-book"></i></span>
+                        <span>Docs</span>
+                    </a>
+                </li>
+                <li class="tabItem method-tab tabItem-method-parameters">
+                    <a class="tabSelect" href="#" v-on:click="selectTab('parameters',$event)">
+                        <span class="icon is-small"><i class="fa fa-list"></i></span>
+                        <span>Parameters</span>
+                    </a>
+                </li>
+                <li class="tabItem method-tab tabItem-method-requestbodies">
+                    <a class="tabSelect" href="#" v-on:click="selectTab('requestbodies',$event)">
+                        <span class="icon is-small"><i class="fa fa-question"></i></span>
+                        <span>Request Body</span>
+                    </a>
+                </li>
+                <li class="tabItem method-tab tabItem-method-responses">
+                    <a class="tabSelect" href="#" v-on:click="selectTab('responses',$event)">
+                        <span class="icon is-small"><i class="fa fa-thumbs-o-up"></i></span>
+                        <span>Responses</span>
+                    </a>
+                </li>
+                <li class="tabItem method-tab tabItem-method-security">
+                    <a class="tabSelect" href="#" v-on:click="selectTab('security',$event)">
+                        <span class="icon is-small"><i class="fa fa-lock"></i></span>
+                        <span>Security</span>
+                    </a>
+                </li>
+                <li class="tabItem method-tab tabItem-method-links">
+                    <a class="tabSelect" href="#" v-on:click="selectTab('links',$event)">
+                        <span class="icon is-small"><i class="fa fa-link"></i></span>
+                        <span>Links</span>
+                    </a>
+                </li>
+                <li class="tabItem method-tab tabItem-method-callbacks">
+                    <a class="tabSelect" href="#" v-on:click="selectTab('callbacks',$event)">
+                        <span class="icon is-small"><i class="fa fa-chevron-circle-left"></i></span>
+                        <span>Callbacks</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="method-pane method-pane-main">
+                <div class="field is-grouped">
+                    <div class='control is-horizontal'>
+                        <label class='label field-label is-normal'>Method</label>
+                        <div class='control field-body'>
+                            <div class="select">
+                            <select v-model="httpMethod">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="HEAD">HEAD</option>
+                                <option value="PATCH">PATCH</option>
+                                <option value="OPTIONS">OPTIONS</option>
+                                <option value="TRACE">TRACE</option>
+                            </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='control is-horizontal is-expanded'>
+                        <label class='label field-label is-normal'> OperationId </label>
+                        <div class='field-body'>
+                            <input class='input methodName' v-model="method.operationId">
+                        </div>
+                    </div>
+                    <div class='control is-horizontal'>
+                        <label class='field-label label is-normal'> Deprecated </label>
+                        <div class='field-body'>
+                            <input type='checkbox' class='checkbox' v-model='method.deprecated'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="method-pane method-pane-description hidden">
+                <div class='field is-horizontal'>
+                    <label class='is-normal label field-label'> Summary </label>
+                    <div class='field-body'>
+                        <input class="input" v-model="method.summary">
+                    </div>
+                </div>
+                <div class='field is-horizontal'>
+					<div class="field-label is-normal">
+                  	  <label class='label'> Description </label>
+						<span class="icon" data-balloon="Preview markdown"><a v-on:click="markdownPreview()"><i class='fa fa-check-circle'></i></a></span>
+					</div>
+                    <div class="field-body">
+                        <textarea class="textarea" :id="descId" v-model="method.description"></textarea>
+                    </div>
+                </div>
+                <div class='field is-horizontal'>
+				    <div class="field-label is-normal">
+                  	  <label class='label'> Tags </label>
+					</div>
+                    <div class="field-body">
+                    <b-field>
+                    <b-taginput horizontal=true v-model="vtags" icon="label"
+                        placeholder="Add a tag"
+                        autocomplete :data="mtags" allow-new=true
+                        type="is-success"></b-taginput>
+                    </b-field>
+                    </div>
+                </div>
+            </div>
+
+            <div class="method-pane method-pane-docs hidden">
+                <div class="none">
+                    <div class='field is-horizontal'>
+                        <label class='label field-label is-normal'> Docs Description </label>
+                        <div class='field-body'>
+                            <textarea class="textarea" v-model="method.externalDocs.description"></textarea>
+                        </div>
+                    </div>
+                    <div class='field is-horizontal'>
+                        <label class='label field-label is-normal'> Docs URL </label>
+                        <div class='field-body control has-icons-left'>
+                            <input type="url" class="input" v-model="method.externalDocs.url">
+                            <span class="icon is-small is-left"><i class="fa fa-link"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="method-pane method-pane-parameters hidden">
+                <div class="card" v-if="method.parameters.length==0">
+                    <div class="card-content">
+                        <p class="title">
+                        <a v-bind:href="specLink('#parametersObject')">OpenAPI Specification Parameters Object</a>
+                        </p>
+                        <p class="subtitle">
+                            There are no parameters defined for this operation.
+                        </p>
+                    </div>
+                    <footer class="card-footer">
+                        <p class="card-footer-item">
+                        <a v-on:click="addParameter()"><span class="button is-primary"><i class="fa fa-fw fa-plus"></i>Create Parameter</span></a>
+                        </p>
+                    </footer>
+                </div>
+                <div class="sortable-params" v-for="(parameter,index) in method.parameters">
+                    <api-parameter :parameter="parameter" :index='index'></api-parameter>
+                </div>
+            </div>
+
+            <div class="method-pane method-pane-requestbodies hidden">
+                <div class="card" v-if="!method.requestBody">
+                    <div class="card-content">
+                        <p class="title">
+                        <a v-bind:href="specLink('#requestBodyObject')">OpenAPI Specification requestBody Object</a>
+                        </p>
+                        <p class="subtitle">
+                            There is no requestBody defined. RequestBodies on GET and DELETE operations SHALL be ignored.
+                        </p>
+                    </div>
+                    <footer class="card-footer">
+                        <p class="card-footer-item">
+                        <a v-on:click="addRequestBody()"><span class="button is-primary"><i class="fa fa-fw fa-plus"></i>Create Request Body</span></a>
+                        </p>
+                    </footer>
+                </div>
+                <div class="box" v-if="method.requestBody">
+                    <div class="field is-horizontal is-grouped">
+                        <div class="control">
+                            <label class='label field-label is-normal'>Description</label>
+                        </div>
+                        <div class="control is-expanded">
+                            <div class='field-body'>
+                                <textarea class="textarea" v-model="effectiveRequestBody.description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field is-horizontal is-grouped">
+                        <div class="control">
+                            <label class='label field-label is-normal'>Required</label>
+                        </div>
+                        <div class="control is-expanded">
+                            <div class='field-body'>
+                                <input type="checkbox" class="checkbox" v-model="effectiveRequestBody.required">
+                            </div>
+                        </div>
+                    </div>
+
+                    <api-mediatype v-for="(content, mediatype) in effectiveRequestBody.content"
+                        :content="content" :key="mediatype" :mediatype="mediatype" :container="effectiveRequestBody" inline-template>
+                        <div class="box">
+                            <div class='field level is-horizontal is-grouped'>
+                                <div class="control">
+                                    <span class="icon" data-balloon="Add media-type"><a v-on:click="addMediaType()"><i class="fa fa-fw fa-plus"></i></a></span>
+                                </div>
+                                <div class="control">
+                                    <span class="icon" data-balloon="Duplicate media-type"><a v-on:click="duplicateMediaType()"><i class="fa fa-fw fa-copy"></i></a></span>
+                                </div>
+                                <div class="control">
+                                    <span class="icon" :data-balloon="schemaTooltip"><a v-on:click="editMediaType(mediatype)"><i class="fa fa-fw fa-edit"></i></a></span>
+                                </div>
+                                <div class="control">
+                                    <span class="icon" data-balloon="Remove media-type"><a v-on:click="removeMediaType()"><i class="fa fa-fw fa-trash"></i></a></span>
+                                </div>
+                                <div class="control">
+                                    <label class='label field-label is-normal'>Media-Type</label>
+                                </div>
+                                <div class="control is-expanded">
+                                    <div class='field-body'>
+                                        <input class="input" placeholder="Required" v-model.lazy="mediaTypeName">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </api-mediatype>
+                </div>
+            </div>
+
+            <div class="method-pane method-pane-responses hidden">
+                <api-response v-for="(response, status) in method.responses"
+                    :response="response" :key="status" :status="status" :method="method" inline-template>
+                    <div class="box">
+                        <div class='field level is-horizontal is-grouped'>
+                            <div class="control">
+                                <span class="icon" data-balloon="Add response"><a v-on:click="addResponse()"><i class="fa fa-fw fa-plus"></i></a></span>
+                            </div>
+                            <div class="control">
+                                <span class="icon" data-balloon="Duplicate response"><a v-on:click="duplicateResponse()"><i class="fa fa-fw fa-copy"></i></a></span>
+                            </div>
+                            <div class="control">
+                                <span class="icon" data-balloon="Remove response"><a v-on:click="removeResponse()"><i class="fa fa-fw fa-trash"></i></a></span>
+                            </div>
+                            <div class="control">
+                                <label class='label field-label is-normal'>Status&nbsp;Code </label>
+                            </div>
+                            <div class="field">
+                                <div class='field-body'>
+                                    <input class="input" size="3" v-model.lazy="statusCode">
+                                </div>
+                            </div>
+                            <div class="control">
+                                <label class='label field-label is-normal'>&nbsp;Description</label>
+                            </div>
+                            <div class="control is-expanded">
+                                <div class='field-body'>
+                                    <input class="input" placeholder="Required" v-model="response.description">
+                                </div>
+                            </div>
+                        </div>
+						<div class="box">
+                          <div class="card" v-if="!response.content || Object.keys(response.content).length == 0">
+                            <div class="card-content">
+                              <p class="title">
+                                <a v-bind:href="specLink('#mediaTypeObject')">OpenAPI Specification MediaType Object</a>
+                              </p>
+                              <p class="subtitle">
+                                There are no media-types defined (they are optional).
+                              </p>
+                            </div>
+                            <footer class="card-footer">
+                              <p class="card-footer-item">
+                                <a v-on:click="addMediaType()"><span class="button is-primary"><i class="fa fa-fw fa-plus"></i>Create MediaType</span></a>
+                              </p>
+                            </footer>
+                          </div>
+                            <api-mediatype v-for="(content, mediatype) in response.content"
+                                :content="content" :key="mediatype" :mediatype="mediatype" :container="response" inline-template>
+                                <div class="box">
+                                    <div class='field level is-horizontal is-grouped'>
+                                        <div class="control">
+                                            <span class="icon" data-balloon="Add media-type"><a v-on:click="addMediaType()"><i class="fa fa-fw fa-plus"></i></a></span>
+                                        </div>
+                                        <div class="control">
+                                            <span class="icon" data-balloon="Duplicate media-type"><a v-on:click="duplicateMediaType()"><i class="fa fa-fw fa-copy"></i></a></span>
+                                        </div>
+                                        <div class="control">
+                                            <span class="icon" :data-balloon="schemaTooltip"><a v-on:click="editMediaType(mediatype)"><i class="fa fa-fw fa-edit"></i></a></span>
+                                        </div>
+                                        <div class="control">
+                                            <span class="icon" data-balloon="Remove media-type"><a v-on:click="removeMediaType()"><i class="fa fa-fw fa-trash"></i></a></span>
+                                        </div>
+                                        <div class="control">
+                                            <label class='label field-label is-normal'>Media-Type</label>
+                                        </div>
+                                        <div class="control is-expanded">
+                                            <div class='field-body'>
+                                                <input class="input" placeholder="Required" v-model.lazy="mediaTypeName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </api-mediatype>
+						</div>
+                    </div>
+                </api-response>
+            </div>
+
+            <div class="method-pane method-pane-callbacks hidden container is-fluid">
+                <div class="card" v-if="!method.callbacks || Object.keys(method.callbacks).length == 0">
+                    <div class="card-content">
+                        <p class="title">
+                        <a v-bind:href="specLink('#callbackObject')">OpenAPI Specification Callback Object</a>
+                        </p>
+                        <p class="subtitle">
+                            There are no callbacks defined.
+                        </p>
+                    </div>
+                    <footer class="card-footer">
+                        <p class="card-footer-item">
+                        <a v-on:click="addCallback()"><span class="button is-primary"><i class="fa fa-fw fa-plus"></i>Create Callback</span></a>
+                        </p>
+                    </footer>
+                </div>
+                <div class="box" v-if="method.callbacks && Object.keys(method.callbacks).length>0">
+                    <!-- todo callbacks -->
+                    <div v-for="(callback, cbname) in method.callbacks">
+                        <div class='field level is-horizontal is-grouped'>
+                            <div class="control">
+                                <span class="icon" data-balloon="Add callback"><a v-on:click="addCallback()"><i class="fa fa-fw fa-plus"></i></a></span>
+                            </div>
+                            <div class="control">
+                                <span class="icon" data-balloon="Duplicate callback"><a v-on:click="duplicateCallback(cbname)"><i class="fa fa-fw fa-copy"></i></a></span>
+                            </div>
+                            <div class="control">
+                                <span class="icon" data-balloon="Remove callback"><a v-on:click="removeCallback(cbname)"><i class="fa fa-fw fa-trash"></i></a></span>
+                            </div>
+                            <div class="control">
+                                <label class='label field-label is-normal'>Name </label>
+                            </div>
+                            <div class="field">
+                                <div class='field-body'>
+                                    <input class="input" v-on:focus="storeCallbackName(cbname)" v-on:change="renameCallback(cbname)" v-model.lazy="cbname">
+                                </div>
+                            </div>
+                        </div>
+                        <div class='column is-2' v-if="Object.keys(callback).length==0">
+                            <a v-on:click="addCallbackURL(cbname)" class='button is-primary is-right'>
+                                <i class='fa fa-fw fa-plus'></i>
+                                Add URL Expression
+                            </a>
+                        </div>
+
+                        <div v-for="(expression, expname) in callback">
+                            <div class='box field level is-horizontal is-grouped'>
+                                <div class="control">
+                                    <span class="icon" data-balloon="Add expression"><a v-on:click="addCallbackURL(cbname)"><i class="fa fa-fw fa-plus"></i></a></span>
+                                </div>
+                                <div class="control">
+                                    <span class="icon" data-balloon="Duplicate expression"><a v-on:click="duplicateExpression(cbname,expname)"><i class="fa fa-fw fa-copy"></i></a></span>
+                                </div>
+                                <div class="control">
+                                    <span class="icon" data-balloon="Remove expession"><a v-on:click="removeExpression(cbname,expname)"><i class="fa fa-fw fa-trash"></i></a></span>
+                                </div>
+                                <div class="control">
+                                    <label class='label field-label is-normal'>URL Expression </label>
+                                </div>
+                                <div class="control is-expanded">
+                                    <div class="field-body">
+                                        <input class="input" v-on:focus="storeExpressionName(expname)" v-on:change="renameExpression(cbname,expname)" v-model.lazy="expname">
+                                    </div>
+                                </div>
+
+                                <div v-if="Object.keys(expression).length == 0">
+                                    <a v-on:click="addExpressionOperation(expression)" class='button is-primary is-right'>
+                                        <i class='fa fa-fw fa-plus'></i>
+                                        Add Operation
+                                    </a>
+                                </div>
+                            </div> <!-- expression box -->
+
+                            <div class="accordion method-container" v-for="(method,key,index) in expression">
+                                <api-method :method="method" :index="key" :maintags="maintags"></api-method>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="method-pane method-pane-security hidden container is-fluid">
+                <div class="level">
+                    <label class="label" for="chkDefault">Use default security</label>
+                    <input id="chkDefault" class="radio" type="radio" value="default" v-model="secType"/>
+                    <label class="label" for="chkNone">Disable security</label>
+                    <input id="chkNone" class="radio" type="radio" value="none" v-model="secType"/>
+                    <label class="label" for="chkCustom">Use custom security</label>
+                    <input id="chkCustom" class="radio" type="radio" value="custom" v-model="secType"/>
+                </div>
+                <div v-if="secType === 'custom'">
+                    <h4 class="none"><strong>Selected security schemes</strong></h4>
+                    <ul>
+                        <li v-for="(scheme,index) in method.security">
+                            <span class="icon" data-balloon="Remove security scheme from operation"><a v-on:click="removeSecScheme(index)"><i class="fa fa-trash"></i></a></span>
+                            <span><strong>{{Object.keys(scheme)[0]}}</strong></span>
+                            <span>{{Object.values(scheme)[0]}}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="method-pane method-pane-links hidden container is-fluid">
+                <div class="card" v-if="!method.links || Object.keys(method.links).length == 0">
+                    <div class="card-content">
+                        <p class="title">
+                        <a v-bind:href="specLink('#linksObject')">OpenAPI Specification Links Object</a>
+                        </p>
+                        <p class="subtitle">
+                            There are no links defined.
+                        </p>
+                    </div>
+                    <footer class="card-footer">
+                        <p class="card-footer-item">
+                        <a v-on:click="addLink()"><span class="button is-primary"><i class="fa fa-fw fa-plus"></i>Create Link</span></a>
+                        </p>
+                    </footer>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

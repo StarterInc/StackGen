@@ -1,0 +1,189 @@
+<div class="accordion box">
+	<div class="accordion-group">
+		<div class='accordion-heading'>
+
+			<a class="icon" data-toggle="collapse" data-balloon="Toggle parameter" :data-target="hashUid" v-on:click="toggleBody()">
+				<i class="fa fa-reorder accordion-handle param-handle"></i>
+			</a>
+
+			<span><span><b>Parameter:</b></span>
+				<a class='icon' data-balloon="Add parameter" v-on:click="addParameter()">
+					<i class="fa fa-fw fa-plus"></i>
+				</a>
+				<a class='icon' data-balloon="Duplicate parameter" v-on:click="duplicateParameter()">
+					<i class="fa fa-fw fa-copy"></i>
+				</a>
+				<a class='icon' :data-balloon="schemaTooltip" v-on:click="editSchema()">
+					<i class='fa fa-fw fa-edit'></i>
+				</a>
+				<a class='icon is-danger' data-balloon="Remove parameter" v-on:click="removeParameter()">
+					<i class="fa fa-fw fa-trash"></i>
+				</a>
+				<a class="accordion-toggle" data-balloon="Toggle parameter" data-toggle="collapse" :data-target="hashUid" v-on:click="toggleBody()">
+					<span class='parameterNameSpan'>{{parameter.name}}</span>
+				</a>
+			</span>
+
+			<div class="accordion-buttons">
+				<div class="block-container">
+					<div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="accordion-body collapse" :id="_uid">
+			<div v-if="visible" class="accordion-inner">
+
+				<div class='field is-horizontal'>
+					<label class='label field-label is-normal'> Parameter Name </label>
+					<div class='field-body'>
+						<input class="input" placeholder="Required" v-model="parameter.name" required>
+					</div>
+				</div>
+				<div class='field is-horizontal'>
+					<div class="field-label is-normal">
+						<label class='label'> Description </label>
+						<span class="icon" data-balloon="Preview markdown"><a v-on:click="markdownPreview()"><i class='fa fa-check-circle'></i></a></span>
+					</div>
+					<div class='field-body'>
+						<textarea v-model="parameter.description" :id="descId" class="textarea"></textarea>
+					</div>
+				</div>
+				<div class='field is-horizontal'>
+					<label class='label field-label is-normal'> Location </label>
+					<div class="control field-body">
+					<span class="select">
+						<select v-model="effectiveIn" required>
+                            <option value="path">Path</option>
+                            <option value="query">Query</option>
+                            <option value="header">Header</option>
+                            <option value="cookie">Cookie</option>
+                        </select>
+					</span>
+					</div>
+				</div>
+				<div class='field is-horizontal'>
+					<label class='label field-label is-normal'> Data Type </label>
+					<div class="control field-body">
+					<div class="select">
+						<select v-model="effectiveType" required>
+                            <option value="boolean">Boolean</option>
+                            <option value="string">String</option>
+                            <option value="integer">Integer</option>
+                            <option value="number">Number</option>
+                            <option value="array">Array</option>
+                            <option value="object">Object</option>
+                        </select>
+					</div>
+					</div>
+				</div>
+
+				<div class="field control level">
+					<div class="level-left">
+						<div class="level-item field is-horizontal">
+							<label class='field-label is-normal label'> Required </label>
+							<div class='field-body'>
+								<input type="checkbox" class="checkbox" v-model="effectiveRequired" :disabled="effectiveIn == 'path' ? true : false">
+							</div>
+						</div>
+						<div class="level-item field is-horizontal">
+							<label class='field-label is-normal label'> Deprecated </label>
+							<div class='field-body'>
+								<input type="checkbox" class="checkbox" v-model="parameter.deprecated">
+							</div>
+						</div>
+						<div class='level-item field is-horizontal' v-if="parameter.in == 'query'">
+							<label class='field-label is-normal label'> Allow&nbsp;Empty&nbsp;Value </label>
+							<div class='field-body'>
+								<input type="checkbox" v-model="parameter.allowEmptyValue">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class='field is-horizontal' v-if="!isComplex()">
+					<label class='label field-label is-normal'> Default Value </label>
+					<div class='field-body'>
+						<input v-model="parameter.schema.default">
+					</div>
+					<a class='button is-success pull-right' v-on:click="addEnum()">
+						<i class='icon-plus icon-white'></i> Add Enum
+					</a>
+				</div>
+				<div class='box' v-if="!isComplex() && parameter.schema && parameter.schema.enum && parameter.schema.enum.length">
+					<div v-for="(evalue,eindex) in parameter.schema.enum">
+						<div class='field is-horizontal'>
+							<div class="control">
+								<a class="icon" data-balloon="Add Enum value" v-on:click="addEnum()"><i class='fa fa-plus'></i></a>
+							</div>
+							<div class="control">
+								<a class="icon" data-balloon="Remove Enum value" v-on:click="removeEnum(eindex)"><i class='fa fa-trash'></i></a>
+							</div>
+							<label class='label field-label is-normal'> Enum Value </label>
+							<div class='field-body'>
+								<input class="input" v-model="parameter.schema.enum[eindex]">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='field is-horizontal' v-if="effectiveFormats.length">
+					<label class='label field-label is-normal'> Format </label>
+					<div class='field-body'>
+						<input type="text" v-model="parameter.format" :list="formatListId">
+						<datalist :id="formatListId">
+							<option v-for="option in effectiveFormats">{{option}}</option>
+						</datalist>
+					</div>
+				</div>
+				<div v-if="parameter.schema.type == 'string'">
+					<div class='field is-horizontal'>
+						<label class='label field-label is-normal'> Min. Length </label>
+						<div class='field-body'>
+							<input type="number" min="0" step="1" v-model="parameter.minLength">
+						</div>
+						<label class='label field-label is-normal'> Max. Length </label>
+						<div class='field-body'>
+							<input type="number" min="0" step="1" v-model="parameter.maxLength">
+						</div>
+						<label class='label field-label is-normal'> Pattern </label>
+						<div class='field-body'>
+							<input class="input" v-model="parameter.pattern">
+						</div>
+					</div>
+				</div>
+				<div v-if="parameter.schema.type == 'integer' || parameter.schema.type == 'number'">
+					<div class='field is-horizontal'>
+						<label class='label field-label is-normal'> Minimum </label>
+						<div class='field-body'>
+							<input type="number" v-model="parameter.minimum">
+						</div>
+						<label class='label field-label is-normal'> Min. Exclusive </label>
+						<div class='field-body'>
+							<input type="checkbox" class="checkbox" v-model="parameter.minExclusive">
+						</div>
+					</div>
+					<div class='field is-horizontal'>
+						<label class='label field-label is-normal'> Maximum </label>
+						<div class='field-body'>
+							<input type="number" v-model="parameter.maximum">
+						</div>
+						<label class='label field-label is-normal'> Max. Exclusive </label>
+						<div class='field-body'>
+							<input type="checkbox" class="checkbox" v-model="parameter.maxExclusive">
+						</div>
+					</div>
+					<div class='field is-horizontal'>
+						<label class='label field-label is-normal'> Multiple Of </label>
+						<div class='field-body'>
+							<input type="number" v-model="parameter.multipleOf">
+						</div>
+					</div>
+				</div>
+
+				<api-items v-if="parameter.schema.type == 'array'" :parent="parameter" :child='parameter.schema.items' :level='1'>
+				</api-items>
+
+			</div>
+		</div>
+	</div>
+</div>

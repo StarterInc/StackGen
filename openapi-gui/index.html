@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" class="has-navbar-fixed-top">
+
+<head>
+  <title>Ignite OpenAPI Modeler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf8">
+  <link href="css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/github.min.css">
+  <link href="css/buefy.min.css" rel="stylesheet">
+  <link href="css/balloon.min.css" rel="stylesheet">
+  <link href="css/jsoneditor.min.css" rel="stylesheet" type="text/css">
+  <link href="css/app.css" rel="stylesheet">
+
+  <script type='text/javascript' src='js/jquery.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.5/clipboard.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  <script type='text/javascript' src="js/js-yaml.min.js"></script>
+  <script type='text/javascript' src="js/jsonpatch.js"></script>
+  <script type='text/javascript' src="js/jsoneditor.min.js"></script>
+  <script type='text/javascript' src="data/static.js"></script>
+  <script type='text/javascript' src="js/vue.min.js"></script>
+  <script type='text/javascript' src="js/vuelidate.min.js"></script>
+  <script type='text/javascript' src="js/validators.min.js"></script>
+  <script type='text/javascript' src="js/buefy.min.js"></script>
+  <script type='text/javascript' src="js/markdown-it.min.js"></script>
+
+  <script src="src/resource/resource.js"></script>
+  <script src="src/method/method.js"></script>
+  <script src="src/parameter/parameter.js"></script>
+  <script src="src/items/items.js"></script>
+  <script src="src/app/gui.js"></script>
+
+  <script src="src/api-definition/api-definition.js"></script>
+  <script src="src/api-yaml/api-yaml.js"></script>
+
+  <script src="src/app/app.js"></script>
+
+</head>
+
+<body>
+  <div id="loading" class="section">
+  <div class="container is-fluid">
+  <article class="message">
+    <div class="message-header">
+        <p>Loading</p>
+        <button class="delete"></button>
+    </div>
+    <div class="message-body">
+      <strong>Please wait!</strong> Ignite OpenAPI Modeler is loading... <progress id="progress" class="progress is-success" value="0" max="100">0 %</progress>
+      <p>In case OpenAPI-GUI does not start, please use the <a href="/rescue.html">rescue utility</a>.</p>
+    </div>
+  </article>
+  </div>
+  </div>
+
+  <div id="main-container">
+    <gui-main :openapi='container.openapi' :importschema='importschema'></gui-main>
+  </div>
+  <script>
+      var def = [];
+      var cgData = {
+        clients : [],
+        servers : []
+      };
+      window.intelligentBackend = false;
+      function resolveDef(index) {
+        $('#progress').attr('value', parseInt($('#progress').attr('value'))+16.66);
+        def[index].resolve();
+      }
+      var zoom_level=100;
+      function zoom_page(step) {
+        // Zoom by steps in or out
+        if (zoom_level>=120 && step>0 || zoom_level<=80 && step<0) return;
+
+        // Set / reset zoom
+        if (step==0) zoom_level=100;
+        else zoom_level=zoom_level+step;
+
+        // Set page zoom via CSS
+        $('html').css({
+          transform: 'scale('+(zoom_level/100)+')', // set zoom
+          transformOrigin: '50% 0' // set transform scale base
+        });
+
+        // Adjust page to zoom width
+        if (zoom_level>100) $('body').css({ width: (zoom_level*1.2)+'%' });
+        else $('html').css({ width: '100%' });
+      }
+      $(document).ready(function(){
+
+        $.ajax('https://api.openapi-generator.tech/api/gen/clients',{
+            success: function(data) {
+                cgData.clients = data;
+            }
+        });
+        $.ajax('https://api.openapi-generator.tech/api/gen/servers',{
+            success: function(data) {
+                cgData.servers = data;
+            }
+        });
+
+        // Create the Deferred instances that can be handed to $.when()
+        for (t=0;t<8;t++) {
+          def.push($.Deferred());
+        }
+
+        // Set up the chain of events...
+        $.when(def[0], def[1], def[2], def[3], def[4], def[5], def[6], def[7]).then(function() {
+          if (screen && screen.orientation) {
+              try {
+                screen.orientation.lock('landscape');
+              }
+              catch (ex) {};
+          }
+          $(function() { $.support.transition = false; });
+          app_main();
+          if ($(window).width()<1920) zoom_page(-14.0);
+          $('#loading').hide();
+        });
+
+        // And finally: Make the actual ajax calls:
+        $('#template-gui-main').load('src/app/gui.html', function(data,status,jqXHR) {
+        if (jqXHR.getResponseHeader('X-OpenAPI-GUI')) {
+            window.intelligentBackend = true;
+        }
+        resolveDef(0); });
+        $('#template-resource').load('src/resource/resource.html', function() { resolveDef(1); });
+        $('#template-method').load('src/method/method.html', function() { resolveDef(2); });
+        $('#template-parameter').load('src/parameter/parameter.html', function() { resolveDef(3); });
+        $('#template-definition').load('src/api-definition/output.html', function() { resolveDef(4); });
+        $('#template-yaml').load('src/api-yaml/output.html', function() { resolveDef(5); });
+        $('#template-items').load('src/items/items.html', function() { resolveDef(6); });
+
+        // def(7) is our chance to load a spec from a querystring parameter
+        var loadUrl = getParameterByName('url');
+        var resolveNow = true;
+        if (loadUrl) {
+            $.ajax(loadUrl,{
+                success: function(data) {
+                    try {
+                        if (typeof data === 'string') {
+                            data = jsyaml.safeLoad(data);
+                        }
+                        if (data.swagger && (data.swagger === '2.0')) {
+                            resolveNow = false;
+                            convertOpenApi2(data,function(schema){
+                                openapi = preProcessDefinition(schema);
+                                resolveDef(7);
+                            });
+                        }
+                        else {
+                           openapi = preProcessDefinition(data);
+                        }
+                    }
+                    catch (ex) {
+                        alert(ex);
+                    }
+                },
+                complete: function() {
+                    if (resolveNow) resolveDef(7);
+                }
+            });
+        }
+        else {
+            resolveDef(7);
+        }
+
+      });
+  </script>
+  <div class="hidden">
+    <div id="template-gui-main"></div>
+    <div id="template-resource"></div>
+    <div id="template-method"></div>
+    <div id="template-parameter"></div>
+    <div id="template-definition"></div>
+    <div id="template-yaml"></div>
+    <div id="template-items"></div>
+  </div>
+  <div class="modal fade" id="schemaModal">
+    <div class="card">
+      <div class="card-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+        <h3 class="title" id="schemaModalTitle">Schema Editor</h3>
+      </div>
+      <div class="card-content">
+        <div id="schemaContainer">
+        </div>
+      </div>
+      <div class="card-footer">
+        <p class="card-footer-item">
+          <a href="#" class="button is-warning" onclick="schemaEditorClose()">Close</a>
+        </p>
+        <p class="card-footer-item">
+          <a href="#" class="button is-primary" onclick="schemaEditorSave()">Save changes</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

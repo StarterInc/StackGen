@@ -204,7 +204,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                 	<classifier>exec</classifier>
-                	<mainClass>io.starter.ignite.invoker.Swagger2SpringBoot</mainClass>                	
+                	<mainClass>{{invokerPackage}}.Swagger2SpringBoot</mainClass>                	
             	</configuration>
                 <executions>
                     <execution>
@@ -226,7 +226,7 @@
                     <source>
                       <basedir>src/main/java</basedir>
                       <includes>
-						<include>io/starter/ignite/**/*.java</include>
+						<include>**/*.java</include>
                       </includes>
                     </source>
                   </sources>

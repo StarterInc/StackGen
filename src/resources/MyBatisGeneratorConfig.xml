@@ -23,49 +23,10 @@
       <property name="useActualColumnNames" value="true" />
     </javaClientGenerator>
     <table schema="${artifactId}" tableName="PLACEHOLDER_NODE" modelType="hierarchical" />
-    <table schema="starter" tableName="starter$_order">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_model_api_response">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_audit_log">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_tag">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_organization">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_category">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
     <table schema="starter" tableName="starter$_user">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_account">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_data">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_ledger_entry">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_work_flows">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_contact_method">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_api_spec">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
     <table schema="starter" tableName="starter$_content">
-      <generatedKey column="id" sqlStatement="JDBC" />
-    </table>
-    <table schema="starter" tableName="starter$_item">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
   </context>

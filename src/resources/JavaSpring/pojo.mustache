@@ -12,7 +12,7 @@
 {{#description}}
 @ApiModel(description = "{{{description}}}"){{/description}}
 {{>generatedAnnotation}}{{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}{{>xmlAnnotation}}
-public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{{#parcelableModel}}implements Parcelable {{#serializableModel}}, Serializable {{/serializableModel}}{{/parcelableModel}}{{^parcelableModel}}{{#serializableModel}}implements Serializable {{/serializableModel}}{{/parcelableModel}}{
+public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}} implements  io.starter.ignite.model.DataModelObject {{#parcelableModel}}, Parcelable {{#serializableModel}}, Serializable {{/serializableModel}}{{/parcelableModel}}{{^parcelableModel}}{{#serializableModel}}, Serializable {{/serializableModel}}{{/parcelableModel}}{
 {{#serializableModel}}
   private static final long serialVersionUID = 1L;
 
@@ -227,8 +227,12 @@ public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{{#parcela
   /**
   * Starter Ignite JSON method
   */
+  @Override
   public String toJSON() {
-    return new org.json.JSONObject(this).toString();
+    String ret =  new org.json.JSONObject(this).toString();
+    ret = ret.replace("\\\"","\"");
+    ret = ret.replace("\"}\"", "\"}");
+    return ret;
   }
   
   /**

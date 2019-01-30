@@ -269,9 +269,6 @@ definitions:
         x-starter-secureField: true
       routingNumber:
         type: "string"    
-      modifiedDate:
-        type: "string"
-        format: "date-time"
       status:
         type: "string"
         description: "Account Status"
@@ -306,9 +303,6 @@ definitions:
       accountBalance:
         type: "number"
         format: "double"    
-      modifiedDate:
-        type: "string"
-        format: "date-time"
       status:
         type: "string"
         description: "Transaction Status"
@@ -360,11 +354,7 @@ definitions:
   Content:
     type: object
     required:
-    - id
     - name
-    - author
-    - organization
-    - releaseDate
     properties:
       id:
         type: "integer"
@@ -372,19 +362,21 @@ definitions:
       name:
         type: string
         example: Widget Adapter
+      data:
+        type: string
+        example: full content data
+        maxLength: 100000      
       author:
         $ref: '#/definitions/User'
       releaseDate:
         type: string
-        format: int32
-        example: 2016-08-29T09:12:33.001Z
+        format: 'date-time'
       organization:
         $ref: '#/definitions/Organization'
     xml:
       name: "Content"    
   Organization:
     required:
-    - id
     - name
     properties:
       id:
@@ -404,7 +396,6 @@ definitions:
       name: "Organization"
   Trade:
     required:
-    - id
     - name
     properties:
       id:
@@ -420,7 +411,6 @@ definitions:
       name: "Trade"             
   User:
     required:
-    - id
     - username
     - email
     properties:
@@ -453,7 +443,6 @@ definitions:
       name: "User"
   WorkFlows:
     required:
-    - id
     - description
     - json
     properties:
@@ -476,15 +465,11 @@ definitions:
       xml:
         type: string
         example: Sparkyt        
-      modifiedDate:
-        type:  string
-        format: "date-time"
     xml:
       name: "Workflows"
   Exchange:
     type: object
     required:
-    - id
     - name
     - ticker
     properties:
@@ -510,7 +495,6 @@ definitions:
   ContactMethod:        
     type: object
     required:
-    - id
     - name
     - ticker
     properties:
@@ -530,9 +514,6 @@ definitions:
         - "mobile"
         - "sms"
         - "facebook"
-      createDate:
-        type: "string"
-        format: "date-time"
       status:
         type: "string"
         description: "Contact Method Status"
@@ -549,7 +530,6 @@ definitions:
       name: "ContactMethod"
   AuditLog:
     required:
-    - id
     - sourceType
     - json
     properties:
@@ -569,14 +549,10 @@ definitions:
         type: string
         example: Sparkyt
         maxLength: 10000
-      modifiedDate:
-        type:  string
-        format: "date-time" 
     xml:
       name: "AuditLog"
   Data:
     required:
-    - id
     - sourceType
     - json
     properties:
@@ -595,10 +571,7 @@ definitions:
       json:
         type: string
         example: Sparkyt
-        maxLength: 10000    
-      modifiedDate:
-        type:  string
-        format: "date-time"                  
+        maxLength: 10000                   
     xml:
       name: "Data"
   Category:

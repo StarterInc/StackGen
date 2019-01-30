@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class StreamGobbler extends Thread {
+public class StreamGobbler extends Thread {
 
 	protected static final Logger	logger	= LoggerFactory
 			.getLogger(StreamGobbler.class);

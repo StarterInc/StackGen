@@ -91,7 +91,7 @@ public class Table implements Configuration {
 		if (!colName.startsWith(TABLE_NAME_PREFIX)) {
 			colName = TABLE_NAME_PREFIX + colName;
 		}
-		if (COLUMNS_UPPERCASE) {
+		if (columnsUpperCase) {
 			colName = colName.toUpperCase();
 		} else {
 			colName = colName.toLowerCase();

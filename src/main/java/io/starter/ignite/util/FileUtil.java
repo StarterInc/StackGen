@@ -47,6 +47,11 @@ public class FileUtil {
 			// if file, then copy it
 			// Use bytes stream to support all file types
 			InputStream in = new FileInputStream(src);
+			if (!dest.exists()) {
+				dest.mkdirs();
+				if (dest.isDirectory())
+					dest.delete();
+			}
 			OutputStream out = new FileOutputStream(dest);
 
 			byte[] buffer = new byte[1024];

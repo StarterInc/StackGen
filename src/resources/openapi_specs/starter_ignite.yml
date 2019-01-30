@@ -265,9 +265,6 @@ definitions:
         x-starter-secureField: true
       routingNumber:
         type: "string"    
-      modifiedDate:
-        type: "string"
-        format: "date-time"
       status:
         type: "string"
         description: "Account Status"
@@ -303,9 +300,6 @@ definitions:
       accountBalance:
         type: "number"
         format: "double"    
-      modifiedDate:
-        type: "string"
-        format: "date-time"
       status:
         type: "string"
         description: "Transaction Status"
@@ -357,10 +351,7 @@ definitions:
   Content:
     type: object
     required:
-    - id
     - name
-    - author
-    - organization
     - releaseDate
     properties:
       id:
@@ -369,14 +360,19 @@ definitions:
       name:
         type: string
         example: Widget Adapter
-      author:
-        $ref: '#/definitions/User'
-      releaseDate:
+      data:
         type: string
-        format: int32
-        example: 2016-08-29T09:12:33.001Z
-      organization:
-        $ref: '#/definitions/Organization'
+        example: full content data
+        maxLength: 100000      
+      authorId:
+        type: "integer"
+        format: "int64"
+      releaseDate:
+        type:  string
+        format: "date-time"
+      organizationId:
+        type: "integer"
+        format: "int64"
     xml:
       name: "Content"    
   Organization:
@@ -456,10 +452,7 @@ definitions:
         description: this value is the JSON content of the WorkFlow definition
       xml:
         type: string
-        example: Sparkyt        
-      modifiedDate:
-        type:  string
-        format: "date-time"
+        example: Sparkyt
     xml:
       name: "Workflows"
   ContactMethod:        
@@ -485,9 +478,6 @@ definitions:
         - "mobile"
         - "sms"
         - "facebook"
-      createDate:
-        type: "string"
-        format: "date-time"
       status:
         type: "string"
         description: "Contact Method Status"
@@ -524,9 +514,6 @@ definitions:
         type: string
         example: Sparkyt
         maxLength: 10000
-      modifiedDate:
-        type:  string
-        format: "date-time" 
     xml:
       name: "AuditLog"
   Data:
@@ -547,10 +534,7 @@ definitions:
       json:
         type: string
         example: Sparkyt
-        maxLength: 10000    
-      modifiedDate:
-        type:  string
-        format: "date-time"                  
+        maxLength: 10000         
     xml:
       name: "Data"
   Category:
@@ -576,17 +560,6 @@ definitions:
 
 # Special Object for tracking and instantiating OpenAPI Schema instances
 
-#-DMYBATIS_MAIN=gen/src/ 
-#-DMYBATIS_JAVA=gen/src/main/java/io/starter/ignite/model/ 
-#-Dio.starter.ignite.secure_key=W3adsfadfasdfadf 
-#-DRDS_HOSTNAME=lsdbs-west-2.rds.amazonaws.com 
-#-DRDS_DB_NAME=ignite 
-#-DRDS_USERNAME=igniteuser 
-#-DRDS_PASSWORD=frasdfm1 
-#-DDBGEN_DROP_TABLE=true  
-#-DSCHEMA_NAME=starter
-#-DARTIFACT_ID=ignite
-      
   ApiSpec:
     description: "Application API Spec"
     type: "object"
@@ -622,22 +595,27 @@ definitions:
         example: "6969"
         maxLength: 256 
         description: "port of this service"
-      mybatisMain:
+      orgName:
+        type: "string"
+        example: "io.starter"
+        maxLength: 256 
+        description: "the name of the organization owner of the service used in classpath"
+      myBatisMain:
         type: "string"
         example: "gen/src/"
         maxLength: 256 
         description: "relative path to the MyBatis source files"
-      mybatisJava:
+      myBatisJava:
         type: "string"
         example: "gen/src/main/java/io/starter/ignite/model/"
         maxLength: 256 
         description: "path for the MyBatis Java model output files"     
-      ioStarterIgniteSecureKey:
+      starterIgniteSecureKey:
         type: "string"
         example: "=W34sdcwdsfwC34="
         maxLength: 256 
         description: "Secure key used to encrypt the data in the new platform"                     
-      dbHostName:
+      dbUrl:
         type: "string"
         example: "db.mycompany.rds.us-west-2.rds.amazonaws.com"
         maxLength: 256 
@@ -647,7 +625,7 @@ definitions:
         example: "ignite"
         maxLength: 256 
         description: "db schema for the system - must exist prior to initialization"          
-      dbUsername:
+      dbUser:
         type: "string"
         example: "igniteuser"
         maxLength: 256 

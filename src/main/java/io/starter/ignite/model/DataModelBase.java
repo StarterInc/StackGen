@@ -2,7 +2,13 @@ package io.starter.ignite.model;
 
 import java.util.List;
 
-public class DataModelBase {
+/**
+ * TODO: figure out role for this or remove
+ * 
+ * @author john
+ *
+ */
+public abstract class DataModelBase implements DataModelObject {
 
 	/**
 	 * fetch a list of this item from cache or persistence
@@ -27,4 +33,5 @@ public class DataModelBase {
 
 		return null;
 	}
+
 }

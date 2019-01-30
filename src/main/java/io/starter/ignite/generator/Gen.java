@@ -114,13 +114,17 @@ public class Gen implements Configuration {
 
 	public static String[] getModelFileNames() {
 		File modelDir = new File(MODEL_CLASSES);
+		if (!modelDir.exists()) {
+			throw new IllegalStateException(
+					"getModelFileNames Failure: no path here " + MODEL_CLASSES);
+		}
 		String[] modelFiles = modelDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				if (name.contains("Example"))
 					return false;
-				if (name.toLowerCase().contains(schemaName))
-					return false;
+				// if (name.toLowerCase().contains(schemaName))
+				// return false;
 				if (name.contains("Mapper"))
 					return false;
 				if (name.contains(ADD_GEN_CLASS_NAME))
@@ -131,9 +135,9 @@ public class Gen implements Configuration {
 
 		if (modelFiles != null && modelFiles.length < 1) {
 			throw new IllegalStateException(
-					"JavaGen Failure: no model classfiles found: "
+					"Gen.getModleFileNames Failure: no model classfiles found: "
 							+ MODEL_CLASSES
-							+ ". Check the MODEL_CLASSES value.");
+							+ ". Check the MODEL_CLASSES config value.");
 		}
 		return modelFiles;
 	}
@@ -176,6 +180,12 @@ public class Gen implements Configuration {
 	}
 
 	static File[] getSourceFilesInFolder(File f, List<String> skipList) {
+
+		if (!f.exists()) {
+			throw new IllegalStateException(
+					"getSourceFilesInFolder Failure: no path here " + f);
+		}
+
 		File[] modelFiles = f.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -210,6 +220,22 @@ public class Gen implements Configuration {
 				if (name.toLowerCase().endsWith(".md"))
 					return true;
 				if (name.toLowerCase().endsWith(".sh"))
+					return true;
+				if (name.toLowerCase().endsWith(".yml"))
+					return true;
+				if (name.toLowerCase().endsWith(".yaml"))
+					return true;
+				if (name.toLowerCase().endsWith(".png"))
+					return true;
+				if (name.toLowerCase().endsWith(".svg"))
+					return true;
+				if (name.toLowerCase().endsWith(".ico"))
+					return true;
+				if (name.toLowerCase().endsWith(".gif"))
+					return true;
+				if (name.toLowerCase().endsWith(".jpg"))
+					return true;
+				if (name.toLowerCase().endsWith(".jpeg"))
 					return true;
 
 				return false;

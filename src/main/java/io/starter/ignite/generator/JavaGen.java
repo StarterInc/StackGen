@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.lang.model.element.Modifier;
 import javax.tools.Diagnostic;
@@ -90,13 +92,12 @@ public class JavaGen extends Gen implements Generator {
 
 		try {
 			final MethodSpec ret = MethodSpec.methodBuilder(fldName)
-					.addJavadoc("Starter Ignite Generated Method: "
-							+ DATE_FORMAT.format(new Date())
-							+ Configuration.LINE_FEED + Configuration.LINE_FEED
-							+ "@see "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
+							+ DATE_FORMAT.format(new Date()) + LINE_FEED
+							+ LINE_FEED + "@see "
 							+ fld.getDeclaringClass().getSuperclass().getName()
-							+ Configuration.LINE_FEED + Configuration.LINE_FEED
-							+ "@return the value of: " + fieldName)
+							+ LINE_FEED + LINE_FEED + "@return the value of: "
+							+ fieldName)
 					.addModifiers(Modifier.PUBLIC).returns(fieldType)
 					.addStatement("return " + memberName + "." + fieldName)
 					.build();
@@ -148,7 +149,7 @@ public class JavaGen extends Gen implements Generator {
 
 		try {
 			final MethodSpec ret = MethodSpec.methodBuilder(fldNameSet)
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					// .addModifiers(Modifier.PUBLIC).addAnnotation(AnnotationSpec.builder(DataField.class).build())
 					.addModifiers(Modifier.PUBLIC)
@@ -201,7 +202,7 @@ public class JavaGen extends Gen implements Generator {
 			ClassName cx = ClassName
 					.get("com.fasterxml.jackson.databind", "ObjectMapper");
 			return MethodSpec.methodBuilder("getObjectMapper")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(cx).build();
@@ -224,7 +225,7 @@ public class JavaGen extends Gen implements Generator {
 
 			ClassName cx = ClassName.get("java.lang", "String");
 			return MethodSpec.methodBuilder("getAcceptHeader")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(cx).build();
@@ -249,7 +250,7 @@ public class JavaGen extends Gen implements Generator {
 			ClassName cx = ClassName
 					.get("javax.servlet.http", "HttpServletRequest");
 			return MethodSpec.methodBuilder("getHttpServletRequest")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(cx).build();
@@ -269,7 +270,7 @@ public class JavaGen extends Gen implements Generator {
 		String methodText = bname + "Bean = (" + bname + ")bx";
 		try {
 			return MethodSpec.methodBuilder("setBean")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.addParameter(Object.class, "bx").build();
@@ -290,7 +291,7 @@ public class JavaGen extends Gen implements Generator {
 		String methodText = "return " + bname + "Bean";
 		try {
 			return MethodSpec.methodBuilder("getBean")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(ClassName.get("java.lang", "Object")).build();
@@ -324,7 +325,7 @@ public class JavaGen extends Gen implements Generator {
 
 			ClassName cx = ClassName.get("java.util", "List");
 			return MethodSpec.methodBuilder("list")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(cx).build();
@@ -356,7 +357,7 @@ public class JavaGen extends Gen implements Generator {
 
 		try {
 			return MethodSpec.methodBuilder("insert")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(TypeName.INT).build();
@@ -400,7 +401,7 @@ public class JavaGen extends Gen implements Generator {
 			ClassName cx = ClassName
 					.get(IGNITE_MODEL_PACKAGE, getJavaServiceName(className));
 			return MethodSpec.methodBuilder("load")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(cx).build();
@@ -430,11 +431,11 @@ public class JavaGen extends Gen implements Generator {
 				+ "} catch (Exception e) {\n"
 				+ "			log.error(\"Could not run UPDATE: \" + e.toString());\n"
 				+ "			throw new io.starter.ignite.generator.IgniteException(\"Could not run INSERT: \" + e.toString());\n"
-				+ "}" + Configuration.LINE_FEED + "		return rows";
+				+ "}" + LINE_FEED + "		return rows";
 
 		try {
 			return MethodSpec.methodBuilder("update")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(TypeName.INT).build();
@@ -477,7 +478,7 @@ public class JavaGen extends Gen implements Generator {
 				+ "		}" + "		return rows";
 		try {
 			return MethodSpec.methodBuilder("delete")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(TypeName.INT).build();
@@ -492,9 +493,10 @@ public class JavaGen extends Gen implements Generator {
 		String mapperName = getBaseJavaName(className);
 		String methodText = "return " + mapperName + "Bean.toJSON()";
 		try {
+
 			ClassName cx = ClassName.get("java.lang", "String");
 			return MethodSpec.methodBuilder("toJSON")
-					.addJavadoc("Starter Ignite Generated Method: "
+					.addJavadoc("Starter Ignite 'JavaGen' Generated Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
 					.returns(cx).build();
@@ -605,8 +607,8 @@ public class JavaGen extends Gen implements Generator {
 				.classBuilder(className).addModifiers(Modifier.PUBLIC)
 				.addField(member)
 				// .superclass(null)
-				.addJavadoc("Starter Ignite Generated Class: "
-						+ DATE_FORMAT.format(new Date()))
+				.addJavadoc("Starter Ignite 'JavaGen' Generated Class: "
+						+ LINE_FEED + DATE_FORMAT.format(new Date()))
 				.addFields(fieldList).addMethods(setters).addMethods(getters)
 				.addMethods(methodList);
 
@@ -667,6 +669,10 @@ public class JavaGen extends Gen implements Generator {
 		logger.info("Iterate MyBatis Entities and create Wrapper Classes...");
 
 		final String[] modelFiles = Gen.getModelFileNames();
+		// this should point to the top of the package structure!
+		final URLClassLoader classLoader = new URLClassLoader(
+				new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });
+
 		for (final String mf : modelFiles) {
 			String cn = mf.substring(0, mf.indexOf("."));
 			// cn = cn + ".class";
@@ -674,20 +680,14 @@ public class JavaGen extends Gen implements Generator {
 			logger.warn("Creating Classes from ModelFile: " + cn);
 
 			try {
-				// this should point to the top of the package structure!
-				final URLClassLoader classLoader = new URLClassLoader(
-						new URL[] { new File(JAVA_GEN_SRC_FOLDER).toURI()
-								.toURL() });
-
 				final Class<?> loadedClass = classLoader.loadClass(cn);
-
 				createClasses(loadedClass);
-				classLoader.close();
 			} catch (final ClassNotFoundException e) {
 				logger.error("JavaGen.generateClassesFromModelFolder failed: "
 						+ cn + ": " + e.toString());
 			}
 		}
+		classLoader.close();
 	}
 
 	/**
@@ -712,6 +712,9 @@ public class JavaGen extends Gen implements Generator {
 		final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		final StandardJavaFileManager fileManager = compiler
 				.getStandardFileManager(diagnostics, null, null);
+
+		Properties p = System.getProperties();
+		String lxxx = p.getProperty("java.class.path");
 
 		final List<String> optionList = new ArrayList<>();
 		optionList.add("-classpath");
@@ -767,9 +770,30 @@ public class JavaGen extends Gen implements Generator {
 		} else {
 			for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics
 					.getDiagnostics()) {
+
 				try {
-					System.out.format("Error on line %d in %s%n", diagnostic
-							.getLineNumber(), diagnostic.getSource().toUri());
+
+					if (diagnostic.getSource().toUri().toString()
+							.contains("Swagger2SpringBoot.java")) {
+						// EXPECTED!
+					} else {
+						String msg = "COULD NOT GET MESSAGE";
+
+						try {
+							msg = String
+									.format("Error on line %d in %s%n: %m", diagnostic
+											.getLineNumber(), diagnostic
+													.getSource()
+													.toUri(), diagnostic
+															.getMessage(new Locale(
+																	language,
+																	country)));
+						} catch (Exception e) {
+							;
+						}
+						throw new RuntimeException(msg);
+					}
+
 				} catch (final Exception x) {
 					logger.warn("Problem Generating Diagnostic for Object:"
 							+ x);

@@ -18,7 +18,7 @@
 
 		<!-- Model Class -->
 		<javaModelGenerator
-			targetPackage="io.starter.${artifactId}.model.dao"
+			targetPackage="${orgPackage}${artifactId}.model.dao"
 
 			targetProject="${myBatisMain}main/java">
 			<property name="useActualColumnNames" value="true"/>
@@ -31,11 +31,11 @@
 			<property name="addRemarkComments" value="true" />
 		</javaModelGenerator>
 
-		<sqlMapGenerator targetPackage="io.starter.${artifactId}.sqlmaps"
+		<sqlMapGenerator targetPackage="${orgPackage}${artifactId}.sqlmaps"
 			targetProject="${myBatisMain}main/resources" />
 
 		<javaClientGenerator
-			targetPackage="io.starter.${artifactId}.model.dao"
+			targetPackage="${orgPackage}${artifactId}.model.dao"
 			targetProject="${myBatisMain}main/java" type="XMLMAPPER" >
 			<property name="useActualColumnNames" value="true"/>
 		</javaClientGenerator>

@@ -193,17 +193,9 @@ public class MyBatisGen extends Gen implements Generator {
 		// dedupe
 		if (!alreadyAdded.contains(className)) {
 			alreadyAdded.add(className);
-			Element el = new Element("table")
-					.setAttribute("schema", schemaName)
+			Element el = new Element("table").setAttribute("schema", schemaName)
 					.setAttribute("tableName", Table
 							.convertToDBSyntax(className));
-
-			// important setting for round-trip robustness
-			Element ep = new Element("property")
-					.setAttribute("name", "useActualColumnNames")
-					.setAttribute("value", "true");
-			if (MYBATIS_CASE_SENSITIVE_FIX)
-				el.addContent(ep);
 
 			Element el2 = new Element("generatedKey")
 					.setAttribute("column", "id")
@@ -225,7 +217,6 @@ public class MyBatisGen extends Gen implements Generator {
 					}
 				}
 			}
-
 		}
 		return jdo;
 	}

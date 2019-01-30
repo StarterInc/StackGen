@@ -35,17 +35,14 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-
-		FullyQualifiedJavaType xx = new FullyQualifiedJavaType(
-				getSuperClassName(topLevelClass));
-
+		String scn = getSuperClassName(topLevelClass);
 		Field f = new Field();
 		f.setName("delegate");
 		f.setVisibility(JavaVisibility.PUBLIC);
-		f.setInitializationString(" new " + xx + "()");
-		f.setType(xx);
+		f.setInitializationString(" new " + scn + "()");
+		f.setType(new TopLevelClass(scn).getType());
 		topLevelClass.addField(f);
-		topLevelClass.addImportedType(xx);
+		topLevelClass.addImportedType(scn);
 
 		FullyQualifiedJavaType dtx = new FullyQualifiedJavaType(
 				"java.util.Date");
@@ -66,6 +63,17 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		FullyQualifiedJavaType dtz = new FullyQualifiedJavaType(
 				"java.time.ZoneOffset");
 		topLevelClass.addImportedType(dtz);
+
+		Method tojson = new Method();
+		tojson.addAnnotation("@Override");
+		tojson.addBodyLine("return delegate.toJSON();");
+		tojson.setName("toJSON");
+		FullyQualifiedJavaType returnType = new FullyQualifiedJavaType(
+				"java.lang.String");
+		JavaVisibility visibility = JavaVisibility.PUBLIC;
+		tojson.setVisibility(visibility);
+		tojson.setReturnType(returnType);
+		topLevelClass.addMethod(tojson);
 
 		return true;
 	}

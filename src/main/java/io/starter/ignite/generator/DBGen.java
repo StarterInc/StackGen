@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -266,8 +265,9 @@ public class DBGen extends Gen implements Generator {
 
 		// log the DML for troubleshooting
 		if (Configuration.debug) {
-			FileUtils.writeStringToFile(new File("IgniteDML.sql"), tableDML
-					+ Configuration.LINE_FEED, true);
+			// FileUtils.writeStringToFile(new File("IgniteDML.sql"),
+			// tableDML
+			// + Configuration.LINE_FEED, true);
 		}
 
 		try {
@@ -350,6 +350,7 @@ public class DBGen extends Gen implements Generator {
 			// cn = cn + ".class";
 			cn = IGNITE_MODEL_PACKAGE + "." + cn;
 			logger.info("Loading Classes from ModelFile: " + cn);
+			// TODO: fails in web runner
 			Class<?> loadedClass = classLoader.loadClass(cn);
 
 			createTableFromClass(loadedClass, gen);
@@ -382,7 +383,7 @@ public class DBGen extends Gen implements Generator {
 			x++;
 		}
 		String ret = sb.toString();
-		if (COLUMNS_UPPERCASE) {
+		if (columnsUpperCase) {
 			ret = ret.toUpperCase();
 		} else {
 			ret = ret.toLowerCase();

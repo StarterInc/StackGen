@@ -24,5 +24,8 @@ build
 /gen/
 /gen.*/
 
-/.DS_Store
+.cache
+!node_modles/
+!docs/public/*
 
+/.DS_Store

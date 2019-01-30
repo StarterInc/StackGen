@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +31,23 @@ public class SwaggerGen implements Configuration {
 			.getLogger(SwaggerGen.class);
 
 	IgniteGenerator					generator		= new IgniteGenerator();
-	CodegenConfigurator				configurator	= CodegenConfigurator
-			.fromFile(CONFIG_FILE);
-
+	CodegenConfigurator				configurator;
+	private JSONObject				configObj;
 	private List<SwaggerGen>		pluginSwaggers	= new ArrayList<SwaggerGen>();
+
+	/**
+	 * Create and initialize a new SwaggerGen from a JSON config object
+	 * 
+	 * @param inputSpec
+	 *            JSONObject containing config data
+	 */
+	public SwaggerGen(JSONObject config) {
+		this.configObj = config;
+
+		this.configurator = getConfig(SPEC_LOCATION
+				+ config.getString("schemaFile"));
+		logger.info("Create Swagger Client Apis for:" + config);
+	}
 
 	/**
 	 * Create and initialize a new SwaggerGen
@@ -42,67 +56,106 @@ public class SwaggerGen implements Configuration {
 	 *            filename of spec (file in templateDirectory)
 	 */
 	public SwaggerGen(String spec) {
-
+		this.configurator = getConfig(spec);
 		logger.info("Create Swagger Client Apis for:" + spec);
+	}
 
-		// read from config file
-		if (configurator == null) {
-			// createa a fresh configurator
-			configurator = new CodegenConfigurator();
-		}
+	/**
+	 * Create and initialize a new SwaggerGen
+	 * 
+	 * @param inputSpec
+	 *            spe file in templateDirectory
+	 */
+	public SwaggerGen(File spec) {
+		this.configurator = CodegenConfigurator.fromFile(CONFIG_FILE);
+		logger.info("Create Swagger Client Apis for:" + spec);
+	}
+
+	/**
+	 * Get a configuration, load spec
+	 * 
+	 * @param spec
+	 * @param configurator
+	 */
+	private CodegenConfigurator getConfig(String spec) {
+		CodegenConfigurator conf = new CodegenConfigurator();
+
+		setStaticConfiguration(spec, conf);
 
 		// main output type
 		// (ie: spring, jersey2)
-		configurator.setLang(swaggerLang);
+		conf.setLang(getVal("swaggerLang", swaggerLang));
 
 		// the JSON serialization library to use
 		// (ie: jersey2, resteasy, resttemplate)
-		configurator.setLibrary(swaggerLib);
-		configurator.setOutputDir(javaGenPath);
+		conf.setLibrary(getVal("swaggerLib", swaggerLib));
+		conf.setOutputDir(getVal("javaGenPath", javaGenPath));
 
-		configurator.setArtifactId(artifactId);
-		configurator.setApiPackage(API_PACKAGE);
-		configurator.setModelPackage(API_MODEL_PACKAGE);
-		configurator.setInvokerPackage(INVOKER_PACKAGE);
+		conf.setApiPackage(getVal("API_PACKAGE", API_PACKAGE));
+		conf.setModelPackage(getVal("API_MODEL_PACKAGE", API_MODEL_PACKAGE));
+		conf.setInvokerPackage(getVal("INVOKER_PACKAGE", INVOKER_PACKAGE));
 
-		configurator.setArtifactVersion(artifactVersion);
-		configurator.setVerbose(verbose);
-		configurator.addDynamicProperty("dynamic-html", "true");
-		configurator.addDynamicProperty("dateLibrary", "java8");
+		conf.setArtifactId(getVal("artifactId", artifactId));
+		conf.setArtifactVersion(getVal("artifactVersion", artifactVersion));
+
+		return conf;
+	}
+
+	/**
+	 * @param spec
+	 * @param conf
+	 */
+	private void setStaticConfiguration(String spec, CodegenConfigurator conf) {
+		conf.setVerbose(verbose);
+		conf.addDynamicProperty("dynamic-html", "true");
+		conf.addDynamicProperty("dateLibrary", "java8");
 
 		// whether to enhance REST api with default Object CRUD
-		configurator
-				.addAdditionalProperty(Configuration.IGNITE_GEN_MODEL_CRUD_OPS, "true");
-		configurator
-				.addAdditionalProperty(Configuration.IGNITE_GEN_MODEL_ENHANCEMENTS, "true");
-
-		// company info
-		configurator
-				.addDynamicProperty("developerName", "John McMahon @TechnoCharms");
-		configurator.addDynamicProperty("developerEmail", "info@starter.io");
-		configurator
-				.addDynamicProperty("developerOrganization", "Starter Inc.");
-		configurator
-				.addDynamicProperty("developerOrganizationUrl", "http://ignite.starter.io/");
-
-		// SPRING props
-		configurator.addAdditionalProperty("java8", "true");
-		configurator.addAdditionalProperty("delegatePattern", "true");
-		configurator.addAdditionalProperty("asynch", "true");
-		configurator.addAdditionalProperty("useBeanValidation", "true");
-		configurator
-				.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
+		conf.addAdditionalProperty(IGNITE_GEN_MODEL_CRUD_OPS, "true");
+		conf.addAdditionalProperty(IGNITE_GEN_MODEL_ENHANCEMENTS, "true");
 
 		// app config
-		configurator.setAuth("oauth");
-		configurator.setInputSpec(spec);
-
-		// locations
-		configurator.setTemplateDir(SPEC_LOCATION);
+		conf.setAuth("oauth");
+		conf.setInputSpec(spec);
 
 		// github
-		configurator.setGitRepoId("StarterIgnite");
-		configurator.setGitUserId("Spaceghost69");
+		conf.setGitRepoId("StarterIgnite");
+		conf.setGitUserId("Spaceghost69");
+
+		// locations
+		conf.setTemplateDir(getVal("SPEC_LOCATION", SPEC_LOCATION));
+
+		// company info
+		conf.addDynamicProperty("developerName", "John McMahon @TechnoCharms");
+		conf.addDynamicProperty("developerEmail", "info@starter.io");
+		conf.addDynamicProperty("developerOrganization", "Starter Inc.");
+		conf.addDynamicProperty("developerOrganizationUrl", "http://ignite.starter.io/");
+
+		// SPRING props
+		conf.addAdditionalProperty("java8", "true");
+		conf.addAdditionalProperty("delegatePattern", "true");
+		conf.addAdditionalProperty("asynch", "true");
+		conf.addAdditionalProperty("useBeanValidation", "true");
+		conf.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
+	}
+
+	/**
+	 * JSONObject overrides
+	 * Sysprops
+	 * 
+	 * @param swaggerlang
+	 * @param swaggerlang2 
+	 * @return
+	 */
+	private String getVal(String fieldName, String systemVal) {
+		if (this.configObj != null) {
+			if (this.configObj.has(fieldName)) {
+				String v = this.configObj.getString(fieldName);
+				if (v != null)
+					return v;
+			}
+		}
+		return systemVal;
 	}
 
 	public List<File> generate() {

@@ -23,7 +23,7 @@ import io.swagger.models.Response;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
-import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.ObjectProperty;
 import io.swagger.models.properties.Property;
 import io.swagger.models.properties.PropertyBuilder;
 import io.swagger.models.properties.StringProperty;
@@ -132,7 +132,9 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 				// IGNITE_GEN_REST_PATH_PREFIX
 
-				if (!"ApiResponse".equals(k)) { // handle reserved word case(s)
+				if (Configuration.checkReservedWord(k)) { // handle reserved
+															// word
+															// case(s)
 					Path ops = addCrudOps(k, m);
 					if (ops != null) {
 						this.swagger.getPaths().put(path + "/{param}", ops);
@@ -145,9 +147,11 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 				}
 			}
 		}
-		for (String f : priorPaths.keySet()) {
-			Path px = priorPaths.get(f);
-			// this.swagger.getPaths().put(f, px);
+		if (priorPaths != null) {
+			for (String f : priorPaths.keySet()) {
+				Path px = priorPaths.get(f);
+				// this.swagger.getPaths().put(f, px);
+			}
 		}
 	}
 
@@ -269,7 +273,8 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		Operation loadOp = createCRUDOp(k, "load", "Load a " + k
 				+ " from the system", getIdPathParameter());
 		ComposedModel mxt = new ComposedModel();
-		mxt.setReference(k);
+		// mxt.setReference(k);
+		mxt.setReference("#/definitions/" + k);
 		r.setResponseSchema(mxt);
 		loadOp.response(200, r);
 		ops.setGet(loadOp);
@@ -285,33 +290,6 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 	 */
 	private Path addListOp(String k, Model model) {
 		Path ops = new Path();
-		Response r = new Response();
-
-		/*
-		 * TODO: Implement List result!
-		 * responses:
-		 * 200:
-		 * description: search results matching criteria
-		 * schema:
-		 * type: array
-		 * items:
-		 * $ref: '#/definitions/Data'
-		 */
-		// RefModel m = new RefModel();
-		// m.set$ref("#/definitions/" + k);
-		// m.setReference(k);
-		// r.responseSchema(m); // (Model) apx);
-
-		ArrayModel mx = new ArrayModel();
-		mx.setReference(k);
-		StringProperty p = new StringProperty("#/definitions/" + k);
-		mx.setItems(p);
-		r.setResponseSchema(mx);
-
-		ArrayProperty apx = new ArrayProperty();
-		// apx.setItems(new Property().description("yo").);
-
-		PathParameter px = getSearchPathParameter();
 
 		// List createa a new list path
 		Operation listOp = new Operation();
@@ -319,8 +297,26 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		listOp.setSummary("Listing");
 		// listOp.addTag("list-tag"); // causes dupe method gen
 		listOp.operationId("list");
-		listOp.addParameter(px);
+
+		Response r = new Response();
+
+		ArrayModel m = new ArrayModel();
+		ObjectProperty objectProp = new ObjectProperty();
+		m.setItems(objectProp);
+		m.setReference("#/definitions/" + k);
+		r.responseSchema(m);
+
 		listOp.addResponse("200", r);
+
+		// ArrayModel mx = new ArrayModel();
+		// mx.setReference(k);
+		// StringProperty p = new StringProperty("#/definitions/" +
+		// k);
+		// mx.setItems(p);
+		// r.setResponseSchema(mx);
+
+		PathParameter px = getSearchPathParameter();
+		listOp.addParameter(px);
 
 		// security
 		// [{automator_auth=[write:Account, read:Account]}]

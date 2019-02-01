@@ -29,7 +29,7 @@ public class MavenBuilder implements Configuration {
 	 */
 	public static void build() {
 		logger.info("========= BEGIN MavenBuilder ========= : "
-				+ javaGenPath);
+				+ genOutpuFolder);
 
 		MavenCli cli = new MavenCli();
 		System.setProperty("maven.multiModuleProjectDirectory", "true");
@@ -38,10 +38,10 @@ public class MavenBuilder implements Configuration {
 		// TODO: use spring-boot
 		try {
 			cli.doMain(new String[] { "clean",
-					"install" }, javaGenPath, System.out, System.err);
+					"install" }, genOutpuFolder, System.out, System.err);
 			logger.info("========= END MavenBuilder =========");
 			cli.doMain(new String[] { "clean", "install",
-					"spring-boot:run" }, javaGenPath, System.out, System.err);
+					"spring-boot:run" }, genOutpuFolder, System.out, System.err);
 			logger.info("========= END MavenBuilder =========");
 		} catch (Exception e) {
 			logger.info("Could not build: " + e);

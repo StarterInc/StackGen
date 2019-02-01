@@ -1,10 +1,14 @@
 package io.starter.ignite.generator;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.starter.ignite.util.SystemConstants;
 
@@ -19,7 +23,7 @@ import io.starter.ignite.util.SystemConstants;
  * swaggerLang
  * swaggerLib
  * dbGenDropTable
- * javaGenPath
+ * genOutpuFolder
  * REACT_APP_NAME 
  * REACT_EXPORT_FOLDER
  * REACT_TEMPLATE_FOLDER
@@ -29,6 +33,9 @@ import io.starter.ignite.util.SystemConstants;
  *
  */
 public interface Configuration extends SystemConstants {
+
+	static final Logger				logger							= LoggerFactory
+			.getLogger(Configuration.class);
 
 	public static String			defaultPort						= "8099";
 
@@ -87,12 +94,12 @@ public interface Configuration extends SystemConstants {
 	public static String			artifactId						= (System
 			.getProperty("artifactId") != null
 					? System.getProperty("artifactId")
-					: "ignite").toLowerCase();
+					: "ignite");
 
 	public static final String		schemaName						= (System
 			.getProperty("schemaName") != null
 					? System.getProperty("schemaName")
-					: "ignite").toLowerCase();
+					: "ignite");
 
 	public static String			TABLE_NAME_PREFIX				= schemaName
 			+ "$";
@@ -122,9 +129,9 @@ public interface Configuration extends SystemConstants {
 					? System.getProperty("javaGenFolder")
 					: "/gen");
 
-	public static String			javaGenPath						= (System
-			.getProperty("javaGenPath") != null
-					? System.getProperty("javaGenPath")
+	public static String			genOutpuFolder					= (System
+			.getProperty("genOutpuFolder") != null
+					? System.getProperty("genOutpuFolder")
 					: rootFolder)
 			+ javaGenFolder;
 
@@ -142,13 +149,14 @@ public interface Configuration extends SystemConstants {
 					: rootFolder)
 			+ "/src/main";
 
-	public static String			JAVA_GEN_SRC_FOLDER				= javaGenPath
-			+ SOURCE_MAIN + "/java";
+	public static String			JAVA_GEN_SRC_FOLDER				= genOutpuFolder
+			+ "/src/main/java";
+
 	public static File				JAVA_GEN_SRC					= new File(
 			JAVA_GEN_SRC_FOLDER);
 
-	public static String			JAVA_GEN_RESOURCES_FOLDER		= javaGenPath
-			+ SOURCE_MAIN + "/resources";
+	public static String			JAVA_GEN_RESOURCES_FOLDER		= genOutpuFolder
+			+ "/resources";
 
 	public static String			PUBLIC_ROOT						= javaGenFolder
 			+ "/public";
@@ -228,7 +236,7 @@ public interface Configuration extends SystemConstants {
 			+ "/model/dao/";
 
 	public static String			MODEL_CLASSES					= JAVA_GEN_SRC_FOLDER
-			+ MODEL_PACKAGE_DIR;
+			+ "/" + MODEL_PACKAGE_DIR;
 
 	public static String			MODEL_DAO_CLASSES				= JAVA_GEN_SRC_FOLDER
 			+ MODEL_DAO_PACKAGE_DIR;
@@ -244,7 +252,7 @@ public interface Configuration extends SystemConstants {
 	public String					ANNOTATAION_CLASS				= "io.starter.ignite.security.securefield.SecureField";
 
 	public static String			SQL_MAPS_PATH					= orgFolder
-			+ artifactId + "/sqlmaps/";
+			+ artifactId + "/model/dao/";
 
 	public static final String		MYBATIS_GEN_CONFIG				= System
 			.getProperty("user.dir") + SOURCE_RESOURCES
@@ -259,8 +267,8 @@ public interface Configuration extends SystemConstants {
 			+ "/templates/MyBatisConfig.xml";
 
 	public static final String		MYBATIS_CONFIG_OUT				= System
-			.getProperty("user.dir") + javaGenFolder + SOURCE_MAIN
-			+ "/resources/MyBatisConfig.xml";
+			.getProperty("user.dir") + javaGenFolder
+			+ "/src/main/resources/MyBatisConfig.xml";
 
 	public static List<String>		FOLDER_SKIP_LIST				= new ArrayList<>(
 			Arrays.asList(javaGenFolder, "org", "swagger", "node_modules"));
@@ -303,6 +311,28 @@ public interface Configuration extends SystemConstants {
 		for (String x : RESERVED_WORD_LIST) {
 			if (x.equalsIgnoreCase(k))
 				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * App-wide utility method for checking against list of reserved words
+	 * 
+	 * @param the string to check
+	 * @return whether the string is in the reserved word list (case insensitive)
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static boolean copyConfigurationToSysprops() throws IllegalArgumentException, IllegalAccessException {
+		Field[] f = Configuration.class.getFields();
+		for (Field fx : f) {
+			try {
+				logger.warn("Config setting:" + fx.getName() + ":"
+						+ fx.get(null).toString());
+				System.setProperty(fx.getName(), fx.get(null).toString());
+			} catch (Exception e) {
+				;
+			}
 		}
 		return true;
 	}

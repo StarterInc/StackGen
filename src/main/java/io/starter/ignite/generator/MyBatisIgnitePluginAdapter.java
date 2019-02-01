@@ -90,22 +90,23 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 		// handle stripping out the Schema name in the delegate
 		// class
-		if (cn.toLowerCase().contains(schemaName)) {
-			// the schema is always lowercase, so adjust it for
-			// Camelcase
-			String ccsn = StringTool.proper(schemaName);
-			cn = cn.replace(ccsn, "");
+		// if (cn.toLowerCase().contains(schemaName)) {
+		// the schema is always lowercase, so adjust it for
+		// Camelcase
+		String ccsn = "dao." + StringTool.proper(schemaName);
 
-			// replace package with actual delegate model package
-			cn = cn.replace(MODEL_DAO_PACKAGE, MODEL_PACKAGE);
+		cn = cn.replace(ccsn, "");
 
-			if (cn.contains("..")) {
-				throw new IllegalStateException(
-						"Could not get getSuperClassName due to package collision: "
-								+ cn + ". Change value of schemaName: "
-								+ schemaName);
-			}
+		// replace package with actual delegate model package
+		cn = cn.replace(MODEL_DAO_PACKAGE, MODEL_PACKAGE);
+
+		if (cn.contains("..")) {
+			throw new IllegalStateException(
+					"Could not get getSuperClassName due to package collision: "
+							+ cn + ". Change value of schemaName: "
+							+ schemaName);
 		}
+		// }
 
 		logger.info("SuperClass Name MYBATIS member: " + cn);
 		return cn;

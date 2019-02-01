@@ -31,7 +31,7 @@
 			<property name="addRemarkComments" value="true" />
 		</javaModelGenerator>
 
-		<sqlMapGenerator targetPackage="${MODEL_PACKAGE}.sqlmaps"
+		<sqlMapGenerator targetPackage="${MODEL_DAO_PACKAGE}.sqlmaps"
 			targetProject="${myBatisMain}main/resources" />
 
 		<javaClientGenerator

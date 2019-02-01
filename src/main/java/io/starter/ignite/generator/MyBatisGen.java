@@ -229,7 +229,7 @@ public class MyBatisGen extends Gen implements Generator {
 	static void createMyBatisFromModelFolder() throws Exception {
 		logger.info("Iterate Swagger Entities and create Tables...");
 		File[] modelFiles = Gen
-				.getJavaFiles(JAVA_GEN_SRC_FOLDER + MODEL_PACKAGE_DIR);
+				.getJavaFiles(JAVA_GEN_SRC_FOLDER + "/" + MODEL_PACKAGE_DIR);
 		MyBatisGen gen = new MyBatisGen();
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));

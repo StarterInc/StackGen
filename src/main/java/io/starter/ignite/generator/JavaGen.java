@@ -319,7 +319,8 @@ public class JavaGen extends Gen implements Generator {
 				+ "		cx.andIdLessThan(getId());\n" + "\n"
 				+ "		final java.util.List<" + mapperName
 				+ "> rows = session\n" + "				.selectList(\""
-				+ mapperName + "Mapper.selectByExample\", example);\n" + "\n"
+				+ getMyBatisSQLMapsName(className)
+				+ "Mapper.selectByExample\", example);\n" + "\n"
 				+ "		session.close();\n" + "		return rows";
 		try {
 
@@ -346,7 +347,8 @@ public class JavaGen extends Gen implements Generator {
 		String mapperName = getMyBatisName(className);
 		String methodText = "		final org.apache.ibatis.session.SqlSession session = sqlSessionFactory.openSession(true);\n"
 				+ "		int rows = -1;\n" + "		try {\n"
-				+ "			rows = session.insert(\"" + mapperName
+				+ "			rows = session.insert(\""
+				+ getMyBatisSQLMapsName(className)
 				+ "Mapper.insertSelective\", this);\n"
 				+ "		// commit performs the actual insert\n"
 				+ "		session.commit();\n" + "		session.close();\n"
@@ -388,7 +390,8 @@ public class JavaGen extends Gen implements Generator {
 				// + " cx.andIdEqualTo(getId());\n" + "\n" + " final "
 
 				+ mapperName + " ret = session\n"
-				+ "				.selectOne(\"" + mapperName
+				+ "				.selectOne(\""
+				+ getMyBatisSQLMapsName(className)
 				+ "Mapper.selectByPrimaryKey\", getId());\n" + "\n"
 				+ "if(ret!=null){ " + "\n" + "this."
 				+ getBaseJavaName(className) + "Bean = ret.delegate;} else {\n"
@@ -423,8 +426,8 @@ public class JavaGen extends Gen implements Generator {
 
 		String methodText = "		final org.apache.ibatis.session.SqlSession session = sqlSessionFactory.openSession(true);\n"
 				+ "		int rows = -1;\n" + "		try {\n"
-				+ "			rows = session.update(\"" + mapperName
-
+				+ "			rows = session.update(\""
+				+ getMyBatisSQLMapsName(className)
 				+ "Mapper.updateByPrimaryKeySelective\", this);\n"
 				+ "		// commit performs the actual update\n"
 				+ "		session.commit();\n" + "		session.close();\n"
@@ -468,7 +471,8 @@ public class JavaGen extends Gen implements Generator {
 		String mapperName = getMyBatisName(className);
 		String methodText = "		final org.apache.ibatis.session.SqlSession session = sqlSessionFactory.openSession(true);\n"
 				+ "		int rows = -1;\n" + "		try {\n"
-				+ "			rows = session.delete(\"" + mapperName
+				+ "			rows = session.delete(\""
+				+ getMyBatisSQLMapsName(className)
 				+ "Mapper.deleteByPrimaryKey\", getId());\n"
 				+ "		// commit performs the actual delete\n"
 				+ "		session.commit();\n" + "		session.close();\n"
@@ -505,6 +509,12 @@ public class JavaGen extends Gen implements Generator {
 					+ e.toString());
 		}
 		return null;
+	}
+
+	private String getMyBatisSQLMapsName(String className) {
+		return MODEL_DAO_PACKAGE + "."
+				+ MyBatisGen.getMyBatisModelClassName(className);
+
 	}
 
 	private String getMyBatisName(String className) {
@@ -703,7 +713,7 @@ public class JavaGen extends Gen implements Generator {
 	 */
 	static void compile(String packageDir) throws IOException, ClassNotFoundException, InstantiationException, IgniteException, IllegalAccessException {
 		// test
-		final String sourcepath = JAVA_GEN_SRC_FOLDER + packageDir;
+		final String sourcepath = JAVA_GEN_SRC_FOLDER + "/" + packageDir;
 
 		logger.info("JavaGen Compiling: " + sourcepath);
 

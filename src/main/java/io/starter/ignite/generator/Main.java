@@ -40,7 +40,7 @@ public class Main implements Configuration {
 	protected static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) throws Exception {
-
+		Configuration.copyConfigurationToSysprops();
 		String inputSpecFile = "simple_cms.yml"; // "trade_automator.yml";
 													// //
 													// //starter_ignite
@@ -247,9 +247,9 @@ public class Main implements Configuration {
 	}
 
 	private static void initOutputFolders() {
-		File genDir = new File(javaGenPath);
-		logger.info("Initializing output folder: " + javaGenPath + " exists: "
-				+ genDir.exists());
+		File genDir = new File(genOutpuFolder);
+		logger.info("Initializing output folder: " + genOutpuFolder
+				+ " exists: " + genDir.exists());
 		if (genDir.exists()) {
 			String fx = javaGenArchivePath + "." + System.currentTimeMillis();
 			File toF = new File(fx);
@@ -258,14 +258,14 @@ public class Main implements Configuration {
 			}
 			if (!genDir.renameTo(toF)) {
 				throw new IgniteException(
-						"Could not rename: " + javaGenPath + " to: " + fx);
+						"Could not rename: " + genOutpuFolder + " to: " + fx);
 			}
 
-			genDir = new File(javaGenPath);
+			genDir = new File(genOutpuFolder);
 			genDir.mkdirs();
 		}
 
-		boolean outputDir = new File(Configuration.javaGenPath + "/src/")
+		boolean outputDir = new File(Configuration.genOutpuFolder + "/src/")
 				.mkdirs();
 		if (!outputDir) {
 			logger.error("Could not init: " + outputDir + ". Exiting.");
@@ -287,13 +287,13 @@ public class Main implements Configuration {
 					"/src/main/java/io/starter/spring/boot/starter-ignite-banner.txt" } };
 
 	protected static void copyStaticFiles(String[][] staticFiles) {
-		File genDir = new File(javaGenPath);
-		logger.info("Copying static files to folder: " + javaGenPath
+		File genDir = new File(genOutpuFolder);
+		logger.info("Copying static files to folder: " + genOutpuFolder
 				+ " exists: " + genDir.exists());
 		if (genDir.exists()) {
 			for (String[] fx : staticFiles) {
 				File fromF = new File(rootFolder + fx[0]);
-				File toF = new File(javaGenPath + fx[1]);
+				File toF = new File(genOutpuFolder + fx[1]);
 				if (fromF.exists()) {
 					logger.info("Copying static file : " + fromF + " to: "
 							+ toF);
@@ -314,6 +314,6 @@ public class Main implements Configuration {
 				}
 			}
 		}
-		logger.info("Done copying static files to " + javaGenPath);
+		logger.info("Done copying static files to " + genOutpuFolder);
 	}
 }

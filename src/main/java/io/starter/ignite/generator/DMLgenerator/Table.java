@@ -100,7 +100,15 @@ public class Table implements Configuration {
 	}
 
 	public static String convertToJavaSyntax(String colName) {
-		colName = colName.replace(TABLE_NAME_PREFIX, "");
+		String rep = TABLE_NAME_PREFIX;
+		if (columnsUpperCase) {
+			colName = colName.toUpperCase();
+			rep = rep.toUpperCase();
+		} else {
+			colName = colName.toLowerCase();
+			rep = rep.toLowerCase();
+		}
+		colName = colName.replace(rep, "");
 		colName = colName.toLowerCase();
 		colName = DBGen.camelize(colName);
 		return colName.trim();

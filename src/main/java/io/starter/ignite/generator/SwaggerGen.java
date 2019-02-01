@@ -89,7 +89,7 @@ public class SwaggerGen implements Configuration {
 		// the JSON serialization library to use
 		// (ie: jersey2, resteasy, resttemplate)
 		conf.setLibrary(getVal("swaggerLib", swaggerLib));
-		conf.setOutputDir(getVal("javaGenPath", javaGenPath));
+		conf.setOutputDir(getVal("genOutpuFolder", genOutpuFolder));
 
 		conf.setApiPackage(getVal("API_PACKAGE", API_PACKAGE));
 		conf.setModelPackage(getVal("API_MODEL_PACKAGE", API_MODEL_PACKAGE));

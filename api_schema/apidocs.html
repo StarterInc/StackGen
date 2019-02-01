@@ -7,8 +7,8 @@ language_tabs:
   - java: Java
 toc_footers:
   - >-
-    <a href="https://starterinc.github.io/Ignite/">Find out more about Starter
-    Ignite</a>
+    <a href="https://starterinc.github.io/StackGen/">Find out more about Starter
+    StackGen</a>
 includes: []
 search: true
 highlight_theme: darkula

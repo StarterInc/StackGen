@@ -1,6 +1,6 @@
 {
   "name": "OpenApi-gui",
-  "description": "Ignite OpenAPI GUI",
+  "description": "StackGen OpenAPI GUI",
   "repository": "https://github.com/mermade/openapi-gui",
   "logo": "http://mermade.github.io/arapaho/logo.jpg",
   "keywords": ["openapi", "openapi3", "api", "documentation", "docs", "gui", "editor"]

@@ -353,7 +353,7 @@ function app_main() {
 		  contentType:"application/json; charset=utf-8",
 		  dataType:"text",
 		  success: function(data) {
-			var newWindow = window.open("", "Ignite API Documentation"); //, "width=950, height=750");
+			var newWindow = window.open("", "StackGen API Documentation"); //, "width=950, height=750");
 			newWindow.document.write(data);
 			newWindow.document.close();
 		  }

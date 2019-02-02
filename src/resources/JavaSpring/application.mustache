@@ -8,15 +8,26 @@ server.contextPath={{^contextPath}}/{{/contextPath}}{{#contextPath}}{{contextPat
 
 # Force Read from SYSPROPS
 server.port={{serverPort}}
+server.address=localhost
 
-spring.jackson.date-format={{basePackage}}.RFC3339DateFormat
+spring.jackson.date-format=io.starter.csat.invoker.RFC3339DateFormat
 spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
 
 spring.boot.admin.notify.mail.to=admin@example.com
 spring.boot.admin.notify.mail.enabled=true
 
 spring.boot.admin.routes.endpoints=env, metrics, trace, jolokia, info, configprops
-spring.boot.admin.client.url: "http://${admin.server.host}:${admin.server.port}"
+spring.boot.admin.client.url=http://localhost:8009
+spring.boot.admin.url=http://localhost:8009
+spring.boot.admin.password=password
+spring.boot.admin.username=user
+
+
+spring.jackson.date-format={{basePackage}}.RFC3339DateFormat
+spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
+
+spring.boot.admin.notify.mail.to=admin@example.com
+spring.boot.admin.notify.mail.enabled=true
 
 #
 # SECURITY
@@ -31,6 +42,8 @@ spring.liquibase.enabled=false
 # Expose all actuator endpoints to the web
 # They are exposed, but only authenticated users can see /info and /health abd users with access-admin can see the others
 management.endpoints.web.exposure.include=*
+
+management.endpoints.jmx.unique-names=true
 
 # Full health details should only be displayed when a user is authorized
 management.endpoint.health.show-details=when_authorized

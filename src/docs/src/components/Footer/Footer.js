@@ -8,13 +8,15 @@ const Footer = () => {
                     <div className="col-lg text-center text-lg-left mb-4 mb-lg-0">
                         <img className="logo" alt="starter logo" src="/logos/starter_logo_vertical_color@x2.png" />
 
-                        <div className="clearfix d-lg-none"></div>
-
+                        <div className="clearfix d-lg-none">
                         Built with love in San Francisco by <a href="http://www.starter.io" className="font-weight-bold"  target="_blank" rel="noopener noreferrer">Starter Inc.</a>
+                        </div>
+
+
                     </div>
 
                     <div className="col-lg text-center text-lg-right">
-                        <div>Powered by <a href="http://ignite.starter.io/" className="font-weight-bold"  target="_blank" rel="noopener noreferrer">Starter StackGen</a></div>
+                        <div>Powered by <a href="http://docs.stackgen.io/" className="font-weight-bold"  target="_blank" rel="noopener noreferrer"><span className="title align-middle">{process.env.PROJECT_NAME}</span></a></div>
                     </div>
                 </div>
             </div>

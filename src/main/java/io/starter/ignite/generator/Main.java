@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.util.FileUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,6 +92,25 @@ public class Main implements Configuration {
 				+ (args != null ? " and args: " + args.toString() : ""));
 
 		generateApp(inputSpecFile);
+	}
+
+	/**
+	 * Create and initialize a new SwaggerGen from a JSON config object
+	 * 
+	 * @param inputSpec
+	 *            JSONObject containing config data
+	 * @return 
+	 */
+	public static void generateApp(JSONObject config) {
+
+		try {
+			Configuration.copyJSONConfigToSysprops(config);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			logger.error("Copying Configuration values from JSON to Sysprops failed while starting App Generation");
+			e.printStackTrace();
+		}
+		Main.generateApp(config.getString("schemaFile"));
+
 	}
 
 	/**
@@ -277,6 +297,8 @@ public class Main implements Configuration {
 	 * relative to project root
 	 */
 	protected static String[][] staticFiles = {
+			{ "/target/StarterIgnite-1.2.1-SNAPSHOT.jar",
+					"/lib/StarterIgnite-1.2.1-SNAPSHOT.jar" },
 			{ "/src/resources/templates/application.yml",
 					"/src/main/resources/application.yml" },
 			{ "/src/resources/templates/log4j.properties",

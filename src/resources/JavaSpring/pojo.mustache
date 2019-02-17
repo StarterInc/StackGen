@@ -153,7 +153,7 @@ public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}} implement
   {{/maximum}}
    * @return {{name}}
   **/
-{{#useBeanValidation}}{{>beanValidation}}{{/useBeanValidation}}  @ApiModelProperty({{#example}}example = "{{{example}}}", {{/example}} {{#secureField}}secureField = {{{secureField}}}, {{/secureField}} {{#minSize}}minSize = {{{minSize}}}, {{/minSize}} {{#maxSize}}maxSize = {{{maxSize}}}, {{/maxSize}} {{#minLength}}minLength = {{{minLength}}}, {{/minLength}} {{#maxLength}}maxLength = {{{maxLength}}}, {{/maxLength}} {{#required}}required = {{required}}, {{/required}}value = "{{{description}}}")
+{{#useBeanValidation}}{{>beanValidation}}{{/useBeanValidation}}  @ApiModelProperty({{#name}}name="{{name}}",{{/name}} {{#example}}example = "{{{example}}}", {{/example}} {{#secureField}}secureField = {{{secureField}}}, {{/secureField}} {{#minSize}}minSize = {{{minSize}}}, {{/minSize}} {{#maxSize}}maxSize = {{{maxSize}}}, {{/maxSize}} {{#minLength}}minLength = {{{minLength}}}, {{/minLength}} {{#maxLength}}maxLength = {{{maxLength}}}, {{/maxLength}} {{#required}}required = {{required}}, {{/required}}value = "{{{description}}}")
 {{#vendorExtensions.extraAnnotation}}
   {{{vendorExtensions.extraAnnotation}}}
 {{/vendorExtensions.extraAnnotation}}

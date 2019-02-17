@@ -69,9 +69,7 @@ class LayoutNav extends Component {
             <nav ref="navElement" className={styles}>
                 <div className="container-fluid">
                     <Link to="/" className="navbar-brand">
-                        <img className="logo mr-2"  alt="Starter Logo" src="/logos/starter_logo_vertical_color@x2.png" />
-
-                        <span className="title align-middle">{process.env.PROJECT_NAME}</span>
+                        <img className="logo mr-2"  alt="Starter StackGen Logo" src="/logos/StackGenLogo-2019.png" />
                     </Link>
 
                     {sidebarHamburguerIcon &&
@@ -88,9 +86,6 @@ class LayoutNav extends Component {
                         </li>
                         <li className="nav-item">
                             <a className="nav-link ml-lg-3" href="http://stackgen.io/">Blog</a>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link ml-lg-3" to="/onboarding/">Onboarding</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link ml-lg-3" to="/updates/">Updates</Link>

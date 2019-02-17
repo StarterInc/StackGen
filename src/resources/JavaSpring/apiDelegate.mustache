@@ -117,7 +117,7 @@ public interface {{classname}}Delegate {
 						(ResponseEntity<{{>returnTypes}}>) getResponse((List<?>) ret){{#async}}){{/async}};
 					} else {
 						return {{#async}}CompletableFuture.completedFuture({{/async}}
-						(ResponseEntity<{{>returnTypes}}>) getResponse((Object) ret){{#async}}){{/async}};
+						(ResponseEntity<{{>returnTypes}}>) getResponse(this){{#async}}){{/async}};
 					}
 				} else {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -189,7 +189,10 @@ public interface {{classname}}Delegate {
 			if (!(rx instanceof Long)) {
 				// convert to list of objects
 				List<Object> rex = new ArrayList<Object>();
-				for (Object r : (List) ret)rex.add(r);
+				for (Object r : (List) ret){
+					// TODO: strip delegate
+					rex.add(r);
+				}
 				return new ResponseEntity<List<Object>>(rex, HttpStatus.OK);
 			} else {
 				if(rx instanceof Integer){
@@ -231,9 +234,9 @@ public interface {{classname}}Delegate {
 		}
 		// returns single result
 		JSONObject job = new JSONObject((({{classname}}Delegate)ret).getBean());
+		job.remove("delegate"); // remove from JSON output
 		return new ResponseEntity<>(getObjectMapper().readValue(job.toString(), {{baseName}}.class), HttpStatus.OK);
 	}
-		
 }
 
 /* TODO: implement examples

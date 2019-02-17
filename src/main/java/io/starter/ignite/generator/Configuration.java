@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,15 @@ public interface Configuration extends SystemConstants {
 	static final Logger				logger							= LoggerFactory
 			.getLogger(Configuration.class);
 
-	public static String			defaultPort						= "8099";
+	public static String			defaultHostname					= (System
+			.getProperty("defaultHostname") != null
+					? System.getProperty("defaultHostname")
+					: "localhost");
+
+	public static String			defaultPort						= (System
+			.getProperty("defaultPort") != null
+					? System.getProperty("defaultPort")
+					: "8099");
 
 	public static boolean			skipDbGen						= (System
 			.getProperty("skipDbGen") != null
@@ -316,10 +325,28 @@ public interface Configuration extends SystemConstants {
 	}
 
 	/**
-	 * App-wide utility method for checking against list of reserved words
+	 * utility method for setting config values from a JSON object 
 	 * 
-	 * @param the string to check
-	 * @return whether the string is in the reserved word list (case insensitive)
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static boolean copyJSONConfigToSysprops(final JSONObject config) throws IllegalArgumentException, IllegalAccessException {
+		String[] names = JSONObject.getNames(config);
+		for (String fx : names) {
+			try {
+				logger.warn("JSON Config setting:" + fx + ":"
+						+ config.get(fx).toString());
+				System.setProperty(fx, config.get(fx).toString());
+			} catch (Exception e) {
+				;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * utility method for setting sysprops values from this Configuration
+	 * 
 	 * @throws IllegalAccessException 
 	 * @throws IllegalArgumentException 
 	 */

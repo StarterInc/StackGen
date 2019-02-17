@@ -125,13 +125,17 @@ public class SwaggerGen implements Configuration {
 		// locations
 		conf.setTemplateDir(getVal("SPEC_LOCATION", SPEC_LOCATION));
 
+		// server info
+		conf.addDynamicProperty("serverHost", Configuration.defaultHostname);
+		conf.addDynamicProperty("serverPort", Configuration.defaultPort);
+
 		// company info
 		conf.addDynamicProperty("developerName", "John McMahon @TechnoCharms");
 		conf.addDynamicProperty("developerEmail", "info@starter.io");
 		conf.addDynamicProperty("developerOrganization", "Starter Inc.");
 		conf.addDynamicProperty("developerOrganizationUrl", "http://ignite.starter.io/");
 
-		// SPRING props
+		// SPRING propery
 		conf.addAdditionalProperty("java8", "true");
 		conf.addAdditionalProperty("delegatePattern", "true");
 		conf.addAdditionalProperty("asynch", "true");

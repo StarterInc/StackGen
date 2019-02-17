@@ -8,8 +8,10 @@ server.contextPath={{^contextPath}}/{{/contextPath}}{{#contextPath}}{{contextPat
 
 # Force Read from SYSPROPS
 server.port={{serverPort}}
-server.address=localhost
+server.address={{serverHost}}
 
+# Configure the JSON Serialization used by REST api
+spring.jackson.serialization-inclusion=non_null
 spring.jackson.date-format=io.starter.csat.invoker.RFC3339DateFormat
 spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
 

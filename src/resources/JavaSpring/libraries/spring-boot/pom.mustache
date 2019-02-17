@@ -31,6 +31,7 @@
     </developers>
 
    <properties>
+   		<starterIgnite.version>1.2.1-SNAPSHOT</starterIgnite.version>
     	<aspectjplugin.version>1.11</aspectjplugin.version>
         <aspectj.version>1.9.2</aspectj.version>
         <java.version>1.9</java.version>
@@ -262,7 +263,13 @@
     	<dependency>
 			<groupId>io.starter</groupId>
 			<artifactId>StarterIgnite</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>${starterIgnite.version}</version>
+		    
+		    <!--
+		    <scope>system</scope>
+		    <systemPath>${project.basedir}/lib/StarterIgnite-${starterIgnite.version}.jar</systemPath>
+			-->
+			
 			<exclusions>
 				<exclusion>
 					<groupId>io.swagger</groupId>

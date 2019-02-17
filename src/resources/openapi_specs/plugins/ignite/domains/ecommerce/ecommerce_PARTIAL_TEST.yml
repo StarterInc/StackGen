@@ -50,10 +50,6 @@ paths:
     responses:
         405:
           description: "Invalid input"
-      security:
-      - itemstore_auth:
-        - "write:items"
-        - "read:items"
     put:
       tags:
       - "item"

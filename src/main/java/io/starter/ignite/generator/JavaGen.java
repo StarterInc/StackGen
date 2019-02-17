@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -196,7 +195,8 @@ public class JavaGen extends Gen implements Generator {
 	 * @return
 	 */
 	public MethodSpec createGetObjectMapper(String className) {
-		String methodText = "return objectMapper";
+		String methodText = "objectMapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);"
+				+ "\n" + "return objectMapper";
 		try {
 
 			ClassName cx = ClassName
@@ -780,33 +780,24 @@ public class JavaGen extends Gen implements Generator {
 		} else {
 			for (final Diagnostic<? extends JavaFileObject> diagnostic : diagnostics
 					.getDiagnostics()) {
-
+				String dsrc = "";
 				try {
-
-					if (diagnostic.getSource().toUri().toString()
-							.contains("Swagger2SpringBoot.java")) {
-						// EXPECTED!
-					} else {
-						String msg = "COULD NOT GET MESSAGE";
-
-						try {
-							msg = String
-									.format("Error on line %d in %s%n: %m", diagnostic
-											.getLineNumber(), diagnostic
-													.getSource()
-													.toUri(), diagnostic
-															.getMessage(new Locale(
-																	language,
-																	country)));
-						} catch (Exception e) {
-							;
-						}
-						throw new RuntimeException(msg);
+					dsrc = diagnostic.getSource().toUri().toString();
+				} catch (NullPointerException x) {
+					dsrc = diagnostic.toString(); // ignore
+				}
+				if (dsrc != null && (dsrc.contains("Swagger2SpringBoot.java")
+						|| dsrc.contains("CAL10NAnnotationProcessor"))) {
+					// EXPECTED!
+				} else {
+					try {
+						dsrc = String
+								.format("Error on line %d in %s%n: %m", diagnostic
+										.getLineNumber(), dsrc, diagnostic);
+					} catch (Exception e) {
+						;
 					}
-
-				} catch (final Exception x) {
-					logger.warn("Problem Generating Diagnostic for Object:"
-							+ x);
+					logger.warn(dsrc);
 				}
 			}
 		}

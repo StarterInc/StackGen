@@ -2,7 +2,7 @@
     <img src="https://github.com/StarterInc/Ignite/blob/gh-pages/logos/logo-1024.png?raw=true" alt="Logo"/>
 </div>
 
-# Starter Ignite Service Model Generator
+# Starter StackGen Microservice Generator
 
 ## Generate Apps from OpenAPI/Swagger spec files for Design-First Low Code Development (LCDP)
 

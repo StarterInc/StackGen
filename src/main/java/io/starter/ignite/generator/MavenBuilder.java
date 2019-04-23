@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author John McMahon (@TechnoCharms) mcmahon
+ * @author John McMahon (@TechnoCharms)
  *
  */
 public class MavenBuilder implements Configuration {
@@ -28,8 +28,8 @@ public class MavenBuilder implements Configuration {
 	 * run the Maven build
 	 */
 	public static void build() {
-		logger.debug("========= BEGIN MavenBuilder ========= : "
-				+ JAVA_GEN_PATH);
+		logger.info("========= BEGIN MavenBuilder ========= : "
+				+ genOutputFolder);
 
 		MavenCli cli = new MavenCli();
 		System.setProperty("maven.multiModuleProjectDirectory", "true");
@@ -38,10 +38,13 @@ public class MavenBuilder implements Configuration {
 		// TODO: use spring-boot
 		try {
 			cli.doMain(new String[] { "clean",
-					"install" }, JAVA_GEN_PATH, System.out, System.out);
-			logger.debug("========= END MavenBuilder =========");
+					"install" }, genOutputFolder, System.out, System.err);
+			logger.info("========= END MavenBuilder =========");
+			cli.doMain(new String[] { "clean", "install",
+					"spring-boot:run" }, genOutputFolder, System.out, System.err);
+			logger.info("========= END MavenBuilder =========");
 		} catch (Exception e) {
-			logger.debug("Could not build: " + e);
+			logger.info("Could not build: " + e);
 		}
 	}
 

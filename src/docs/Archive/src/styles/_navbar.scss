@@ -1,0 +1,45 @@
+.navbar-clay-site {
+	background-color: transparent;
+	padding-bottom: 30px;
+	padding-top: 30px;
+	transition: all 0.4s ease-in-out;
+	will-change: 'background-color, box-shadow, padding';
+
+	&.scroll {
+		background-color: $brand-primary;
+		box-shadow: 0 2px 6px rgba(62, 28, 20, 0.2);
+		padding: $base-size * 0.583;
+	}
+
+	.navbar-brand {
+		span {
+			font-weight: lighter;
+			line-height: 1;
+
+			@include media-breakpoint-up(sm) {
+				font-size: 30px;
+			}
+		}
+	}
+
+	.navbar-nav {
+		width: 100%;
+
+		@include media-breakpoint-up(md) {
+			width: auto;
+		}
+
+		.nav-link {
+			font-size: 1.75em;
+			font-weight: lighter;
+		}
+	}
+
+	.logo {
+		max-height: 48px;
+
+		@include media-breakpoint-up(sm) {
+			max-height: 64px;
+		}
+	}
+}

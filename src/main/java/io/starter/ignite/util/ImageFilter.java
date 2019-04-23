@@ -144,16 +144,16 @@ public class ImageFilter {
 		// Because java.awt.headless property is set to true, this
 		// will be an instance of headless toolkit.
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		logger.debug("Created Toolkit: " + tk);
+		logger.info("Created Toolkit: " + tk);
 
 		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment
 				.getLocalGraphicsEnvironment();
 
 		if (GraphicsEnvironment.isHeadless()) {
-			logger.debug("Headless ImageFilter.getImage() called...");
+			logger.info("Headless ImageFilter.getImage() called...");
 
 		} else {
-			logger.debug("NOT Headless ImageFilter.getImage() called...");
+			logger.info("NOT Headless ImageFilter.getImage() called...");
 		}
 
 		// Create a buffered image with transparency

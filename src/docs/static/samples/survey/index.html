@@ -1,0 +1,160 @@
+
+<html>
+<head>
+
+  <link rel="stylesheet" href="/css/myConfluenceMacro.css"/>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+<a href="/swagger-ui.html">SWAGGER API EXPLORER</a>
+
+<br/><br/><br/><br/>
+
+<div style="width: 300px">
+<input id="yesbutton"  class="button-style button-style-left" type="button" onclick="yesClicked()" value="yes" />
+<input id="nobutton"  class="button-style button-style-right" type="button" onclick="toggleUI()" value="no" />
+
+<div id="introLabel" >Was this page helpful?</div>
+<div id="extroLabel" style="display:none;">Thank you for helping improve our documentation!</div>
+<div id="commentsLabel" style="display:none;">Feedback about this page?</div>
+
+
+<form id="csatform">
+  
+  <input type="text" name="comments" id="comments" style="display:none; " />
+  <input type="hidden" name="rating" id="rating" value="10"/>
+  <input type="hidden" name="atlasId" id="atlasId" value="0"/>
+  <input type="hidden" name="userId" id="userId"  value="100"/>
+
+</form>
+
+<input id="submitButton" class="button-style" type="button" onclick="submitClicked()" value="submit" style="display: none;"/>
+
+</div>
+
+<!-- https://api.jquery.com/jquery.post/ -->
+
+<script type="text/javascript">
+
+this.data = {
+  "userId": 0,
+  "atlasId": 0,
+  "comments": "Your real feelings",
+  "rating": 10,
+};
+
+
+function submitClicked(){
+    $("#rating").text.val = "0";
+    toggleComponent("#yesbutton")
+    toggleComponent("#nobutton")
+    toggleComponent ("#introLabel")
+    submit()
+}
+
+function yesClicked(){
+    toggleComponent("#yesbutton")
+    toggleComponent("#nobutton")
+    toggleComponent ("#introLabel")
+    submit()
+}
+
+function toggleUI(){
+    toggleComponent("#comments")
+    toggleComponent("#yesbutton")
+    toggleComponent("#nobutton")
+    toggleComponent ("#introLabel")
+    toggleComponent("#submitButton")
+    toggleComponent ("#commentsLabel")
+}
+
+
+function showThankyou(){
+  toggleComponent ("#extroLabel")
+  toggleComponent ("#commentsLabel")
+}
+
+/**
+  setting to opposite of it's current state of visbility 
+*/
+function toggleComponent(component){
+  var c = $(component)
+  
+  if(!c.is(":hidden")){
+    $( c ).hide( "fast", function() {
+      // Animation complete.
+    });
+  } else {
+    $( c ).show( "slow", function() {
+      // Animation complete.
+    });
+  }
+}
+
+// show yes and no button .If Yes, then submit and return thank you string. If no, on subnmit show comments with form field with "send" button. 
+//going from one state to another then back. An weasy trick to set to the inverse of their vurrent visibility 
+//sxxet visibility # get visible 
+//functions
+///pass a paramaete to 
+//create a taoggle function that togggles one componenet that I pass in...
+//create a function  called toggle buttons that shows and hides the buttons in the tex
+
+//toggle everything is it's no, on click toggle UI. On yes, we just want to toggle just the yes button and s
+
+/**
+
+Set the values on the payload json (this.data) and then send to server to post it
+
+*/
+function submit(){
+
+  // grab values one by one from the form up above and then set on the this.data JSON object
+ // this.data =  . csatform.get comments
+
+  // go for it
+
+  this.data.userId = $("#userId").val()
+  this.data.atlasId =  $("#atlasId").val()
+  this.data.comments = $("#comments").val()
+  this.data.rating = $("#rating").val()
+  
+  // alert(JSON.stringify(this.data));
+
+
+  // Using the core $.ajax() method
+  $.ajax({
+      // The URL for the request
+      
+      url: "http://localhost:8099/Csat/{param}",
+      // The data to send (will be converted to a query string)
+      data: JSON.stringify(this.data),
+      // Whether this is a POST or GET request
+      type: "POST",
+      // The type of data we expect back
+    // dataType : "json",
+      contentType: "application/json",
+      accept: "application/json"
+  })
+    // Code to run if the request fails; the raw request and
+    // status codes are passed to the function
+    .fail(function( xhr, status, errorThrown ) {
+      alert( "Sorry, there was a problem!"+JSON.stringify(xhr ) + ":"+ status );
+      // alert( "Error: " + JSON.stringify(errorThrown ))+ " Status: " + JSON.stringify(status ) );
+      //TODO: create Jira ticket assign to internal docs and support team.
+    
+    })
+    // Code to run regardless of success or failure;
+    .always(function( xhr, status ) {
+      showThankyou()
+    });
+
+
+}
+</script>
+
+
+</body>
+</html>

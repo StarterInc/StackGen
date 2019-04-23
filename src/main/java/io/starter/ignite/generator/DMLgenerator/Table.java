@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.starter.ignite.generator.Configuration;
-import io.starter.toolkit.StringTool;
+import io.starter.ignite.generator.DBGen;
 
 /**
  * Defines Table DML 
@@ -48,7 +48,7 @@ public class Table implements Configuration {
 		aMap.put("LocalDate", "DATE ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 		aMap.put("OffsetDateTime", "TIMESTAMP ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 		aMap.put("Integer.pkid", "'id' BIGINT(" + precision
-				+ ") SIGNED AUTO_INCREMENT," + "/r/n"
+				+ ") SIGNED AUTO_INCREMENT," + Configuration.LINE_FEED
 				+ "PRIMARY KEY (`id`), COMMENT 'Ignite-generated Integer.pkid'");
 		aMap.put("pkid", "PRIMARY KEY (`ID`), UNIQUE INDEX `ID_UNIQUE` (`ID` ASC));");
 		myMap = Collections.unmodifiableMap(aMap);
@@ -56,7 +56,7 @@ public class Table implements Configuration {
 
 	public static String generateTableDropDML(String tableName) {
 		tableName = convertToDBSyntax(tableName);
-		return DROP_TABLE + " " + tableName + " \r\n";
+		return DROP_TABLE + " " + tableName + Configuration.LINE_FEED;
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class Table implements Configuration {
 	 */
 	public static String generateTableRenameDML(String tableName) {
 		tableName = convertToDBSyntax(tableName);
-		String dml = ALTER_TABLE + " " + tableName + " \r\n";
+		String dml = ALTER_TABLE + " " + tableName + Configuration.LINE_FEED;
 		dml += " RENAME TO " + RENAME_TABLE_SUFFIX + tableName + "_"
 				+ System.currentTimeMillis();
 		return dml;
@@ -77,18 +77,41 @@ public class Table implements Configuration {
 	public static String generateTableBeginningDML(String tableName) {
 		tableName = convertToDBSyntax(tableName);
 		return CREATE_TABLE + " " + tableName + CREATE_TABLE_BEGIN_BLOCK
-				+ " \r\n";
+				+ Configuration.LINE_FEED;
 	}
 
-	public static String convertToDBSyntax(String tableName) {
-		tableName = TABLE_NAME_PREFIX
-				+ StringTool.convertJavaStyletoDBConvention(tableName);
-		if (SETTING_COLUMNS_UPPERCASED) {
-			tableName = tableName.toUpperCase();
-		} else {
-			tableName = tableName.toLowerCase();
+	/**
+	 * this will result in a decamelized and force-cased name.
+	 * 
+	 * @param colName
+	 * @return
+	 */
+	public static String convertToDBSyntax(String colName) {
+		colName = DBGen.decamelize(colName);
+		if (!colName.startsWith(TABLE_NAME_PREFIX)) {
+			colName = TABLE_NAME_PREFIX + colName;
 		}
-		return tableName;
+		if (columnsUpperCase) {
+			colName = colName.toUpperCase();
+		} else {
+			colName = colName.toLowerCase();
+		}
+		return colName.trim();
+	}
+
+	public static String convertToJavaSyntax(String colName) {
+		String rep = TABLE_NAME_PREFIX;
+		if (columnsUpperCase) {
+			colName = colName.toUpperCase();
+			rep = rep.toUpperCase();
+		} else {
+			colName = colName.toLowerCase();
+			rep = rep.toLowerCase();
+		}
+		colName = colName.replace(rep, "");
+		colName = colName.toLowerCase();
+		colName = DBGen.camelize(colName);
+		return colName.trim();
 	}
 
 }

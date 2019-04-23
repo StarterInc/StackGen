@@ -1,11 +1,11 @@
 package io.starter.ignite.generator;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,10 +31,23 @@ public class SwaggerGen implements Configuration {
 			.getLogger(SwaggerGen.class);
 
 	IgniteGenerator					generator		= new IgniteGenerator();
-	CodegenConfigurator				configurator	= CodegenConfigurator
-			.fromFile(CONFIG_FILE);
-
+	CodegenConfigurator				configurator;
+	private JSONObject				configObj;
 	private List<SwaggerGen>		pluginSwaggers	= new ArrayList<SwaggerGen>();
+
+	/**
+	 * Create and initialize a new SwaggerGen from a JSON config object
+	 * 
+	 * @param inputSpec
+	 *            JSONObject containing config data
+	 */
+	public SwaggerGen(JSONObject config) {
+		this.configObj = config;
+
+		this.configurator = getConfig(SPEC_LOCATION
+				+ config.getString("schemaFile"));
+		logger.info("Create Swagger Client Apis for:" + config);
+	}
 
 	/**
 	 * Create and initialize a new SwaggerGen
@@ -43,86 +56,142 @@ public class SwaggerGen implements Configuration {
 	 *            filename of spec (file in templateDirectory)
 	 */
 	public SwaggerGen(String spec) {
+		this.configurator = getConfig(spec);
+		logger.info("Create Swagger Client Apis for:" + spec);
+	}
 
-		logger.debug("Create Swagger Client Apis for:" + spec);
+	/**
+	 * Create and initialize a new SwaggerGen
+	 * 
+	 * @param inputSpec
+	 *            spe file in templateDirectory
+	 */
+	public SwaggerGen(File spec) {
+		this.configurator = CodegenConfigurator.fromFile(CONFIG_FILE);
+		logger.info("Create Swagger Client Apis for:" + spec);
+	}
 
-		// read from config file
-		if (configurator == null) {
-			// createa a fresh configurator
-			configurator = new CodegenConfigurator();
-		}
+	/**
+	 * Get a configuration, load spec
+	 * 
+	 * @param spec
+	 * @param configurator
+	 */
+	private CodegenConfigurator getConfig(String spec) {
+		CodegenConfigurator conf = new CodegenConfigurator();
+
+		setStaticConfiguration(spec, conf);
 
 		// main output type
 		// (ie: spring, jersey2)
-		configurator.setLang(SWAGGER_LANG);
+		conf.setLang(getVal("swaggerLang", swaggerLang));
 
 		// the JSON serialization library to use
 		// (ie: jersey2, resteasy, resttemplate)
-		configurator.setLibrary(SWAGGER_LIB);
+		conf.setLibrary(getVal("swaggerLib", swaggerLib));
+		conf.setOutputDir(getVal("genOutputFolder", genOutputFolder));
 
-		configurator.setArtifactId(ARTIFACT_ID);
-		configurator.setModelPackage(MODEL_PACKAGE);
-		configurator.setOutputDir(OUTPUT_DIR);
-		configurator.setApiPackage(API_PACKAGE);
+		conf.setApiPackage(getVal("API_PACKAGE", API_PACKAGE));
+		conf.setModelPackage(getVal("API_MODEL_PACKAGE", API_MODEL_PACKAGE));
+		conf.setInvokerPackage(getVal("INVOKER_PACKAGE", INVOKER_PACKAGE));
+		String gid = orgPackage.substring(0, orgPackage.length() - 1);
+		conf.setGroupId(gid);
 
-		configurator.setArtifactVersion(ARTIFACT_VERSION);
-		configurator.setInvokerPackage(INVOKER_PACKAGE);
-		configurator.setVerbose(VERBOSE);
-		configurator.addDynamicProperty("dynamic-html", "true");
-		configurator.addDynamicProperty("dateLibrary", "java8");
+		conf.setArtifactId(getVal("artifactId", artifactId));
+		conf.setArtifactVersion(getVal("artifactVersion", artifactVersion));
+
+		return conf;
+	}
+
+	/**
+	 * @param spec
+	 * @param conf
+	 */
+	private void setStaticConfiguration(String spec, CodegenConfigurator conf) {
+
+		conf.setVerbose(verbose);
+		conf.addDynamicProperty("dynamic-html", "true");
+		conf.addDynamicProperty("dateLibrary", "java8");
 
 		// whether to enhance REST api with default Object CRUD
-		configurator
-				.addAdditionalProperty(Configuration.IGNITE_GEN_MODEL_CRUD_OPS, "true");
-		configurator
-				.addAdditionalProperty(Configuration.IGNITE_GEN_MODEL_ENHANCEMENTS, "true");
-
-		// company info
-		configurator.addDynamicProperty("developerName", "Starter Inc.");
-		configurator.addDynamicProperty("developerEmail", "info@starter.io");
-		configurator.addDynamicProperty("developerName", "Starter Inc.");
-		configurator
-				.addDynamicProperty("developerOrganization", "Starter Inc.");
-		configurator
-				.addDynamicProperty("developerOrganizationUrl", "https://starterinc.github.io/Ignite/");
-
-		// SPRING props
-		configurator.addAdditionalProperty("java8", "true");
-		configurator.addAdditionalProperty("delegatePattern", "true");
-		configurator.addAdditionalProperty("asynch", "true");
-		configurator.addAdditionalProperty("USE_BEANVALIDATION", "true");
-		configurator
-				.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
+		conf.addAdditionalProperty(IGNITE_GEN_MODEL_CRUD_OPS, "true");
+		conf.addAdditionalProperty(IGNITE_GEN_MODEL_ENHANCEMENTS, "true");
 
 		// app config
-		configurator.setAuth("oauth");
-		configurator.setInputSpec(spec);
-
-		// locations
-		configurator.setTemplateDir(SPEC_LOCATION);
+		conf.setAuth("oauth");
+		conf.setInputSpec(spec);
+		conf.addAdditionalProperty("CORSMapping", CORSMapping);
 
 		// github
-		configurator.setGitRepoId("StarterIgnite");
-		configurator.setGitUserId("Spaceghost69");
+		conf.setGitRepoId(Configuration.gitRepoId);
+		conf.setGitUserId(Configuration.gitUserId);
 
+		// locations
+		conf.setTemplateDir(getVal("SPEC_LOCATION", SPEC_LOCATION));
+
+		// server info
+		conf.addDynamicProperty("serverHost", Configuration.defaultHostname);
+		conf.addDynamicProperty("serverPort", Configuration.defaultPort);
+
+		// company info
+		conf.addDynamicProperty("developerName", Configuration.developerName);
+		conf.addDynamicProperty("developerEmail", Configuration.developerEmail);
+		conf.addDynamicProperty("developerOrganization", Configuration.developerOrganization);
+		conf.addDynamicProperty("developerOrganizationUrl", Configuration.developerOrganizationUrl);
+
+		// SPRING properties
+		conf.addAdditionalProperty("java8", "true");
+		conf.addAdditionalProperty("delegatePattern", "true");
+		conf.addAdditionalProperty("asynch", "true");
+		conf.addAdditionalProperty("useBeanValidation", "true");
+		conf.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
+	}
+
+	/**
+	 * JSONObject overrides
+	 * Sysprops
+	 * 
+	 * @param swaggerlang
+	 * @param swaggerlang2 
+	 * @return
+	 */
+	private String getVal(String fieldName, String systemVal) {
+		if (this.configObj != null) {
+			if (this.configObj.has(fieldName)) {
+				String v = this.configObj.getString(fieldName);
+				if (v != null)
+					return v;
+			}
+		}
+		return systemVal;
 	}
 
 	public List<File> generate() {
+		final ClientOptInput clientOptInput = mergePluginSwaggers();
+		return new IgniteGenerator().opts(clientOptInput).generate();
+	}
+
+	/**
+	 * Merge all of the loaded plugin swagger specs into this one
+	 * 
+	 * @see addSwagger(SwaggerGen x)
+	 */
+	ClientOptInput mergePluginSwaggers() {
 		final ClientOptInput clientOptInput = configurator.toClientOptInput();
 
 		// merge swagger
 		Swagger x = clientOptInput.getSwagger();
 		for (SwaggerGen t : pluginSwaggers) {
 			try {
-				logger.info("Merging Swagger: " + t);
+				logger.info("Merging plugin swagger: " + t);
 				Swagger s = t.configurator.toClientOptInput().getSwagger();
 				if (s != null)
 					mergeSwagger(s, x);
 			} catch (Throwable e) {
-				logger.warn("Loading plugin " + t + " failed: " + e);
+				logger.warn("Merging plugin swagger " + t + " failed: " + e);
 			}
 		}
-		return new IgniteGenerator().opts(clientOptInput).generate();
+		return clientOptInput;
 	}
 
 	/**
@@ -173,20 +242,4 @@ public class SwaggerGen implements Configuration {
 				target.addTag(c);
 	}
 
-	static String[] getModelFiles() {
-		File modelDir = new File(Main.MODEL_CLASSES);
-		String[] modelFiles = modelDir.list(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.toLowerCase().contains("example"))
-					return false;
-				if (name.toLowerCase().contains("mapper"))
-					return false;
-				if (name.contains(JavaGen.ADD_GEN_CLASS_NAME))
-					return false;
-				return name.toLowerCase().endsWith(".java");
-			}
-		});
-		return modelFiles;
-	}
 }

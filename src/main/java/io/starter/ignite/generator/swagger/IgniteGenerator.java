@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.starter.ignite.generator.Configuration;
 import io.starter.ignite.generator.SwaggerGen;
 import io.swagger.codegen.DefaultGenerator;
 import io.swagger.codegen.InlineModelResolver;
 import io.swagger.models.ArrayModel;
+import io.swagger.models.ComposedModel;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.Operation;
@@ -21,9 +23,10 @@ import io.swagger.models.Response;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
-import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.ObjectProperty;
 import io.swagger.models.properties.Property;
 import io.swagger.models.properties.PropertyBuilder;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * Enhance the swagger Code Generation with Starter Ignite features
@@ -31,7 +34,7 @@ import io.swagger.models.properties.PropertyBuilder;
  * @author john
  *
  */
-public class IgniteGenerator extends DefaultGenerator {
+public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 	// Starter Enhancements
 	private Boolean				generateStarterCRUDOps				= true;
@@ -41,6 +44,13 @@ public class IgniteGenerator extends DefaultGenerator {
 	IgniteGenerator plugins(List<SwaggerGen> pluginSwaggers) {
 		this.setPluginSwaggers(pluginSwaggers);
 		return this;
+	}
+
+	public void preprocessSwagger() {
+		String port = (System.getProperty("hostPort") != null
+				? System.getProperty("hostPort")
+				: Configuration.defaultPort);
+		config.additionalProperties().put("serverPort", port);
 	}
 
 	@Override
@@ -57,6 +67,9 @@ public class IgniteGenerator extends DefaultGenerator {
 		if (generateStarterModelEnhancements) {
 			enhanceSwagger();
 		}
+
+		// some static settings
+		preprocessSwagger();
 
 		// resolve inline models
 		InlineModelResolver inlineModelResolver = new InlineModelResolver();
@@ -76,6 +89,7 @@ public class IgniteGenerator extends DefaultGenerator {
 		Map<String, Object> bundle = buildSupportFileBundle(allOperations, allModels);
 		generateSupportingFiles(files, bundle);
 		config.processSwagger(swagger);
+
 		return files;
 	}
 
@@ -102,6 +116,8 @@ public class IgniteGenerator extends DefaultGenerator {
 	 */
 	private void enhanceSwagger() {
 		Set<String> keys = this.swagger.getDefinitions().keySet();
+		Map<String, Path> priorPaths = this.swagger.getPaths();
+		this.swagger.setPaths(new HashMap<String, Path>());
 		for (String k : keys) {
 			Model m = this.swagger.getDefinitions().get(k);
 
@@ -113,8 +129,12 @@ public class IgniteGenerator extends DefaultGenerator {
 				String path = "/" + k;
 				// Path existing =
 				// this.swagger.getPaths().get(path.toLowerCase());
-				// handle special reserved word case
-				if (!"ApiResponse".equals(k)) {
+
+				// IGNITE_GEN_REST_PATH_PREFIX
+
+				if (Configuration.checkReservedWord(k)) { // handle reserved
+															// word
+															// case(s)
 					Path ops = addCrudOps(k, m);
 					if (ops != null) {
 						this.swagger.getPaths().put(path + "/{param}", ops);
@@ -122,9 +142,15 @@ public class IgniteGenerator extends DefaultGenerator {
 					Path opsl = addListOp(k, m);
 					if (opsl != null) {
 						this.swagger.getPaths()
-								.put(path + "/list/{param}", opsl);
+								.put(path + "/list/{searchparam}", opsl);
 					}
 				}
+			}
+		}
+		if (priorPaths != null) {
+			for (String f : priorPaths.keySet()) {
+				Path px = priorPaths.get(f);
+				// this.swagger.getPaths().put(f, px);
 			}
 		}
 	}
@@ -137,7 +163,7 @@ public class IgniteGenerator extends DefaultGenerator {
 		p.type("string");
 		p.setDefaultValue("0");
 		// p.setPattern("string");
-		p.setName("param"); // k + "Example");
+		p.setName("searchparam"); // k + "Example");
 		p.setAccess("public");
 		p.setDescription("Search example: JSON");
 		return p;
@@ -155,7 +181,7 @@ public class IgniteGenerator extends DefaultGenerator {
 		r.setDescription("Results fetched OK");
 
 		BodyParameter up = new BodyParameter();
-		up.setName("body");
+		up.setName("param");
 		up.setAccess("public");
 		up.setDescription("Updated JSON data");
 		up.setRequired(true);
@@ -170,11 +196,13 @@ public class IgniteGenerator extends DefaultGenerator {
 		PathParameter p = new PathParameter();
 		p.type("integer");
 		p.setMinimum(new BigDecimal(0));
+
 		// p.setName(k + "ID");
-		p.setName("id");
+		p.setName("param");
 		p.setAccess("public");
 		p.setDescription("Retreive a single result by ID");
 		p.setRequired(true);
+
 		return p;
 	}
 
@@ -187,25 +215,20 @@ public class IgniteGenerator extends DefaultGenerator {
 	}
 
 	private Operation createCRUDOp(String opName, String opType, String opDesc, Parameter p) {
-		Operation insertOp = new Operation();
-		// insertOp.addConsumes("application/xml");
-		// insertOp.addConsumes("application/json");
-		// insertOp.addProduces("application/xml");
-		insertOp.addProduces("application/json");
-		insertOp.setDescription("Starter Ignite Auto Generated " + opName + ":"
+		Operation anOp = new Operation();
+		anOp.setDescription("Starter Ignite Auto Generated " + opName + ":"
 				+ opType);
-		insertOp.setSummary(opDesc);
-		// insertOp.addTag("insert-tag"); insert of alternate tag
-		// name causes dupe method gen
-		insertOp.addTag(opType);
-		insertOp.operationId(opType);
-		insertOp.addParameter(p);
-		insertOp.getVendorExtensions().put("x-contentType", "application/json");
-		insertOp.getVendorExtensions().put("x-accepts", "application/json");
-		insertOp.getVendorExtensions().put("x-tags", "[{tag=" + opType + "}]");
+		anOp.setSummary(opDesc);
+		// anOp.addTag("insert-tag"); insert of alternate tag
 
-		addSecurity(opDesc, insertOp);
-		return insertOp;
+		// name causes dupe method gen
+		anOp.addTag(opType);
+
+		anOp.operationId(opType);
+		anOp.addParameter(p);
+		anOp.getVendorExtensions().put("x-tags", "[{tag=" + opType + "}]");
+		addSecurity(opDesc, anOp);
+		return anOp;
 	}
 
 	/**
@@ -222,36 +245,39 @@ public class IgniteGenerator extends DefaultGenerator {
 		BodyParameter up = getBodyPathParameter(k, r);
 		Operation insertOp = createCRUDOp(k, "insert", "Insert a new " + k
 				+ " into the system", up);
+		insertOp.addConsumes("application/json");
+		insertOp.addProduces("application/json");
+		StringProperty p = new StringProperty("application/json");
+		r.addHeader("Content-Type", p);
+		StringProperty s = new StringProperty("text/plain");
+		r.addHeader("Content-Type", s);
 		insertOp.response(200, r);
 		ops.setPost(insertOp);
 
 		// Update
+		r = new Response();
 		Operation updateOp = createCRUDOp(k, "update", "Update a " + k
-				+ " in the system", up);
+				+ " in the system", getIdPathParameter());
 		up = getBodyPathParameter(k, r);
 		updateOp.addParameter(up);
-		updateOp.addConsumes("application/json");
 		updateOp.response(200, r);
 		ops.setPut(updateOp);
 
-		// PathParameter p = ;
-
 		// Delete
-		Response dr = new Response();
-		RefModel m = new RefModel();
-		m.set$ref("#/definitions/" + k);
-		m.setReference(k);
-		r.responseSchema(m);
-		r.setDescription("Results fetched OK");
-		Operation deleteOp = createCRUDOp(k, "delete", "Deleta a " + k
+		Operation deleteOp = createCRUDOp(k, "delete", "Delete an " + k
 				+ " from the system", getIdPathParameter());
+		updateOp.response(200, r);
 		ops.setDelete(deleteOp);
 
 		// Load
 		Operation loadOp = createCRUDOp(k, "load", "Load a " + k
 				+ " from the system", getIdPathParameter());
-		ops.setGet(loadOp);
+		ComposedModel mxt = new ComposedModel();
+		// mxt.setReference(k);
+		mxt.setReference("#/definitions/" + k);
+		r.setResponseSchema(mxt);
 		loadOp.response(200, r);
+		ops.setGet(loadOp);
 		return ops;
 	}
 
@@ -264,41 +290,33 @@ public class IgniteGenerator extends DefaultGenerator {
 	 */
 	private Path addListOp(String k, Model model) {
 		Path ops = new Path();
-		Response r = new Response();
-
-		/*
-		 * TODO: Implement List result!
-		 * responses:
-		 * 200:
-		 * description: search results matching criteria
-		 * schema:
-		 * type: array
-		 * items:
-		 * $ref: '#/definitions/Data'
-		 */
-		ArrayModel mx = new ArrayModel();
-		ArrayProperty apx = new ArrayProperty();
-		// apx.setItems(new Property().description("yo").);
-
-		RefModel m = new RefModel();
-		m.set$ref("#/definitions/" + k);
-		m.setReference(k);
-		r.responseSchema(m); // (Model) apx);
-
-		PathParameter p = getSearchPathParameter();
 
 		// List createa a new list path
 		Operation listOp = new Operation();
-		// listOp.addConsumes("application/xml");
-		listOp.addConsumes("application/json");
-		// listOp.addProduces("application/xml");
-		listOp.addProduces("application/json");
 		listOp.setDescription("Starter Ignite Auto Generated Listing");
 		listOp.setSummary("Listing");
 		// listOp.addTag("list-tag"); // causes dupe method gen
-		listOp.operationId("list=it");
-		listOp.addParameter(p);
+		listOp.operationId("list");
+
+		Response r = new Response();
+
+		ArrayModel m = new ArrayModel();
+		ObjectProperty objectProp = new ObjectProperty();
+		m.setItems(objectProp);
+		m.setReference("#/definitions/" + k);
+		r.responseSchema(m);
+
 		listOp.addResponse("200", r);
+
+		// ArrayModel mx = new ArrayModel();
+		// mx.setReference(k);
+		// StringProperty p = new StringProperty("#/definitions/" +
+		// k);
+		// mx.setItems(p);
+		// r.setResponseSchema(mx);
+
+		PathParameter px = getSearchPathParameter();
+		listOp.addParameter(px);
 
 		// security
 		// [{automator_auth=[write:Account, read:Account]}]
@@ -331,44 +349,42 @@ public class IgniteGenerator extends DefaultGenerator {
 
 		// keyVersion
 		Map<PropertyBuilder.PropertyId, Object> args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The version of the SecureField key used to crypt this row (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The version of the SecureField key used to crypt this row (generated column)");
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "1.0");
 		Property value = PropertyBuilder.build("integer", "int64", args);
 		m.addProperty("keyVersion", value);
 
-		// keyVersion
+		// keySpec
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The spec of the SecureField key used to crypt this row (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The spec of the SecureField key used to crypt this row (generated column)");
 		// args.put(PropertyBuilder.PropertyId.MIN_LENGTH, "200");
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "dev");
-		args.put(PropertyBuilder.PropertyId.EXAMPLE, "{keyOwner:111, keySource:'session | system'}");
-
+		args.put(PropertyBuilder.PropertyId.EXAMPLE, "keySource:system");
 		value = PropertyBuilder.build("string", "", args);
-		m.addProperty("keyVersion", value);
-		// maprops.put("keySpec", value);
+		m.addProperty("keySpec", value);
 
 		// OwnerId
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The ID of the user that owns this data (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The ID of the user that owns this data (generated column)");
 		value = PropertyBuilder.build("integer", "int64", args);
 		m.addProperty("ownerId", value);
 
 		// CreatedDate
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The created date for this record/object (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The created date for this record/object (generated column)");
 		value = PropertyBuilder.build("string", "date-time", args);
 		m.addProperty("createdDate", value);
 
 		// ModifiedDate
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The last-modified date for this record/object (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The last-modified date for this record/object (generated column)");
 		value = PropertyBuilder.build("string", "date-time", args);
 		m.addProperty("modifiedDate", value);
 
 		// id -- all objects must have id as primary key
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
 		args.put(PropertyBuilder.PropertyId.ALLOW_EMPTY_VALUE, false);
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated column)");
 		value = PropertyBuilder.build("integer", "int64", args);
 		m.addProperty("id", value);
 	}

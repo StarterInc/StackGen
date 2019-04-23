@@ -74,7 +74,7 @@ public class ImageUtils {
 		}
 		File findir = new File(args[0]);
 		if (findir.isDirectory()) {
-			logger.debug("Processing folder: " + args[0]); // better hope
+			logger.info("Processing folder: " + args[0]); // better hope
 															// thats a
 			// valid path ok
 
@@ -85,7 +85,7 @@ public class ImageUtils {
 					try {
 						File[] processedo = ImageUtils.getStarterPics(f, -1);
 						for (File xr : processedo) {
-							logger.debug("Processed image: " + xr); // better
+							logger.info("Processed image: " + xr); // better
 																	// hope
 							// thats a
 						}
@@ -95,7 +95,7 @@ public class ImageUtils {
 				}
 			}
 		} else {
-			logger.debug("Please enter a foldername.  '" + args[0]
+			logger.info("Please enter a foldername.  '" + args[0]
 					+ "' is not a folder."); // better hope thats a
 			// valid path ok
 
@@ -137,7 +137,7 @@ public class ImageUtils {
 		String checkExists = outputpath + outputfn + "/Original" + fnend;
 		File fcheck = new File(checkExists);
 		if (fcheck.exists() && !overwrite) {
-			logger.debug("Skipping: " + checkExists);
+			logger.info("Skipping: " + checkExists);
 			return null;
 		}
 

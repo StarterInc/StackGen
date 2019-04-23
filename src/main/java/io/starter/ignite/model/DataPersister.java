@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * TODO: repurpose for React Component Gen
+ * 
  * @author John McMahon (@TechnoCharms)
  *
  */
@@ -16,12 +18,12 @@ public class DataPersister {
 			.getLogger(DataPersister.class);
 
 	public static Object read(String valueOf) {
-		logger.debug("DataPersister.read: " + valueOf);
+		logger.info("DataPersister.read: " + valueOf);
 		return valueOf;
 	}
 
 	public static String persist(String clearTextValue) {
-		logger.debug("DataPersister.persist: " + clearTextValue);
+		logger.info("DataPersister.persist: " + clearTextValue);
 		return clearTextValue;
 	}
 }

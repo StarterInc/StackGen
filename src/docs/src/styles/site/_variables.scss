@@ -1,0 +1,33 @@
+$font-family-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+// Site vars
+
+$content-max-width: 1120px;
+$sidebar-width: 376px;
+$base-size: 18pt;
+
+// Colors
+$bg-color: #fbfcfc;
+$footer-bg-color: #fbfcfc;
+
+$brand-dark: #444f5e;
+$brand-dark-lighter: #222;
+
+$brand-light: #444f5e;
+$brand-light-secondary-text: #fedd02;
+$brand-light-text: #1c2431;
+
+$brand-primary: #071425 !default;
+$brand-secondary: #f1cb1c;
+$brand-lighten: #edbbb2;
+$text-color: #222222 !default;
+
+// Sizes
+$margin-top-body: $base-size * 5;
+
+// Breakpoints
+$screen-md: 1200px;
+$screen-sm: 1200px;
+$screen-xs: 768px;
+
+$grid-float-breakpoint: $screen-sm;

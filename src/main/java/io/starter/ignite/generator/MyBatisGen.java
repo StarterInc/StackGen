@@ -24,6 +24,7 @@ import com.squareup.javapoet.MethodSpec;
 
 import io.starter.ignite.generator.DMLgenerator.Table;
 import io.starter.ignite.util.DOMEditor;
+import io.starter.toolkit.StringTool;
 
 /**
  * responsible for generating MyBatis config
@@ -37,19 +38,48 @@ public class MyBatisGen extends Gen implements Generator {
 			.getLogger(MyBatisGen.class);
 
 	List<String>					alreadyAdded	= new ArrayList<String>();	// dedupe
-																				// list
 
 	public static Map createMyBatis(Class c, MyBatisGen gen) throws Exception {
 
 		// projectDir.mkdirs();
-		logger.debug("Generate MyBatis...");
+		logger.info("Generate MyBatis...");
 
 		Map classesToGenerate = gen.processClasses(c, null, gen);
 
-		logger.debug("Write updated XML...");
+		logger.info("Write updated XML...");
 
 		return classesToGenerate;
 
+	}
+
+	/**
+	 * feed it an api class and it will attempt to sanitize and map to MyBatis artifcat name
+	 * 
+	 * @param apiClassName
+	 * @return
+	 */
+	public static String getMyBatisModelClassName(String apiClassName) {
+		String apibn = getBaseJavaName(apiClassName);
+		String ret = StringTool.proper(schemaName);
+		return ret + apibn;
+	}
+
+	/**
+	 * strips the package if any
+	 * 
+	 * @param n
+	 * @return
+	 */
+	static String getBaseJavaName(String n) {
+		if (n.length() <= 0)
+			return n;
+
+		if (n.contains(".")) {
+			n = n.substring(n.lastIndexOf(".") + 1);
+			// n = n.substring(1);
+		}
+		// String firstChar = n.substring(0, 1).toLowerCase();
+		return n;
 	}
 
 	/**
@@ -95,8 +125,8 @@ public class MyBatisGen extends Gen implements Generator {
 		return null;
 	}
 
-	Document	jdx;
-	Document	jdt;
+	private Document	jdx;
+	private Document	jdt;
 
 	@Override
 	public void generate(String className, List<FieldSpec> fieldList, List<MethodSpec> getters, List<MethodSpec> setters) throws Exception {
@@ -113,12 +143,12 @@ public class MyBatisGen extends Gen implements Generator {
 		packageName = "gen." + packageName;
 		className = className.substring(dotpos + 1);
 
-		logger.debug("Load MyBatis Generator XML template...");
+		logger.info("Load MyBatis Generator XML template...");
 		File genConfigFile = new File(MYBATIS_GEN_CONFIG);
 		jdt = createMyBatisXMLGenConfigNodes(jdt, className, genConfigFile);
 		DOMEditor.write(jdt, MYBATIS_GEN_CONFIG_OUT);
 
-		logger.debug("Load MyBatis Generator XML template...");
+		logger.info("Load MyBatis Generator XML template...");
 		File configFile = new File(MYBATIS_CONFIG);
 		jdx = createMyBatisXMLConfigNodes(jdx, className, configFile);
 		DOMEditor.write(jdx, MYBATIS_CONFIG_OUT); // for runtime
@@ -128,7 +158,7 @@ public class MyBatisGen extends Gen implements Generator {
 	// <mapper resource="io/starter/sqlmaps/AclMapper.xml" />
 	private Document createMyBatisXMLConfigNodes(Document jdo, String className, File configFile) throws JDOMException, IOException {
 
-		logger.debug("Parse MyBatis Template: " + configFile.getAbsolutePath());
+		logger.info("Parse MyBatis Template: " + configFile.getAbsolutePath());
 
 		if (jdo == null)
 			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
@@ -149,12 +179,13 @@ public class MyBatisGen extends Gen implements Generator {
 	}
 
 	private static String convertToMapperSyntax(String className) {
-		return SQL_MAPS_PATH + "Ignite" + className + "Mapper.xml";
+		return SQL_MAPS_PATH + StringTool.proper(schemaName) + className
+				+ "Mapper.xml";
 	}
 
 	private Document createMyBatisXMLGenConfigNodes(Document jdo, String className, File configFile) throws JDOMException, IOException {
 
-		logger.debug("Parse MyBatis Template: " + configFile.getAbsolutePath());
+		logger.info("Parse MyBatis Template: " + configFile.getAbsolutePath());
 
 		if (jdo == null)
 			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
@@ -162,17 +193,14 @@ public class MyBatisGen extends Gen implements Generator {
 		// dedupe
 		if (!alreadyAdded.contains(className)) {
 			alreadyAdded.add(className);
-			Element el = new Element("table").setText("1000")
-					.setAttribute("schema", SCHEMA_NAME)
+			Element el = new Element("table").setAttribute("schema", schemaName)
 					.setAttribute("tableName", Table
 							.convertToDBSyntax(className));
 
-			if (true) { // (setters.size() > 0) {
-				Element el2 = new Element("generatedKey")
-						.setAttribute("column", "id")
-						.setAttribute("sqlStatement", "JDBC");
-				el.setContent(el2);
-			}
+			Element el2 = new Element("generatedKey")
+					.setAttribute("column", "id")
+					.setAttribute("sqlStatement", "JDBC");
+			el.addContent(el2);
 
 			Element rootElement = jdo.getRootElement();
 			List<Element> listEmpElement = rootElement.getChildren();
@@ -189,7 +217,6 @@ public class MyBatisGen extends Gen implements Generator {
 					}
 				}
 			}
-
 		}
 		return jdo;
 	}
@@ -200,18 +227,14 @@ public class MyBatisGen extends Gen implements Generator {
 	}
 
 	static void createMyBatisFromModelFolder() throws Exception {
-		logger.debug("Iterate Swagger Entities and create Tables...");
-		File[] modelFiles = Gen.getModelFiles();
+		logger.info("Iterate Swagger Entities and create Tables...");
+		File[] modelFiles = Gen
+				.getJavaFiles(JAVA_GEN_SRC_FOLDER + "/" + MODEL_PACKAGE_DIR);
 		MyBatisGen gen = new MyBatisGen();
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));
-			cn = Configuration.MODEL_PACKAGE + "." + cn;
-			logger.debug("Loading Classes from ModelFile: " + cn);
-			// Create a new custom class loader, pointing to the
-			// directory that contains the
-			// compiled
-			// classes, this should point to the top of the package
-			// structure!
+			cn = IGNITE_MODEL_PACKAGE + "." + cn;
+			logger.info("Loading Class from ModelFile: " + cn);
 			URLClassLoader classLoader = new URLClassLoader(new URL[] {
 					new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });
 
@@ -219,7 +242,7 @@ public class MyBatisGen extends Gen implements Generator {
 			createMyBatis(loadedClass, gen);
 			classLoader.close();
 		}
-		logger.debug("Run Generation Script...");
+		logger.info("Generate...");
 		generate();
 	}
 

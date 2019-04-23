@@ -83,13 +83,13 @@ public class RoleSecurityJdbcRealm
 
 	public RoleSecurityJdbcRealm() throws NamingException, SQLException {
 		super();
-		logger.debug("Initializing RoleSecurityJdbcRealm");
+		logger.info("Initializing RoleSecurityJdbcRealm");
 		setAuthenticationQuery(DEFAULT_AUTHENTICATION_QUERY);
 		setPermissionsLookupEnabled(true);
 		setAuthorizationCachingEnabled(true); // ok needs to be reset
 		initializeDB();
 
-		logger.debug("Done Initializing RoleSecurityJdbcRealm");
+		logger.info("Done Initializing RoleSecurityJdbcRealm");
 	}
 
 	public boolean clearCacheForAllActiveUsers() {
@@ -324,7 +324,7 @@ public class RoleSecurityJdbcRealm
 			}
 		}
 
-		logger.debug("RoleSecurityJdbcRealm: initializing dataSource: "
+		logger.info("RoleSecurityJdbcRealm: initializing dataSource: "
 				+ DATABASE_CHOICE);
 
 		try {
@@ -335,7 +335,7 @@ public class RoleSecurityJdbcRealm
 			c.close();
 
 		} catch (Exception e) {
-			logger.debug("RoleSecurityJdbcRealm.initializeDB() Falling back to non-JNDI "
+			logger.info("RoleSecurityJdbcRealm.initializeDB() Falling back to non-JNDI "
 					+ "ConnectionFactory connection:"
 					+ e.getLocalizedMessage());
 			dataSource = ConnectionFactory.getDataSource();
@@ -344,7 +344,7 @@ public class RoleSecurityJdbcRealm
 			c.close();
 
 		}
-		logger.debug(" Datasource set OK!");
+		logger.info(" Datasource set OK!");
 	}
 
 	public boolean clearPrincipalCacheForUser(String username) {

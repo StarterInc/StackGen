@@ -62,12 +62,24 @@ import java.util.concurrent.Callable;
     Template file: JavaSpring/apiController.mustache
 
 ############################## DO NOT EDIT: GENERATED FILE ##############################
+ 
+ Ignite Version: {{ignite.version}}
+ 
  */
 public class {{classname}}Controller implements {{classname}} {
 
 {{#isDelegate}}
-    private final {{classname}}Delegate delegate;
+    
+    @org.springframework.beans.factory.annotation.Autowired
+    private {{classname}}Delegate delegate = null;
 
+	/**
+	* No-Args Constructor for classloading.
+	*/
+	public {{classname}}Controller() {
+		// do not use
+    }
+    
     @org.springframework.beans.factory.annotation.Autowired
     public {{classname}}Controller({{classname}}Delegate delegate) {
         this.delegate = delegate;

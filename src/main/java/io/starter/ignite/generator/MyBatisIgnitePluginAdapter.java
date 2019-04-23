@@ -26,12 +26,8 @@ import io.starter.toolkit.StringTool;
 public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		implements Configuration {
 
-	protected static final Logger	logger					= LoggerFactory
+	protected static final Logger logger = LoggerFactory
 			.getLogger(MyBatisIgnitePluginAdapter.class);
-
-	public static final String		TIMEZONE_OFFSET			= "-08:00";
-	private static final String		MYBATIS_COL_ENUM_FLAG	= "ENUM";
-	private String					ANNOTATAION_CLASS		= "io.starter.ignite.security.securefield.SecureField";
 
 	public MyBatisIgnitePluginAdapter() {
 		logger.error("Instantiating MyBatisIgnitePluginAdapter...");
@@ -39,17 +35,14 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-
-		FullyQualifiedJavaType xx = new FullyQualifiedJavaType(
-				getSuperClassName(topLevelClass));
-
+		String scn = getSuperClassName(topLevelClass);
 		Field f = new Field();
 		f.setName("delegate");
-		f.setVisibility(JavaVisibility.PROTECTED);
-		f.setInitializationString(" new " + xx + "()");
-		f.setType(xx);
+		f.setVisibility(JavaVisibility.PUBLIC);
+		f.setInitializationString(" new " + scn + "()");
+		f.setType(new TopLevelClass(scn).getType());
 		topLevelClass.addField(f);
-		topLevelClass.addImportedType(xx);
+		topLevelClass.addImportedType(scn);
 
 		FullyQualifiedJavaType dtx = new FullyQualifiedJavaType(
 				"java.util.Date");
@@ -71,14 +64,51 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 				"java.time.ZoneOffset");
 		topLevelClass.addImportedType(dtz);
 
+		Method tojson = new Method();
+		tojson.addAnnotation("@Override");
+		tojson.addBodyLine("return delegate.toJSON();");
+		tojson.setName("toJSON");
+		FullyQualifiedJavaType returnType = new FullyQualifiedJavaType(
+				"java.lang.String");
+		JavaVisibility visibility = JavaVisibility.PUBLIC;
+		tojson.setVisibility(visibility);
+		tojson.setReturnType(returnType);
+		topLevelClass.addMethod(tojson);
+
 		return true;
 	}
 
+	/**
+	 * get the superclass name
+	 * 
+	 * @param topLevelClass
+	 * @return
+	 */
 	private String getSuperClassName(TopLevelClass topLevelClass) {
 
 		String cn = topLevelClass.getType().getFullyQualifiedName();
-		cn = cn.replace(Configuration.MYBATIS_CLASS_PREFIX, "");
-		logger.debug("MYBATIS member: " + cn);
+
+		// handle stripping out the Schema name in the delegate
+		// class
+		// if (cn.toLowerCase().contains(schemaName)) {
+		// the schema is always lowercase, so adjust it for
+		// Camelcase
+		String ccsn = "dao." + StringTool.proper(schemaName);
+
+		cn = cn.replace(ccsn, "");
+
+		// replace package with actual delegate model package
+		cn = cn.replace(MODEL_DAO_PACKAGE, MODEL_PACKAGE);
+
+		if (cn.contains("..")) {
+			throw new IllegalStateException(
+					"Could not get getSuperClassName due to package collision: "
+							+ cn + ". Change value of schemaName: "
+							+ schemaName);
+		}
+		// }
+
+		logger.info("SuperClass Name MYBATIS member: " + cn);
 		return cn;
 	}
 
@@ -89,22 +119,14 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		List<String> ln = method.getBodyLines();
 		for (String l : ln) {
 			method.getBodyLines().remove(l);
-
 			String cnm = introspectedColumn.getJdbcTypeName().toUpperCase();
 			l = l.replace("return ", "return delegate.");
 			if (cnm.contains("DATE") || cnm.contains("TIMESTAMP")) {
-
-				// return new
-				// Date(delegate.executionDate.toInstant().getNano() /
-				// 1000000);
-
 				l = l.replace(";", ".toInstant().getNano() / 1000000);");
 				l = l.replace("return delegate.", "return new Date(delegate.");
-
 			} else if (secn.contains(MYBATIS_COL_ENUM_FLAG)) {
 				l = l.replace(";", ".getValue();");
 			}
-
 			method.addBodyLine(l);
 		}
 		return super.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, modelClassType);
@@ -152,10 +174,9 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 	@Override
 	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
 
-		// if (Configuration.DEBUG) {
-		logger.debug("MyBatisIgnitePluginAdapter Generating: " + field
-				+ " class:" + field.getType().getShortName());
-		// }
+		logger.info("MyBatisIgnitePluginAdapter Generating: " + field + " name:"
+				+ field.getName() + LINE_FEED + " class:"
+				+ field.getType().getShortName());
 
 		field.setVisibility(JavaVisibility.PROTECTED);
 		if (ANNOTATAION_CLASS != null) {
@@ -171,14 +192,11 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		}
 
 		return false;
-		// super.modelFieldGenerated(field, topLevelClass,
-		// introspectedColumn, introspectedTable, modelClassType);
 	}
 
 	private String getEnumHandling(String enumName, String tableName) {
-		tableName = tableName
-				.substring(Configuration.TABLE_NAME_PREFIX.length());
-		tableName = StringTool.convertDBtoJavaStyleConvention(tableName);
+		tableName = tableName.substring(TABLE_NAME_PREFIX.length());
+		tableName = DBGen.camelize(tableName);
 		tableName = StringTool.getUpperCaseFirstLetter(tableName.trim());
 
 		enumName = enumName.trim();
@@ -195,11 +213,11 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 
 	@Override
 	public boolean validate(List<String> warnings) {
-		logger.debug("MyBatis Warnings: ");
+		logger.info("MyBatis Warnings: ");
 		for (String w : warnings) {
-			logger.debug(w);
+			logger.info(w);
 		}
-		logger.debug("End MyBatis Warnings");
+		logger.info("End MyBatis Warnings");
 		return true;
 	}
 }

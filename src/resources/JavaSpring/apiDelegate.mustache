@@ -3,7 +3,15 @@ package {{package}};
 {{#imports}}import {{import}};
 {{/imports}}
 {{#jdk8}}
+
+import io.starter.ignite.model.DataModelObject;
+import io.starter.ignite.generator.IgniteException;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+
 {{/jdk8}}
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -57,7 +65,7 @@ import java.util.concurrent.{{^jdk8}}Callable{{/jdk8}}{{#jdk8}}CompletableFuture
 public interface {{classname}}Delegate {
 {{#jdk8}}
 
-    Logger log = LoggerFactory.getLogger({{classname}}.class);
+    Logger log = LoggerFactory.getLogger({{classname}}Delegate.class);
 
     ObjectMapper getObjectMapper();
     
@@ -77,7 +85,11 @@ public interface {{classname}}Delegate {
     public int delete();
     
     public String toJSON();
-
+    
+    public void setBean(Object o);
+    
+    public Object getBean();
+    
     public List<{{classname}}Delegate> list();
     
     public {{classname}}Delegate load();
@@ -88,90 +100,60 @@ public interface {{classname}}Delegate {
 
 {{#operation}}
     /**
-     * dispatch the delegate method and handle response
-     
+     * Dispatch the request to the delegate data object method and handle response
+     *
      * @see {{classname}}#{{operationId}}
      */
     {{#jdk8}}default {{/jdk8}}{{#responseWrapper}}{{.}}<{{/responseWrapper}}ResponseEntity<{{>returnTypes}}>{{#responseWrapper}}>{{/responseWrapper}} {{operationId}}({{#allParams}}{{^isFile}} {{>optionalDataType}} {{/isFile}}{{#isFile}}MultipartFile{{/isFile}} {{paramName}}{{#hasMore}},
         {{/hasMore}}{{/allParams}}){{^jdk8}};{{/jdk8}}{{#jdk8}} {
-        if(getObjectMapper() != null && getAcceptHeader() != null) {
-        
-	        // {{operationId}}({{paramName}});
+        if(getObjectMapper() != null && getAcceptHeader() != null) {    
+            
+	        // {{operationId}}({{paramName}});  -{{>optionalDataType}} {{baseName}}
 			try {
 				Object ret = callMethod("{{operationId}}"{{#allParams}}, {{paramName}}{{#hasMore}} {{/hasMore}}{{/allParams}});
-				
 				if (ret != null) {
 					if (ret instanceof List) {
-						if (((List) ret).size() > 0) {
-							Object rx = ((List) ret).get(0);
-							if (!(rx instanceof Long)) {
-								Object[] a = new Object[((List<?>) ret).size()];
-								a = ((List<?>) ret).toArray(a);
-								JSONArray jarr = new JSONArray(a);
-								return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue(jarr.toString(), {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
-							} else {
-								return new ResponseEntity<>(HttpStatus.OK);
-							}
-						} else {
-							return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-						}
+						return {{#async}}CompletableFuture.completedFuture({{/async}}
+						(ResponseEntity<{{>returnTypes}}>) getResponse((List<?>) ret){{#async}}){{/async}};
 					} else {
-						// handle return from delete
-						if(ret instanceof Long){
-							if ((Long) ret > 0) {
-								return new ResponseEntity<>(HttpStatus.OK);
-							}else{
-								return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-							}
-						}
-						return new ResponseEntity<>(HttpStatus.OK);
+						return {{#async}}CompletableFuture.completedFuture({{/async}}
+						(ResponseEntity<{{>returnTypes}}>) getResponse(this){{#async}}){{/async}};
 					}
 				} else {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				}
-			} catch (NoSuchMethodException | SecurityException
-					| IllegalAccessException | IllegalArgumentException
-					| IOException | InvocationTargetException e) {
+			} catch (Exception e) {
 				log.error("Failure running method {{classname}}.{{operationId}}: "
 						+ e);
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(HttpStatus.  INTERNAL_SERVER_ERROR);
 			}
         {{#examples}}
-        /* TODO: implement examples
-            if (getAcceptHeader().contains("{{{contentType}}}")) {
-                try {
-	                    return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue("{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}", {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
-                } catch (IOException e) {
-                    log.error("Couldn't serialize response for content type {{{contentType}}}", e);
-                    return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR){{#async}}){{/async}};
-                }
-            }
-        */    
+        // TODO: implement examples    
         {{/examples}}
-        
         } else {
             log.warn("ObjectMapper or HttpServletRequest not configured in default {{classname}} interface so no example is generated");
         }
         return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
     }{{/jdk8}}
-    
 {{/operation}}
 
 	/** 
 	* Handle calling the data method on the Starter Ignite Delegate
 	*/
-	default Object callMethod(String string, Object... args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
+	default Object callMethod(String string, Object... args) 
+		throws Exception {
+		if ("update".equals(string) && args.length == 2) {
+			this.setBean(args[1]);
+		}
 		// hande id
 		try {
 			Long id = Long.parseLong(args[0].toString());
 			// TODO: copy vals
 			setId(id);
-
 			// TODO: implement ModelCache
-
 		} catch (Exception e) {
 			// other type NP
+			setBean(args[0]);
 		}
 
 		Method method = this.getClass().getDeclaredMethod(string);
@@ -194,6 +176,77 @@ public interface {{classname}}Delegate {
 		}
 		return rx;
 	}
+	
+	/**
+	 * handle a list result
+	 * 
+	 * @param rex
+	 * @return
+	 */
+	default ResponseEntity<?> getResponse(List<?> ret) {
+		if (((List) ret).size() > 0) {
+			Object rx = ((List) ret).get(0);
+			if (!(rx instanceof Long)) {
+				// convert to list of objects
+				List<Object> rex = new ArrayList<Object>();
+				for (Object r : (List) ret){
+					// TODO: strip delegate
+					rex.add(r);
+				}
+				return new ResponseEntity<List<Object>>(rex, HttpStatus.OK);
+			} else {
+				if(rx instanceof Integer){
+					if ((Integer) rx > 0)
+							return new ResponseEntity<>(HttpStatus.OK);
+						return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				if(rx instanceof Long){
+					if ((Long) rx > 0) 
+							return new ResponseEntity<>(HttpStatus.OK);
+						return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+			}
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	/**
+	 * handle a single result
+	 * 
+	 * @param ret
+	 * @return
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 */
+	default ResponseEntity<?> getResponse(Object ret) throws JsonParseException, JsonMappingException, IOException {
+		if (ret instanceof Integer) {
+			if ((Integer) ret > 0)
+				return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		if (ret instanceof Long) {
+			if ((Long) ret > 0)
+				return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		// returns single result
+		JSONObject job = new JSONObject((({{classname}}Delegate)ret).getBean());
+		job.remove("delegate"); // remove from JSON output
+		return new ResponseEntity<>(getObjectMapper().readValue(job.toString(), {{baseName}}.class), HttpStatus.OK);
+	}
 }
 
+/* TODO: implement examples
+    if (getAcceptHeader().contains("{{{contentType}}}")) {
+        try {
+                return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(getObjectMapper().readValue("{{#lambdaRemoveLineBreak}}{{#lambdaEscapeDoubleQuote}}{{{example}}}{{/lambdaEscapeDoubleQuote}}{{/lambdaRemoveLineBreak}}", {{>exampleReturnTypes}}.class), HttpStatus.NOT_IMPLEMENTED){{#async}}){{/async}};
+        } catch (IOException e) {
+            log.error("Couldn't serialize response for content type {{{contentType}}}", e);
+            return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR){{#async}}){{/async}};
+        }
+    }
+*/ 
 {{/operations}}

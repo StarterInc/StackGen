@@ -67,8 +67,8 @@ public class S3FS extends StorageServiceEventAdaptor
 	private S3FileUtils					fileUtils;
 
 	private void initialize() throws ServiceException, S3ServiceException {
-		String awsAccessKey = SystemConstants.AWS_ACCESS_KEY;
-		String awsSecretKey = SystemConstants.AWS_SECRET_KEY;
+		String awsAccessKey = SystemConstants.awsAccessKey;
+		String awsSecretKey = SystemConstants.awsSecretKey;
 
 		AWSCredentials credentials = new AWSCredentials(awsAccessKey,
 				awsSecretKey);
@@ -98,7 +98,7 @@ public class S3FS extends StorageServiceEventAdaptor
 		// this bucket.
 		privateBket.setAcl(bucketAcl);
 		s3service.putBucketAcl(privateBket);
-		logger.debug("View bucket's object listing here: http://s3.amazonaws.com/"
+		logger.info("View bucket's object listing here: http://s3.amazonaws.com/"
 				+ privateBket.getName());
 	}
 
@@ -116,7 +116,7 @@ public class S3FS extends StorageServiceEventAdaptor
 		if (S3FS.storageService.putObjects(bucketname, sob)) {
 			StorageObject objectDetailsOnly = s3service
 					.getObjectDetails(bucketname, fx);
-			logger.debug("S3FS.uploadToBucket success: "
+			logger.info("S3FS.uploadToBucket success: "
 					+ objectDetailsOnly.getName());
 			return objectDetailsOnly.getName();
 		}
@@ -133,7 +133,7 @@ public class S3FS extends StorageServiceEventAdaptor
 		Iterator filesinFolder = fileUtils.iterateFiles(folder, null, true);
 		while (filesinFolder.hasNext()) {
 			Object file = filesinFolder.next();
-			logger.debug("File: " + file);
+			logger.info("File: " + file);
 			String key = "testfilnamekey";
 			if (folder.isDirectory()) {
 				S3Object s3Obj = new S3Object(bucket, (File) file);
@@ -142,14 +142,14 @@ public class S3FS extends StorageServiceEventAdaptor
 						.getMimetype(s3Obj.getKey()));
 				s3Objs.add(s3Obj);
 			} else {
-				logger.debug("S3FS.readFolderContents() File: "
+				logger.info("S3FS.readFolderContents() File: "
 						+ folder.getName() + " is not a folder.");
 			}
 		}
 	}
 
 	private void uploadFilesInList(File folder) {
-		logger.debug("Uploading files in folder " + folder.getAbsolutePath());
+		logger.info("Uploading files in folder " + folder.getAbsolutePath());
 		isErrorOccured = false;
 		s3ObjsCompleted.clear();
 
@@ -157,7 +157,7 @@ public class S3FS extends StorageServiceEventAdaptor
 				.toArray(new S3Object[s3Objs.size()]));
 
 		if (isErrorOccured || s3Objs.size() != s3ObjsCompleted.size()) {
-			logger.debug("Have to try uploading a few objects again for folder "
+			logger.info("Have to try uploading a few objects again for folder "
 					+ folder.getAbsolutePath() + " - Completed = "
 					+ s3ObjsCompleted.size() + " and Total =" + s3Objs.size());
 			List<S3Object> s3ObjsRemaining = new ArrayList<S3Object>();
@@ -180,7 +180,7 @@ public class S3FS extends StorageServiceEventAdaptor
 				logger.error("Ignoring error: " + throwables[i].getMessage());
 			}
 		} else if (ServiceEvent.EVENT_STARTED == event.getEventCode()) {
-			logger.debug("**********************************Upload Event Started***********************************");
+			logger.info("**********************************Upload Event Started***********************************");
 		} else if (event.getEventCode() == ServiceEvent.EVENT_ERROR) {
 			isErrorOccured = true;
 		} else if (event.getEventCode() == ServiceEvent.EVENT_IN_PROGRESS) {
@@ -190,7 +190,7 @@ public class S3FS extends StorageServiceEventAdaptor
 			}
 			ThreadWatcher watcher = event.getThreadWatcher();
 			if (watcher.getBytesTransferred() >= watcher.getBytesTotal()) {
-				logger.debug("Upload Completed.. Verifying");
+				logger.info("Upload Completed.. Verifying");
 			} else {
 				int percentage = (int) (((double) watcher.getBytesTransferred()
 						/ watcher.getBytesTotal()) * 100);
@@ -210,12 +210,12 @@ public class S3FS extends StorageServiceEventAdaptor
 							+ timeFormatter.formatTime(secondsRemaining));
 				}
 
-				logger.debug(transferDetailsText.toString() + " " + percentage);
+				logger.info(transferDetailsText.toString() + " " + percentage);
 			}
 		} else if (ServiceEvent.EVENT_COMPLETED == event.getEventCode()) {
-			logger.debug("**********************************Upload Event Completed***********************************");
+			logger.info("**********************************Upload Event Completed***********************************");
 			if (isErrorOccured) {
-				logger.debug("**********************But with errors, have to retry failed uploads**************************");
+				logger.info("**********************But with errors, have to retry failed uploads**************************");
 			}
 		}
 	}

@@ -4,6 +4,12 @@ import org.json.JSONObject;
 
 import io.starter.ignite.generator.Gen;
 
+/**
+ * Creates an OpenAPI Spec fragment from Java classes
+ * 
+ * @author john
+ *
+ */
 public class OpenAPISerializer {
 
 	public static void main(String[] args) throws ClassNotFoundException {

@@ -89,11 +89,13 @@ public class SwaggerGen implements Configuration {
 		// the JSON serialization library to use
 		// (ie: jersey2, resteasy, resttemplate)
 		conf.setLibrary(getVal("swaggerLib", swaggerLib));
-		conf.setOutputDir(getVal("genOutpuFolder", genOutpuFolder));
+		conf.setOutputDir(getVal("genOutputFolder", genOutputFolder));
 
 		conf.setApiPackage(getVal("API_PACKAGE", API_PACKAGE));
 		conf.setModelPackage(getVal("API_MODEL_PACKAGE", API_MODEL_PACKAGE));
 		conf.setInvokerPackage(getVal("INVOKER_PACKAGE", INVOKER_PACKAGE));
+		String gid = orgPackage.substring(0, orgPackage.length() - 1);
+		conf.setGroupId(gid);
 
 		conf.setArtifactId(getVal("artifactId", artifactId));
 		conf.setArtifactVersion(getVal("artifactVersion", artifactVersion));
@@ -106,6 +108,7 @@ public class SwaggerGen implements Configuration {
 	 * @param conf
 	 */
 	private void setStaticConfiguration(String spec, CodegenConfigurator conf) {
+
 		conf.setVerbose(verbose);
 		conf.addDynamicProperty("dynamic-html", "true");
 		conf.addDynamicProperty("dateLibrary", "java8");
@@ -117,10 +120,11 @@ public class SwaggerGen implements Configuration {
 		// app config
 		conf.setAuth("oauth");
 		conf.setInputSpec(spec);
+		conf.addAdditionalProperty("CORSMapping", CORSMapping);
 
 		// github
-		conf.setGitRepoId("StarterIgnite");
-		conf.setGitUserId("Spaceghost69");
+		conf.setGitRepoId(Configuration.gitRepoId);
+		conf.setGitUserId(Configuration.gitUserId);
 
 		// locations
 		conf.setTemplateDir(getVal("SPEC_LOCATION", SPEC_LOCATION));
@@ -130,12 +134,12 @@ public class SwaggerGen implements Configuration {
 		conf.addDynamicProperty("serverPort", Configuration.defaultPort);
 
 		// company info
-		conf.addDynamicProperty("developerName", "John McMahon @TechnoCharms");
-		conf.addDynamicProperty("developerEmail", "info@starter.io");
-		conf.addDynamicProperty("developerOrganization", "Starter Inc.");
-		conf.addDynamicProperty("developerOrganizationUrl", "http://ignite.starter.io/");
+		conf.addDynamicProperty("developerName", Configuration.developerName);
+		conf.addDynamicProperty("developerEmail", Configuration.developerEmail);
+		conf.addDynamicProperty("developerOrganization", Configuration.developerOrganization);
+		conf.addDynamicProperty("developerOrganizationUrl", Configuration.developerOrganizationUrl);
 
-		// SPRING propery
+		// SPRING properties
 		conf.addAdditionalProperty("java8", "true");
 		conf.addAdditionalProperty("delegatePattern", "true");
 		conf.addAdditionalProperty("asynch", "true");

@@ -6,12 +6,23 @@ author: "johnmcmahon"
 needsAuth: false
 url: /wth
 category: "tech"
-date: "2017-03-17"
+date: "2019-03-17"
 tags:
     - programming
     - opensource
     - resources
 ---
+
+#### Customization and Integration
+
+As an Open Source development tool, StackGen is quite popular as embedded and customized within various Organizational settings.
+
+From one-off Marketing and Research data gathering apps, to full stack Microservice based production code, StackGen code and artifacts are useful in many contexts.
+
+The most likely and useful way to enhance the functionality of StackGen is via 2 methods:
+
+1. to extend the generated Data objects with business logic and functionality
+2. to change and customize the code generation templates used to create the code
 
 #### Contributing
 

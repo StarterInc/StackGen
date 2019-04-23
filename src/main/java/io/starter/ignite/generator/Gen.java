@@ -179,13 +179,7 @@ public class Gen implements Configuration {
 			}
 		}
 
-		Object[] ob = folderFiles.toArray();
-		File[] fret = new File[ob.length];
-		int i = 0;
-		for (Object ft : ob)
-			fret[i++] = (File) ft;
-
-		return fret;
+		return folderFiles.toArray(new File[folderFiles.size()]);
 	}
 
 	static File[] getSourceFilesInFolder(File f, List<String> skipList) {
@@ -260,15 +254,16 @@ public class Gen implements Configuration {
 				File[] subdirFiles = getSourceFilesInFolder(fx, Configuration.FOLDER_SKIP_LIST);
 				folderFiles.addAll(Arrays.asList(subdirFiles));
 			} else {
-				folderFiles.add(fx);
+				if (!folderFiles.contains(fx)) { // DEDUPES NOT WORK??!
+					folderFiles.add(fx);
+				} else {
+					System.err.print("DUPE:  " + fx.toString());
+				}
 			}
 		}
-		Object[] ob = folderFiles.toArray();
-		File[] fret = new File[ob.length];
-		int i = 0;
-		for (Object ft : ob)
-			fret[i++] = (File) ft;
-		return fret;
+
+		return folderFiles.toArray(new File[folderFiles.size()]);
+
 	}
 
 	/**

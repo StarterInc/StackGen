@@ -1,10 +1,27 @@
 ---
-description: Edit the OpenAPI/Swagger Specification YAML File.
-title: Design API Specification
+description: Installing the StackGen project and generating your first Stack!
+title: Installing
 stepNumber: 2
-short: Design
+short: Clone
 ---
 
-Before generating the code and building your Stack, you will need to design your OpenAPI Specification.
+## Github
 
-This is the fun part where we set any environment variables by following the documentation [here](/docs/environment-variables.html). Otherwise, your project will use the default values for these variables and who knows what that will result in....?
+Clone the project by running one of these commands:
+
+```bash http
+git clone https://github.com/starterinc/ignite
+```
+```bash ssh
+git clone git@github.com:diegonvs/gatsby-boilerplate.git
+```
+
+After the clone succeeds, navigate to `StarterStackGen/` on your machine and run `mvn clean install`.
+
+## StackGen CLI
+
+If you have Gatsby installed globally, use the StackGen command line interface by running:
+
+```sh
+java -jar StackGen.jar -all -the -things
+```

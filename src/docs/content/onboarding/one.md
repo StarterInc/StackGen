@@ -2,7 +2,7 @@
 description: Installing the StackGen project and generating your first Stack!
 title: Installing
 stepNumber: 1
-short: Clone
+short: Select
 ---
 
 ## Github

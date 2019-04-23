@@ -42,8 +42,7 @@ public class SecureEncrypter implements SystemConstants {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		logger.info("Generate Encryption Key: "
-				+ EncryptionUtil.generateKey());
+		logger.info("Generate Encryption Key: " + EncryptionUtil.generateKey());
 
 		String cleartext = "AES Symmetric Encryption Decryption";
 		logger.info("Plain Text Before Encryption: " + cleartext);

@@ -81,9 +81,79 @@ Some reserved words to avoid in the Swagger specification:
 
 ### Troubleshooting issues with compiling the generated output code
 
+One issue that can occur is when regenerating Stacks that have changes to the schema fields but with:
+
 ```
-// TODO: document overwrite mode issue of compilation failure due to missing fields
-// when code is out of date (code gen based on out of date prior codegen output with different fields being on the CP)
+java ... -DdbGenDropTable=false
 ```
 
+In this scenario, the data API and DAO objects are generated from the updated schema, but when the database mappings occur, the columns are based upon the prior schema.
+
+You will see this exhibited as a Compilation failure similar to the following. Note that all the other mapped classes and schema files are OK and only the fields missing via the column changes are not found:
+
+```
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR :
+[INFO] -------------------------------------------------------------
+[ERROR] gen/src/main/java/io/starter/stackgen/model/dao/StackgenOrder.java:[57,24] cannot find symbol
+symbol:   variable tradeId
+location: variable delegate of type io.starter.stackgen.model.Order
+[ERROR] gen/src/main/java/io/starter/stackgen/model/dao/StackgenOrder.java:[69,17] cannot find symbol
+symbol:   variable tradeId
+location: variable delegate of type io.starter.stackgen.model.Order
+[ERROR] gen/src/main/java/io/starter/stackgen/model/dao/StackgenOrder.java:[105,33] cannot find symbol
+symbol:   variable executionDate
+location: variable delegate of type io.starter.stackgen.model.Order
+[ERROR] gen/src/main/java/io/starter/stackgen/model/dao/StackgenOrder.java:[121,17] cannot find symbol
+symbol:   variable executionDate
+location: variable delegate of type io.starter.stackgen.model.Order
+[INFO] 4 errors
+
+```
+
+To fix this issue: delete or rename the obsolete table manually in the target database, then re-run the generator. The single table will be re-generated and the columns will correctly reflect the updated schema.
+
+
 ### Troubleshooting issues with running the generated output code
+
+StackGen is compatible with Java Runtime Environment (JRE) version 1.8 and newer.
+
+Some Linux distros and Cloud servers have outdated versions of Java (ie: 1.6, 1.7) which will need to be upgraded to run StackGen.
+
+Typically this situation will result in the following error output:
+
+```
+[ec2-user@instance StackGen]$ bash start.sh
+Exception in thread "main" java.lang.UnsupportedClassVersionError: org/springframework/boot/loader/JarLauncher : Unsupported major.minor version 52.0
+	at java.lang.ClassLoader.defineClass1(Native Method)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:808)
+	at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	at java.net.URLClassLoader.defineClass(URLClassLoader.java:443)
+	at java.net.URLClassLoader.access$100(URLClassLoader.java:65)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:349)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:348)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:430)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:323)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:363)
+	at sun.launcher.LauncherHelper.checkAndLoadMain(LauncherHelper.java:482)
+[ec2-user@instance StackGen]$ java -version
+java version "1.7.0_201"
+OpenJDK Runtime Environment (amzn-2.6.16.0.78.amzn1-x86_64 u201-b00)
+OpenJDK 64-Bit Server VM (build 24.201-b00, mixed mode)
+[ec2-user@instance StackGen]$
+```
+
+**Amazon Linux**
+To remove java 1.7 and install OpenJDK 1.8.0:
+```
+sudo yum install java-1.8.0-openjdk-devel
+
+sudo yum remove java-1.7.0-openjdk
+
+sudo /usr/sbin/alternatives --config java
+
+sudo /usr/sbin/alternatives --config javac
+
+```

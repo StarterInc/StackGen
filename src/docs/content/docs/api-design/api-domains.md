@@ -1,5 +1,5 @@
 ---
-title: "Mastering API Domains and Achieving Max Interop"
+title: "Mastering API Design"
 cover: "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA18322-640x350.jpg"
 slug: "advanced-topics"
 author: "johnmcmahon"
@@ -14,11 +14,17 @@ tags:
     - resources
 ---
 
-### What are "Domains"
+### Design-First Agile Development
 
-One of the mandates of StackGen is **Max Interop**
+StackGen was designed to make Design a first class process.
 
-> **Max Interop**: to enable and encourage interoperability with as many external systems as possible.
+Too often, requirements are listed and implemented with little regard to how every part interacts with every eother part, to create Digital Experiences that users love and come back to pay for.
+
+One of the mandates of StackGen is to be as easy to integrate with as many systems as possible.
+
+The advantages of integrations are massive and affect every aspect of the design and use of StackGen.
+
+> **Maximum Interoperability**: to enable and encourage interoperability with as many external systems as possible.
 
 Because of this requirement, StackGen is designed for extensibility and enhancement in every practical way.
 

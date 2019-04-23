@@ -33,12 +33,11 @@ public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
 	private final String adminContextPath = "";
 	
 	@Bean
-	// TODO: implement fine grained lookup for CORS
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**");
+                registry.addMapping("{{CORSMapping}}");
             }
         };
     }
@@ -50,12 +49,13 @@ public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
         successHandler.setTargetUrlParameter("redirectTo");
 
         http.authorizeRequests()
-            .antMatchers(adminContextPath + "/**").permitAll()
-            .antMatchers(adminContextPath + "/login").permitAll()
+            .antMatchers(adminContextPath + "/assets/**").permitAll()
+            .antMatchers(adminContextPath + "/login**").permitAll()
             .anyRequest().authenticated()
-            .and().cors().and()
-        .formLogin().loginPage(adminContextPath + "/login").successHandler(successHandler).and()
-        .logout().logoutUrl(adminContextPath + "/logout").and()
+            .and()
+            
+        .formLogin().loginPage(adminContextPath + "/login.html").successHandler(successHandler).loginProcessingUrl("/login").and()
+        .logout().logoutUrl(adminContextPath + "/logout.html").and()
         .httpBasic().and()
         .csrf().disable();
         // @formatter:on

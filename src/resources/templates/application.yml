@@ -20,7 +20,7 @@ spring:
   boot:
     admin:
       client:
-        url: http://localhost:8008
+        url: http://localhost:8009
   profiles:
     active:
       - secure

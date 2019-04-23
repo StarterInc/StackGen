@@ -24,8 +24,8 @@ build
 /gen/
 /gen.*/
 
-src/docs/public/
-src/docs/node_modules/
+/src/docs/public/
+/src/docs/node_modules/
 
 .cache
 

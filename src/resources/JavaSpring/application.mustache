@@ -1,35 +1,37 @@
 # THIS IS AN AUTO-GENERATED SPRING CONFIG
-# template location is: src/resources/JavaSpring/application.mustache
+# template for this file is: src/resources/JavaSpring/application.mustache
 
 spring.banner.location=classpath:/io/starter/spring/boot/starter-ignite-banner.txt
 
 springfox.documentation.swagger.v2.path=/api-docs
-server.contextPath={{^contextPath}}/{{/contextPath}}{{#contextPath}}{{contextPath}}{{/contextPath}}
+# server.contextPath={{^contextPath}}/{{/contextPath}}{{#contextPath}}{{contextPath}}{{/contextPath}}
 
 # Force Read from SYSPROPS
-server.port={{serverPort}}
-server.address={{serverHost}}
+server.port=${servicePort}
+server.address=${serviceHost}
 
 # Configure the JSON Serialization used by REST api
 spring.jackson.serialization-inclusion=non_null
 spring.jackson.date-format=io.starter.csat.invoker.RFC3339DateFormat
 spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
 
-spring.boot.admin.notify.mail.to=admin@example.com
-spring.boot.admin.notify.mail.enabled=true
-
 spring.boot.admin.routes.endpoints=env, metrics, trace, jolokia, info, configprops
-spring.boot.admin.client.url=http://localhost:8009
-spring.boot.admin.url=http://localhost:8009
-spring.boot.admin.password=password
-spring.boot.admin.username=user
+# spring.boot.admin.client.url=${adminServiceURL}
+spring.boot.admin.url=${adminServiceURL}
+
+spring.adminUser=${adminUser}
+spring.adminPassword=${adminPassword}
+
+spring.boot.admin.client.username=${adminUser}
+spring.boot.admin.client.password=${adminPassword}
+
+spring.boot.admin.client.instance.metadata.user.name=${adminUser}
+spring.boot.admin.client.instance.metadata.user.password=${adminPassword}
 
 
 spring.jackson.date-format={{basePackage}}.RFC3339DateFormat
 spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
 
-spring.boot.admin.notify.mail.to=admin@example.com
-spring.boot.admin.notify.mail.enabled=true
 
 #
 # SECURITY
@@ -37,7 +39,7 @@ spring.boot.admin.notify.mail.enabled=true
 # The default domain for generating ObjectNames must be specified. Otherwise when multiple Spring Boot applications start in the same servlet container
 # all would be created with the same name (com.zaxxer.hikari:name=dataSource,type=HikariDataSource) for example
 
-spring.jmx.default-domain=${spring.application.name}
+spring.jmx.default-domain={{artifactId}}
 spring.security.filter.dispatcher-types=REQUEST,FORWARD,ASYNC
 spring.liquibase.enabled=false
 

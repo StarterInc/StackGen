@@ -56,19 +56,16 @@ public class Main implements Configuration {
 			System.out
 					.println("java io.starter.ignite.generator.Main <input.yml> -D<option_name>=<option_value> ... ");
 		} else {
-			// For each String in the String array
-			// print out the String.
+			// copy any args to sysprops
 			for (String argument : args) {
 				if (argument.toLowerCase().endsWith(".yml")
 						|| argument.toLowerCase().endsWith(".json")) {
 					inputSpecFile = argument;
 				} else if (argument.contains("=")) {
-
 					int p = argument.indexOf("=");
 					String narg = argument.substring(0, argument.indexOf(p));
 					String varg = argument.substring(argument.indexOf(p));
 					System.setProperty(narg, varg);
-
 				}
 			}
 		}
@@ -91,7 +88,7 @@ public class Main implements Configuration {
 		logger.info("with: " + inputSpecFile
 				+ (args != null ? " and args: " + args.toString() : ""));
 
-		generateApp(inputSpecFile);
+		generateStack(inputSpecFile);
 	}
 
 	/**
@@ -109,22 +106,20 @@ public class Main implements Configuration {
 			logger.error("Copying Configuration values from JSON to Sysprops failed while starting App Generation");
 			e.printStackTrace();
 		}
-		Main.generateApp(config.getString("schemaFile"));
+		Main.generateStack(config.getString("schemaFile"));
 
 	}
 
 	/**
-	 * Step by step process to create Ignite app from spec file
+	 * Step by step process to create Stack from spec file
 	 * 
 	 * @param inputSpecFile
 	 */
-	public static void generateApp(String inputSpecFile) {
+	public static void generateStack(String inputSpecFile) {
 		System.out.println(ASCIIArtPrinter.print());
 		System.out.println();
 		logger.info("Starting App Generation");
-
 		try {
-
 			// Clear out the gen and
 			if (overwriteMode) {
 				initOutputFolders();
@@ -162,6 +157,8 @@ public class Main implements Configuration {
 			}
 
 			// compile the DataOgbject Classes
+			JavaGen.compile(MODEL_DAO_PACKAGE_DIR);
+
 			JavaGen.compile(PACKAGE_DIR);
 
 			// delegates calls to/from api to the mybatis entity
@@ -192,10 +189,11 @@ public class Main implements Configuration {
 		SwaggerGen swaggerGen = new SwaggerGen(SPEC_LOCATION + inputSpecFile);
 
 		// iterate the files in the plugins folder
-		File[] fin = Main.getPluginFiles();
+		String[] fin = Main.getPluginFiles();
 		if (fin != null) {
-			for (File f : fin) {
-				logger.info("Installing Plugin: " + f.getName());
+			for (String fs : fin) {
+				File f = new File(fs);
+				logger.info("Generating Plugin Schema: " + fs);
 				SwaggerGen pluginSwag = new SwaggerGen(f.getAbsolutePath());
 				swaggerGen.addSwagger(pluginSwag);
 			}
@@ -213,11 +211,13 @@ public class Main implements Configuration {
 		SwaggerGen swaggerGen = new SwaggerGen(SPEC_LOCATION + inputSpecFile);
 
 		// iterate the files in the plugins folder
-		File[] fin = Main.getPluginFiles();
-		for (File f : fin) {
+		String[] fin = Main.getPluginFiles();
+		for (String fs : fin) {
+			File f = new File(PLUGIN_SPEC_LOCATION + fs);
 			logger.info("Generating Plugin: " + f.getName());
 			SwaggerGen pluginSwag = new SwaggerGen(f.getAbsolutePath());
-			allGen.addAll(pluginSwag.generate());
+			List<File> fxs = pluginSwag.generate();
+			allGen.addAll(fxs);
 		}
 		allGen.addAll(swaggerGen.generate());
 		logger.info("####### SWAGGER Generated: " + allGen.size()
@@ -238,21 +238,40 @@ public class Main implements Configuration {
 	}
 
 	/**
-	 * @return
+	 * get YML or JSON Schema files from the plugins dir
+	 * 
+	 * for now we go one level deep only
+	 * 
+	 * @return array of schema files
 	 */
-	static File[] getPluginFiles() {
-		ArrayList<File> schemaList = new ArrayList<File>();
-		File pluginDir = new File(Configuration.PLUGIN_FOLDER);
-		File[] pfx = pluginDir.listFiles();
-		if (pfx != null) {
-			for (File f : pfx) {
-				File[] z = getSchemaFiles(f);
-				for (File t : z)
-					schemaList.add(t);
-			}
-			return schemaList.toArray(new File[schemaList.size()]);
+	public static String[] getPluginFiles() {
+		File pluginDir = new File(PLUGIN_SPEC_LOCATION);
+		if (!pluginDir.exists()) {
+			throw new IllegalStateException(
+					"getPluginFiles Failure: no path here "
+							+ PLUGIN_SPEC_LOCATION);
 		}
-		return null;
+		String[] pluginFiles = pluginDir.list(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				if (name.toLowerCase().endsWith(".json"))
+					return true;
+				if (name.toLowerCase().endsWith(".yml")
+						|| name.toLowerCase().endsWith(".yaml"))
+					return true;
+
+				// otherwise
+				return false;
+			}
+		});
+
+		if (pluginFiles != null && pluginFiles.length < 1) {
+			throw new IllegalStateException(
+					"Gen.getPluginFiles Failure: no plugin schemas found: "
+							+ PLUGIN_SPEC_LOCATION
+							+ ". Check the PLUGIN_SPEC_LOCATION config value.");
+		}
+		return pluginFiles;
 	}
 
 	private static File[] getSchemaFiles(File f) {
@@ -267,8 +286,8 @@ public class Main implements Configuration {
 	}
 
 	private static void initOutputFolders() {
-		File genDir = new File(genOutpuFolder);
-		logger.info("Initializing output folder: " + genOutpuFolder
+		File genDir = new File(genOutputFolder);
+		logger.info("Initializing output folder: " + genOutputFolder
 				+ " exists: " + genDir.exists());
 		if (genDir.exists()) {
 			String fx = javaGenArchivePath + "." + System.currentTimeMillis();
@@ -278,14 +297,14 @@ public class Main implements Configuration {
 			}
 			if (!genDir.renameTo(toF)) {
 				throw new IgniteException(
-						"Could not rename: " + genOutpuFolder + " to: " + fx);
+						"Could not rename: " + genOutputFolder + " to: " + fx);
 			}
 
-			genDir = new File(genOutpuFolder);
+			genDir = new File(genOutputFolder);
 			genDir.mkdirs();
 		}
 
-		boolean outputDir = new File(Configuration.genOutpuFolder + "/src/")
+		boolean outputDir = new File(Configuration.genOutputFolder + "/src/")
 				.mkdirs();
 		if (!outputDir) {
 			logger.error("Could not init: " + outputDir + ". Exiting.");
@@ -309,13 +328,13 @@ public class Main implements Configuration {
 					"/src/main/java/io/starter/spring/boot/starter-ignite-banner.txt" } };
 
 	protected static void copyStaticFiles(String[][] staticFiles) {
-		File genDir = new File(genOutpuFolder);
-		logger.info("Copying static files to folder: " + genOutpuFolder
+		File genDir = new File(genOutputFolder);
+		logger.info("Copying static files to folder: " + genOutputFolder
 				+ " exists: " + genDir.exists());
 		if (genDir.exists()) {
 			for (String[] fx : staticFiles) {
 				File fromF = new File(rootFolder + fx[0]);
-				File toF = new File(genOutpuFolder + fx[1]);
+				File toF = new File(genOutputFolder + fx[1]);
 				if (fromF.exists()) {
 					logger.info("Copying static file : " + fromF + " to: "
 							+ toF);
@@ -336,6 +355,6 @@ public class Main implements Configuration {
 				}
 			}
 		}
-		logger.info("Done copying static files to " + genOutpuFolder);
+		logger.info("Done copying static files to " + genOutputFolder);
 	}
 }

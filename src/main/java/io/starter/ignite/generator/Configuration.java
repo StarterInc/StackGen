@@ -24,7 +24,7 @@ import io.starter.ignite.util.SystemConstants;
  * swaggerLang
  * swaggerLib
  * dbGenDropTable
- * genOutpuFolder
+ * genOutputFolder
  * REACT_APP_NAME 
  * REACT_EXPORT_FOLDER
  * REACT_TEMPLATE_FOLDER
@@ -48,6 +48,51 @@ public interface Configuration extends SystemConstants {
 					? System.getProperty("defaultPort")
 					: "8099");
 
+	public static String			gitRepoId						= (System
+			.getProperty("gitRepoId") != null ? System.getProperty("gitRepoId")
+					: "StackGen");
+
+	public static String			gitUserId						= (System
+			.getProperty("gitUserId") != null ? System.getProperty("gitUserId")
+					: "spaceghost69");
+
+	public static String			developerOrganizationUrl		= (System
+			.getProperty("developerOrganizationUrl") != null
+					? System.getProperty("developerOrganizationUrl")
+					: "http://starter.io");
+
+	public static String			developerName					= (System
+			.getProperty("developerName") != null
+					? System.getProperty("developerName")
+					: "Stack Dev");
+
+	public static String			developerEmail					= (System
+			.getProperty("developerEmail") != null
+					? System.getProperty("developerEmail")
+					: "info@stackgen.io");
+
+	public static String			developerOrganization			= (System
+			.getProperty("developerOrganization") != null
+					? System.getProperty("developerOrganization")
+					: "Starter Inc.");
+
+	/**
+	 * set the value of allowed CORS request paths
+	 */
+	public static String			CORSMapping						= (System
+			.getProperty("CORSMapping") != null
+					? System.getProperty("CORSMapping")
+					: "*/**");
+
+	public static String			adminUser						= (System
+			.getProperty("adminUser") != null ? System.getProperty("adminUser")
+					: "admin");
+
+	public static String			adminPassword					= (System
+			.getProperty("adminPassword") != null
+					? System.getProperty("adminPassword")
+					: "password");
+
 	public static boolean			skipDbGen						= (System
 			.getProperty("skipDbGen") != null
 					? Boolean.parseBoolean(System.getProperty("skipDbGen"))
@@ -59,8 +104,9 @@ public interface Configuration extends SystemConstants {
 					: false);
 
 	public static boolean			skipMavenBuildGeneratedApp		= (System
-			.getProperty("skipMavenBuildGeneratedApp") != null ? Boolean
-					.parseBoolean(System.getProperty("skipBuildGeneratedApp"))
+			.getProperty("skipMavenBuildGeneratedApp") != null
+					? Boolean.parseBoolean(System
+							.getProperty("skipMavenBuildGeneratedApp"))
 					: true);
 
 	public static boolean			overwriteMode					= (System
@@ -71,7 +117,7 @@ public interface Configuration extends SystemConstants {
 	public static boolean			iteratePluginGen				= (System
 			.getProperty("iteratePluginGen") != null ? Boolean
 					.parseBoolean(System.getProperty("iteratePluginGen"))
-					: false);
+					: true);
 
 	public static boolean			mergePluginGen					= (System
 			.getProperty("mergePluginGen") != null
@@ -138,9 +184,9 @@ public interface Configuration extends SystemConstants {
 					? System.getProperty("javaGenFolder")
 					: "/gen");
 
-	public static String			genOutpuFolder					= (System
-			.getProperty("genOutpuFolder") != null
-					? System.getProperty("genOutpuFolder")
+	public static String			genOutputFolder					= (System
+			.getProperty("genOutputFolder") != null
+					? System.getProperty("genOutputFolder")
 					: rootFolder)
 			+ javaGenFolder;
 
@@ -158,13 +204,13 @@ public interface Configuration extends SystemConstants {
 					: rootFolder)
 			+ "/src/main";
 
-	public static String			JAVA_GEN_SRC_FOLDER				= genOutpuFolder
+	public static String			JAVA_GEN_SRC_FOLDER				= genOutputFolder
 			+ "/src/main/java";
 
 	public static File				JAVA_GEN_SRC					= new File(
 			JAVA_GEN_SRC_FOLDER);
 
-	public static String			JAVA_GEN_RESOURCES_FOLDER		= genOutpuFolder
+	public static String			JAVA_GEN_RESOURCES_FOLDER		= genOutputFolder
 			+ "/resources";
 
 	public static String			PUBLIC_ROOT						= javaGenFolder
@@ -174,9 +220,6 @@ public interface Configuration extends SystemConstants {
 			+ "/java";
 
 	public static String			SOURCE_RESOURCES				= "/src/resources";
-
-	public static String			PLUGIN_FOLDER					= rootFolder
-			+ SOURCE_RESOURCES + "/plugins";
 
 	public static final boolean		DISABLE_DATA_FIELD_ASPECT		= true;
 	public static final boolean		DISABLE_SECURE_FIELD_ASPECT		= false;

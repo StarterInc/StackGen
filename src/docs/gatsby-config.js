@@ -70,13 +70,13 @@ module.exports = {
 				display: 'minimal-ui',
 				icons: [
 					{
-						"src": "/favicons/android-chrome-192x192.png",
-						"sizes": "192x192",
+						"src": "/favicons/favicon-16x16.png",
+						"sizes": "16x16",
 						"type": "image/png"
 					},
 					{
-						"src": "/favicons/android-chrome-512x512.png",
-						"sizes": "512x512",
+						"src": "/favicons/favicon-32x32.png",
+						"sizes": "32x32",
 						"type": "image/png"
 					}
 				]

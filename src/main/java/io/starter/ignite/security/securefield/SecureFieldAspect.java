@@ -30,25 +30,36 @@ public class SecureFieldAspect implements Configuration {
 		if (DISABLE_SECURE_FIELD_ASPECT) {
 			logger.info("SKIPPING SECURE FIELD GETTER");
 			return pjp.proceed();
+		} else {
+			logger.info("INVOKING SECURE FIELD GETTER");
 		}
 
-		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
-
-		// logger.error("Calling: " + cnm);
-		// if iBatis is calling, do not decrypt
-		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
+		if (rejectIbatisCall()) {
 			return pjp.proceed(pjp.getArgs());
 		}
 
 		logger.info("Get Secure Field for: " + pjp.toLongString());
-		Object targetObject = pjp.getTarget();
-		String secureFieldName = pjp.getSignature().getName();
-		Field secureField = targetObject.getClass()
+		final Object targetObject = pjp.getTarget();
+		final String secureFieldName = pjp.getSignature().getName();
+
+		final Field secureField = targetObject.getClass()
 				.getDeclaredField(secureFieldName);
 		secureField.setAccessible(true);
-		Object encryptedObject = secureField.get(targetObject);
+		final Object encryptedObject = secureField.get(targetObject);
 		secureField.setAccessible(false);
 
+		final SecureField sf = secureField.getAnnotation(SecureField.class);
+
+		if (sf == null) {
+			logger.info("Null SecureField Annotation on Field: " + secureField);
+			return pjp.proceed(pjp.getArgs());
+		}
+		if (sf.enabled()) {
+			logger.info("FOUND SECUREFIELD ANNOTATION: " + sf.toString());
+		} else {
+			logger.info("FOUND DISABLED SECUREFIELD ANNOTATION: "
+					+ sf.toString());
+		}
 		if (secureField.getType().equals(String.class)) {
 			return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
 		} else {
@@ -58,6 +69,22 @@ public class SecureFieldAspect implements Configuration {
 		}
 	}
 
+	/**
+	 * @throws Throwable
+	 */
+	private boolean rejectIbatisCall() throws Throwable {
+		// check if iBatis is calling, do not decrypt
+		// TODO: support other persistence implementations
+		for (StackTraceElement o : Thread.currentThread().getStackTrace()) {
+			final String cnm = o.getClassName();
+			if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
+				System.err.println("REJECT IBATIS CALL" + cnm);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Around(FIELD_SET)
 	public Object setSecureField(ProceedingJoinPoint pjp) throws Throwable {
 
@@ -65,21 +92,19 @@ public class SecureFieldAspect implements Configuration {
 			logger.info("SKIPPING SECURE FIELD SETTER");
 			return pjp.proceed();
 		}
-		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
 
-		// logger.error("Calling: " + cnm);
-		// if iBatis is calling, do not encrypt
-		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
+		if (rejectIbatisCall()) {
 			return pjp.proceed(pjp.getArgs());
 		}
+
 		logger.info("Set Secure Field for: " + pjp.toLongString());
-		String clearTextValue = String.valueOf(pjp.getArgs()[0]);
-		String encryptedValue = SecureEncrypter.encrypt(clearTextValue);
-		Object targetObject = pjp.getTarget();
-		String secureFieldName = pjp.getSignature().getName();
-		Field secureField = targetObject.getClass()
+		final String clearTextValue = String.valueOf(pjp.getArgs()[0]);
+		final String encryptedValue = SecureEncrypter.encrypt(clearTextValue);
+		final Object targetObject = pjp.getTarget();
+		final String secureFieldName = pjp.getSignature().getName();
+		final Field secureField = targetObject.getClass()
 				.getDeclaredField(secureFieldName);
-		boolean access = secureField.isAccessible();
+		final boolean access = secureField.isAccessible();
 
 		if (secureField.getType().equals(String.class)) {
 			secureField.setAccessible(true);
@@ -92,4 +117,5 @@ public class SecureFieldAspect implements Configuration {
 		}
 		return null;
 	}
+
 }

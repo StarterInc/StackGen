@@ -21,6 +21,7 @@ Every StackGen Swagger Specfication requires some basic information in order to 
 
 - at least one Model specification under the root "definitions"
 
+**Example:**
 ```java
 
 definitions:
@@ -97,7 +98,7 @@ definitions:
         x-starter-secureField: true
 ```
 
-Which will generate output code like:
+Which will generate output Java Spring code like:
 
 ```Java
 public class Account {
@@ -129,5 +130,5 @@ Swagger Extensions:
 // skip this model
 x-codegen-ignore
 
-// TODO ?
+// TODO
 x-codegen-import-mapping

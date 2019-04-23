@@ -14,9 +14,7 @@ tags:
     - resources
 ---
 
-> ##Don't Refactor, Regenerate!
-
-StackGen is an application generation and automation platform that uses robust, scalable data-based service engines with built-in encryption to deliver amazing software in less time for less money.
+**StackGen&trade;** is an application generation and automation platform that uses robust, scalable data-based service engines with built-in encryption to deliver amazing software in less time for less money.
 
 > the StackGen Professional
 

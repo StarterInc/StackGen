@@ -349,42 +349,42 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 		// keyVersion
 		Map<PropertyBuilder.PropertyId, Object> args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The version of the SecureField key used to crypt this row (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The version of the SecureField key used to crypt this row (generated column)");
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "1.0");
 		Property value = PropertyBuilder.build("integer", "int64", args);
 		m.addProperty("keyVersion", value);
 
 		// keySpec
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The spec of the SecureField key used to crypt this row (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The spec of the SecureField key used to crypt this row (generated column)");
 		// args.put(PropertyBuilder.PropertyId.MIN_LENGTH, "200");
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "dev");
-		args.put(PropertyBuilder.PropertyId.EXAMPLE, "{keyOwner:111, keySource:'session | system'}");
+		args.put(PropertyBuilder.PropertyId.EXAMPLE, "keySource:system");
 		value = PropertyBuilder.build("string", "", args);
 		m.addProperty("keySpec", value);
 
 		// OwnerId
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The ID of the user that owns this data (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The ID of the user that owns this data (generated column)");
 		value = PropertyBuilder.build("integer", "int64", args);
 		m.addProperty("ownerId", value);
 
 		// CreatedDate
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The created date for this record/object (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The created date for this record/object (generated column)");
 		value = PropertyBuilder.build("string", "date-time", args);
 		m.addProperty("createdDate", value);
 
 		// ModifiedDate
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The last-modified date for this record/object (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The last-modified date for this record/object (generated column)");
 		value = PropertyBuilder.build("string", "date-time", args);
 		m.addProperty("modifiedDate", value);
 
 		// id -- all objects must have id as primary key
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
 		args.put(PropertyBuilder.PropertyId.ALLOW_EMPTY_VALUE, false);
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated)");
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated column)");
 		value = PropertyBuilder.build("integer", "int64", args);
 		m.addProperty("id", value);
 	}

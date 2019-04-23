@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "rimraf public .cache && gatsby develop",
-    "deploy": "gatsby build && gh-pages -d public -b gh-pages",
+    "deploy": "echo \"docs.stackgen.io\" > public/CNAME && gatsby build && gh-pages -d public",
     "develop": "rimraf public .cache && gatsby develop",
     "start": "npm run develop",
     "build": "gatsby build",

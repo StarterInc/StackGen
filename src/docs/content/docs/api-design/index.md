@@ -1,5 +1,6 @@
 ---
+redirect: "/docs/api-design/api-design.html"
 title: "API Design"
 alwaysActive: false
-order: 3
+order: 4
 ---

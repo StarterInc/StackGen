@@ -1,7 +1,7 @@
 ---
 title: "Setting Up Amazon LightSail"
 cover: "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA17474-640x350.jpg"
-date: "2019-03-02"
+date: "2018-03-02"
 author: "johnmcmahon"
 needsAuth: false
 url: /setting-up-aws-lightsail

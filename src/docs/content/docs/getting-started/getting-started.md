@@ -1,10 +1,10 @@
 ---
 title: "Getting Started"
 cover: "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA17474-640x350.jpg"
-date: "2017-03-23"
+date: "2019-03-23"
 author: "johnmcmahon"
 needsAuth: false
-url: /wth
+url: /wtx
 slug: "getting-started"
 category: "tech"
 tags:

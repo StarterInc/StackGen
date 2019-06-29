@@ -33,7 +33,7 @@ public class SwaggerGen implements Configuration {
 	IgniteGenerator					generator		= new IgniteGenerator();
 	CodegenConfigurator				configurator;
 	private JSONObject				configObj;
-	private List<SwaggerGen>		pluginSwaggers	= new ArrayList<SwaggerGen>();
+	List<SwaggerGen>				pluginSwaggers	= new ArrayList<SwaggerGen>();
 
 	/**
 	 * Create and initialize a new SwaggerGen from a JSON config object
@@ -166,9 +166,14 @@ public class SwaggerGen implements Configuration {
 		return systemVal;
 	}
 
-	public List<File> generate() {
+	public io.swagger.codegen.Generator preGen() {
 		final ClientOptInput clientOptInput = mergePluginSwaggers();
-		return new IgniteGenerator().opts(clientOptInput).generate();
+		return generator.opts(clientOptInput);
+	}
+
+	public List<File> generate() {
+		List<File> ret = preGen().generate();
+		return ret;
 	}
 
 	/**

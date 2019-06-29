@@ -318,14 +318,16 @@ public class Main implements Configuration {
 	protected static String[][] staticFiles = {
 			{ "/target/StarterIgnite-1.2.1-SNAPSHOT.jar",
 					"/lib/StarterIgnite-1.2.1-SNAPSHOT.jar" },
-			{ "/src/resources/templates/application.yml",
-					"/src/main/resources/application.yml" },
+			// { "/src/resources/templates/application.yml",
+			// "/src/main/resources/application.yml" },
 			{ "/src/resources/templates/log4j.properties",
 					"/src/main/resources/log4j.properties" },
 			{ "/logs/logfile_placeholder.txt",
 					"/logs/logfile_placeholder.txt" },
-			{ "/src/main/java/io/starter/spring/boot/starter-ignite-banner.txt",
-					"/src/main/java/io/starter/spring/boot/starter-ignite-banner.txt" } };
+			{ "/src/main/java/io/starter/spring/boot/stackgen-pro.txt",
+					"/src/main/java/io/starter/spring/boot/stackgen-pro.txt" }
+
+	};
 
 	protected static void copyStaticFiles(String[][] staticFiles) {
 		File genDir = new File(genOutputFolder);

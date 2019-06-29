@@ -2,13 +2,18 @@ package io.starter.ignite.generator.swagger;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import io.starter.ignite.generator.Configuration;
+import io.starter.ignite.generator.DBGen;
+import io.starter.ignite.generator.MyBatisJoin;
 import io.starter.ignite.generator.SwaggerGen;
 import io.swagger.codegen.DefaultGenerator;
 import io.swagger.codegen.InlineModelResolver;
@@ -54,6 +59,9 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 	}
 
 	@Override
+	/**
+	 * run the code generator and retun the geneated source code files
+	 */
 	public List<File> generate() {
 
 		if (swagger == null || config == null) {
@@ -75,6 +83,11 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		InlineModelResolver inlineModelResolver = new InlineModelResolver();
 		inlineModelResolver.flatten(swagger);
 
+		// TODO: GET CLIENT OPTS, WRAP THE SpringCodeGen
+		// WRAP codeGenConfig
+		// opts.getConfig();
+
+		// the generated source code files are returned
 		List<File> files = new ArrayList<File>();
 
 		// models
@@ -84,6 +97,19 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		// apis
 		List<Object> allOperations = new ArrayList<Object>();
 		generateApis(files, allOperations, allModels);
+
+		// HDD: add the model link builder here
+		StackModelRelationGenerator relationGenerator = new StackModelRelationGenerator();
+		List<MyBatisJoin> joins = relationGenerator.generate(swagger);
+
+		// create the tables... MyBatis will allow us to modify the
+		// model later
+		try {
+			if (joins.size() > 0)
+				DBGen.createIDXTables(joins);
+		} catch (SQLException e) {
+			logger.error("Failed to create IDX tables.", e);
+		}
 
 		// supporting files
 		Map<String, Object> bundle = buildSupportFileBundle(allOperations, allModels);
@@ -114,7 +140,8 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 	/**
 	 * Add the Starter Ignite required enhancements
 	 */
-	private void enhanceSwagger() {
+	@VisibleForTesting
+	public void enhanceSwagger() {
 		Set<String> keys = this.swagger.getDefinitions().keySet();
 		Map<String, Path> priorPaths = this.swagger.getPaths();
 		this.swagger.setPaths(new HashMap<String, Path>());
@@ -124,17 +151,18 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 			// put in the ignite fields
 			addIgniteFields(m);
 
-			// optionally add the REST api for crud ops
-			if (generateStarterCRUDOps) {
-				String path = "/" + k;
+			if (generateStarterCRUDOps) { // optionally add the REST apis
+
+				// TODO: see if using the dynamic version is useful
+				// String path = this.swagger.getBasePath() + "/" + k;
+
+				String path = k;
+
 				// Path existing =
 				// this.swagger.getPaths().get(path.toLowerCase());
 
 				// IGNITE_GEN_REST_PATH_PREFIX
-
 				if (Configuration.checkReservedWord(k)) { // handle reserved
-															// word
-															// case(s)
 					Path ops = addCrudOps(k, m);
 					if (ops != null) {
 						this.swagger.getPaths().put(path + "/{param}", ops);
@@ -219,9 +247,10 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		anOp.setDescription("Starter Ignite Auto Generated " + opName + ":"
 				+ opType);
 		anOp.setSummary(opDesc);
-		// anOp.addTag("insert-tag"); insert of alternate tag
+		// insert of alternate tag
+		// anOp.addTag("insert-tag");
 
-		// name causes dupe method gen
+		// 'name' causes dupe method generation
 		anOp.addTag(opType);
 
 		anOp.operationId(opType);

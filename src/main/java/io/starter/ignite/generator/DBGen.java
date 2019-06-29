@@ -209,7 +209,7 @@ public class DBGen extends Gen implements Generator {
 		return dml;
 	}
 
-	Connection conn = null;
+	static Connection conn = null;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -309,21 +309,55 @@ public class DBGen extends Gen implements Generator {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * apply the generated DML to create the necessary IDX tables
+	 * 
+	 * @param tl
+	 * @return
+	 * @throws SQLException
+	 */
+	public static boolean createIDXTables(List<MyBatisJoin> tl) throws SQLException {
+		if (!skipDbGen) {
+			for (MyBatisJoin j : tl) {
+				String tableName = j.myTable;
+				logger.info("Creating IDX TABLE: " + tableName);
+
+				// generate the table
+				if (conn == null) {
+					conn = ConnectionFactory.getDataSource().getConnection();
+				}
+				PreparedStatement psx = conn.prepareStatement(j.getDML());
+				try {
+					psx.execute();
+					psx.close();
+				} catch (Exception ex) {
+					logger.error("Failed to createIDXTable table with DML: "
+							+ ex.toString());
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	private boolean renameTable(String className, List<String> triedList) throws SQLException {
-		logger.info("RENAMING TABLE: " + className);
-
-		triedList.add(className);
-
-		// rename the table
-		String renameTableDML = Table.generateTableRenameDML(className);
-		PreparedStatement psx = conn.prepareStatement(renameTableDML);
-		try {
-			psx.execute();
-			psx.close();
-		} catch (Exception ex) {
-			logger.error("Failed to drop table with DML: " + renameTableDML
-					+ "  : " + ex.toString());
-			return false;
+		if (!skipDbGen) {
+			logger.info("RENAMING TABLE: " + className);
+			triedList.add(className);
+			// rename the table
+			String renameTableDML = Table.generateTableRenameDML(className);
+			if (conn == null) {
+				conn = ConnectionFactory.getDataSource().getConnection();
+			}
+			PreparedStatement psx = conn.prepareStatement(renameTableDML);
+			try {
+				psx.execute();
+				psx.close();
+			} catch (Exception ex) {
+				logger.error("Failed to drop table with DML: " + renameTableDML
+						+ "  : " + ex.toString());
+				return false;
+			}
 		}
 		return true;
 	}
@@ -333,6 +367,11 @@ public class DBGen extends Gen implements Generator {
 		return "DB Generator";
 	}
 
+	/**
+	 * iterate the Model folder and generate DML & tables
+	 * 
+	 * @throws Exception
+	 */
 	static void createDatabaseTablesFromModelFolder() throws Exception {
 		logger.info("Iterate Swagger Entities and create Tables...");
 		File[] modelFiles = Gen
@@ -392,12 +431,14 @@ public class DBGen extends Gen implements Generator {
 	}
 
 	/**
-	 * converts java member naming convention to underscored DB-style naming
-	 * convention
+	 * converts underscored DB-style naming
+	 * convention to java member naming convention
 	 * 
-	 * ie: take upperCamelCase and turn into upper_camel_case
+	 * ie: take upper_camel_case and turn into upperCamelCase 
 	 */
 	public static String camelize(String in) {
+		if (in == null)
+			return null;
 		StringBuilder sb = new StringBuilder();
 		boolean capitalizeNext = false;
 		for (char c : in.toCharArray()) {

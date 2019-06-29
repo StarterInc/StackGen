@@ -176,7 +176,9 @@ public interface Configuration extends SystemConstants {
 	public static String			CREATE_TABLE_END_BLOCK			= ");";
 	public static String			DROP_TABLE						= "DROP TABLE";
 	public static String			ALTER_TABLE						= "ALTER TABLE";
-	public static String			RENAME_TABLE_SUFFIX				= "BK_";
+	public static String			RENAME_TABLE_PREFIX				= "BK_";
+	public static String			TUPLE_TABLE_SUFFIX				= "_idx";
+
 	// end DML section
 
 	public static String			javaGenFolder					= (System
@@ -250,11 +252,9 @@ public interface Configuration extends SystemConstants {
 	public static String			CONFIG_FILE						= rootFolder
 			+ SOURCE_RESOURCES + "/swagger_config.json";
 
-	// TODO: unlock these 2?
 	public static String			IGNITE_MODEL_PACKAGE			= orgPackage
 			+ artifactId + ".model";
 
-	// TODO: unlock these 2?
 	public static String			API_MODEL_PACKAGE				= orgPackage
 			+ artifactId + ".model";
 
@@ -352,6 +352,8 @@ public interface Configuration extends SystemConstants {
 
 	public final static String[]	RESERVED_WORD_LIST				= {
 			"ApiResponse" };
+
+	static final String				GENERATED_TEXT_BLOCK			= "Starter StackGen 'JavaGen' Generated";
 
 	/**
 	 * App-wide utility method for checking against list of reserved words

@@ -168,7 +168,7 @@ public class JavaGen extends Gen implements Generator {
 				.initializer("org.slf4j.LoggerFactory\n"
 						+ "			.getLogger(" + className
 						+ ADD_GEN_CLASS_NAME + ".class)")
-				.build();
+				.addAnnotation(getJSONIgnoreSpec()).build();
 	}
 
 	// ## MYBATIS INSERT/UPDATE/DELETE/LIST
@@ -181,7 +181,7 @@ public class JavaGen extends Gen implements Generator {
 				.addModifiers(Modifier.PRIVATE)
 				.initializer("io.starter.ignite.security.dao.MyBatisConnectionFactory\n"
 						+ "			.getSqlSessionFactory()")
-				.build();
+				.addAnnotation(getJSONIgnoreSpec()).build();
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class JavaGen extends Gen implements Generator {
 	 * @return
 	 */
 	public MethodSpec createGetObjectMapper(String className) {
-		final String methodText = "objectMapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);"
+		final String methodText = "objectMapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY);"
 				+ "\n" + "return objectMapper";
 		try {
 
@@ -481,6 +481,17 @@ public class JavaGen extends Gen implements Generator {
 		return autoWired;
 	}
 
+	AnnotationSpec JSONIgnored;
+
+	private AnnotationSpec getJSONIgnoreSpec() {
+		if (JSONIgnored == null) {
+			JSONIgnored = AnnotationSpec
+					.builder(com.fasterxml.jackson.annotation.JsonIgnore.class)
+					.build();
+		}
+		return JSONIgnored;
+	}
+
 	/**
 	 * create MyBatis delete method
 	 *
@@ -546,6 +557,11 @@ public class JavaGen extends Gen implements Generator {
 
 	@Override
 	public synchronized void generate(String className, List<FieldSpec> fieldList, List<MethodSpec> getters, List<MethodSpec> setters) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+
+		if (className.contains("ModelApi")) {
+			logger.warn("Encountered non-data class... skipping: " + className);
+			return;
+		}
 
 		// TODO: cleanup
 		final int dotpos = className.lastIndexOf(".");
@@ -672,14 +688,16 @@ public class JavaGen extends Gen implements Generator {
 			throw new IgniteException("FAILED TO LINK MyBatis Model");
 		}
 		return FieldSpec.builder(cx, "selectByExample")
+				.addAnnotation(getJSONIgnoreSpec())
 				.addModifiers(Modifier.PRIVATE).build();
 	}
 
 	private FieldSpec createObjectMapperField() throws ClassNotFoundException {
-		final AnnotationSpec ano = this.getAutoWiredSpec();
 		final Class<?> cx = Class
 				.forName("com.fasterxml.jackson.databind.ObjectMapper");
-		return FieldSpec.builder(cx, "objectMapper").addAnnotation(ano).build();
+		return FieldSpec.builder(cx, "objectMapper")
+				.addAnnotation(getAutoWiredSpec())
+				.addAnnotation(getJSONIgnoreSpec()).build();
 	}
 
 	private FieldSpec createHttpServletRequestField() throws ClassNotFoundException {
@@ -687,7 +705,7 @@ public class JavaGen extends Gen implements Generator {
 		final Class<?> cx = Class
 				.forName("javax.servlet.http.HttpServletRequest");
 		return FieldSpec.builder(cx, "httpServletRequest").addAnnotation(ano)
-				.build();
+				.addAnnotation(getJSONIgnoreSpec()).build();
 	}
 
 	String getJavaVariableName(String n) {

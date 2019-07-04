@@ -3,7 +3,7 @@
  */
 package io.starter.ignite.generator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -12,15 +12,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.swagger.models.properties.Property;
-
 /**
  * test the app code generator
  */
-public class MainTest implements Configuration {
+public class SwaggerGeneratorIT implements Configuration {
 
 	protected static final Logger	logger			= LoggerFactory
-			.getLogger(MainTest.class);
+			.getLogger(SwaggerGeneratorIT.class);
 
 	String							inputSpecFile	= SPEC_LOCATION
 			+ "trade_automator.yml",
@@ -36,7 +34,7 @@ public class MainTest implements Configuration {
 
 	@Before
 	public void setUp() {
-		logger.error("Setting up Starter Ignite Generator Unit Test");
+		logger.error("Setting up Starter Ignite Generator Integration Test");
 	}
 
 	@Test
@@ -69,33 +67,19 @@ public class MainTest implements Configuration {
 		JSONObject job = new JSONObject(inputJSON);
 
 		SwaggerGen swaggerGen = new SwaggerGen(job);
+		assertNotNull(swaggerGen.generate());
 	}
 
 	@Test
-	public void swaggerPluginMergeGenerate() {
-
-		SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile),
-				gx1 = new SwaggerGen(pluginSpecFile1),
-				gx2 = new SwaggerGen(pluginSpecFile2);
-
-		// gx3 = new SwaggerGen(pluginSpecFile3); experimental
-		// partial input
-
-		swaggerGen.addSwagger(gx1);
-		swaggerGen.addSwagger(gx2);
-		swaggerGen.mergePluginSwaggers();
-		swaggerGen.preGen();
-
-		assertEquals("there should be 2 plugin swagger specs", 2, swaggerGen.pluginSwaggers
-				.size());
-
-		assertEquals("there should be 17 total swagger models", 17, swaggerGen.generator
-				.getSwagger().getDefinitions().size());
-
-		Property px = swaggerGen.generator.getSwagger().getDefinitions()
-				.get("User").getProperties().get("id");
-
-		assertEquals("ya", 2, 2);
-
+	public void swaggerGen() {
+		SwaggerGen swaggerGen = new SwaggerGen(
+				SPEC_LOCATION + "trade_automator.yml");
+		assertNotNull(swaggerGen.generate());
 	}
+
+	@Test
+	public void testAppGen() throws Exception {
+		Main.main(null);
+	}
+
 }

@@ -27,13 +27,70 @@ import io.swagger.models.parameters.Parameter;
  */
 public class SwaggerGen implements Configuration {
 
-	protected static final Logger	logger			= LoggerFactory
+	protected static final Logger	logger		= LoggerFactory
 			.getLogger(SwaggerGen.class);
 
-	IgniteGenerator					generator		= new IgniteGenerator();
+	IgniteGenerator					generator	= new IgniteGenerator();
 	CodegenConfigurator				configurator;
-	private JSONObject				configObj;
-	List<SwaggerGen>				pluginSwaggers	= new ArrayList<SwaggerGen>();
+
+	/**
+	 * @return the generator
+	 */
+	public IgniteGenerator getGenerator() {
+		return generator;
+	}
+
+	/**
+	 * @param generator the generator to set
+	 */
+	public void setGenerator(IgniteGenerator generator) {
+		this.generator = generator;
+	}
+
+	/**
+	 * @return the configurator
+	 */
+	public CodegenConfigurator getConfigurator() {
+		return configurator;
+	}
+
+	/**
+	 * @param configurator the configurator to set
+	 */
+	public void setConfigurator(CodegenConfigurator configurator) {
+		this.configurator = configurator;
+	}
+
+	/**
+	 * @return the configObj
+	 */
+	public JSONObject getConfigObj() {
+		return configObj;
+	}
+
+	/**
+	 * @param configObj the configObj to set
+	 */
+	public void setConfigObj(JSONObject configObj) {
+		this.configObj = configObj;
+	}
+
+	/**
+	 * @return the pluginSwaggers
+	 */
+	public List<SwaggerGen> getPluginSwaggers() {
+		return pluginSwaggers;
+	}
+
+	/**
+	 * @param pluginSwaggers the pluginSwaggers to set
+	 */
+	public void setPluginSwaggers(List<SwaggerGen> pluginSwaggers) {
+		this.pluginSwaggers = pluginSwaggers;
+	}
+
+	private JSONObject	configObj;
+	List<SwaggerGen>	pluginSwaggers	= new ArrayList<SwaggerGen>();
 
 	/**
 	 * Create and initialize a new SwaggerGen from a JSON config object
@@ -67,7 +124,7 @@ public class SwaggerGen implements Configuration {
 	 *            spe file in templateDirectory
 	 */
 	public SwaggerGen(File spec) {
-		this.configurator = CodegenConfigurator.fromFile(CONFIG_FILE);
+		this.configurator = CodegenConfigurator.fromFile(spec.getPath());
 		logger.info("Create Swagger Client Apis for:" + spec);
 	}
 
@@ -121,23 +178,24 @@ public class SwaggerGen implements Configuration {
 		conf.setAuth("oauth");
 		conf.setInputSpec(spec);
 		conf.addAdditionalProperty("CORSMapping", CORSMapping);
+		conf.addAdditionalProperty("CORSOrigins", CORSOrigins);
 
 		// github
-		conf.setGitRepoId(Configuration.gitRepoId);
-		conf.setGitUserId(Configuration.gitUserId);
+		conf.setGitRepoId(gitRepoId);
+		conf.setGitUserId(gitUserId);
 
 		// locations
 		conf.setTemplateDir(getVal("SPEC_LOCATION", SPEC_LOCATION));
 
 		// server info
-		conf.addDynamicProperty("serverHost", Configuration.defaultHostname);
-		conf.addDynamicProperty("serverPort", Configuration.defaultPort);
+		conf.addDynamicProperty("serverHost", defaultHostname);
+		conf.addDynamicProperty("serverPort", defaultPort);
 
 		// company info
-		conf.addDynamicProperty("developerName", Configuration.developerName);
-		conf.addDynamicProperty("developerEmail", Configuration.developerEmail);
-		conf.addDynamicProperty("developerOrganization", Configuration.developerOrganization);
-		conf.addDynamicProperty("developerOrganizationUrl", Configuration.developerOrganizationUrl);
+		conf.addDynamicProperty("developerName", developerName);
+		conf.addDynamicProperty("developerEmail", developerEmail);
+		conf.addDynamicProperty("developerOrganization", developerOrganization);
+		conf.addDynamicProperty("developerOrganizationUrl", developerOrganizationUrl);
 
 		// SPRING properties
 		conf.addAdditionalProperty("java8", "true");

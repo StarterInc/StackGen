@@ -84,6 +84,11 @@ public interface Configuration extends SystemConstants {
 					? System.getProperty("CORSMapping")
 					: "*/**");
 
+	public static String			CORSOrigins						= (System
+			.getProperty("CORSMapping") != null
+					? System.getProperty("CORSOrigins")
+					: "localhost");
+
 	public static String			adminUser						= (System
 			.getProperty("adminUser") != null ? System.getProperty("adminUser")
 					: "admin");

@@ -51,6 +51,10 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		return this;
 	}
 
+	/**
+	 * add any additional custom configs
+	 * 
+	 */
 	public void preprocessSwagger() {
 		String port = (System.getProperty("hostPort") != null
 				? System.getProperty("hostPort")

@@ -224,7 +224,7 @@ public class JavaGen extends Gen implements Generator {
 					.addJavadoc(GENERATED_TEXT_BLOCK + " Method: "
 							+ DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText)
-					.returns(cx).build();
+					.addAnnotation(getJSONIgnoreSpec()).returns(cx).build();
 		} catch (final Exception e) {
 			logger.error("ERROR creating getAcceptHeader method for: "
 					+ className + " " + e.toString());

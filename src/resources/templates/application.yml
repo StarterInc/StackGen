@@ -16,7 +16,7 @@ management:
 
 spring:
   application:
-    name: Starter Ignite Service Engine
+    name: Starter StackGen Service Engine
   boot:
     admin:
       client:

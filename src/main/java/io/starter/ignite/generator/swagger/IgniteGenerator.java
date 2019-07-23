@@ -34,7 +34,7 @@ import io.swagger.models.properties.PropertyBuilder;
 import io.swagger.models.properties.StringProperty;
 
 /**
- * Enhance the swagger Code Generation with Starter Ignite features
+ * Enhance the swagger Code Generation with Starter StackGen features
  * 
  * @author john
  *
@@ -75,7 +75,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		configureGeneratorProperties();
 		configureSwaggerInfo();
 
-		// add Starter Igmite installs
+		// add Starter StackGen code
 		if (generateStarterModelEnhancements) {
 			enhanceSwagger();
 		}
@@ -142,7 +142,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 	}
 
 	/**
-	 * Add the Starter Ignite required enhancements
+	 * Add the Starter StackGen required enhancements
 	 */
 	@VisibleForTesting
 	public void enhanceSwagger() {
@@ -248,7 +248,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 	private Operation createCRUDOp(String opName, String opType, String opDesc, Parameter p) {
 		Operation anOp = new Operation();
-		anOp.setDescription("Starter Ignite Auto Generated " + opName + ":"
+		anOp.setDescription("Starter StackGen Auto Generated " + opName + ":"
 				+ opType);
 		anOp.setSummary(opDesc);
 		// insert of alternate tag
@@ -265,7 +265,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 	}
 
 	/**
-	 * Adds Starter Ignite required API CRUD REST endpoints.
+	 * Adds Starter StackGen required API CRUD REST endpoints.
 	 * 
 	 * @param m
 	 * @return 
@@ -315,7 +315,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 	}
 
 	/**
-	 * Adds Starter Ignite required API CRUD REST endpoints.
+	 * Adds Starter StackGen required API CRUD REST endpoints.
 	 * 
 	 * @param m
 	 * @param existing 
@@ -326,7 +326,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 		// List createa a new list path
 		Operation listOp = new Operation();
-		listOp.setDescription("Starter Ignite Auto Generated Listing");
+		listOp.setDescription("Starter StackGen Auto Generated Listing");
 		listOp.setSummary("Listing");
 		// listOp.addTag("list-tag"); // causes dupe method gen
 		listOp.operationId("list");
@@ -369,7 +369,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 	}
 
 	/**
-	 * Adds Starter Ignite required API properties.
+	 * Adds Starter StackGen required API properties.
 	 * 
 	 * API properties are added to the Model objects, and reflected in generated 
 	 * Database and Persistence classes.
@@ -382,6 +382,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 		// keyVersion
 		Map<PropertyBuilder.PropertyId, Object> args = new HashMap<PropertyBuilder.PropertyId, Object>();
+		args.put(PropertyBuilder.PropertyId.TITLE, "Securefield Key Version");
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The version of the SecureField key used to crypt this row (generated column)");
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "1.0");
 		Property value = PropertyBuilder.build("integer", "int64", args);
@@ -389,6 +390,8 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 		// keySpec
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
+		args.put(PropertyBuilder.PropertyId.TITLE, "Securefield Key Spec");
+		args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The spec of the SecureField key used to crypt this row (generated column)");
 		// args.put(PropertyBuilder.PropertyId.MIN_LENGTH, "200");
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "dev");
@@ -398,24 +401,30 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 		// OwnerId
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
+		args.put(PropertyBuilder.PropertyId.TITLE, "StackGen owner id");
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The ID of the user that owns this data (generated column)");
 		value = PropertyBuilder.build("integer", "int64", args);
 		m.addProperty("ownerId", value);
 
 		// CreatedDate
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
+		args.put(PropertyBuilder.PropertyId.TITLE, "Created Date");
+		args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The created date for this record/object (generated column)");
 		value = PropertyBuilder.build("string", "date-time", args);
 		m.addProperty("createdDate", value);
 
 		// ModifiedDate
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
+		args.put(PropertyBuilder.PropertyId.TITLE, "Modified Date");
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The last-modified date for this record/object (generated column)");
 		value = PropertyBuilder.build("string", "date-time", args);
 		m.addProperty("modifiedDate", value);
 
 		// id -- all objects must have id as primary key
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
+		args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
+		args.put(PropertyBuilder.PropertyId.TITLE, "Id");
 		args.put(PropertyBuilder.PropertyId.ALLOW_EMPTY_VALUE, false);
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated column)");
 		value = PropertyBuilder.build("integer", "int64", args);

@@ -201,7 +201,7 @@ public class SwaggerGen implements Configuration {
 		conf.addAdditionalProperty("java8", "true");
 		conf.addAdditionalProperty("delegatePattern", "true");
 		conf.addAdditionalProperty("asynch", "true");
-		conf.addAdditionalProperty("useBeanValidation", "true");
+		conf.addAdditionalProperty("useDelegateValidation", "true");
 		conf.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
 	}
 
@@ -230,12 +230,13 @@ public class SwaggerGen implements Configuration {
 	}
 
 	public List<File> generate() {
-		List<File> ret = preGen().generate();
-		return ret;
+		return preGen().generate();
 	}
 
 	/**
 	 * Merge all of the loaded plugin swagger specs into this one
+	 * 
+	 * returns a ready-to-run config
 	 * 
 	 * @see addSwagger(SwaggerGen x)
 	 */

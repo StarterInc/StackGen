@@ -69,16 +69,20 @@ public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
         final SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
         successHandler.setTargetUrlParameter("redirectTo");
 
+		// TODO: CHANGE THIS TO ENABLE AUTH
+		 http.csrf().disable().cors();
+
+		/*
         http.authorizeRequests()
             .antMatchers(adminContextPath + "/assets/**").permitAll()
             .antMatchers(adminContextPath + "/login**").permitAll()
             .anyRequest().authenticated()
             .and()
-
         .formLogin().loginPage(adminContextPath + "/login").successHandler(successHandler).loginProcessingUrl("/login").and()
         .logout().logoutUrl(adminContextPath + "/logout").and()
         .httpBasic().and()
         .csrf().disable();
+        */
         // @formatter:on
 	}
 	

@@ -38,6 +38,11 @@ public interface Configuration extends SystemConstants {
 	static final Logger				logger							= LoggerFactory
 			.getLogger(Configuration.class);
 
+	public static String			adminServiceURL					= (System
+			.getProperty("adminServiceURL") != null
+					? System.getProperty("adminServiceURL")
+					: "http://localhost:8099/");
+
 	public static String			defaultHostname					= (System
 			.getProperty("defaultHostname") != null
 					? System.getProperty("defaultHostname")
@@ -46,7 +51,7 @@ public interface Configuration extends SystemConstants {
 	public static String			defaultPort						= (System
 			.getProperty("defaultPort") != null
 					? System.getProperty("defaultPort")
-					: "8099");
+					: "8100");
 
 	public static String			gitRepoId						= (System
 			.getProperty("gitRepoId") != null ? System.getProperty("gitRepoId")
@@ -96,7 +101,7 @@ public interface Configuration extends SystemConstants {
 	public static String			adminPassword					= (System
 			.getProperty("adminPassword") != null
 					? System.getProperty("adminPassword")
-					: "password");
+					: "ch@ng3m3");
 
 	public static boolean			skipDbGen						= (System
 			.getProperty("skipDbGen") != null

@@ -16,7 +16,7 @@ info:
   termsOfService: http://starter.io/tos/
 servers:
   url: https://{username}.starter.io:{port}/{basePath}
-  description: The production Stripe HappyPath CSAT API server
+  description: The production HappyPath CSAT API server
   variables:
     username:
       # note! no enum here means it is an open value

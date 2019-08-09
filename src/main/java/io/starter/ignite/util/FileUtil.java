@@ -16,6 +16,23 @@ import java.io.OutputStream;
 public class FileUtil {
 
 	/**
+	 * build file path if it does not exist
+	 * 
+	 * @param f
+	 */
+	public static void ensurePathExists(File f) {
+
+		if (f.exists()) {
+			if (f.isDirectory())
+				f.delete();
+			return;
+		}
+
+		f.mkdirs();
+		f.delete();
+	}
+
+	/**
 	 * copy the folders easily
 	 * 
 	 * @param src

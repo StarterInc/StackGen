@@ -24,6 +24,7 @@ import com.squareup.javapoet.MethodSpec;
 
 import io.starter.ignite.generator.DMLgenerator.Table;
 import io.starter.ignite.util.DOMEditor;
+import io.starter.ignite.util.FileUtil;
 import io.starter.toolkit.StringTool;
 
 /**
@@ -144,12 +145,14 @@ public class MyBatisGen extends Gen implements Generator {
 		className = className.substring(dotpos + 1);
 
 		logger.info("Load MyBatis Generator XML template...");
-		File genConfigFile = new File(MYBATIS_GEN_CONFIG);
+		File genConfigFile = new File(MYBATIS_GEN_CONFIG_TEMPLATE);
 		jdt = createMyBatisXMLGenConfigNodes(jdt, className, genConfigFile);
+
+		FileUtil.ensurePathExists(new File(MYBATIS_GEN_CONFIG_OUT));
 		DOMEditor.write(jdt, MYBATIS_GEN_CONFIG_OUT);
 
 		logger.info("Load MyBatis Generator XML template...");
-		File configFile = new File(MYBATIS_CONFIG);
+		File configFile = new File(MYBATIS_CONFIG_TEMPLATE);
 		jdx = createMyBatisXMLConfigNodes(jdx, className, configFile);
 		DOMEditor.write(jdx, MYBATIS_CONFIG_OUT); // for runtime
 	}

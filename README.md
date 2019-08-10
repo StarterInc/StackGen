@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://github.com/StarterInc/Ignite/blob/gh-pages/logos/logo-1024.png?raw=true" alt="Logo"/>
+    <img src="https://github.com/StarterInc/StackGen/blob/STACKGEN-1/src/docs/static/logos/StackGenLogo-2019.png?raw=true" alt="Logo"/>
 </div>
 
 # Starter StackGen Microservice Generator

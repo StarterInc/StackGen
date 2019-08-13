@@ -142,7 +142,11 @@ public class Main implements Configuration {
 
 			JavaGen.compile(PACKAGE_DIR);
 			JavaGen.compile(API_PACKAGE_DIR);
-			JavaGen.compile(MODEL_PACKAGE_DIR);
+			try {
+				JavaGen.compile(MODEL_PACKAGE_DIR);
+			} catch (Throwable e) {
+				// this one fails in regen mode sometimes. ignore
+			}
 
 			if (!skipDbGen) {
 				// generate corresponding DML

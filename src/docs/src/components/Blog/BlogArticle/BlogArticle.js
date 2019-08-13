@@ -11,7 +11,7 @@ export default class BlogArticle extends Component {
                 <Breadcrumb activePage={this.props.title} />
 
                 <small>
-                    {this.props.author ? `by ${this.props.author}` : ''} | {this.props.date ? `${this.props.date}` : ''}
+                    {this.props.author ? `by ${this.props.author}` : ''}` : ''}
                 </small>
 
                 <h1>{this.props.title}</h1>

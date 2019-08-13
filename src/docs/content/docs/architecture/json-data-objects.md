@@ -144,13 +144,8 @@ public class Account {
 }
 
 ```
+As you can see, the generated code has the basic Java field definitions, annotated with "@JsonProperty()" to describe how the JSON mapping is to be handled.
 
-As you can see, the generated code has the basic Java field definitions, annotated
-with "@JsonProperty()" to describe how the JSON mapping is to be handled.
-
-Additionally there are convenience methods like toIndentedString and equals() that
-provide for smoother interaction with the JSON data.
-
-Here's a little recommended reading for StackGen.
+Additionally there are convenience methods like toIndentedString and equals() that provide for smoother interaction with the JSON data.
 
 * REST API definition [wikipedia](https://en.wikipedia.org/wiki/Representational_state_transfer)

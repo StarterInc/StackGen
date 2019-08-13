@@ -240,7 +240,7 @@ public interface Configuration extends SystemConstants {
 	public static String			artifactVersion					= (System
 			.getProperty("artifactVersion") != null
 					? System.getProperty("artifactVersion")
-					: "1.0.1");
+					: "1.0.1-SNAPSHOT");
 
 	public static String			ADD_GEN_CLASS_NAME				= "Service";
 

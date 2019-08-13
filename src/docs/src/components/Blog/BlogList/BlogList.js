@@ -37,7 +37,6 @@ export default (props) => (
                             }
                             frontmatter {
                                 title
-                                date(formatString: "MMMM DD, YYYY")
                                 description
                                 author
                                 url
@@ -89,7 +88,7 @@ const card = (post, index) => {
                 <h2 className="clay-h2 font-weight-bold">{post.title}</h2>
                 <p className="clay-p">{post.description}</p>
                 <br />
-                <small style={{float: "right"}}> {`by ${post.author} at ${post.date}`}</small>
+                <small style={{float: "right"}}> {`by ${post.author}`}</small>
             </div>
         </div>
     );

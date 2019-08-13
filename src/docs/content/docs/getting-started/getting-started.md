@@ -38,6 +38,8 @@ configurator.setLibrary(SWAGGER_LIB);
 
 #### Step 0: Download and Install StackGen Dev Prerequisites
 
+> NOTE: Spring Boot StackGen instances require at least 1GB of avaialable RAM. Configure your instance startup parameters to suit your runtime environment and improve performance.
+
 - Java8+ JDK Installed
 [Linux] (TODO LINUX) | [OSX] (TODO OSX) | [Windows] (TODO WIN)
 

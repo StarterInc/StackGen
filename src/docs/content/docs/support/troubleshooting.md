@@ -116,6 +116,7 @@ To fix this issue: delete or rename the obsolete table manually in the target da
 
 ### Troubleshooting issues with running the generated output code
 
+***Java Version Issues***
 StackGen is compatible with Java Runtime Environment (JRE) version 1.8 and newer.
 
 Some Linux distros and Cloud servers have outdated versions of Java (ie: 1.6, 1.7) which will need to be upgraded to run StackGen.
@@ -127,16 +128,7 @@ Typically this situation will result in the following error output:
 Exception in thread "main" java.lang.UnsupportedClassVersionError: org/springframework/boot/loader/JarLauncher : Unsupported major.minor version 52.0
 	at java.lang.ClassLoader.defineClass1(Native Method)
 	at java.lang.ClassLoader.defineClass(ClassLoader.java:808)
-	at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
-	at java.net.URLClassLoader.defineClass(URLClassLoader.java:443)
-	at java.net.URLClassLoader.access$100(URLClassLoader.java:65)
-	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
-	at java.net.URLClassLoader$1.run(URLClassLoader.java:349)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at java.net.URLClassLoader.findClass(URLClassLoader.java:348)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:430)
-	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:323)
-	at java.lang.ClassLoader.loadClass(ClassLoader.java:363)
+...
 	at sun.launcher.LauncherHelper.checkAndLoadMain(LauncherHelper.java:482)
 [ec2-user@instance StackGen]$ java -version
 java version "1.7.0_201"
@@ -145,7 +137,18 @@ OpenJDK 64-Bit Server VM (build 24.201-b00, mixed mode)
 [ec2-user@instance StackGen]$
 ```
 
-**Amazon Linux**
+**Upgrading JDK versions on Amazon Linux**
+To install "Amazon Coretto 11" (recommended):
+
+Download RPM and install via local rpm install
+https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/downloads-list.html
+
+then run:
+
+```
+> sudo yum localinstall
+```
+
 To remove java 1.7 and install OpenJDK 1.8.0:
 ```
 sudo yum install java-1.8.0-openjdk-devel
@@ -157,3 +160,63 @@ sudo /usr/sbin/alternatives --config java
 sudo /usr/sbin/alternatives --config javac
 
 ```
+
+***Missing Startup Parameters***
+
+If you do not provide the required parameters on the launcher command line when running StackGen generated apps, you will see an exception containing text similar to the following:
+
+```
+... Could not resolve placeholder 'servicePort' in value "${servicePort}" ...
+
+```
+
+The missing parameters should be self explanatory. Please supply the values via System props or command line options:
+
+```
+java ... -DservicePort=8443 ... -jar stackgen-version-exec.jar
+```
+
+or
+
+```
+mvn spring-boot:run ... -DservicePort=8443 ...
+```
+
+**Overriding vs. Delegation with DAO Classes**
+
+When using a StackGen "DAO Service" class (by convention named <ObjectName>Service) as Java base class, you may encounter issues similar to this when persisting:
+
+```
+io.starter.ignite.generator.IgniteException: Could not run INSERT: org.apache.ibatis.exceptions.PersistenceException: 
+### Error updating database.  Cause: org.apache.ibatis.reflection.ReflectionException: Illegal overloaded getter method with ambiguous type for property accountNonLocked in class class io.starter.stackgen.SpringUser. This breaks the JavaBeans specification and can cause unpredictable results.
+### Cause: org.apache.ibatis.reflection.ReflectionException: Illegal overloaded getter method with ambiguous type for property accountNonLocked in class class io.starter.stackgen.SpringUser. This breaks the JavaBeans specification and can cause unpredictable results.
+	at io.starter.stackgen.model.UserService.insert(UserService.java:462)
+	at io.starter.ignite.SpringUserTest.userCreated(SpringUserTest.java:19)
+...
+
+```
+
+This is caused by code such as:
+
+```
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+
+		return super.getCredentialNonExpired();
+	}
+```
+
+This can be worked around by using a delegate pattern instead of subclassing, if possible:
+
+```
+
+	UserService delegate = new UserService();
+	
+	@Override
+	public boolean isCredentialsNonExpired() {
+
+		return delegate.getCredentialNonExpired().booleanValue(); // <- use a delegate UserService
+	}
+```
+

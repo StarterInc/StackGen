@@ -182,7 +182,7 @@ public class Gen implements Configuration {
 		return folderFiles.toArray(new File[folderFiles.size()]);
 	}
 
-	static File[] getSourceFilesInFolder(File f, List<String> skipList) {
+	public static File[] getSourceFilesInFolder(File f, List<String> skipList) {
 
 		if (!f.exists()) {
 			throw new IllegalStateException(

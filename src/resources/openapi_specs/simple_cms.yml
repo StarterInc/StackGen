@@ -93,7 +93,7 @@ paths:
 securityDefinitions:
   automator_auth:
     type: "oauth2"
-    authorizationUrl: "http://apicloud.co/oauth/dialog"
+    authorizationUrl: "http://apicloud.co/oauth/"
     flow: "implicit"
     scopes:
       write:items: "modify items in your account"
@@ -121,39 +121,4 @@ definitions:
         type:  string
         format: "date-time"
     xml:
-      name: "Content"              
-  User:
-    required:
-    - username
-    - email
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      fingerprint:
-        type: string
-        example: DK$DFSJaraDD
-        x-starter-secureField: true
-      password:
-        description: Password field encrypted with hash
-        type: string
-        example: 111-22-3333
-        maxLength: 10
-        minLength: 10
-        x-starter-secureField: true
-      username:
-        type: string
-        example: Sparky
-      homePage:
-        type: string
-        format: url
-        example:  https://www.acme-corp.com
-      social:
-        type: string
-        format: url
-        example:  https://twitter.com/StarterIO
-    xml:
-      name: "User" 
-externalDocs:
-  description: "Find out more about Starter Ignite"
-  url: "https://starterinc.github.io/Ignite/"
+      name: "Content"

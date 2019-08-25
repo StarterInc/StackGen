@@ -1,20 +1,20 @@
 package {{configPackage}};
 
+import java.util.Arrays;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -27,40 +27,65 @@ import java.util.Optional;
 {{/useOptional}}
 
 {{>generatedAnnotation}}
+
 @Configuration
+@PropertySources({ @PropertySource("classpath:application.properties") })
 public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
 
-	private final String adminContextPath = "";
-	
+	private final String			adminContextPath	= "";
+
+	protected static final Logger	logger				= LoggerFactory
+			.getLogger(SwaggerDocumentationConfig.class);
+
+	@Value("${io.starter.stackgen.CORSOrigins:localhost}")
+	public String					CORSOrigins;
+
+	@Value("${io.starter.stackgen.CORSMapping:/**}")
+	public String					CORSMapping;
+
+	/**
+	 * the CORS configuration for the REST api
+	 *
+	 * @return
+	 */
 	@Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("{{CORSMapping}}");
-            }
-        };
-    }
-    
+	CorsConfigurationSource corsConfigurationSource() {
+		logger.warn("Initializing CORS Config Origins: CORSOrigins "
+				+ CORSOrigins);
+		logger.warn("Initializing CORS Config Mapping: CORSMapping "
+				+ CORSMapping);
+		final CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList(CORSOrigins));
+		configuration.setAllowedMethods(Arrays
+				.asList("GET", "POST", "INSERT", "DELETE", "HEAD", "OPTIONS"));
+		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration(CORSMapping, configuration);
+		return source;
+	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// @formatter:off
-        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        final SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
         successHandler.setTargetUrlParameter("redirectTo");
 
+		// TODO: CHANGE THIS TO ENABLE AUTH
+		 http.csrf().disable().cors();
+
+		/*
         http.authorizeRequests()
             .antMatchers(adminContextPath + "/assets/**").permitAll()
             .antMatchers(adminContextPath + "/login**").permitAll()
             .anyRequest().authenticated()
             .and()
-            
-        .formLogin().loginPage(adminContextPath + "/login.html").successHandler(successHandler).loginProcessingUrl("/login").and()
-        .logout().logoutUrl(adminContextPath + "/logout.html").and()
+        .formLogin().loginPage(adminContextPath + "/login").successHandler(successHandler).loginProcessingUrl("/login").and()
+        .logout().logoutUrl(adminContextPath + "/logout").and()
         .httpBasic().and()
         .csrf().disable();
+        */
         // @formatter:on
 	}
-
+	
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("{{appName}}")

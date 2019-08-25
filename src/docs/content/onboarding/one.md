@@ -10,17 +10,18 @@ short: Select
 Clone the project by running one of these commands:
 
 ```bash http
-git clone https://github.com/starterinc/ignite
+git clone https://github.com/StarterInc/StackGen.git
 ```
-```bash ssh
-git clone git@github.com:diegonvs/gatsby-boilerplate.git
-```
+After the clone succeeds, navigate to `StackGen/` on your machine and run `mvn clean install`.
 
-After the clone succeeds, navigate to `StarterStackGen/` on your machine and run `mvn clean install`.
+You should see output similar to the following:
+```
+TODO: output from mvn clean install
+```
 
 ## StackGen CLI
 
-If you have Gatsby installed globally, use the StackGen command line interface by running:
+If you simply have the StackGen jar then use the StackGen CLI by running:
 
 ```sh
 java -jar StackGen.jar -all -the -things

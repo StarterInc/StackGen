@@ -23,10 +23,10 @@
       <property name="useActualColumnNames" value="true" />
     </javaClientGenerator>
     <table schema="${artifactId}" tableName="PLACEHOLDER_NODE" modelType="hierarchical" />
-    <table schema="starter" tableName="starter$_user">
+    <table schema="StackGen" tableName="stackgen$_csat">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
-    <table schema="starter" tableName="starter$_content">
+    <table schema="StackGen" tableName="stackgen$_location">
       <generatedKey column="id" sqlStatement="JDBC" />
     </table>
   </context>

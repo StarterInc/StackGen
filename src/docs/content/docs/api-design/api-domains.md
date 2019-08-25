@@ -18,15 +18,13 @@ tags:
 
 StackGen was designed to make Design a first class process.
 
-Too often, requirements are listed and implemented with little regard to how every part interacts with every eother part, to create Digital Experiences that users love and come back to pay for.
-
 One of the mandates of StackGen is to be as easy to integrate with as many systems as possible.
 
 The advantages of integrations are massive and affect every aspect of the design and use of StackGen.
 
 > **Maximum Interoperability**: to enable and encourage interoperability with as many external systems as possible.
 
-Because of this requirement, StackGen is designed for extensibility and enhancement in every practical way.
+Because of this requirement, StackGen is designed for extensibility and enhancement in many ways.
 
 The following non-exhaustive list of ways  that you can extend StackGen or integrate it into existing stacks:
 
@@ -40,13 +38,15 @@ The following non-exhaustive list of ways  that you can extend StackGen or integ
 
 - Build a custom React component that is bound to a generated REST endpoint and embed in existing applications
 
-- **PRO** Generate, deploy, and launch a complete full-stack ReactJS/React Native app with a clustered fault tolerant AWS Cloud Spring Boot backend, replicated, fault tolerant RDS/Aurora Database and encrypted SecureField encryption to protect customer private information
+- **PRO** Generate, deploy, and launch a complete full-stack ReactJS/React Native app with a reliable AWS Cloud Spring Boot backend, replicated, fault tolerant RDS/Aurora Database and data encrypted with SecureField cryptography services to protect customer private information.
 
 </blockquote>
 
 > Logic and Data Domains can be "Merged" into large APIs
 
-**Domains** in StackGen terminology refers to the scope of a functional area or field. In the case of Plugins and extending the capabilities of your APIs with existing Schemas, Data Models, and Logic, a **Domain** means the Plugin and the area of concern that the Plugin provides functionality for.
+**StackGen "Domains"** in StackGen terminology refers to the scope of a functional area or field.
+
+In the case of Plugins and extending the capabilities of your APIs with existing Schemas, Data Models, and Logic, a **Domain** means the Plugin and the area of concern that the Plugin provides functionality for.
 
 For example: the "eCommerce" domain includes all functionality related to purchasing items and services online, payments, shopping cart, customer self-service and logic for various workflows: request order refund, returns, downloads and unlocks, etc.
 
@@ -61,10 +61,17 @@ Generated apps are built ready to deploy on all major cloud platforms, productio
 
 ### How to Develop Merged Specification APIs
 
-> TODO: writeup
+Merging Swagger Schemas is simple using StackGen Pro online or via command line options.
+
+```
+> java ... -DmergePluginGen=true|false ... -jar stackgenxyz.jar
+
+> java ... -DiteratePluginGen=true|false ... -jar stackgenxyz.jar
+
+```
 
 ### How to Reconcile Collisions and Side Effects
 
-> TODO: writeup
+> TODO
 
-> Regenerate Early, Regenerate Often
+> Generate Early, Generate Often!

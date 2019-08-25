@@ -38,6 +38,11 @@ public interface Configuration extends SystemConstants {
 	static final Logger				logger							= LoggerFactory
 			.getLogger(Configuration.class);
 
+	public static String			adminServiceURL					= (System
+			.getProperty("adminServiceURL") != null
+					? System.getProperty("adminServiceURL")
+					: "http://localhost:8099/");
+
 	public static String			defaultHostname					= (System
 			.getProperty("defaultHostname") != null
 					? System.getProperty("defaultHostname")
@@ -46,7 +51,7 @@ public interface Configuration extends SystemConstants {
 	public static String			defaultPort						= (System
 			.getProperty("defaultPort") != null
 					? System.getProperty("defaultPort")
-					: "8099");
+					: "8100");
 
 	public static String			gitRepoId						= (System
 			.getProperty("gitRepoId") != null ? System.getProperty("gitRepoId")
@@ -84,6 +89,11 @@ public interface Configuration extends SystemConstants {
 					? System.getProperty("CORSMapping")
 					: "*/**");
 
+	public static String			CORSOrigins						= (System
+			.getProperty("CORSMapping") != null
+					? System.getProperty("CORSOrigins")
+					: "localhost");
+
 	public static String			adminUser						= (System
 			.getProperty("adminUser") != null ? System.getProperty("adminUser")
 					: "admin");
@@ -91,7 +101,7 @@ public interface Configuration extends SystemConstants {
 	public static String			adminPassword					= (System
 			.getProperty("adminPassword") != null
 					? System.getProperty("adminPassword")
-					: "password");
+					: "ch@ng3m3");
 
 	public static boolean			skipDbGen						= (System
 			.getProperty("skipDbGen") != null
@@ -176,22 +186,24 @@ public interface Configuration extends SystemConstants {
 	public static String			CREATE_TABLE_END_BLOCK			= ");";
 	public static String			DROP_TABLE						= "DROP TABLE";
 	public static String			ALTER_TABLE						= "ALTER TABLE";
-	public static String			RENAME_TABLE_SUFFIX				= "BK_";
+	public static String			RENAME_TABLE_PREFIX				= "BK_";
+	public static String			TUPLE_TABLE_SUFFIX				= "_idx";
+
 	// end DML section
 
-	public static String			javaGenFolder					= (System
-			.getProperty("javaGenFolder") != null
-					? System.getProperty("javaGenFolder")
+	public static String			javaGenFolderName					= (System
+			.getProperty("javaGenFolderName") != null
+					? System.getProperty("javaGenFolderName")
 					: "/gen");
 
 	public static String			genOutputFolder					= (System
 			.getProperty("genOutputFolder") != null
 					? System.getProperty("genOutputFolder")
 					: rootFolder)
-			+ javaGenFolder;
+			+ javaGenFolderName;
 
 	public static String			JAVA_GEN_ARCHIVE_FOLDER			= "/archive"
-			+ javaGenFolder;
+			+ javaGenFolderName;
 
 	public static String			javaGenArchivePath				= (System
 			.getProperty("javaGenArchivePath") != null
@@ -213,7 +225,7 @@ public interface Configuration extends SystemConstants {
 	public static String			JAVA_GEN_RESOURCES_FOLDER		= genOutputFolder
 			+ "/resources";
 
-	public static String			PUBLIC_ROOT						= javaGenFolder
+	public static String			PUBLIC_ROOT						= javaGenFolderName
 			+ "/public";
 
 	public static String			SOURCE_MAIN_JAVA				= SOURCE_MAIN
@@ -228,7 +240,7 @@ public interface Configuration extends SystemConstants {
 	public static String			artifactVersion					= (System
 			.getProperty("artifactVersion") != null
 					? System.getProperty("artifactVersion")
-					: "1.0.1");
+					: "1.0.1-SNAPSHOT");
 
 	public static String			ADD_GEN_CLASS_NAME				= "Service";
 
@@ -250,11 +262,9 @@ public interface Configuration extends SystemConstants {
 	public static String			CONFIG_FILE						= rootFolder
 			+ SOURCE_RESOURCES + "/swagger_config.json";
 
-	// TODO: unlock these 2?
 	public static String			IGNITE_MODEL_PACKAGE			= orgPackage
 			+ artifactId + ".model";
 
-	// TODO: unlock these 2?
 	public static String			API_MODEL_PACKAGE				= orgPackage
 			+ artifactId + ".model";
 
@@ -299,31 +309,31 @@ public interface Configuration extends SystemConstants {
 	// ## Mybatis
 	public static int				DB_TIMEOUT						= 10000;
 
-	public static final String		TIMEZONE_OFFSET					= "-08:00";
+	public static String			TIMEZONE_OFFSET					= (System
+			.getProperty("TIMEZONE_OFFSET") != null
+					? System.getProperty("TIMEZONE_OFFSET")
+					: "-08:00");
+
 	public static final String		MYBATIS_COL_ENUM_FLAG			= "ENUM";
 	public String					ANNOTATAION_CLASS				= "io.starter.ignite.security.securefield.SecureField";
 
 	public static String			SQL_MAPS_PATH					= orgFolder
 			+ artifactId + "/model/dao/";
 
-	public static final String		MYBATIS_GEN_CONFIG				= System
-			.getProperty("user.dir") + SOURCE_RESOURCES
-			+ "/templates/MyBatisGeneratorConfig.xml";
+	public static final String		MYBATIS_GEN_CONFIG_TEMPLATE		= rootFolder
+			+ SOURCE_RESOURCES + "/templates/MyBatisGeneratorConfig.xml";
 
-	public static final String		MYBATIS_GEN_CONFIG_OUT			= System
-			.getProperty("user.dir") + SOURCE_RESOURCES
-			+ "/MyBatisGeneratorConfig.xml";
+	public static final String		MYBATIS_GEN_CONFIG_OUT			= genOutputFolder
+			+ SOURCE_RESOURCES + "/MyBatisGeneratorConfig.xml";
 
-	public static final String		MYBATIS_CONFIG					= System
-			.getProperty("user.dir") + SOURCE_RESOURCES
-			+ "/templates/MyBatisConfig.xml";
+	public static final String		MYBATIS_CONFIG_TEMPLATE			= rootFolder
+			+ SOURCE_RESOURCES + "/templates/MyBatisConfig.xml";
 
-	public static final String		MYBATIS_CONFIG_OUT				= System
-			.getProperty("user.dir") + javaGenFolder
-			+ "/src/main/resources/MyBatisConfig.xml";
+	public static final String		MYBATIS_CONFIG_OUT				= genOutputFolder
+			+ javaGenFolderName + "/src/main/resources/MyBatisConfig.xml";
 
 	public static List<String>		FOLDER_SKIP_LIST				= new ArrayList<>(
-			Arrays.asList(javaGenFolder, "org", "swagger", "node_modules"));
+			Arrays.asList(javaGenFolderName, "org", "swagger", "node_modules"));
 
 	// ## WEB
 	// output generated WP PHP code here
@@ -352,6 +362,8 @@ public interface Configuration extends SystemConstants {
 
 	public final static String[]	RESERVED_WORD_LIST				= {
 			"ApiResponse" };
+
+	static final String				GENERATED_TEXT_BLOCK			= "Starter StackGen 'JavaGen' Generated";
 
 	/**
 	 * App-wide utility method for checking against list of reserved words

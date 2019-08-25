@@ -1,5 +1,6 @@
 ---
-title: "API Design"
+redirect: "/docs/api-design/api-design.html"
+title: "StackGen Schema Design"
 alwaysActive: false
-order: 3
+order: 4
 ---

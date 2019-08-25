@@ -1,10 +1,10 @@
 ---
 title: "Getting Started"
 cover: "https://www.jpl.nasa.gov/spaceimages/images/wallpaper/PIA17474-640x350.jpg"
-date: "2017-03-23"
+date: "2019-03-23"
 author: "johnmcmahon"
 needsAuth: false
-url: /wth
+url: /wtx
 slug: "getting-started"
 category: "tech"
 tags:
@@ -37,6 +37,8 @@ configurator.setLibrary(SWAGGER_LIB);
 ```
 
 #### Step 0: Download and Install StackGen Dev Prerequisites
+
+> NOTE: Spring Boot StackGen instances require at least 1GB of avaialable RAM. Configure your instance startup parameters to suit your runtime environment and improve performance.
 
 - Java8+ JDK Installed
 [Linux] (TODO LINUX) | [OSX] (TODO OSX) | [Windows] (TODO WIN)

@@ -31,7 +31,7 @@ public class ASCIIArtPrinter {
 		ret.append(ln6);
 		ret.append("\r\n");
 
-		ret.append("::::::::::::::::: Starter Ignite (v."
+		ret.append("::::::::::::::::: Starter StackGen (v."
 				+ SystemConstants.IGNITE_MAJOR_VERSION + "."
 				+ SystemConstants.IGNITE_MINOR_VERSION
 				+ ") - http://starter.io/ignite :::::::::::::::::");

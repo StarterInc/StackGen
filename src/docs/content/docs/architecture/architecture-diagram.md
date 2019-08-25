@@ -1,12 +1,12 @@
 ---
 title: "Architecture Diagram"
-order: 2
-slug: "stackgen-architecture"
+cover: "images/mission_street.jpeg"
 author: "johnmcmahon"
 needsAuth: false
+slug: "stackgen-architecture"
 url: /stackgen-architecture
 category: "tech"
-date: "2019-03-14"
+date: "2020-04-14"
 tags:
     - docs
     - architecture

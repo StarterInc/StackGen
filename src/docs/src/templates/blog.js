@@ -93,7 +93,7 @@ export const pageQuery = graphql`
             frontmatter {
                 title
                 mainPage
-                date(formatString: "MMMM DD, YYYY")
+                date
                 author
                 needsAuth
             }

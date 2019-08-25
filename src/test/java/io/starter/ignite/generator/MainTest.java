@@ -3,7 +3,7 @@
  */
 package io.starter.ignite.generator;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -11,6 +11,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.swagger.models.properties.Property;
 
 /**
  * test the app code generator
@@ -23,7 +25,8 @@ public class MainTest implements Configuration {
 	String							inputSpecFile	= SPEC_LOCATION
 			+ "trade_automator.yml",
 
-			pluginSpecFile1 = PLUGIN_SPEC_LOCATION + "ignite/eStore.yml",
+			pluginSpecFile1 = PLUGIN_SPEC_LOCATION
+					+ "ignite/domains/ecommerce/eStore.yml",
 
 			pluginSpecFile2 = PLUGIN_SPEC_LOCATION + "location_services.yml";
 
@@ -33,7 +36,7 @@ public class MainTest implements Configuration {
 
 	@Before
 	public void setUp() {
-		logger.error("Setting up Starter Ignite Generator Tests");
+		logger.error("Setting up Starter Ignite Generator Unit Test");
 	}
 
 	@Test
@@ -66,36 +69,33 @@ public class MainTest implements Configuration {
 		JSONObject job = new JSONObject(inputJSON);
 
 		SwaggerGen swaggerGen = new SwaggerGen(job);
-		// assertNotNull(swaggerGen.generate());
-	}
-
-	@Test
-	@Ignore(value = "should not be run as a unit test")
-	public void swaggerGen() {
-		SwaggerGen swaggerGen = new SwaggerGen(
-				SPEC_LOCATION + "trade_automator.yml");
-		assertNotNull(swaggerGen.generate());
-	}
-
-	@Test
-	@Ignore(value = "should not be run as a unit test")
-	public void testAppGen() throws Exception {
-		Main.main(null);
 	}
 
 	@Test
 	public void swaggerPluginMergeGenerate() {
+
 		SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile),
 				gx1 = new SwaggerGen(pluginSpecFile1),
 				gx2 = new SwaggerGen(pluginSpecFile2);
+
 		// gx3 = new SwaggerGen(pluginSpecFile3); experimental
 		// partial input
 
 		swaggerGen.addSwagger(gx1);
 		swaggerGen.addSwagger(gx2);
-		// swaggerGen.addSwagger(gx3); experimental
+		swaggerGen.mergePluginSwaggers();
+		swaggerGen.preGen();
 
-		// TODO: mock this assertNotNull(swaggerGen.generate());
+		assertEquals("there should be 2 plugin swagger specs", 2, swaggerGen.pluginSwaggers
+				.size());
+
+		assertEquals("there should be 17 total swagger models", 17, swaggerGen.generator
+				.getSwagger().getDefinitions().size());
+
+		Property px = swaggerGen.generator.getSwagger().getDefinitions()
+				.get("User").getProperties().get("id");
+
+		assertEquals("ya", 2, 2);
 
 	}
 }

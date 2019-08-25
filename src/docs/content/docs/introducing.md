@@ -14,9 +14,11 @@ tags:
     - resources
 ---
 
-**StackGen&trade;** is an application generation and automation platform that uses robust, scalable data-based service engines with built-in encryption to deliver amazing software in less time for less money.
+**StackGen&trade;** is an application generation and automation platform that uses robust, scalable data-based service engines with built-in encryption to deliver better software in less time and for less money.
 
-> the StackGen Professional
+Crucially, by introducing a "Code Generation Driven Development" paradigm, StackGen gives developers a great foundation for a gen-first, design-first codebase that allows for agile teams to move quickly without breaking things.
+
+> the StackGen Customer
 
 StackGen is for autonomous coders, startup founders, and “Citizen Developers” that suffer from software development costs and delays, or who sadly end up doing without the apps and features they need.
 
@@ -24,7 +26,7 @@ StackGen is for autonomous coders, startup founders, and “Citizen Developers�
 
 Unlike alternative options, the StackGen solution provides great open source product support and complete deployment flexibility: build once, run anywhere.
 
-StackGen leverages the best technology platforms available with a Spring-Boot backend driving front ends using:
+StackGen PRO leverages React front-end technology to generate useful React starter projects that bind data to your REST Microservice apis:
 
 - ReactJS
 - React Native

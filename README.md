@@ -4,11 +4,11 @@
 
 # Starter StackGen Microservice Generator
 
-## Generate Apps from OpenAPI/Swagger spec files for Design-First Low Code Development (LCDP)
+## Generate Apps and Stacks from OpenAPI/Swagger spec files -- CodeGen for Developers
 
-Delivers on the power of automation by taking input OpenAPI/Swagger spec file and generating a full-stack Spring Boot microservice.
+Take an input OpenAPI/Swagger spec file and generate a full-stack Spring Boot microservice.
 
-Generates Spring MVC/Model Objects and publishes via REST apis. Full stack RESTful MicroServices using simple text files to define your data models.
+Generates Spring MVC/Model Objects and publishes via REST apis. Full stack RESTful MicroServices using simple YAML files to define your data models.
 
 ### Don't refactor... Regenerate!
 

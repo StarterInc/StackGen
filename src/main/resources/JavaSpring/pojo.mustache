@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.starter.ignite.model.DataModelObject;
 /**
  ############################## DO NOT EDIT: GENERATED FILE ##############################
 
@@ -17,7 +18,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  
 {{#description}}
 @ApiModel(description = "{{{description}}}"){{/description}}
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+
 {{>generatedAnnotation}}{{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}{{>xmlAnnotation}}
 public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}} implements  io.starter.ignite.model.DataModelObject {{#parcelableModel}}, Parcelable {{#serializableModel}}, Serializable {{/serializableModel}}{{/parcelableModel}}{{^parcelableModel}}{{#serializableModel}}, Serializable {{/serializableModel}}{{/parcelableModel}}{
 {{#serializableModel}}
@@ -231,6 +234,14 @@ public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}} implement
     return sb.toString();
   }
 
+  /**
+  * Starter StackGen DataModelObject impl.
+  */
+  @Override
+  public DataModelObject getDelegate() {
+    return this; // no delegate here
+  }
+  
   /**
   * Starter StackGen JSON method
   */

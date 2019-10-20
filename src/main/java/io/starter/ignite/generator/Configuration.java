@@ -315,8 +315,7 @@ public interface Configuration extends SystemConstants {
 					: "-08:00");
 
 	public static final String		MYBATIS_COL_ENUM_FLAG			= "ENUM";
-	public String					ANNOTATAION_CLASS				= "io.starter.ignite.security.securefield.SecureField";
-
+	
 	public static String			SQL_MAPS_PATH					= orgFolder
 			+ artifactId + "/model/dao/";
 

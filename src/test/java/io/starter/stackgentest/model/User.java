@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.starter.ignite.model.DataModelObject;
 import io.starter.ignite.security.securefield.SecureField;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -490,6 +491,12 @@ public class User implements io.starter.ignite.model.DataModelObject {
 			return "null";
 		}
 		return o.toString().replace("\n", "\n    ");
+	}
+
+	@Override
+	public DataModelObject getDelegate() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

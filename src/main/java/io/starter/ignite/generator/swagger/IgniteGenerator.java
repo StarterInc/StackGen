@@ -182,7 +182,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		if (priorPaths != null) {
 			for (String f : priorPaths.keySet()) {
 				Path px = priorPaths.get(f);
-				// this.swagger.getPaths().put(f, px);
+				 this.swagger.getPaths().put(f, px);
 			}
 		}
 	}
@@ -232,15 +232,15 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		// p.setName(k + "ID");
 		p.setName("param");
 		p.setAccess("public");
-		p.setDescription("Retreive a single result by ID");
+		p.setDescription("Retrieve a single result by ID");
 		p.setRequired(true);
 
 		return p;
 	}
 
 	private void addSecurity(String k, Operation loadOp) {
-		List value;
-		value = new ArrayList();
+		List<String> value;
+		value = new ArrayList<String>();
 		value.add("read: items"); // + k);
 		value.add("write: items"); // " + k);
 		loadOp.addSecurity("automator_auth", value);
@@ -289,21 +289,20 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 		// Update
 		r = new Response();
-		Operation updateOp = createCRUDOp(k, "update", "Update a " + k
-				+ " in the system", getIdPathParameter());
+		Operation updateOp = createCRUDOp(k, "update", "Update an existing " + k , getIdPathParameter());
 		up = getBodyPathParameter(k, r);
 		updateOp.addParameter(up);
 		updateOp.response(200, r);
 		ops.setPut(updateOp);
 
 		// Delete
-		Operation deleteOp = createCRUDOp(k, "delete", "Delete an " + k
+		Operation deleteOp = createCRUDOp(k, "delete", "Delete an existing " + k
 				+ " from the system", getIdPathParameter());
 		updateOp.response(200, r);
 		ops.setDelete(deleteOp);
 
 		// Load
-		Operation loadOp = createCRUDOp(k, "load", "Load a " + k
+		Operation loadOp = createCRUDOp(k, "load", "Load an existing " + k
 				+ " from the system", getIdPathParameter());
 		ComposedModel mxt = new ComposedModel();
 		// mxt.setReference(k);
@@ -327,7 +326,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		// List createa a new list path
 		Operation listOp = new Operation();
 		listOp.setDescription("Starter StackGen Auto Generated Listing");
-		listOp.setSummary("Listing");
+		listOp.setSummary("Fetch a set of " + k + "s from the system");
 		// listOp.addTag("list-tag"); // causes dupe method gen
 		listOp.operationId("list");
 
@@ -353,12 +352,14 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 		// security
 		// [{automator_auth=[write:Account, read:Account]}]
-		List value = new ArrayList();
+		List<String> value = new ArrayList<String>();
 		value.add("read: items"); // + k);
 		listOp.addSecurity("automator_auth", value);
+
 		// vendorExtensions
 		// {x-contentType=application/json,
 		// x-accepts=application/json, x-tags=[{tag=account}]}
+		
 		listOp.getVendorExtensions().put("x-contentType", "application/json");
 		listOp.getVendorExtensions().put("x-accepts", "application/json");
 		listOp.getVendorExtensions().put("x-tags", "[{tag=" + k + "}]");

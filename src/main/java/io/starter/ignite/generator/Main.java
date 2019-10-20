@@ -156,11 +156,11 @@ public class Main implements Configuration {
 			}
 
 			// generate MyBatis client classes XML configuration file
-			if (!skipMybatisGen) {
+			if (!skipMybatisGen) {		
 				MyBatisGen.createMyBatisFromModelFolder();
 			}
 
-			// compile the DataOgbject Classes
+			// compile the DataObject Classes
 			JavaGen.compile(MODEL_DAO_PACKAGE_DIR);
 
 			JavaGen.compile(PACKAGE_DIR);

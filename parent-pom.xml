@@ -31,7 +31,7 @@
 		<ehcache-core.version>2.6.11</ehcache-core.version>
 	</properties>
 
-	<!-- <repositories> <repository> <id>org.osaf.caldav4j</id> <name>org.osaf.caldav4j</name> 
+	<!--  <repositories> <repository> <id>org.osaf.caldav4j</id> <name>org.osaf.caldav4j</name> 
 		<url>https://caldav4j.googlecode.com/svn/maven/</url> </repository> </repositories> -->
 	<dependencies>
 		<dependency>

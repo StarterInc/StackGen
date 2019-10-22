@@ -13,15 +13,16 @@
 	<groupId>io.starter</groupId>
 	<artifactId>ignite-parent-pom</artifactId>
 	<version>1.2.1-SNAPSHOT</version>
-	<name>Starter Ignite Parent</name>
+	<name>Starter StackGen Parent</name>
 	<packaging>pom</packaging>
-	<description>Starter Ignite Parent Pom</description>
+	<description>Starter StackGen Parent Pom</description>
 	<url>http://ignite.starter.io</url>
 
 	<properties>
 		<aspectjplugin.version>1.11</aspectjplugin.version>
 		<aspectj.version>1.9.2</aspectj.version>
 		<java.version>1.9</java.version>
+	<!-- 	<jersey2.version>2.29.1</jersey2.version> -->
 		<cxf.version>2.2.3</cxf.version>
 		<spring.boot.version>2.1.3.RELEASE</spring.boot.version>
 		<spring.framework.version>5.1.5.RELEASE</spring.framework.version>
@@ -31,8 +32,6 @@
 		<ehcache-core.version>2.6.11</ehcache-core.version>
 	</properties>
 
-	<!--  <repositories> <repository> <id>org.osaf.caldav4j</id> <name>org.osaf.caldav4j</name> 
-		<url>https://caldav4j.googlecode.com/svn/maven/</url> </repository> </repositories> -->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -127,10 +126,6 @@
 			</exclusions>
 		</dependency>
 
-		<!-- // fix import org.springframework.validation.annotation.Validated 
-			<dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-parent</artifactId> 
-			<version>1.5.9.RELEASE</version> </dependency> -->
-
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -155,12 +150,7 @@
 			<version>3.6.0</version>
 		</dependency>
 		<!-- <version>3.5.0</version> -->
-		<!-- https://mvnrepository.com/artifact/org.sonatype.aether/aether-connector-wagon 
-			<dependency> <groupId>org.sonatype.aether</groupId> <artifactId>aether-connector-wagon</artifactId> 
-			<version>1.13.1</version> </dependency> <dependency> <groupId>org.eclipse.aether</groupId> 
-			<artifactId>aether-connector-wagon</artifactId> <version>0.9.0.M2</version> 
-			</dependency> -->
-
+		
 		<!-- https://mvnrepository.com/artifact/org.apache.maven.wagon/wagon-http-lightweight -->
 		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
@@ -176,17 +166,6 @@
 
 		<!-- end embed maven -->
 
-		<dependency>
-			<groupId>com.github.joschi.jackson</groupId>
-			<artifactId>jackson-datatype-threetenbp</artifactId>
-			<version>2.5.1-SNAPSHOT</version>
-		</dependency>
-
-
-		<!-- locally installed RANDOOP <dependency> <groupId>net.sourceforge.javydreamercsw</groupId> 
-			<artifactId>randoop-maven-plugin</artifactId> <version>1.0-SNAPSHOT</version> 
-			</dependency> <dependency> <groupId>randoop</groupId> <artifactId>randoop</artifactId> 
-			<version>3.1.5</version> </dependency> -->
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
@@ -232,9 +211,6 @@
 			<artifactId>jersey-client</artifactId>
 		</dependency>
 
-		<!--<dependency> <groupId>com.github.joschi.jackson</groupId> <artifactId>jackson-datatype-threetenbp</artifactId> 
-			<version>2.5.0</version> </dependency> END GENERATED SWAGGER CLIENT REQs -->
-
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
@@ -247,27 +223,11 @@
 			<version>${cxf.version}</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>io.swagger</groupId> <artifactId>swagger-codegen-maven-plugin</artifactId> 
-			<version>${swaggergenerator.version}</version> <type>maven-plugin</type> 
-			</dependency> -->
-
-		<!-- https://mvnrepository.com/artifact/io.swagger/swagger-parser <dependency> 
-			<groupId>io.swagger</groupId> <artifactId>swagger-parser</artifactId> <version>2.0.0-rc1</version> 
-			</dependency> -->
-		<!-- https://mvnrepository.com/artifact/io.swagger/swagger-parser-core 
-			<dependency> <groupId>io.swagger</groupId> <artifactId>swagger-parser-core</artifactId> 
-			<version>2.0.0-rc1</version> </dependency> <dependency> <groupId>io.swagger</groupId> 
-			<artifactId>swagger-parser-core</artifactId> <version>3-2.0.8-SNAPSHOT</version> 
-			</dependency> -->
-
 		<!-- https://mvnrepository.com/artifact/com.samskivert/jmustache -->
 		<dependency>
 			<groupId>com.samskivert</groupId>
 			<artifactId>jmustache</artifactId>
 		</dependency>
-
-		<!-- <dependency> <groupId>com.github.jknack</groupId> <artifactId>handlebars</artifactId> 
-			<version>4.0.6</version> </dependency> -->
 
 		<dependency>
 			<groupId>com.github.spullara.mustache.java</groupId>
@@ -277,10 +237,6 @@
 
 		<!-- END CUSTOM JAR -->
 
-		<!-- <dependency> <groupId>io.swagger</groupId> <artifactId>swagger-jaxrs</artifactId> 
-			<version>${swagger.version}</version> </dependency> <dependency> <groupId>io.swagger</groupId> 
-			<artifactId>swagger-models</artifactId> <version>${swagger.version}</version> 
-			</dependency> -->
 		<dependency>
 			<groupId>com.squareup</groupId>
 			<artifactId>javapoet</artifactId>
@@ -347,6 +303,7 @@
 			<artifactId>quartz-jobs</artifactId>
 		</dependency>
 
+<!-- THESE ARE PRObLEMATIC
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
@@ -376,7 +333,7 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-servlet</artifactId>
 		</dependency>
-
+ -->
 		<!-- <dependency> <groupId>com.sun.jersey.contribs</groupId> <artifactId>wadl-resourcedoc-doclet</artifactId> 
 			</dependency> -->
 
@@ -568,36 +525,41 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			
+			<!-- BAD?
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-server</artifactId>
-				<version>1.19.2</version>
+				<version>${jersey2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-bundle</artifactId>
-				<version>1.19.2</version>
+				<version>${jersey2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-client</artifactId>
-				<version>1.19.2</version>
+				<version>${jersey2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-core</artifactId>
-				<version>1.19.2</version>
+				<version>${jersey2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-json</artifactId>
-				<version>1.19.2</version>
+				<version>${jersey2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-servlet</artifactId>
-				<version>1.19.2</version>
+				<version>${jersey2.version}</version>
 			</dependency>
+			
+			 -->
+			 
 			<dependency>
 				<groupId>org.mybatis.generator</groupId>
 				<artifactId>mybatis-generator-core</artifactId>
@@ -995,8 +957,8 @@
 			
 			<!-- no need to run aspects on this project -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>aspectj-maven-plugin</artifactId>
+			    <groupId>org.codehaus.mojo</groupId>
+	   			<artifactId>aspectj-maven-plugin</artifactId>    
 				<version>${aspectjplugin.version}</version>
 				<executions>
 					<execution>
@@ -1004,9 +966,12 @@
 							<goal>compile</goal>
 						</goals>
 						<configuration>
-							<complianceLevel>1.8</complianceLevel>
-							<source>1.8</source>
-							<target>1.8</target>
+											    
+					        <!-- MUST use 10, NOT 1.10 or ajc breaks-->
+					        <complianceLevel>1.8</complianceLevel> 
+
+					        <target>1.8</target>
+	   
 							<sources>
 								<source>
 									<basedir>src/test/java</basedir>
@@ -1177,6 +1142,15 @@
 	</distributionManagement>
 
 	<repositories>
+			<repository>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 		<repository>
 			<id>snapshot.repo.starter.io</id>
 			<url>s3://repo.starter.io/snapshot</url>
@@ -1185,7 +1159,23 @@
 			<id>release.repo.starter.io</id>
 			<url>s3://repo.starter.io/release</url>
 		</repository>
+
 	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<ciManagement>
 		<system>jenkins</system>

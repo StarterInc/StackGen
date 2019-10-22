@@ -302,12 +302,6 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>com.github.joschi.jackson</groupId>
-		    <artifactId>jackson-datatype-threetenbp</artifactId>
-		    <version>2.5.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>${aspectj.version}</version>
@@ -417,12 +411,13 @@
         </dependency>
         {{/joda}}
         {{#threetenbp}}
-
+		<!-- TODO: remove this problematic DEP
         <dependency>
             <groupId>com.github.joschi.jackson</groupId>
             <artifactId>jackson-datatype-threetenbp</artifactId>
             <version>2.6.4</version>
         </dependency>
+        -->
         {{/threetenbp}}
 {{#useBeanValidation}}
     <!-- Bean Validation API support -->

@@ -25,6 +25,7 @@ import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.RefModel;
 import io.swagger.models.Response;
+import io.swagger.models.Swagger;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
@@ -444,6 +445,10 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 	 */
 	public void setPluginSwaggers(List<SwaggerGen> pluginSwaggers) {
 		this.pluginSwaggers = pluginSwaggers;
+	}
+
+	public Swagger getSwagger() {
+		return swagger;
 	}
 
 }

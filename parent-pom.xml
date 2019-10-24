@@ -12,7 +12,7 @@
 
 	<groupId>io.starter</groupId>
 	<artifactId>ignite-parent-pom</artifactId>
-	<version>1.2.2-SNAPSHOT</version>
+	<version>1.2.2-RELEASE</version>
 	<name>Starter StackGen Parent</name>
 	<packaging>pom</packaging>
 	<description>Starter StackGen Parent Pom</description>

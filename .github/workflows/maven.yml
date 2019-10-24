@@ -20,7 +20,7 @@ jobs:
         aws_access_key_id: ${{ secrets.aws_access_key_id }}
         aws_secret_access_key: ${{ secrets.aws_secret_access_key }}
     
-      run: mvn -B package --file pom.xml
+      run: mvn -X -B package --file parent-pom.xml
         
     - name: Build with Maven
       env: # add AWS environment variables for s3://repo

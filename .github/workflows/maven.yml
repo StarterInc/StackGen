@@ -14,6 +14,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Build parent-pom with Maven
-      run: mvn -B package --file parent-pom.xml
+      run: mvn -X -B package --file parent-pom.xml
     - name: Build with Maven
       run: mvn -B package --file pom.xml      

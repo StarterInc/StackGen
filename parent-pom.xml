@@ -19,7 +19,7 @@
 	<url>http://docs.stackgen.io</url>
 
 	<properties>
-		<aspectjplugin.version>1.12.1-SNAPSHOT</aspectjplugin.version>
+		<aspectjplugin.version>1.12.1</aspectjplugin.version>
 		<aspectj.version>1.9.2</aspectj.version>
 		<java.version>1.9</java.version>
 	<!-- 	<jersey2.version>2.29.1</jersey2.version> -->
@@ -34,6 +34,30 @@
 		<ehcache-core.version>2.6.11</ehcache-core.version>
 	</properties>
 
+	<!-- S3 Private Maven Rep -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>snapshot.repo.starter.io</id>
+			<url>s3://repo.starter.io/snapshot</url>
+		</snapshotRepository>
+		<repository>
+			<id>release.repo.starter.io</id>
+			<url>s3://repo.starter.io/release</url>
+		</repository>
+	</distributionManagement>
+
+	<repositories>
+			
+		<repository>
+			<id>snapshot.repo.starter.io</id>
+			<url>s3://repo.starter.io/snapshot</url>
+		</repository>
+		<repository>
+			<id>release.repo.starter.io</id>
+			<url>s3://repo.starter.io/release</url>
+		</repository>
+		
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -764,6 +788,7 @@
 	      <version>5.0.0.RELEASE</version>
 	    </extension>
 	  </extensions>
+	  
 		<!-- <extensions>
 			<extension>
 				<groupId>org.kuali.maven.wagons</groupId>
@@ -1138,30 +1163,6 @@
 		</profile>
 	</profiles>
 
-	<!-- S3 Private Maven Rep -->
-	<distributionManagement>
-		<snapshotRepository>
-			<id>snapshot.repo.starter.io</id>
-			<url>s3://repo.starter.io/snapshot</url>
-		</snapshotRepository>
-		<repository>
-			<id>release.repo.starter.io</id>
-			<url>s3://repo.starter.io/release</url>
-		</repository>
-	</distributionManagement>
-
-	<repositories>
-			
-		<repository>
-			<id>snapshot.repo.starter.io</id>
-			<url>s3://repo.starter.io/snapshot</url>
-		</repository>
-		<repository>
-			<id>release.repo.starter.io</id>
-			<url>s3://repo.starter.io/release</url>
-		</repository>
-		
-	</repositories>
 	
 	<!-- 
 

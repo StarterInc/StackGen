@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.starter</groupId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>1.2.2-SNAPSHOT</version>
 		<relativePath>./parent-pom.xml</relativePath>
 		<artifactId>ignite-parent-pom</artifactId>
 	</parent>
 
 	<artifactId>StarterIgnite</artifactId>
-	<name>Starter Ignite</name>
-	<description>Starter Ignite CORE Service Generator</description>
+	<name>Starter StackGen</name>
+	<description>Starter StackGen CORE Service Generator</description>
 
 </project>

@@ -12,14 +12,14 @@
 
 	<groupId>io.starter</groupId>
 	<artifactId>ignite-parent-pom</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.2-SNAPSHOT</version>
 	<name>Starter StackGen Parent</name>
 	<packaging>pom</packaging>
 	<description>Starter StackGen Parent Pom</description>
-	<url>http://ignite.starter.io</url>
+	<url>http://docs.stackgen.io</url>
 
 	<properties>
-		<aspectjplugin.version>1.12.1</aspectjplugin.version>
+		<aspectjplugin.version>1.12.1-SNAPSHOT</aspectjplugin.version>
 		<aspectj.version>1.9.2</aspectj.version>
 		<java.version>1.9</java.version>
 	<!-- 	<jersey2.version>2.29.1</jersey2.version> -->
@@ -799,7 +799,7 @@
 				<artifactId>maven-surefire-plugin</artifactId> <version>2.12</version> <configuration> 
 				<systemProperties> <property> <name>loggerPath</name> <value>resources/log4j.properties</value> 
 				</property> </systemProperties> <argLine>-Xms512m -Xmx1500m</argLine> <parallel>methods</parallel> 
-				<forkMode>pertest</forkMode> </configuration> </plugin> -->
+				<forkMode>pertest</forkMode> </configuration> </plugin> 
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
@@ -814,7 +814,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+-->
 			<!-- attach test jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -1144,15 +1144,7 @@
 	</distributionManagement>
 
 	<repositories>
-			<repository>
-			<id>central</id>
-			<name>Central Repository</name>
-			<url>https://repo.maven.apache.org/maven2</url>
-			<layout>default</layout>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+			
 		<repository>
 			<id>snapshot.repo.starter.io</id>
 			<url>s3://repo.starter.io/snapshot</url>
@@ -1161,8 +1153,10 @@
 			<id>release.repo.starter.io</id>
 			<url>s3://repo.starter.io/release</url>
 		</repository>
-
+		
 	</repositories>
+	
+	<!-- 
 
 	<pluginRepositories>
 		<pluginRepository>
@@ -1178,7 +1172,7 @@
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
-
+-->
 	<ciManagement>
 		<system>jenkins</system>
 		<url>http://ci.starter.io</url>

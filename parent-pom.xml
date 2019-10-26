@@ -1158,8 +1158,6 @@
 
 	<!-- S3 Private Maven Rep -->
 	<distributionManagement>
-	
-		
 		 <snapshotRepository>
 			<id>snapshot.repo.starter.io</id>
 			<url>s3://repo.starter.io/snapshot</url>
@@ -1173,7 +1171,7 @@
 	<repositories>
 	
 	<repository>
-        <id>mvn-repo</id>
+        <id>STARTER-release-repo</id>
         <url>https://s3-us-west-1.amazonaws.com/repo.starter.io/release</url>
         <releases>
             <enabled>true</enabled>
@@ -1182,16 +1180,27 @@
             <enabled>false</enabled>
         </snapshots>
     </repository>
+    
+	<repository>
+        <id>STARTER-snapshot-repo</id>
+        <url>https://s3-us-west-1.amazonaws.com/repo.starter.io/snapshot</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
 	
 	<!--  
 		<repository>
 			<id>repo.starter.io</id>
 			<url>s3://repo.starter.io</url>
-		</repository>
+		</repository>os
 		-->
 	</repositories>
 	
-	<!-- 
+	<!-- -->
 
 	<pluginRepositories>
 		<pluginRepository>
@@ -1207,7 +1216,7 @@
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
--->
+
 	<ciManagement>
 		<system>jenkins</system>
 		<url>http://ci.starter.io</url>

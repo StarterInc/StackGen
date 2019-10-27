@@ -4,12 +4,18 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.starter</groupId>
-		<version>1.2.2-RELEASE</version>
-		<artifactId>ignite-parent-pom</artifactId>
+		<version>1.2.2-SNAPSHOT</version>
+		<artifactId>stackgen-parent-pom</artifactId>
 	</parent>
 
-	<artifactId>StarterIgnite</artifactId>
+	<artifactId>StackGen</artifactId>
 	<name>Starter StackGen</name>
 	<description>Starter StackGen CORE Service Generator</description>
-
+	<scm>
+		<connection>scm:git://github.com/StarterInc/StackGen.git</connection>
+		<developerConnection>scm:git://github.com/StarterInc/StackGen.git</developerConnection>
+		<url>https://github.com/StarterInc/StackGen</url>
+		<tag>HEAD</tag>
+	</scm>
+	
 </project>

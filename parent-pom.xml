@@ -11,8 +11,8 @@
 
 	<groupId>io.starter</groupId>
 	<artifactId>stackgen-parent-pom</artifactId>
-	<version>1.2.2</version>
 	<name>Starter StackGen Parent</name>
+	<version>0.9.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<description>Starter StackGen Parent Pom</description>
 	<url>http://docs.stackgen.io</url>
@@ -1155,7 +1155,7 @@
 			<id>release.repo.starter.io</id> <url>s3://repo.starter.io/release</url> 
 			</repository> -->
 	</distributionManagement>
-
+<!-- 
 	<repositories>
 
 		<repository>
@@ -1180,11 +1180,11 @@
 			</snapshots>
 		</repository>
 
-		<!-- <repository> <id>repo.starter.io</id> <url>s3://repo.starter.io</url> 
-			</repository>os -->
+		<repository> <id>repo.starter.io</id> <url>s3://repo.starter.io</url> 
+			</repository>os 
 	</repositories>
-
-	<!-- -->
+-->
+	<!-- 
 
 	<pluginRepositories>
 		<pluginRepository>
@@ -1200,9 +1200,9 @@
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
-
+-->
 	<ciManagement>
-		<system>jenkins</system>
+		<system>github</system>
 		<url>http://ci.starter.io</url>
 	</ciManagement>
 	<organization>
@@ -1210,6 +1210,7 @@
 		<url>http://starter.io</url>
 	</organization>
 	<issueManagement>
-		<url>https://github.com/StarterInc/Ignite/issues</url>
+		<system>HackerOne</system>
+		<url>https://hackerone.com/central-security-project/reports/new</url>
 	</issueManagement>
 </project>

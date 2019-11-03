@@ -34,7 +34,7 @@
     </developers>
 
    <properties>
-   		<starterIgnite.version>1.2.1-SNAPSHOT</starterIgnite.version>
+   		<stackgen.version>0.9.0-SNAPSHOT</stackgen.version>
     	<aspectjplugin.version>1.11</aspectjplugin.version>
         <aspectj.version>1.9.2</aspectj.version>
         <java.version>1.9</java.version>
@@ -279,12 +279,12 @@
 		
     	<dependency>
 			<groupId>io.starter</groupId>
-			<artifactId>StarterIgnite</artifactId>
-			<version>${starterIgnite.version}</version>
+			<artifactId>StackGen</artifactId>
+			<version>${stackgen.version}</version>
 		    
 		    <!--
 		    <scope>system</scope>
-		    <systemPath>${project.basedir}/lib/StarterIgnite-${starterIgnite.version}.jar</systemPath>
+		    <systemPath>${project.basedir}/lib/StarterIgnite-${stackgen.version}.jar</systemPath>
 			-->
 			
 			<exclusions>
@@ -410,15 +410,7 @@
             <artifactId>jackson-datatype-joda</artifactId>
         </dependency>
         {{/joda}}
-        {{#threetenbp}}
-		<!-- TODO: remove this problematic DEP
-        <dependency>
-            <groupId>com.github.joschi.jackson</groupId>
-            <artifactId>jackson-datatype-threetenbp</artifactId>
-            <version>2.6.4</version>
-        </dependency>
-        -->
-        {{/threetenbp}}
+        
 {{#useBeanValidation}}
     <!-- Bean Validation API support -->
         <dependency>
@@ -428,27 +420,4 @@
 {{/useBeanValidation}}
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>sign-artifacts</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

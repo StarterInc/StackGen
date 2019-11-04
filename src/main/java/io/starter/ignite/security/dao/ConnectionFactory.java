@@ -1,9 +1,11 @@
 package io.starter.ignite.security.dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -12,7 +14,6 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import io.starter.ignite.generator.Configuration;
 import io.starter.ignite.util.SystemConstants;
@@ -30,14 +31,12 @@ public class ConnectionFactory {
 	protected static final Logger		logger			= LoggerFactory
 			.getLogger(ConnectionFactory.class);
 
-	private static final boolean		USE_JNDI_LOOKUP	= false;
-
 	// Connect to the data storage
 	private static int					sourcePort		= 3306;
-	public static String				driverName		= "com.mysql.jdbc.Driver";
-	public static String				dbName			= SystemConstants.dbName;
-	public static String				sourceURL		= SystemConstants.dbUrl;
-	public static String				userName		= SystemConstants.dbUser;
+	private static String				driverName		= "com.mysql.jdbc.Driver";
+	private static String				dbName			= SystemConstants.dbName;
+	private static String				sourceURL		= SystemConstants.dbUrl;
+	private static String				userName		= SystemConstants.dbUser;
 	private static String				password		= SystemConstants.dbPassword;
 	private static String				backupURL		= SystemConstants.dbUrl;
 	private static String				backupPassword	= SystemConstants.dbPassword;
@@ -87,89 +86,9 @@ public class ConnectionFactory {
 	 * @throws SQLException
 	 */
 	public static Connection getConnection() throws SQLException {
+		return DriverManager.getConnection("jdbc:mysql://"+sourceURL+"/"+dbName+"?" +
+                "user="+userName+"&password="+password);
 
-		Connection con = null;
-
-		logger.info("ConnectionFactory: returning connection:"
-				+ ConnectionFactory.sourceURL);
-		final PoolProperties p = new PoolProperties();
-
-		if (USE_JNDI_LOOKUP) { // (System.getProperty("PARAM1") != null &&
-			// System.getProperty("PARAM1").equalsIgnoreCase("production"))
-			// {
-
-			try {
-				final InitialContext ic = new InitialContext();
-				final DataSource dataSource = (DataSource) ic
-						.lookup(SystemConstants.JNDI_DB_LOOKUP_STRING);
-				final java.sql.Connection c = dataSource.getConnection();
-				logger.info("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
-						+ SystemConstants.JNDI_DB_LOOKUP_STRING + ".");
-				return c;
-			} catch (final Exception e) {
-				logger.info("ConnectionFactory.getConnection() failed to get JNDI connection: ["
-						+ SystemConstants.JNDI_DB_LOOKUP_STRING + "] "
-						+ "Falling back to non JNDI connection.");
-
-			}
-
-			p.setUrl(ConnectionFactory.sourceURL);
-			p.setPassword(ConnectionFactory.password);
-		} else {
-			p.setUrl(ConnectionFactory.backupURL);
-			p.setPassword(ConnectionFactory.backupPassword);
-
-		}
-
-		p.setDriverClassName("com.mysql.jdbc.Driver");
-		p.setUsername(ConnectionFactory.userName);
-
-		p.setAlternateUsernameAllowed(true);
-		p.setJmxEnabled(true);
-		p.setTestWhileIdle(true);
-		p.setTestOnBorrow(true);
-		p.setValidationQuery("SELECT 1");
-		p.setTestOnReturn(false);
-		p.setValidationInterval(30000);
-		p.setTimeBetweenEvictionRunsMillis(30000);
-		p.setMaxActive(6);
-		p.setInitialSize(1);
-		p.setMaxWait(10000);
-		p.setRemoveAbandonedTimeout(60);
-		p.setMinEvictableIdleTimeMillis(30000);
-		p.setMinIdle(5);
-		p.setLogAbandoned(true);
-		p.setRemoveAbandoned(true);
-		p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
-				+ "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
-
-		try {
-			final org.apache.tomcat.jdbc.pool.DataSource datasource = (org.apache.tomcat.jdbc.pool.DataSource) ConnectionFactory
-					.getDataSource();
-			datasource.setPoolProperties(p);
-			try {
-				con = datasource.getConnectionAsync().get();
-				con = datasource.getConnectionAsync().get();
-				final Statement st = con.createStatement();
-				final ResultSet rs = st.executeQuery("SELECT 1 FROM DUAL"); // Oracle/MySQL
-																			// only
-				while (rs.next()) {
-					//
-				}
-				rs.close();
-				st.close();
-			} finally {
-				if (con != null) {
-					try {
-						con.close();
-					} catch (final Exception ignore) {}
-				}
-			}
-		} catch (final Exception e) {
-			logger.info("ConnectionFactory Failed to achieve a Pooled DataSource... reverting to Non-Pooled JDBC connection. NOT FOR PRODUCTION.");
-			return ConnectionFactory.getDataSource().getConnection();
-		}
-		return con;
 	}
 
 	/**
@@ -186,7 +105,7 @@ public class ConnectionFactory {
 	 * @return
 	 */
 	public static DataSource getDataSource() {
-		final MysqlDataSource ds = new MysqlDataSource();
+	    		
 		final org.apache.tomcat.jdbc.pool.DataSource dsx = new org.apache.tomcat.jdbc.pool.DataSource();
 
 		final PoolProperties p = new PoolProperties();
@@ -207,7 +126,7 @@ public class ConnectionFactory {
 				DataSource dataSource = (DataSource) ic.lookup(lcname);
 				final java.sql.Connection c = dataSource.getConnection();
 				logger.info("ConnectionFactory.getConnection() SUCCESSFUL JNDI connection: "
-						+ lcname + ".");
+						+ lcname + ": connection ready: " + !c.isClosed());
 				return dataSource;
 
 			} catch (final Exception e) {
@@ -215,22 +134,27 @@ public class ConnectionFactory {
 						+ lcname + ". " + e.toString()
 						+ " Falling back to non JNDI connection.");
 
-				ds.setServerName(ConnectionFactory.sourceURL);
-				ds.setPassword(ConnectionFactory.password);
+				dsx.setUrl(ConnectionFactory.sourceURL);
+				dsx.setPassword(ConnectionFactory.password);
 				p.setUrl(ConnectionFactory.sourceURL);
 
 			}
 
 		} else {
-			ds.setServerName(ConnectionFactory.backupURL);
-			ds.setPassword(ConnectionFactory.backupPassword);
+			dsx.setUrl(ConnectionFactory.backupURL);
+			dsx.setPassword(ConnectionFactory.backupPassword);
 			p.setUrl(ConnectionFactory.backupURL);
 			p.setPassword(ConnectionFactory.backupPassword);
 		}
 
-		ds.setPort(ConnectionFactory.sourcePort);
-		ds.setDatabaseName(ConnectionFactory.dbName);
-		ds.setUser(ConnectionFactory.userName);
+		// dsx.setPort(ConnectionFactory.sourcePort);
+		Properties dbProperties = new Properties();
+		dbProperties.put("dbName", dbName);
+		dbProperties.put("port", sourcePort);
+		
+		dsx.setDbProperties(dbProperties);
+		
+		dsx.setUsername(ConnectionFactory.userName);
 
 		p.setDriverClassName("com.mysql.jdbc.Driver");
 		p.setUsername(ConnectionFactory.userName);
@@ -257,8 +181,7 @@ public class ConnectionFactory {
 		dsx.setPoolProperties(p);
 
 		dsx.setFairQueue(true);
-		dsx.setDataSource(ds);
-
+		// dsx.setDataSource(dsx);
 		return dsx;
 	}
 

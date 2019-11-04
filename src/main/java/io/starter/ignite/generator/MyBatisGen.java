@@ -54,15 +54,14 @@ public class MyBatisGen extends Gen implements Generator {
 	}
 
 	/**
-	 * feed it an api class and it will attempt to sanitize and map to MyBatis artifcat name
+	 * feed it an api class and it will attempt to sanitize and map to MyBatis artifact name
 	 * 
 	 * @param apiClassName
 	 * @return
 	 */
 	public static String getMyBatisModelClassName(String apiClassName) {
 		String apibn = getBaseJavaName(apiClassName);
-		String ret = StringTool.proper(schemaName);
-		return ret + apibn;
+		return schemaName + apibn;
 	}
 
 	/**
@@ -77,9 +76,7 @@ public class MyBatisGen extends Gen implements Generator {
 
 		if (n.contains(".")) {
 			n = n.substring(n.lastIndexOf(".") + 1);
-			// n = n.substring(1);
 		}
-		// String firstChar = n.substring(0, 1).toLowerCase();
 		return n;
 	}
 
@@ -182,7 +179,7 @@ public class MyBatisGen extends Gen implements Generator {
 	}
 
 	private static String convertToMapperSyntax(String className) {
-		return SQL_MAPS_PATH + StringTool.proper(schemaName) + className
+		return SQL_MAPS_PATH + schemaName + className
 				+ "Mapper.xml";
 	}
 
@@ -232,7 +229,7 @@ public class MyBatisGen extends Gen implements Generator {
 	static void createMyBatisFromModelFolder() throws Exception {
 		logger.info("Iterate Swagger Entities and create Tables...");
 		File[] modelFiles = Gen
-				.getJavaFiles(JAVA_GEN_SRC_FOLDER + "/" + MODEL_PACKAGE_DIR);
+				.getJavaFiles(JAVA_GEN_SRC_FOLDER + "/" + MODEL_PACKAGE_DIR, false);
 		MyBatisGen gen = new MyBatisGen();
 		for (File mf : modelFiles) {
 			String cn = mf.getName().substring(0, mf.getName().indexOf("."));
@@ -240,7 +237,6 @@ public class MyBatisGen extends Gen implements Generator {
 			logger.info("Loading Class from ModelFile: " + cn);
 			URLClassLoader classLoader = new URLClassLoader(new URL[] {
 					new File(JAVA_GEN_SRC_FOLDER).toURI().toURL() });
-
 			Class<?> loadedClass = classLoader.loadClass(cn);
 			createMyBatis(loadedClass, gen);
 			classLoader.close();

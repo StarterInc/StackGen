@@ -64,6 +64,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 				"java.time.ZoneOffset");
 		topLevelClass.addImportedType(dtz);
 
+		// add custom methods
 		Method tojson = new Method();
 		tojson.addAnnotation("@Override");
 		tojson.addBodyLine("return delegate.toJSON();");
@@ -75,6 +76,19 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		tojson.setReturnType(returnType);
 		topLevelClass.addMethod(tojson);
 
+		Method getdelegate = new Method();
+		getdelegate.addAnnotation("@Override");
+		getdelegate.addBodyLine("return delegate;");
+		getdelegate.setName("getDelegate");
+		
+		FullyQualifiedJavaType ret = new FullyQualifiedJavaType(
+				"io.starter.ignite.model.DataModelObject");
+		topLevelClass.addImportedType(ret);
+		getdelegate.setVisibility(visibility);
+		getdelegate.setReturnType(ret);
+		topLevelClass.addMethod(getdelegate);
+
+		
 		return true;
 	}
 
@@ -93,7 +107,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 		// if (cn.toLowerCase().contains(schemaName)) {
 		// the schema is always lowercase, so adjust it for
 		// Camelcase
-		String ccsn = "dao." + StringTool.proper(schemaName);
+		String ccsn = "dao." + schemaName;
 
 		cn = cn.replace(ccsn, "");
 
@@ -179,17 +193,20 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter
 				+ field.getType().getShortName());
 
 		field.setVisibility(JavaVisibility.PROTECTED);
+
+		/** TODO: add special annotations to field
 		if (ANNOTATAION_CLASS != null) {
 			topLevelClass.addImportedType(new FullyQualifiedJavaType(
 					ANNOTATAION_CLASS));
 		}
+		
 		if (field.getType().getFullyQualifiedName()
 				.equals("java.lang.String")) {
 			field.addAnnotation("@" + ANNOTATAION_CLASS);
 		} else if (field.getType().equals("java.util.Date")) {
 			logger.warn("MyBatisIgnitePluginAdapter SecureField TODO: handle dates: "
 					+ field);
-		}
+		}*/
 
 		return false;
 	}

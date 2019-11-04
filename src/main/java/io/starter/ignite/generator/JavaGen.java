@@ -307,7 +307,7 @@ public class JavaGen extends Gen implements Generator {
 	public MethodSpec createGetDelegate(String className) {
 
 		final String bname = getBaseJavaName(className);
-		final String methodText = "return " + bname + "Delegate";
+		final String methodText = "return null"; // dealing with recursion issues //  + bname + "Delegate";
 		try {
 			return MethodSpec.methodBuilder("getDelegate")
 					.addJavadoc(GENERATED_TEXT_BLOCK + " Method: "
@@ -551,7 +551,6 @@ public class JavaGen extends Gen implements Generator {
 	private String getMyBatisName(String className) {
 		return MODEL_DAO_PACKAGE + "."
 				+ MyBatisGen.getMyBatisModelClassName(className);
-
 	}
 	// ## END MYBATIS INSERT/UPDATE/DELETE/LIST
 
@@ -682,7 +681,8 @@ public class JavaGen extends Gen implements Generator {
 	private FieldSpec createMyBatisSearchExampleField(String className) throws ClassNotFoundException {
 		Class<?> cx;
 		try {
-			cx = loadClass(null, getMyBatisName(className) + "Example");
+			String lnx = getMyBatisName(className);
+			cx = loadClass(null, lnx + "Example");
 		} catch (MalformedURLException | InstantiationException
 				| IllegalAccessException e) {
 			throw new IgniteException("FAILED TO LINK MyBatis Model");
@@ -793,7 +793,7 @@ public class JavaGen extends Gen implements Generator {
 				+ System.getProperty("path.separator") + JAVA_GEN_SRC_FOLDER
 				+ System.getProperty("path.separator") + SOURCE_MAIN_JAVA);
 
-		final File[] fx = Gen.getJavaFiles(sourcepath);
+		final File[] fx = Gen.getJavaFiles(sourcepath, true);
 
 		final Iterable<? extends JavaFileObject> compilationUnit = fileManager
 				.getJavaFileObjectsFromFiles(Arrays.asList(fx));

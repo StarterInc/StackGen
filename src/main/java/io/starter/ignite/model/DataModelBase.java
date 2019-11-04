@@ -3,8 +3,8 @@ package io.starter.ignite.model;
 import java.util.List;
 
 /**
- * TODO: figure out role for this or remove
- * 
+ * data methods
+ *  
  * @author john
  *
  */
@@ -31,6 +31,11 @@ public abstract class DataModelBase implements DataModelObject {
 
 		System.out.println("PERSISTING: " + this);
 
+		return null;
+	}
+
+	@Override
+	public DataModelObject getDelegate() {
 		return null;
 	}
 

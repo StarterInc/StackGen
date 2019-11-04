@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Optional;
     {{/useOptional}}
 {{/jdk8}}
+
 {{#async}}
 import java.util.concurrent.{{^jdk8}}Callable{{/jdk8}}{{#jdk8}}CompletableFuture{{/jdk8}};
 {{/async}}
@@ -188,9 +189,8 @@ public interface {{classname}}Delegate {
 			Object rx = ((List) ret).get(0);
 			if (!(rx instanceof Long)) {
 				// convert to list of objects
-				List<Object> rex = new ArrayList<Object>();
+				List rex = new ArrayList();
 				for (Object r : (List) ret){
-					// TODO: strip delegate
 					rex.add(r);
 				}
 				return new ResponseEntity<List<Object>>(rex, HttpStatus.OK);
@@ -234,7 +234,6 @@ public interface {{classname}}Delegate {
 		}
 		// returns single result
 		JSONObject job = new JSONObject((({{classname}}Delegate)ret).getDelegate());
-		job.remove("delegate"); // remove from JSON output
 		return new ResponseEntity<>(getObjectMapper().readValue(job.toString(), {{baseName}}.class), HttpStatus.OK);
 	}
 }
@@ -248,5 +247,6 @@ public interface {{classname}}Delegate {
             return {{#async}}CompletableFuture.completedFuture({{/async}}new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR){{#async}}){{/async}};
         }
     }
-*/ 
+*/
+
 {{/operations}}

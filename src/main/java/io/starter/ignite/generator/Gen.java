@@ -151,7 +151,7 @@ public class Gen implements Configuration {
 		return modelFiles;
 	}
 
-	public static File[] getJavaFiles(String path) {
+	public static File[] getJavaFiles(String path, boolean recursive) {
 		// ie: Configuration.MODEL_CLASSES
 		File modelDir = new File(path);
 
@@ -171,8 +171,8 @@ public class Gen implements Configuration {
 
 		List<File> folderFiles = new ArrayList<File>();
 		for (File fx : modelFiles) {
-			if (fx.isDirectory()) {
-				File[] subdirFiles = getJavaFiles(fx.getAbsolutePath());
+			if (fx.isDirectory() && recursive) {
+				File[] subdirFiles = getJavaFiles(fx.getAbsolutePath(), true);
 				folderFiles.addAll(Arrays.asList(subdirFiles));
 			} else {
 				folderFiles.add(fx);
@@ -293,7 +293,7 @@ public class Gen implements Configuration {
 	}
 
 	public static ApiModelProperty getApiModelPropertyAnnotation(Field f) throws NoSuchMethodException, SecurityException {
-		String methodName = "get" + StringTool.proper(f.getName());
+		String methodName = "get" + f.getName();
 		Method getter = f.getDeclaringClass().getMethod(methodName);
 		// get the annotation
 		ApiModelProperty anno = getter

@@ -7,6 +7,6 @@ package io.starter.ignite.model;
  *
  */
 public interface DataModelObject {
-
+	public DataModelObject getDelegate();
 	public String toJSON();
 }

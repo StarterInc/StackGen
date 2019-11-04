@@ -3,10 +3,10 @@
 	<parent>
 		<groupId>io.starter</groupId>
 		<version>0.9.0</version>
-		<artifactId>stackgen-parent-pom</artifactId>
+		<artifactId>stackgen-parent</artifactId>
 	</parent>
 
-	<artifactId>StackGen</artifactId>
+	<artifactId>stackgen</artifactId>
   	
 	<name>Starter StackGen</name>
 	<description>Starter StackGen CORE Service Generator</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git://github.com/StarterInc/StackGen.git</connection>
 		<developerConnection>scm:git://github.com/StarterInc/StackGen.git</developerConnection>
 		<url>https://github.com/StarterInc/StackGen</url>
-		<tag>StackGen-0.9.0</tag>
+		<tag>stackgen-0.9.0</tag>
 	</scm>
 	
 </project>

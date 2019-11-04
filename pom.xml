@@ -2,19 +2,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.starter</groupId>
-		<version>0.9.2</version>
+		<version>0.9.2-SNAPSHOT</version>
 		<artifactId>stackgen-parent</artifactId>
 	</parent>
 
 	<artifactId>stackgen</artifactId>
-  	
+  	<version>0.9.3-SNAPSHOT</version>
 	<name>Starter StackGen</name>
 	<description>Starter StackGen CORE Service Generator</description>
 	<scm>
 		<connection>scm:git://github.com/StarterInc/StackGen.git</connection>
 		<developerConnection>scm:git://github.com/StarterInc/StackGen.git</developerConnection>
 		<url>https://github.com/StarterInc/StackGen</url>
-		<tag>stackgen-0.9.2</tag>
+		<tag>stackgen-0.9.3</tag>
 	</scm>
 	
 </project>

@@ -1,14 +1,25 @@
 package io.starter.ignite.util;
 
 public class ASCIIArtPrinter {
-
-	private static String	ln1	= "  _________ __                 __                 .___              .__  __          ";
-	private static String	ln2	= " /   _____//  |______ ________/  |_  ___________  |   | ____   ____ |__|/  |_  ____  ";
-	private static String	ln3	= " \\_____  \\\\   __\\__  \\\\_  __ \\   __\\/ __ \\_  __ \\ |   |/ ___\\ /    \\|  \\   __\\/ __ \\ ";
-	private static String	ln4	= " /        \\|  |  / __ \\|  | \\/|  | \\  ___/|  | \\/ |   / /_/  >   |  \\  ||  | \\  ___/ ";
-	private static String	ln5	= "/_______  /|__| (____  /__|   |__|  \\___  >__|    |___\\___  /|___|  /__||__|  \\___  >  ";
-	private static String	ln6	= "        \\/           \\/                 \\/           /_____/      \\/              \\/ ";
-
+	
+	private static String[] prolines = {
+			"	   _________ __                 __     ________                ____________________ ________    ",
+			"	  /   _____//  |______    ____ |  | __/  _____/  ____   ____   \\______   \\______   \\\\_____  \\   ",
+			"	  \\_____  \\\\   __\\__  \\ _/ ___\\|  |/ /   \\  ____/ __ \\ /    \\   |     ___/|       _/ /   |   \\  ",
+			"   /        \\|  |  / __ \\\\  \\___|    <\\    \\_\\  \\  ___/|   |  \\  |    |    |    |   \\/    |    \\ ",
+			"	 /_______  /|__| (____  /\\___  >__|_ \\\\______  /\\___  >___|  /  |____|    |____|_  /\\_______  / ",
+			"	         \\/           \\/     \\/     \\/       \\/     \\/     \\/                    \\/         \\/  "			
+	};
+	
+	private static String[] lines = {
+			"	   _________ __                 __     ________                			",
+			"	  /   _____//  |______    ____ |  | __/  _____/  ____   ____   			",
+			"	  \\_____  \\\\   __\\__  \\ _/ ___\\|  |/ /   \\  ____/ __ \\ /    \\  ",
+			"     	  /        \\|  |  / __ \\\\  \\___|    <\\    \\_\\  \\  ___/|   |  \\ 	",
+			"	 /_______  /|__| (____  /\\___  >__|_ \\\\______  /\\___  >___|  / 		",
+			"	         \\/           \\/     \\/     \\/       \\/     \\/     \\/  	"
+	};
+	
 	public static void main(String[] args) {
 		System.out.print(ASCIIArtPrinter.print());
 	}
@@ -17,20 +28,13 @@ public class ASCIIArtPrinter {
 		StringBuffer ret = new StringBuffer();
 
 		ret.append(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+		
+		for(String ln : lines) {
+			ret.append("\r\n");
+			ret.append(ln);
+		}
 		ret.append("\r\n");
-		ret.append(ln1);
 		ret.append("\r\n");
-		ret.append(ln2);
-		ret.append("\r\n");
-		ret.append(ln3);
-		ret.append("\r\n");
-		ret.append(ln4);
-		ret.append("\r\n");
-		ret.append(ln5);
-		ret.append("\r\n");
-		ret.append(ln6);
-		ret.append("\r\n");
-
 		ret.append("::::::::::::::::: Starter StackGen (v."
 				+ SystemConstants.IGNITE_MAJOR_VERSION + "."
 				+ SystemConstants.IGNITE_MINOR_VERSION

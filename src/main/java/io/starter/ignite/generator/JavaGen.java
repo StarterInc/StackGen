@@ -749,7 +749,7 @@ public class JavaGen extends Gen implements Generator {
 			String cn = mf.substring(0, mf.indexOf("."));
 			// cn = cn + ".class";
 			cn = MODEL_PACKAGE + "." + cn;
-			logger.warn("Creating Classes from ModelFile: " + cn);
+			logger.info("Creating Classes from ModelFile: " + cn);
 
 			// try {
 			final Class<?> loadedClass = classLoader.loadClass(cn);

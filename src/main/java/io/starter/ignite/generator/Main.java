@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import io.starter.ignite.util.ASCIIArtPrinter;
 
+
 /**
  * <h2>Generates an app from a Swagger Spec</h2>
  *
@@ -44,9 +45,7 @@ public class Main implements Configuration {
 		Configuration.copyConfigurationToSysprops();
 		String inputSpecFile = "simple_cms.yml"; // "trade_automator.yml";
 													// //
-													// //starter_ignite
-													// "chainring_api_v1.yml";
-													// // "simple_cms.yml";
+						// "simple_cms.yml";
 		// String inputSpecFile = "StarterIgnite.yml";
 
 		// check to see if the String array is empty
@@ -278,17 +277,6 @@ public class Main implements Configuration {
 		return pluginFiles;
 	}
 
-	private static File[] getSchemaFiles(File f) {
-		File[] pluginFiles = f.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(".yml")
-						|| name.toLowerCase().endsWith(".json");
-			}
-		});
-		return pluginFiles;
-	}
-
 	private static void initOutputFolders() {
 		File genDir = new File(genOutputFolder);
 		logger.info("Initializing output folder: " + genOutputFolder
@@ -303,6 +291,8 @@ public class Main implements Configuration {
 				throw new IgniteException(
 						"Could not rename: " + genOutputFolder + " to: " + fx);
 			}
+
+			// TODO: ZipFileWriter.zip(toF);
 
 			genDir = new File(genOutputFolder);
 			genDir.mkdirs();
@@ -320,8 +310,6 @@ public class Main implements Configuration {
 	 * relative to project root
 	 */
 	protected static String[][] staticFiles = {
-			{ "/target/StarterIgnite-1.2.1-SNAPSHOT.jar",
-					"/lib/StarterIgnite-1.2.1-SNAPSHOT.jar" },
 			// { "/src/resources/templates/application.yml",
 			// "/src/main/resources/application.yml" },
 			{ "/src/resources/templates/log4j.properties",

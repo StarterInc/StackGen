@@ -388,7 +388,7 @@ public interface Configuration extends SystemConstants {
 		String[] names = JSONObject.getNames(config);
 		for (String fx : names) {
 			try {
-				logger.warn("JSON Config setting:" + fx + ":"
+				logger.info("JSON Config setting:" + fx + ":"
 						+ config.get(fx).toString());
 				System.setProperty(fx, config.get(fx).toString());
 			} catch (Exception e) {
@@ -408,7 +408,7 @@ public interface Configuration extends SystemConstants {
 		Field[] f = Configuration.class.getFields();
 		for (Field fx : f) {
 			try {
-				logger.warn("Config setting:" + fx.getName() + ":"
+				logger.info("Config setting:" + fx.getName() + ":"
 						+ fx.get(null).toString());
 				System.setProperty(fx.getName(), fx.get(null).toString());
 			} catch (Exception e) {

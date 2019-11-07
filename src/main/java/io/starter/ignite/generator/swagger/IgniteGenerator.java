@@ -65,7 +65,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 	@Override
 	/**
-	 * run the code generator and retun the geneated source code files
+	 * run the code generator and return the generated source code files
 	 */
 	public List<File> generate() {
 
@@ -181,10 +181,14 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 			}
 		}
 		if (priorPaths != null) {
-			for (String f : priorPaths.keySet()) {
-				Path px = priorPaths.get(f);
-				 this.swagger.getPaths().put(f, px);
-			}
+			logger.warn("FOUND existing endpoint paths. NOT Generating endpoints for: ");
+			 for (String f : priorPaths.keySet()) {
+				
+				 // TODO: define handling of existing paths 
+				 // Path px = priorPaths.get(f);
+				 // this.swagger.getPaths().put(f, px);
+				 logger.warn("Path: " + f);
+			 }
 		}
 	}
 

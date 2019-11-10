@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.starter</groupId>
-		<version>0.9.5-SNAPSHOT</version>
+		<version>0.9.7-SNAPSHOT</version>
 		<artifactId>stackgen-parent</artifactId>
 	</parent>
 
@@ -14,7 +14,7 @@
 		<connection>scm:git://github.com/StarterInc/StackGen.git</connection>
 		<developerConnection>scm:git://github.com/StarterInc/StackGen.git</developerConnection>
 		<url>https://github.com/StarterInc/StackGen</url>
-		<tag>stackgen-0.9.5</tag>
+		<tag>stackgen-0.9.7</tag>
 	</scm>
 	
 </project>

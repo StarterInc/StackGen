@@ -34,9 +34,11 @@
     </developers>
 
    <properties>
-   		<stackgen.version>0.9.5</stackgen.version>
+   		<stackgen.version>0.9.7</stackgen.version>
     	<aspectjplugin.version>1.12.7</aspectjplugin.version>
-        <aspectj.version>1.9.2</aspectj.version>
+    	<aspectj.version>1.9.2</aspectj.version>
+    	
+    	<spring-boot.version>2.1.9.RELEASE</spring-boot.version>
         <spring.security.oauth>2.3.5.RELEASE</spring.security.oauth>
         <spring.boot.admin.version>2.1.6</spring.boot.admin.version>
         <springfox-version>2.9.2</springfox-version>
@@ -46,7 +48,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId> 
-     	<version>2.1.6.RELEASE</version>
+     	<version>${spring-boot.version}</version>
     </parent>
     
     <build>
@@ -137,14 +139,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                </configuration>
-            </plugin>
+            
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -197,6 +192,19 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- DISABLES maven-compiler-plugin which overwrites ASPECTS! -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                	<execution>
+                    	<id>default-compile</id>
+                    	<phase>none</phase>
+                	</execution>
+            	</executions>
+            </plugin>
+            
 			<plugin>
 				<groupId>io.starter</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>

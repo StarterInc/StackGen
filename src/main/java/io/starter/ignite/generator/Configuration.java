@@ -317,7 +317,7 @@ public interface Configuration extends SystemConstants {
 	public static final String		MYBATIS_COL_ENUM_FLAG			= "ENUM";
 	
 	public static String			SQL_MAPS_PATH					= orgFolder
-			+ artifactId + "/model/dao/";
+			+ artifactId.replace(".", "/") + "/model/dao/";
 
 	public static final String		MYBATIS_GEN_CONFIG_TEMPLATE		= rootFolder
 			+ SOURCE_RESOURCES + "/templates/MyBatisGeneratorConfig.xml";

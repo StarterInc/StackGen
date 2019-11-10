@@ -11,7 +11,7 @@
 		<!-- TODO <plugin type="io.starter.ignite.generator.MyBatisIgnitePluginAdapter"> 
 			<property name="annotationClass" value="io.starter.ignite.security.securefield.SecureField" 
 			/> <property name="annotationString" value="@SecureField" /> </plugin> -->
-		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
 			connectionURL="jdbc:mysql://${dbUrl}:3306/${dbName}?autoReconnect=true"
 			userId="${dbUser}" password="${dbPassword}">
 		</jdbcConnection>

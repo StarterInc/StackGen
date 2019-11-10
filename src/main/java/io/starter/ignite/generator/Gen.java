@@ -88,8 +88,8 @@ public class Gen implements Configuration {
 
 			// Uses the appropriate adapter:
 			if (!f.getName().startsWith("ajc$")) { // skip aspects
-				logger.info(this.toString() + " generating Field : "
-						+ f.getName() + " Type: " + f.getType());
+				//logger.trace(this.toString() + " generating Field : "
+				//		+ f.getName() + " Type: " + f.getType());
 
 				Object fldObj = impl.createMember(f);
 				if (fldObj != null && impl instanceof DBGen)
@@ -122,10 +122,14 @@ public class Gen implements Configuration {
 	 * @return list of generated model file names
 	 */
 	public static String[] getModelFileNames() {
-		File modelDir = new File(MODEL_CLASSES);
+		// convert dots to slashes (package names)
+		String mc = MODEL_CLASSES.replace(".","/");
+		File modelDir = new File(mc);
+		
+
 		if (!modelDir.exists()) {
 			throw new IllegalStateException(
-					"getModelFileNames Failure: no path here " + MODEL_CLASSES);
+					"getModelFileNames Failure: no path here " + mc);
 		}
 		String[] modelFiles = modelDir.list(new FilenameFilter() {
 			@Override
@@ -145,7 +149,7 @@ public class Gen implements Configuration {
 		if (modelFiles != null && modelFiles.length < 1) {
 			throw new IllegalStateException(
 					"Gen.getModleFileNames Failure: no model classfiles found: "
-							+ MODEL_CLASSES
+							+ mc
 							+ ". Check the MODEL_CLASSES config value.");
 		}
 		return modelFiles;
@@ -153,6 +157,9 @@ public class Gen implements Configuration {
 
 	public static File[] getJavaFiles(String path, boolean recursive) {
 		// ie: Configuration.MODEL_CLASSES
+		
+		// convert dots to slashes (package names)
+		path = path.replace(".","/");
 		File modelDir = new File(path);
 
 		if (!modelDir.exists()) {

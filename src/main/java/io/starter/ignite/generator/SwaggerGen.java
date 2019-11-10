@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.starter.ignite.generator.swagger.IgniteGenerator;
+import io.starter.ignite.generator.swagger.StackGenCodegenConfigurator;
 import io.swagger.codegen.ClientOptInput;
 import io.swagger.codegen.CodegenConstants;
-import io.swagger.codegen.config.CodegenConfigurator;
 import io.swagger.models.Model;
 import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
@@ -31,7 +31,7 @@ public class SwaggerGen implements Configuration {
 			.getLogger(SwaggerGen.class);
 
 	IgniteGenerator					generator	= new IgniteGenerator();
-	CodegenConfigurator				configurator;
+	StackGenCodegenConfigurator				configurator;
 
 	/**
 	 * @return the generator
@@ -50,15 +50,15 @@ public class SwaggerGen implements Configuration {
 	/**
 	 * @return the configurator
 	 */
-	public CodegenConfigurator getConfigurator() {
+	public StackGenCodegenConfigurator getConfigurator() {
 		return configurator;
 	}
 
 	/**
 	 * @param configurator the configurator to set
 	 */
-	public void setConfigurator(CodegenConfigurator configurator) {
-		this.configurator = configurator;
+	public void setConfigurator(StackGenCodegenConfigurator configurator) {
+		this.configurator = (StackGenCodegenConfigurator) configurator;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class SwaggerGen implements Configuration {
 	public SwaggerGen(JSONObject config) {
 		this.configObj = config;
 
-		this.configurator = getConfig(SPEC_LOCATION
+		this.configurator = (StackGenCodegenConfigurator) getConfig(SPEC_LOCATION
 				+ config.getString("schemaFile"));
 		logger.info("Create Swagger Client Apis for:" + config);
 	}
@@ -113,7 +113,7 @@ public class SwaggerGen implements Configuration {
 	 *            filename of spec (file in templateDirectory)
 	 */
 	public SwaggerGen(String spec) {
-		this.configurator = getConfig(spec);
+		this.configurator = (StackGenCodegenConfigurator) getConfig(spec);
 		logger.info("Create Swagger Client Apis for:" + spec);
 	}
 
@@ -124,7 +124,7 @@ public class SwaggerGen implements Configuration {
 	 *            spe file in templateDirectory
 	 */
 	public SwaggerGen(File spec) {
-		this.configurator = CodegenConfigurator.fromFile(spec.getPath());
+		this.configurator = (StackGenCodegenConfigurator) StackGenCodegenConfigurator.fromFile(spec.getPath());
 		logger.info("Create Swagger Client Apis for:" + spec);
 	}
 
@@ -134,18 +134,20 @@ public class SwaggerGen implements Configuration {
 	 * @param spec
 	 * @param configurator
 	 */
-	private CodegenConfigurator getConfig(String spec) {
-		CodegenConfigurator conf = new CodegenConfigurator();
+	private StackGenCodegenConfigurator getConfig(String spec) {
+		StackGenCodegenConfigurator conf = new StackGenCodegenConfigurator();
 
 		setStaticConfiguration(spec, conf);
 
 		// main output type
 		// (ie: spring, jersey2)
 		conf.setLang(getVal("swaggerLang", swaggerLang));
-
+		
 		// the JSON serialization library to use
 		// (ie: jersey2, resteasy, resttemplate)
-		conf.setLibrary(getVal("swaggerLib", swaggerLib));
+		conf.setLibrary(getVal("swaggerLib", "spring-boot"));
+		
+		
 		conf.setOutputDir(getVal("genOutputFolder", genOutputFolder));
 
 		conf.setApiPackage(getVal("API_PACKAGE", API_PACKAGE));
@@ -164,7 +166,7 @@ public class SwaggerGen implements Configuration {
 	 * @param spec
 	 * @param conf
 	 */
-	private void setStaticConfiguration(String spec, CodegenConfigurator conf) {
+	private void setStaticConfiguration(String spec, StackGenCodegenConfigurator conf) {
 
 		conf.setVerbose(verbose);
 		conf.addDynamicProperty("dynamic-html", "true");
@@ -184,6 +186,7 @@ public class SwaggerGen implements Configuration {
 		conf.setGitRepoId(gitRepoId);
 		conf.setGitUserId(gitUserId);
 
+		//conf.setAdditionalProperties("", "boo");
 		// locations
 		conf.setTemplateDir(getVal("SPEC_LOCATION", SPEC_LOCATION));
 

@@ -15,8 +15,11 @@ import io.starter.ignite.generator.Configuration;
 import io.starter.ignite.generator.DBGen;
 import io.starter.ignite.generator.MyBatisJoin;
 import io.starter.ignite.generator.SwaggerGen;
+import io.swagger.codegen.ClientOptInput;
 import io.swagger.codegen.DefaultGenerator;
+import io.swagger.codegen.Generator;
 import io.swagger.codegen.InlineModelResolver;
+import io.swagger.codegen.ignore.CodegenIgnoreProcessor;
 import io.swagger.models.ArrayModel;
 import io.swagger.models.ComposedModel;
 import io.swagger.models.Model;
@@ -453,6 +456,32 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 	public Swagger getSwagger() {
 		return swagger;
+	}
+	
+	@Override
+	public Generator opts(ClientOptInput opts) {
+		this.opts = opts;
+		this.swagger = opts.getSwagger();
+		this.config = opts.getConfig();
+		this.config.additionalProperties()
+				.putAll(opts.getOpts().getProperties());
+
+		String ignoreFileLocation = this.config.getIgnoreFilePathOverride();
+		if (ignoreFileLocation != null) {
+			final File ignoreFile = new File(ignoreFileLocation);
+			if (ignoreFile.exists() && ignoreFile.canRead()) {
+				this.ignoreProcessor = new CodegenIgnoreProcessor(ignoreFile);
+			} else {
+				LOGGER.warn("Ignore file specified at {} is not valid. This will fall back to an existing ignore file if present in the output directory.", ignoreFileLocation);
+			}
+		}
+
+		if (this.ignoreProcessor == null) {
+			this.ignoreProcessor = new CodegenIgnoreProcessor(
+					this.config.getOutputDir());
+		}
+
+		return this;
 	}
 
 }

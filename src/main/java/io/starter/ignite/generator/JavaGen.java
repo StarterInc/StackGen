@@ -870,7 +870,7 @@ public class JavaGen extends Gen implements Generator {
 			// Create a new instance...
 			if (!loadedClass.isInterface()) {
 				final Object obj = loadedClass.newInstance();
-				logger.info("Successfully compiled class: " + obj.toString());
+				logger.trace("Successfully compiled class: " + loadClassName); // obj.toString());
 			} else {
 				logger.info("Successfully compiled interface: "
 						+ loadClassName);

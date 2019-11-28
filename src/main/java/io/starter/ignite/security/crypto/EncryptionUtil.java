@@ -14,7 +14,7 @@ import io.starter.ignite.util.SystemConstants;
 /**
  * Utilities for working with the encrypted data
  * 
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class EncryptionUtil implements SystemConstants {

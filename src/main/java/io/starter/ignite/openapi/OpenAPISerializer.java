@@ -7,7 +7,7 @@ import io.starter.ignite.generator.Gen;
 /**
  * Creates an OpenAPI Spec fragment from Java classes
  * 
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class OpenAPISerializer {

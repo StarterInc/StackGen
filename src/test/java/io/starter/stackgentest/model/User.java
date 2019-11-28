@@ -56,7 +56,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	@io.starter.ignite.security.securefield.SecureField(
 			enabled = true,
 			type = SecureField.Type.HASHED,
-			strength = 20)
+			strength = 10)
 	@JsonProperty("password")
 	public String			password		= null;
 
@@ -232,7 +232,13 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	public String getPassword() {
 		return password;
 	}
-
+	
+	@Size(min = 10)
+	@ApiModelProperty(
+			example = "HardToGuess1980",
+			minLength = 10,
+			required = true,
+			value = "")
 	public void setPassword(String password) {
 		this.password = password;
 	}

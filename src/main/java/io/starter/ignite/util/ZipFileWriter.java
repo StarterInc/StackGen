@@ -9,7 +9,7 @@ import java.util.zip.*;
 /**
  * utility to zip a file
  * 
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  * @author www.codejava.net 
  */
 public class ZipFileWriter {

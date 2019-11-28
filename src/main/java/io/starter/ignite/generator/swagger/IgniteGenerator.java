@@ -40,7 +40,7 @@ import io.swagger.models.properties.StringProperty;
 /**
  * Enhance the swagger Code Generation with Starter StackGen features
  * 
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class IgniteGenerator extends DefaultGenerator implements Configuration {

@@ -22,7 +22,7 @@ import io.swagger.models.parameters.Parameter;
 /**
  * responsible for generating the Swagger server and clients
  * 
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  * 
  */
 public class SwaggerGen implements Configuration {
@@ -147,6 +147,7 @@ public class SwaggerGen implements Configuration {
 		// (ie: jersey2, resteasy, resttemplate)
 		conf.setLibrary(getVal("swaggerLib", "spring-boot"));
 		
+		// conf.setReleaseNote(getVal("description"), description);
 		
 		conf.setOutputDir(getVal("genOutputFolder", genOutputFolder));
 
@@ -186,7 +187,6 @@ public class SwaggerGen implements Configuration {
 		conf.setGitRepoId(gitRepoId);
 		conf.setGitUserId(gitUserId);
 
-		//conf.setAdditionalProperties("", "boo");
 		// locations
 		conf.setTemplateDir(getVal("SPEC_LOCATION", SPEC_LOCATION));
 

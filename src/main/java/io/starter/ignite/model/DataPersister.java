@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * TODO: repurpose for React Component Gen
  * 
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class DataPersister {

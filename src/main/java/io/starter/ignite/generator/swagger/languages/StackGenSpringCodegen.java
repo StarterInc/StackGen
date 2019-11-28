@@ -37,14 +37,13 @@ import io.swagger.models.Swagger;
 /**
  * customized Spring CodeGen for StackGen
  * 
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class StackGenSpringCodegen extends AbstractJavaCodegen implements BeanValidationFeatures, OptionalFeatures {
 
 	protected static final Logger logger = LoggerFactory.getLogger(StackGenSpringCodegen.class);
 
-	
 	public static final String DEFAULT_LIBRARY = "spring-boot";
 	public static final String TITLE = "title";
 	public static final String CONFIG_PACKAGE = "configPackage";
@@ -93,45 +92,33 @@ public class StackGenSpringCodegen extends AbstractJavaCodegen implements BeanVa
 		// spring uses the jackson lib
 		additionalProperties.put("jackson", "true");
 
-		cliOptions.add(new CliOption(TITLE,
-				"server title name or client service name"));
-		cliOptions.add(new CliOption(CONFIG_PACKAGE,
-				"configuration package for generated code"));
-		cliOptions.add(new CliOption(BASE_PACKAGE,
-				"base package (invokerPackage) for generated code"));
-		cliOptions.add(CliOption
-				.newBoolean(INTERFACE_ONLY, "Whether to generate only API interface stubs without the server files."));
-		cliOptions.add(CliOption
-				.newBoolean(DELEGATE_PATTERN, "Whether to generate the server files using the delegate pattern"));
-		cliOptions.add(CliOption
-				.newBoolean(SINGLE_CONTENT_TYPES, "Whether to select only one produces/consumes content-type by operation."));
-		cliOptions.add(CliOption
-				.newBoolean(JAVA_8, "use java8 default interface"));
-		cliOptions.add(CliOption
-				.newBoolean(ASYNC, "use async Callable controllers"));
+		cliOptions.add(new CliOption(TITLE, "server title name or client service name"));
+		cliOptions.add(new CliOption(CONFIG_PACKAGE, "configuration package for generated code"));
+		cliOptions.add(new CliOption(BASE_PACKAGE, "base package (invokerPackage) for generated code"));
+		cliOptions.add(CliOption.newBoolean(INTERFACE_ONLY,
+				"Whether to generate only API interface stubs without the server files."));
+		cliOptions.add(CliOption.newBoolean(DELEGATE_PATTERN,
+				"Whether to generate the server files using the delegate pattern"));
+		cliOptions.add(CliOption.newBoolean(SINGLE_CONTENT_TYPES,
+				"Whether to select only one produces/consumes content-type by operation."));
+		cliOptions.add(CliOption.newBoolean(JAVA_8, "use java8 default interface"));
+		cliOptions.add(CliOption.newBoolean(ASYNC, "use async Callable controllers"));
 		cliOptions.add(new CliOption(RESPONSE_WRAPPER,
 				"wrap the responses in given type (Future,Callable,CompletableFuture,ListenableFuture,DeferredResult,HystrixCommand,RxObservable,RxSingle or fully qualified type)"));
-		cliOptions.add(CliOption
-				.newBoolean(USE_TAGS, "use tags for creating interface and controller classnames"));
-		cliOptions.add(CliOption
-				.newBoolean(USE_BEANVALIDATION, "Use BeanValidation API annotations"));
-		cliOptions.add(CliOption
-				.newBoolean(IMPLICIT_HEADERS, "Use of @ApiImplicitParams for headers."));
-		cliOptions.add(CliOption
-				.newBoolean(SWAGGER_DOCKET_CONFIG, "Generate Spring Swagger Docket configuration class."));
-		cliOptions.add(CliOption
-				.newBoolean(USE_OPTIONAL, "Use Optional container for optional parameters"));
+		cliOptions.add(CliOption.newBoolean(USE_TAGS, "use tags for creating interface and controller classnames"));
+		cliOptions.add(CliOption.newBoolean(USE_BEANVALIDATION, "Use BeanValidation API annotations"));
+		cliOptions.add(CliOption.newBoolean(IMPLICIT_HEADERS, "Use of @ApiImplicitParams for headers."));
+		cliOptions.add(
+				CliOption.newBoolean(SWAGGER_DOCKET_CONFIG, "Generate Spring Swagger Docket configuration class."));
+		cliOptions.add(CliOption.newBoolean(USE_OPTIONAL, "Use Optional container for optional parameters"));
 
-		supportedLibraries
-				.put(DEFAULT_LIBRARY, "Spring-boot Server application using the SpringFox integration.");
-		supportedLibraries
-				.put(SPRING_MVC_LIBRARY, "Spring-MVC Server application using the SpringFox integration.");
-		supportedLibraries
-				.put(SPRING_CLOUD_LIBRARY, "Spring-Cloud-Feign client with Spring-Boot auto-configured settings.");
+		supportedLibraries.put(DEFAULT_LIBRARY, "Spring-boot Server application using the SpringFox integration.");
+		supportedLibraries.put(SPRING_MVC_LIBRARY, "Spring-MVC Server application using the SpringFox integration.");
+		supportedLibraries.put(SPRING_CLOUD_LIBRARY,
+				"Spring-Cloud-Feign client with Spring-Boot auto-configured settings.");
 		setLibrary(DEFAULT_LIBRARY);
 
-		CliOption library = new CliOption(CodegenConstants.LIBRARY,
-				"library template (sub-template) to use");
+		CliOption library = new CliOption(CodegenConstants.LIBRARY, "library template (sub-template) to use");
 		library.setDefault(DEFAULT_LIBRARY);
 		library.setEnum(supportedLibraries);
 		library.setDefault(DEFAULT_LIBRARY);
@@ -707,8 +694,18 @@ public class StackGenSpringCodegen extends AbstractJavaCodegen implements BeanVa
 		if (property.vendorExtensions.containsKey("x-starter-secureField")) {
 			Object o = property.vendorExtensions.containsKey("x-starter-secureField");
 			if (o != null) {
+				
 				// property.isSecure = true;
-				String vx = "@io.starter.ignite.security.securefield.SecureField(enabled=" + o.toString() + ")";
+				Object confs = property.vendorExtensions.get("x-starter-secureField");
+				String vx = "@io.starter.ignite.security.securefield.SecureField(enabled=true";
+				
+				if (confs.toString().toLowerCase().contains("type=hashed")) {
+					vx += ", type=io.starter.ignite.security.securefield.SecureField.Type.HASHED";
+				} else {
+					vx += ", strength=5";
+				}
+				vx += ")";
+				
 				property.vendorExtensions.put("secureAnnotation", vx);
 				logger.info("Found Starter SecureField Vendor Extension" + vx);
 			}

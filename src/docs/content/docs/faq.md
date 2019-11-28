@@ -18,7 +18,9 @@ tags:
 
 ### Is StackGen Free?
 
-Yes. It is freely downloadable from GitHub and licensed under the AGPL.
+Yes. 
+
+StackGen core is freely downloadable from GitHub and licensed under the AGPL. The license means you can use StackGen to generate apps for free. 
 
 ### Who should use StackGen?
 
@@ -30,9 +32,9 @@ Yes! Support for StackGen will be offered by Starter Inc. after the initial prod
 
 ### Can I run my StackGen Services in the Cloud?
 
-In the near future, there will be a StackGen Cloud offering.
+Yes! StackGen is a Cloud offering.
 
-## apiCloud.co
+## apiCloud.co | apps.stackgen.io
 
 ### Can I run my StackGen Services on my own Computers?
 

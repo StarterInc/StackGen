@@ -20,20 +20,7 @@ StackGen can be used either as a Java command-line program, or as a library call
 The primary means of controlling the output of the program is via command line arguments.
 
 ```
-java -jar StarterStackGen-1.0.0.jar -DSWAGGER_LANG=spring -DSWAGGER_LIB=resteasy ...
-```
-
-These settings are converted to System properties within the StackGen program and are used to configure the output from the program.
-
-```java
-
-// main output type
-// (ie: spring, jersey2)
-configurator.setLang(SWAGGER_LANG);
-
-// the JSON serialization library to use
-// (ie: jersey2, resteasy, resttemplate)
-configurator.setLibrary(SWAGGER_LIB);
+java -jar stackgen-0.9.8-exec.jar -DgenOutputFolder=/Users/super/workspace2019/sg0 -DoverwriteMode=true ...
 ```
 
 #### Step 0: Download and Install StackGen Dev Prerequisites
@@ -88,13 +75,15 @@ brew install node
 
 #### Development Best Practices
 
-- Fork the StackGen project and leverage github with Conventional Commits  [Conventional Commits](https://conventionalcommits.org/)
+- Use Conventional Commits  [Conventional Commits](https://conventionalcommits.org/) when working with StackGen apps so that you can auto-generate a changelog
 
-- Only connect to database server via https.
+- Only connect to database servers via https
 
-- To improve DB security, disallow WAN connections to the Database via GRANT permissions, then use an SSH tunnel to connect to the database for local testing.
+- To improve DB security, disallow WAN connections to the Database via GRANT permissions, then use an SSH tunnel to connect to the database for local testing (TODO: document DB tunneling over SSH)
 
-> TODO: document DB tunneling over SSH
+- If you are using SecureField&trade; in your app, then use an IDE with AspectJ support (Eclipse, IntelliJ Ultimate)
+
+- Carefully store encryption keys and use StackGen Pro to get the advantage of using a Keystore
 
 - Use [SecureField&trade;](securefield) configuration for any PII (Personal Identifying Information) data to protect user privacy.
 
@@ -120,14 +109,15 @@ for your SQL database.
 Inputting your Swagger schema to StackGen will result in the creation of a
 Java Maven application residing in the generator output folder ("./gen" by default).
 
-  **[Apache Maven](https://maven.apache.org)** is a popular open source Java build tool which manages dependencies, builds the appliction, and allows for
-  running Java programs with test and service automation.
+  **[Spring Framework](https://spring.io)** is a popular (defacto) Java platform for running Enterprise-class Microservices.
+
+  **[Apache Maven](https://maven.apache.org)** is a popular open source Java build tool which manages dependencies, builds the appliction, and allows for running Java programs with test and service automation.
 
   **[MyBatis ORM](http://blog.mybatis.org)** is a popular open source Java Object Relational Mapping library which allows you to define simple and complex Data Objects that map to your SQL database (in this case MySQL).  Using MyBatis, you can easily insert, update, delete and search for data in your Database using convenient Java Data Objects. If you are new to MyBatis, you should check out this [Excellent Tutorial](http://zetcode.com/db/mybatis/).
 
-Before running StackGen on your Swagger spec, you will need to create a Database (MySQL) and a default schema.
+Before running StackGen on your Swagger spec, you will need to create a Database (we recommend **[MySQL](https://www.mysql.com)** initialized with a default schema.
 
-We recommend the use of an AWS LightSail Database instance to run the database and using MySQL Workbench free database management utility to work with the data.
+We recommend the use of an **[AWS LightSail](https://lightsail.aws.amazon.com)** database instance to run the database and using MySQL Workbench free database management utility to work with the data.
 
 Additionally, you may consider connecting over an SSH tunnel but for now that is left out of the scope of this Tutorial.
 
@@ -221,7 +211,7 @@ If you have set the option to overwrite the Database tables if they already exis
 then any data you have entered in the database will be saved off in the renamed
 original table.
 
-Encrypted data can only be recovered from SecureFields&trade; columns if the SecureFields
+Encrypted data can only be recovered from SecureField columns if the ```x-starter-securefield``
 setting is enabled on the field in the OpenAPI schema.
 
 4. As you can see the application data can be accessed from the REST api, however

@@ -21,7 +21,7 @@ import io.starter.ignite.util.SystemConstants;
  * 
  * Get the key from System properties (i.e.: command line)
  * 
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class SecureEncrypter implements SystemConstants {
@@ -72,8 +72,6 @@ public class SecureEncrypter implements SystemConstants {
 	 * @throws Exception
 	 */
 	private static void init() throws Exception {
-		logger.info("SecureEncrypter init: " + SECURE_KEY_PROPERTY
-				+ " property is set: " + (SECRET_KEY != null));
 		if (SECRET_KEY == null) {
 			throw new RuntimeException(
 					"SecureEncrypter Initialization Failure: "

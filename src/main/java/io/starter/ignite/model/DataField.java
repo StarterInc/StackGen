@@ -11,7 +11,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author John McMahon (@TechnoCharms)
+ * Annotation to enable StackGen Data operations on a field.
+ * 
+ *  
+ *  @DataField
+ *  String applicationData
+ *  
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
+ * 
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

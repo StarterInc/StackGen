@@ -30,7 +30,7 @@ import io.swagger.models.Model;
 		</select>
 </pre>
  *
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class MyBatisJoin {

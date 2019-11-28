@@ -12,7 +12,7 @@ import io.starter.OpenXLS.WorkBookHandle;
  * a hybrid utility class that emulates a recordset, a table, and a spreadsheet
  * as needed
  * 
- * @author John McMahon Copyright 2013 Starter Inc., all rights reserved.
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  * 
  */
 public class SheetTable {

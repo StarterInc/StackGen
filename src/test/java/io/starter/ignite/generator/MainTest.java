@@ -40,7 +40,7 @@ public class MainTest implements Configuration {
 	}
 
 	@Test
-	@Ignore(value = "should not be run as a unit test")
+	//@Ignore(value = "should not be run as a unit test")
 	public void swaggerGenJSONConfig() {
 
 		String inputJSON = "{\n"
@@ -65,6 +65,7 @@ public class MainTest implements Configuration {
 				+ "  \"ownerId\": \"0\",\n"
 				+ "  \"schemaData\": \"Complete OpenAPI Schema Contents...\",\n"
 				+ "  \"schemaName\": \"starter\",\n"
+				+ "  \"schemaFile\": \"simple_csat.yml\",\n"
 				+ "  \"status\": \"available\"\n" + "}";
 		JSONObject job = new JSONObject(inputJSON);
 

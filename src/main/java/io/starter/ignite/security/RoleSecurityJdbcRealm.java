@@ -39,7 +39,7 @@ import io.starter.ignite.util.SystemConstants;
  * The configuration specified in web.xml will cause an object of this class to
  * be injected into the SecurityManager
  * 
- * @author John McMahon Copyright 2013 Starter Inc., all rights reserved.
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  * 
  */
 public class RoleSecurityJdbcRealm
@@ -48,9 +48,9 @@ public class RoleSecurityJdbcRealm
 	protected static final Logger			logger								= LoggerFactory
 			.getLogger(RoleSecurityJdbcRealm.class);
 
-	protected static final java.lang.String	DEFAULT_AUTHENTICATION_QUERY		= "select password, id from user where username = ?";
-	protected static final java.lang.String	DEFAULT_SALTED_AUTHENTICATION_QUERY	= "select password, password_salt from user where username = ?";
-	protected static final java.lang.String	USER_ID_QUERY						= "select id from user where username = ?";
+	protected static final java.lang.String	DEFAULT_AUTHENTICATION_QUERY		= "select password, id from user where user_name = ?";
+	protected static final java.lang.String	DEFAULT_SALTED_AUTHENTICATION_QUERY	= "select password, password_salt from user where user_name = ?";
+	protected static final java.lang.String	USER_ID_QUERY						= "select id from user where user_name = ?";
 
 	/*
 	 * (non-Javadoc)

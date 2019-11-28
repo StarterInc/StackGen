@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 /**
  * DEAL WITH CORB issues
  * https://www.chromium.org/Home/chromium-security/corb-for-developers
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 @Component

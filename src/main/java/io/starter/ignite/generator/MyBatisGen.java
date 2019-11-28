@@ -30,7 +30,7 @@ import io.starter.toolkit.StringTool;
 /**
  * responsible for generating MyBatis config
  * 
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class MyBatisGen extends Gen implements Generator {
@@ -42,10 +42,9 @@ public class MyBatisGen extends Gen implements Generator {
 
 	public static Map createMyBatis(Class c, MyBatisGen gen) throws Exception {
 
-		// projectDir.mkdirs();
 		logger.info("Generate MyBatis...");
 
-		Map classesToGenerate = gen.processClasses(c, null, gen);
+		Map<String, Object> classesToGenerate = gen.processClasses(c, null, gen);
 
 		logger.info("Write updated XML...");
 

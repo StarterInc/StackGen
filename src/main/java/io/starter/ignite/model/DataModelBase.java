@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * data methods
  *  
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public abstract class DataModelBase implements DataModelObject {

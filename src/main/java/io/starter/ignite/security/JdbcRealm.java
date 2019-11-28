@@ -70,6 +70,8 @@ import org.slf4j.LoggerFactory;
  * This realm supports caching by extending from
  * {@link org.apache.shiro.realm.AuthorizingRealm}.
  * 
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
+ * 
  * @since 0.2
  */
 public class JdbcRealm extends AuthorizingRealm {

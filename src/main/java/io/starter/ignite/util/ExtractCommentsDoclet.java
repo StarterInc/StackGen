@@ -3,7 +3,7 @@ package io.starter.ignite.util;
 /**
  * TODO: FIX THE tools.jar path issue
  * 
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class ExtractCommentsDoclet {

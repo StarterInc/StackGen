@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- * @author John McMahon Copyright 2013 Starter Inc., all rights reserved.
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  * 
  */
 public class S3FS extends StorageServiceEventAdaptor

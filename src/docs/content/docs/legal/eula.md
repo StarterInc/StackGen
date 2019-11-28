@@ -5,13 +5,13 @@ Starter Inc.
 StackGen End User License Agreement
 
 
-IMPORTANT, PLEASE READ CAREFULLY: THIS Licensee LICENSE AGREEMENT “EULA” IS A LEGAL AGREEMENT BETWEEN YOU (AS AN INDIVIDUAL OR ENTITY, “YOU” THE “CUSTOMER”) AND STARTER INC (“STARTER INC”), FOR PRODUCTS AND SERVICES, WHICH MAY INCLUDE COMPUTER SERVICES, SOFTWARE AND ASSOCIATED DOCUMENTATION (“SOFTWARE”).
+IMPORTANT, PLEASE READ CAREFULLY: THIS Licensee LICENSE AGREEMENT “EULA” IS A LEGAL AGREEMENT BETWEEN YOU (AS AN INDIVIDUAL OR ENTITY, “YOU” THE “CUSTOMER”) AND STARTER INC (“STARTER”), FOR PRODUCTS AND SERVICES, WHICH MAY INCLUDE COMPUTER SERVICES, SOFTWARE AND ASSOCIATED DOCUMENTATION (“SOFTWARE”).
 
 BY USING OUR WEBSITE(S) AND / OR INSTALLING AND / OR OTHERWISE USING THE SOFTWARE OR RECEIVING THE SERVICES, YOU AGREE TO BE BOUND BY THE TERMS OF THIS EULA.  IF YOU DO NOT AGREE WITH THE TERMS OF THIS EULA, DO NOT USE THE SOFTWARE OR SERVICES.
 
 1.0 License Grant. This EULA grants you, the user, a non-exclusive, non-transferable license to use the Software, in object code for your internal personal and business purposes (but not for managing third party data unless the product you have licensed expressly permits you to) under the terms and conditions stated herein. 
 
-The Software is to be accessed, installed, used, and deployed in accordance with the specific license you purchased, a description of the license can be found at https://docs.stackgen.io/licensing-policy.html (“Licensing Policy”). This EULA and the Licensing Policy can be updated from time to time, at Starter Inc’s sole discretion and will be made available at https://docs.stackgen.io/eula.md
+The Software is to be accessed, installed, used, and deployed in accordance with the specific license you purchased, a description of the license can be found at https://docs.stackgen.io/licensing-policy.html (“Licensing Policy”). This EULA and the Licensing Policy can be updated from time to time, at STARTER’s sole discretion and will be made available at https://docs.stackgen.io/eula.md
 
 2.0 Permissible Use. You may use the Software for legal purposes and for the number of licenses or capacity that you have purchased. You are permitted to make copies of the Software and documentation for your own use in accordance to EULA and Licensing Policy. Any copies or partial copies of Software and documentation that you make must incorporate all patent, copyright and trademark notices.
 
@@ -43,7 +43,7 @@ The restrictions on using the Software to process the data of third parties, pro
 
 15.0 Indemnification by Licensee
 
-You will defend, indemnify and hold harmless Starter Inc, its affiliates, and their respective officers, directors, employees, agents, licensors and any third-party providers, from and against all claims, losses, damages and costs, including reasonable attorneys’ fees, arising from any third-party claim against Starter Inc related to Your use of the Service or Software, including any document or content You submit to the Service.
+You will defend, indemnify and hold harmless STARTER, its affiliates, and their respective officers, directors, employees, agents, licensors and any third-party providers, from and against all claims, losses, damages and costs, including reasonable attorneys’ fees, arising from any third-party claim against STARTER related to Your use of the Service or Software, including any document or content You submit to the Service.
 
 15.1 Exclusion of Warranties
 
@@ -51,11 +51,11 @@ YOU ACKNOWLEDGE AND UNDERSTANDS THAT THE SERVICE AND ANY SOFTWARE MAY CONTAIN ER
 
 15.2 Limitation of Liability
 
-YOU AGREE AND ACKNOWLEDGE THAT NEITHER STARTER INC NOR ANY OF ITS LICENSORS MAY BE HELD LIABLE FOR ANY CLAIM, LOSS, DAMAGES, EXPENSES OR COSTS OF AN INDIRECT NATURE, INCLUDING CONSEQUENTIAL OR SPECIAL DAMAGES, LOST PROFITS OR OTHERWISE AND IN NO EVENT SHALL THEY BE LIABLE FOR ANY DAMAGES IN EXCESS OF THE AMOUNT OF FEES PAID TO STARTER INC BY LICENSEE (IF ANY) UNDER THIS AGREEMENT DURING THE IMMEDIATELY PRECEDING SIX MONTHS.  THIS LIMITATION APPLIES TO ALL CAUSES OF ACTION OR CLAIMS IN THE AGGREGATE, INCLUDING, WITHOUT LIMITATION, BREACH OF CONTRACT, BREACH OF WARRANTY, INDEMNITY, NEGLIGENCE, STRICT LIABILITY, MISREPRESENTATION AND OTHER TORTS. THE LIMITATIONS IN THIS SECTION APPLY TO YOU ONLY TO THE EXTENT THEY ARE LAWFUL IN YOUR JURISDICTION.
+YOU AGREE AND ACKNOWLEDGE THAT NEITHER STARTER NOR ANY OF ITS LICENSORS MAY BE HELD LIABLE FOR ANY CLAIM, LOSS, DAMAGES, EXPENSES OR COSTS OF AN INDIRECT NATURE, INCLUDING CONSEQUENTIAL OR SPECIAL DAMAGES, LOST PROFITS OR OTHERWISE AND IN NO EVENT SHALL THEY BE LIABLE FOR ANY DAMAGES IN EXCESS OF THE AMOUNT OF FEES PAID TO STARTER INC BY LICENSEE (IF ANY) UNDER THIS AGREEMENT DURING THE IMMEDIATELY PRECEDING SIX MONTHS.  THIS LIMITATION APPLIES TO ALL CAUSES OF ACTION OR CLAIMS IN THE AGGREGATE, INCLUDING, WITHOUT LIMITATION, BREACH OF CONTRACT, BREACH OF WARRANTY, INDEMNITY, NEGLIGENCE, STRICT LIABILITY, MISREPRESENTATION AND OTHER TORTS. THE LIMITATIONS IN THIS SECTION APPLY TO YOU ONLY TO THE EXTENT THEY ARE LAWFUL IN YOUR JURISDICTION.
 
 THIS LIMITATION OF LIABILITY IS INTENDED TO APPLY WITHOUT REGARD TO WHETHER OTHER PROVISIONS OF THIS AGREEMENT HAVE BEEN BREACHED OR HAVE PROVEN INEFFECTIVE OR IF A REMEDY FAILS OF ITS ESSENTIAL PURPOSE. YOU ACKNOWLEDGE THAT IF THE ABOVE LIMITATION WERE NOT INCLUDED HEREIN, STARTER INC WOULD NOT LICENSE THE SERVICE OR SOFTWARE TO YOU.
 
-16.0 General. This Agreement sets forth StackGen's entire obligation and Licensee’s exclusive rights with respect to the Software and, except to the extent otherwise specifically provided in a purchase order or other written communication or advertising signed or jointly issued by both parties with respect to the Software, supersedes any conflicting terms of any purchase order and any other communication or advertising with respect to the Software. No failure of either party to exercise or enforce any of its rights under this EULA will act as a waiver of those rights.
+16.0 General. This Agreement sets forth STARTER's entire obligation and Licensee’s exclusive rights with respect to the Software and, except to the extent otherwise specifically provided in a purchase order or other written communication or advertising signed or jointly issued by both parties with respect to the Software, supersedes any conflicting terms of any purchase order and any other communication or advertising with respect to the Software. No failure of either party to exercise or enforce any of its rights under this EULA will act as a waiver of those rights.
 
 If any provision of this EULA is found illegal or unenforceable, it will be enforced to the maximum extent permissible, and the legality and enforceability of the other provisions of this EULA will not be affected. 
 

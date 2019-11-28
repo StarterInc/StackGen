@@ -44,7 +44,7 @@ import io.swagger.models.properties.RefProperty;
 	
 	</pre>
  * 
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class StackModelRelationGenerator {

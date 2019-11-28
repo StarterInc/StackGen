@@ -1,7 +1,7 @@
 GDPR
 On May 25, 2018, the EU General Data Protection Regulation (GDPR) became effective bringing new global data protection rights for individuals in the European Union. Starter fully supports the privacy rights of our customers and their users and has achieved GDPR compliance.
 
-Starter offers a data processing agreement (DPA) for customers processing information on behalf of EU and Swiss citizens. Please contact privacy@starter.io for more information.
+Starter Inc. offers a data processing agreement (DPA) for customers processing information on behalf of EU and Swiss citizens. Please contact privacy@starter.io for more information.
 
 As we all work to understand and apply GDPR concepts to our own businesses, we’ve created the below outline to keep you informed of our efforts. We’ll be proactively reaching out to our entire customer base once we have best practices to share.
 

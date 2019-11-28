@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * responsible for generating DB DML and creating RDB
  * 
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class DBGen extends Gen implements Generator {

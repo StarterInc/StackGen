@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import io.starter.toolkit.StringTool;
 
 /**
- * @author John McMahon (@TechnoCharms) mcmahon
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms mcmahon
  *
  */
 public class MyBatisIgnitePluginAdapter extends PluginAdapter

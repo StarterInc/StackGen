@@ -39,7 +39,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Generating Java code
  *
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class JavaGen extends Gen implements Generator {

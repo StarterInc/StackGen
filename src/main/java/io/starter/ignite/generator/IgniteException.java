@@ -3,7 +3,7 @@ package io.starter.ignite.generator;
 /**
  * TODO: customize
  * 
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class IgniteException extends RuntimeException {

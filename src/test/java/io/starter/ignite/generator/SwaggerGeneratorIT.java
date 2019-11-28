@@ -77,7 +77,7 @@ public class SwaggerGeneratorIT implements Configuration {
 		assertNotNull(swaggerGen.generate());
 	}
 
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testAppGen() throws Exception {
 		Main.main(null);
 	}

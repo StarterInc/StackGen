@@ -74,7 +74,7 @@ public class StackGenCodegenConfigurator extends CodegenConfigurator {
 
 	private String gitUserId = "GIT_USER_ID";
 	private String gitRepoId = "GIT_REPO_ID";
-	private String releaseNote = "Minor update";
+	private String releaseNote = "Initial Commit";
 	private String httpUserAgent;
 
 	private final Map<String, Object> dynamicProperties = new HashMap<String, Object>(); // the map that holds the

@@ -24,7 +24,7 @@ import io.starter.toolkit.StringTool;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class Gen implements Configuration {

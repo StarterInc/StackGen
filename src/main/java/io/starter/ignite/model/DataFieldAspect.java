@@ -58,23 +58,18 @@ public class DataFieldAspect implements Configuration {
 	public Object setDataField(ProceedingJoinPoint pjp) throws Throwable {
 
 		if (DISABLE_DATA_FIELD_ASPECT) {
-			logger.info("SKIPPING DATA FIELD SETTER" + pjp.toString());
+			logger.trace("SKIPPING DATA FIELD SETTER" + pjp.toString());
 			return pjp.proceed();
 		}
 
 		String cnm = Thread.currentThread().getStackTrace()[8].getClassName();
 
-		// logger.error("Calling: " + cnm);
-		// if iBatis is calling, do not persist
-		if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
-			return pjp.proceed(pjp.getArgs());
-		}
-		logger.info("Set Data Field for: " + pjp.toLongString());
+		logger.trace("Set Data Field for: " + pjp.toLongString());
 		String clearTextValue = String.valueOf(pjp.getArgs()[0]);
 
 		// TODO: init with a pre-existing value...
-		// String persistedValue =
-		// DataPersister.persist(clearTextValue);
+		String persistedValue =
+		 DataPersister.persist(clearTextValue);
 
 		Object targetObject = pjp.getTarget();
 		String dataFieldName = pjp.getSignature().getName();
@@ -82,7 +77,7 @@ public class DataFieldAspect implements Configuration {
 				.getDeclaredField(dataFieldName);
 		dataField.setAccessible(true);
 
-		// dataField.set(targetObject, persistedValue);
+		dataField.set(targetObject, persistedValue);
 
 		dataField.setAccessible(false);
 		return null;

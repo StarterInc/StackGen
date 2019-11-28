@@ -16,7 +16,7 @@ import io.swagger.models.Model;
  *  - when we encounter a FK_ID field in the Swagger ,we need to implement a many-to-many IDX table
  *  - when we encounter a list of FK_ID objects
  * 
- * @author john
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 

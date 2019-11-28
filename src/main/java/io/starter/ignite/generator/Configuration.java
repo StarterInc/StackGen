@@ -30,7 +30,7 @@ import io.starter.ignite.util.SystemConstants;
  * REACT_TEMPLATE_FOLDER
  * </pre>
  * 
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public interface Configuration extends SystemConstants {

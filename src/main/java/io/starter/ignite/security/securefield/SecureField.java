@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
  *  @SecureField
  *  String valuableData
  *  
- * @author John McMahon (@TechnoCharms)
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  * 
  * @see http://docs.stackgen.io/docs/security/secure-field.html
  *

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
-import { Link } from 'gatsby';
+import { withPrefix, Link } from 'gatsby';
 import LayoutNav from '../components/LayoutNav';
 import {WOW} from 'wowjs';
 import Footer from '../components/Footer';
@@ -8,7 +8,7 @@ import Footer from '../components/Footer';
 /**
  * Index page
  */
-class Index extends Component {
+class Index extends React.Component {
     componentDidMount() {
         this._wow = new WOW();
         this._wow.init();
@@ -19,7 +19,7 @@ class Index extends Component {
     }
 
     render() {
-        const description = "Start using StackGen to make powerful API Stacks";
+        const description = "Start using StackGen to Generate Apps";
 
         return (
             <div className="home">
@@ -54,15 +54,15 @@ class Index extends Component {
 
                     <section className="contact-us">
                         <div className="container-fluid container-fluid-max-lg">
-                            <div className="row iconrow">
-                                <div className="col-md-4 ml-auto mr-lg-4 wow zoomIn" data-wow-duration="2.5s">
+                            <div className="row">
+                                <div className="col-md-4 ml-auto mr-lg-4 wow zoomIn" data-wow-duration="1.2s">
                                     <div className="text-center text-lg-right">
-                                        <img src="/images/home/github.svg" alt="Github Logo" />
+                                        <img src={withPrefix("images/home/github.svg")} alt="Github Logo" />
                                     </div>
                                 </div>
-                                <div className="col-md-6 mr-auto wow zoomIn" data-wow-duration="1.8s">
+                                <div className="col-md-6 mr-auto wow zoomIn" data-wow-duration="0.8s">
                                     <div className="media-body mt-4 text-center text-lg-left">
-                                        <p className="h1 font-weight-bold">Here's the <a href={process.env.GITHUB_REPO} className="font-weight-bold"  target="_blank" rel="noopener noreferrer">GitHub repo.</a></p>
+                                        <p className="h1 font-weight-bold">Want to contribute? Found an issue? Head on over to the <a href={process.env.GITHUB_REPO} className="font-weight-bold"  target="_blank" rel="noopener noreferrer">GitHub repo.</a></p>
                                     </div>
                                 </div>
                             </div>

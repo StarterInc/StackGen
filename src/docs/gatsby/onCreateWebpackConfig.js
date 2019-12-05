@@ -9,14 +9,7 @@ module.exports = ({actions, stage}) => {
 				{
 					test: [
 						path.resolve(__dirname, '../node_modules/wowjs'),
-						path.resolve(__dirname, '../node_modules/clay-charts'),
-						path.resolve(__dirname, '../node_modules/clay-alert'),
-						path.resolve(__dirname, '../node_modules/clay-badge'),
-						path.resolve(__dirname, '../node_modules/clay-button'),
-						path.resolve(__dirname, '../node_modules/clay-dropdown'),
-						path.resolve(__dirname, '../node_modules/clay-tooltip'),
-						path.resolve(__dirname, '../node_modules/metal-clipboard'),
-						path.resolve(__dirname, '../node_modules/wedeploy')
+						path.resolve(__dirname, '../node_modules/metal-clipboard')
 					],
 					loader: 'null-loader',
 				},

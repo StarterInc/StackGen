@@ -1,6 +1,6 @@
 import { graphql } from 'gatsby';
 import Helmet from 'react-helmet';
-import React, { Component } from 'react';
+import React from 'react';
 import Footer from '../components/Footer';
 import CodeTabs from '../components/CodeTabs';
 import CodeClipboard from '../components/CodeClipboard';
@@ -9,7 +9,7 @@ import BlogArticle from '../components/Blog/BlogArticle';
 import LayoutNav from '../components/LayoutNav';
 import Auth from '../components/Auth';
 
-export default class Blog extends Component {
+export default class Blog extends React.Component {
     componentDidMount() {
         this._codeTabs = new CodeTabs();
         this._codeClipboard = new CodeClipboard();
@@ -48,8 +48,8 @@ export default class Blog extends Component {
                                     <div className="row">
                                         <div className="intro blog-intro text-center col">
                                             <div className="container-fluid container-fluid-max-lg">
-                                                <h1 className="h1">StackGen Blog</h1>
-                                                <h2 className="h3">&quote;Sufficiently advanced technology, indistinguishable from magic.&quote;</h2>
+                                                <h1 className="h1">Blog</h1>
+                                                <h2 className="h3">Where good ideas come from</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -77,6 +77,7 @@ export default class Blog extends Component {
                             </div>
                         </div>
                     </main>
+
                     <Footer />
                 </div>
             </Auth>
@@ -93,7 +94,7 @@ export const pageQuery = graphql`
             frontmatter {
                 title
                 mainPage
-                date
+                date(formatString: "MMMM DD, YYYY")
                 author
                 needsAuth
             }

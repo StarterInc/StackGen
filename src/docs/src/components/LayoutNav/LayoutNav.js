@@ -1,11 +1,11 @@
 import { window, document } from 'browser-monads';
-import React, { Component } from 'react';
-import { Link } from "gatsby";
+import React from 'react';
+import { Link, withPrefix } from 'gatsby';
 import classnames from 'classnames';
 
-import { isLoggedIn, logout } from '../../services/auth';
+import Login from '../Login';
 
-class LayoutNav extends Component {
+class LayoutNav extends React.Component {
     constructor() {
         super();
         this._rootNode = window || document;
@@ -27,17 +27,6 @@ class LayoutNav extends Component {
         } else {
             this.refs.navElement.classList.remove('scroll');
         }
-    }
-
-    _handleLogout() {
-        logout()
-            .then(() => {
-                this.forceUpdate();
-            })
-            .catch((error) => {
-                alert(error);
-                window.location.reload();
-            });
     }
 
     componentDidMount() {
@@ -69,13 +58,14 @@ class LayoutNav extends Component {
             <nav ref="navElement" className={styles}>
                 <div className="container-fluid">
                     <Link to="/" className="navbar-brand">
-                        <img className="logo mr-2"  alt="Starter StackGen Logo" src="/logos/StackGenLogo-2019.png" />
+                        <img className="logo mr-2" src={withPrefix("/images/home/liferay_logo.svg")} alt="Liferay Logo" />
+                        <span className="title align-middle">{process.env.PROJECT_NAME}</span>
                     </Link>
 
                     {sidebarHamburguerIcon &&
                         <button onClick={this.expandToggler} className="navbar-toggler p-2 order-md-1" type="button" data-toggle="collapse" data-target="#claySidebar" aria-controls="claySidebar" aria-expanded="false" aria-label="Toggle navigation">
                             <svg aria-hidden="true" className="lexicon-icon lexicon-icon-bars">
-                                <use xlinkHref="/images/icons/icons.svg#bars" />
+                                <use xlinkHref={withPrefix("images/icons/icons.svg#bars")} />
                             </svg>
                         </button>
                     }
@@ -85,14 +75,20 @@ class LayoutNav extends Component {
                             <Link className="nav-link ml-lg-3" to="/docs/">Docs</Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link ml-lg-3" href="http://stackgen.io/">Blog</a>
+                            <Link className="nav-link ml-lg-3" to="/blog/">Blog</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link ml-lg-3" to="/onboarding/">Onboarding</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link ml-lg-3" to="/updates/">Updates</Link>
                         </li>
                         <li className="nav-item">
+                            <Login />
+                        </li>
+                        <li className="nav-item">
                             <a className="mx-3 mr-lg-0" href={process.env.GITHUB_REPO}  target="_blank" rel="noopener noreferrer">
-                                <img src="/images/home/GitHub-Mark-64px.svg" alt="" />
+                                <img src={withPrefix("/images/home/GitHub-Mark-64px.svg")} alt="" />
                             </a>
                         </li>
                     </ul>

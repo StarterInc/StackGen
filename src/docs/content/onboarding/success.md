@@ -1,10 +1,10 @@
 ---
-description: You're all set!
+description: You have finished the guide!
 title: Success
-stepNumber: 5
+stepNumber: 4
 short: Success
 ---
 
-For more information, see [the full documentation](/docs/).
+For more information, see [the documentation](/docs/).
 
 ![end](/images/end.gif)

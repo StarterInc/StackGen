@@ -1,6 +1,6 @@
 body {
 	background-color: $bg-color;
-	font-size: 1em;
+	font-size: 1rem;
 
     .bg-primary, .btn-primary {
         background-color: $brand-primary !important;
@@ -48,7 +48,6 @@ body {
 .clay-docs-title,
 .sidebar-clay-site,
 .home {
-	font-size:2em;
 	font-family: $font-family-system;
 }
 
@@ -56,8 +55,4 @@ body {
 
 .style-toggler {
 	display: none;
-}
-
-.iconrow{
-		color:$brand-light-secondary-text;
 }

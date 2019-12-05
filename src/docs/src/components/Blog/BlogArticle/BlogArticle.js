@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React from 'react';
 import MDXRenderer from 'gatsby-mdx/mdx-renderer';
-import {Link} from 'gatsby';
+import { Link, withPrefix } from 'gatsby';
 import Typography from '../../Typography';
 
-export default class BlogArticle extends Component {
+export default class BlogArticle extends React.Component {
 
     render() {
         return (
@@ -11,7 +11,7 @@ export default class BlogArticle extends Component {
                 <Breadcrumb activePage={this.props.title} />
 
                 <small>
-                    {this.props.author ? `by ${this.props.author}` : ''}` : ''}
+                    {this.props.author ? `by ${this.props.author}` : ''} | {this.props.date ? `${this.props.date}` : ''}
                 </small>
 
                 <h1>{this.props.title}</h1>
@@ -44,17 +44,17 @@ const SocialShare = (props) => (
         <div className="social-buttons">
             <a className="social-button facebook" href={`https://www.facebook.com/sharer/sharer.php?u=${props.location.href}`} target="_blank" rel="noopener noreferrer">
                 <svg className="lexicon-icon">
-                    <use xlinkHref="/images/icons/icons.svg#social-facebook"></use>
+                    <use xlinkHref={withPrefix("images/icons/icons.svg#social-facebook")}></use>
                 </svg>
             </a>
             <a className="social-button twitter" href={`https://twitter.com/home?status=${props.location.href}`} target="_blank" rel="noopener noreferrer">
                 <svg className="lexicon-icon">
-                    <use xlinkHref="/images/icons/icons.svg#twitter"></use>
+                    <use xlinkHref={withPrefix("images/icons/icons.svg#twitter")}></use>
                 </svg>
             </a>
             <a className="social-button linkedin" href={`https://www.linkedin.com/shareArticle?mini=true&amp;url=${props.location.href}`} target="_blank" rel="noopener noreferrer">
                 <svg className="lexicon-icon">
-                    <use xlinkHref="/images/icons/icons.svg#social-linkedin"></use>
+                    <use xlinkHref={withPrefix("images/icons/icons.svg#social-linkedin")}></use>
                 </svg>
             </a>
         </div>

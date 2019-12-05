@@ -1,28 +1,27 @@
 ---
-description: Installing the StackGen project and generating your first Stack!
+description: Fetch all files to build your project!
 title: Installing
 stepNumber: 1
-short: Select
+short: Clone
 ---
 
 ## Github
 
-Clone the project by running one of these commands:
+Clone the project by running one of these commands: 
 
 ```bash http
-git clone https://github.com/StarterInc/StackGen.git
+git clone https://github.com/diegonvs/gatsby-boilerplate.git
 ```
-After the clone succeeds, navigate to `StackGen/` on your machine and run `mvn clean install`.
-
-You should see output similar to the following:
-```
-TODO: output from mvn clean install
+```bash ssh
+git clone git@github.com:diegonvs/gatsby-boilerplate.git
 ```
 
-## StackGen CLI
+After the clone succeeds, navigate to `gatsby-boilerplate/` on your machine and run `yarn`.
 
-If you simply have the StackGen jar then use the StackGen CLI by running:
+## Gatsby CLI
+
+If you have Gatsby installed globally, use the Gatsby command line interface by running: 
 
 ```sh
-java -jar StackGen.jar -all -the -things
+gatsby new https://github.com/diegonvs/gatsby-boilerplate
 ```

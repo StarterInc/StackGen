@@ -2,32 +2,52 @@ $font-family-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxyg
 
 // Site vars
 
-$content-max-width: 1120px;
+$content-max-width: 960px;
+
 $sidebar-width: 376px;
-$base-size: 18pt;
 
-// Colors
-$bg-color: #fbfcfc;
-$footer-bg-color: #fbfcfc;
+$base-size: 24px;
 
-$brand-dark: #444f5e;
-$brand-dark-lighter: #222;
+// Color
 
-$brand-light: #444f5e;
-$brand-light-secondary-text: #bbb;
-$brand-light-text: #ddd;
+$bg-color: #FFF;
+$footer-bg-color: #272833;
 
-$brand-primary: #071425 !default;
-$brand-secondary: #fff;
-$brand-lighten: #fff;
-$text-color: #111 !default;
+$brand-dark: #272833;
+$brand-dark-lighter: #F1F2F5;
+
+$brand-light: #F5F5F8;
+
+$brand-light-secondary-text: #A7A9BC;
+$brand-light-text: $brand-light;
+
+$brand-primary: #0B5FFF !default;
+$brand-secondary: #30313F;
+
+$brand-lighten: #FBF8F5;
+
+$text-color: #000 !default;
 
 // Sizes
-$margin-top-body: $base-size * 5;
+
+$margin-top-body: $base-size * 4;
 
 // Breakpoints
-$screen-md: 1000px;
-$screen-sm: 400px;
+
+$screen-md: 900px;
+$screen-sm: 900px;
 $screen-xs: 768px;
 
 $grid-float-breakpoint: $screen-sm;
+
+// Footer
+
+$social-icons-link-sticker: () !default;
+$social-icons-link-sticker: map-merge((
+	bg: $secondary-l1,
+	border-radius: 100px,
+	color: $white,
+	font-size: 14.5px,
+	hover-bg: $secondary,
+	focus-bg: $secondary,
+), $social-icons-link-sticker);

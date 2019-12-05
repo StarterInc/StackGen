@@ -1,10 +1,17 @@
 ---
-description: Edit the OpenAPI/Swagger Specification YAML File.
-title: Design API Specification
+description: See the magic(or build)happens.
+title: Build
 stepNumber: 3
-short: Design
+short: Run
 ---
 
-Before generating the code and building your Stack, you will need to design your OpenAPI Specification.
+For development mode, follow these steps: 
 
-This is the fun part where we set any environment variables by following the documentation [here](/docs/environment-variables.html). Otherwise, your project will use the default values for these variables and who knows what that will result in....?
+1.  Run `npm run develop` or `yarn develop`. 
+2.  Open `https://localhost:8000`. 
+
+For production mode, follow these steps: 
+
+1.  Run `npm run build` or `yarn build`. 
+2.  If you ran the `npm` command in the first step, run `npm run serve`. If you ran the `yarn` command, run `yarn serve`.
+3.  Open `https://localhost:9000`.

@@ -82,7 +82,7 @@
     @include media-breakpoint-up(sm) {
         background-attachment: fixed;
         background-position: center -144px;
-        padding: 200px 0 390px;
+        padding: 184px 0 264px;
     }
 
     .btn-lg {
@@ -112,7 +112,7 @@
 
     .h1 {
         font-size: 36px;
-        font-weight: 100;
+        font-weight: 900;
         line-height: 1;
         margin: 52px 0 24px;
         word-break: normal;
@@ -130,7 +130,7 @@
     .h3 {
         color: rgba(255, 255, 255, 0.6);
         font-size: 18px;
-        font-weight: 100;
+        font-weight: 700;
         letter-spacing: 4px;
         line-height: 1.7;
         margin-bottom: 56px;
@@ -152,15 +152,9 @@
 .contact-us {
     background-attachment: fixed;
     background-color: #f1f2f5;
-    background-image: url("/images/forklift-truck-materials-handling-retro.png");
-
-    /*background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230b5fff' fill-opacity='0.4'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");*/
+    background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230b5fff' fill-opacity='0.4'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    resize: both;
     padding: 96px 0;
-
 
     @include media-breakpoint-up(sm) {
         background-size: 140%;

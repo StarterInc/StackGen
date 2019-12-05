@@ -184,7 +184,7 @@ mvn spring-boot:run ... -DservicePort=8443 ...
 
 **Overriding vs. Delegation with DAO Classes**
 
-When using a StackGen "DAO Service" class (by convention named <ObjectName>Service) as Java base class, you may encounter issues similar to this when persisting:
+When using a StackGen "DAO Service" class (by convention named {Objectname}Service) as Java base class, you may encounter issues similar to this when persisting:
 
 ```
 io.starter.ignite.generator.IgniteException: Could not run INSERT: org.apache.ibatis.exceptions.PersistenceException: 

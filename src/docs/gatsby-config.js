@@ -2,9 +2,9 @@ const clay = require('clay-css');
 const path = require('path');
 
 module.exports = {
+	// pathPrefix: '/gatsby-boilerplate',
 	plugins: [
 		'gatsby-plugin-meta-redirect',
-		'gatsby-transformer-try-examples',
 		{
 			resolve: 'gatsby-plugin-sass',
 			options: {
@@ -35,9 +35,6 @@ module.exports = {
 						resolve: path.resolve(__dirname, './plugins/gatsby-remark-code-label-extractor'),
 					},
 					{
-						resolve: path.resolve(__dirname, './plugins/gatsby-remark-foreach-icons'),
-					},
-					{
 						resolve: 'gatsby-remark-prismjs',
 						pluginOptions: {
 							classPrefix: 'gatsby-code-',
@@ -45,9 +42,6 @@ module.exports = {
 					},
 					{
 						resolve: path.resolve(__dirname, './plugins/gatsby-remark-use-clipboard'),
-					},
-					{
-						resolve: path.resolve(__dirname, './plugins/gatsby-remark-api-table'),
 					},
 				],
 			},
@@ -62,21 +56,21 @@ module.exports = {
 		{
 			resolve: 'gatsby-plugin-manifest',
 			options: {
-				name: 'StackGen',
-				short_name: 'StackGen',
+				name: 'StackGen Docs',
+				short_name: 'StackGen Docs',
 				start_url: '/',
-				background_color: '#EFEFEF',
-				theme_color: '#222222',
+				background_color: '#FFFFFF',
+				theme_color: '#0B5FFF',
 				display: 'minimal-ui',
 				icons: [
 					{
-						"src": "/favicons/favicon-16x16.png",
-						"sizes": "16x16",
+						"src": "favicons/android-chrome-192x192.png",
+						"sizes": "192x192",
 						"type": "image/png"
 					},
 					{
-						"src": "/favicons/favicon-32x32.png",
-						"sizes": "32x32",
+						"src": "favicons/android-chrome-512x512.png",
+						"sizes": "512x512",
 						"type": "image/png"
 					}
 				]

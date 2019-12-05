@@ -28,7 +28,9 @@ https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/downloads-list.html
 
 https://dzone.com/articles/spring-boot-secured-by-lets-encrypt
 
+```
 Path to /etc/letsencrypt/live/<sitename>/fullchain.pem
+```
 
 ```bash
 > ./certbot-auto certonly -a standalone -d <hostname>

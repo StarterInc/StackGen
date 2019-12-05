@@ -13,7 +13,8 @@
 
 	.navbar-brand {
 		span {
-			font-weight: lighter;
+			font-size: 20px;
+			font-weight: 700;
 			line-height: 1;
 
 			@include media-breakpoint-up(sm) {
@@ -30,16 +31,15 @@
 		}
 
 		.nav-link {
-			font-size: 1.75em;
-			font-weight: lighter;
+			font-weight: 700;
 		}
 	}
 
 	.logo {
-		max-height: 48px;
+		max-height: 32px;
 
 		@include media-breakpoint-up(sm) {
-			max-height: 64px;
+			max-height: 40px;
 		}
 	}
 }

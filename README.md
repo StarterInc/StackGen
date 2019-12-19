@@ -16,7 +16,7 @@ Generates Spring MVC/Model Objects and publishes via REST apis. Full stack RESTf
  *   - YAML -> Swagger client
  *   - Swagger Client -> entity classes
  *   - Swagger Client -> DML for database
- *   - Swagger CLient -> React-native JS screens
+ *   - Swagger CLient -> React/React Native JS screens
 
 #### Introduction
 

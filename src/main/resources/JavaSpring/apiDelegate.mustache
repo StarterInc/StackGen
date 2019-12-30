@@ -79,7 +79,7 @@ public interface {{classname}}Delegate {
     
     public void setId(Long idVal);
     
-    public int insert();
+    public long insert();
     
     public int update();
 
@@ -118,14 +118,19 @@ public interface {{classname}}Delegate {
 						(ResponseEntity<{{>returnTypes}}>) getResponse((List<?>) ret){{#async}}){{/async}};
 					} else {
 						return {{#async}}CompletableFuture.completedFuture({{/async}}
-						(ResponseEntity<{{>returnTypes}}>) getResponse(this){{#async}}){{/async}};
+						(ResponseEntity<{{>returnTypes}}>) getResponse(getDelegate()){{#async}}){{/async}};
 					}
 				} else {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				}
-			} catch (Exception e) {
+			} catch (java.lang.reflect.InvocationTargetException e) {
+				log.error("Reflection Failure running method {{classname}}.{{operationId}}: "
+						+ e + ":" + e.getTargetException().toString());
+				return new ResponseEntity<>(HttpStatus.  INTERNAL_SERVER_ERROR);
+			} catch (Exception x) {
 				log.error("Failure running method {{classname}}.{{operationId}}: "
-						+ e);
+						+ x + ":" + x.toString());
+						x.printStackTrace();
 				return new ResponseEntity<>(HttpStatus.  INTERNAL_SERVER_ERROR);
 			}
         {{#examples}}
@@ -233,7 +238,7 @@ public interface {{classname}}Delegate {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		// returns single result
-		JSONObject job = new JSONObject((({{classname}}Delegate)ret).getDelegate());
+		JSONObject job = new JSONObject(ret);
 		return new ResponseEntity<>(getObjectMapper().readValue(job.toString(), {{baseName}}.class), HttpStatus.OK);
 	}
 }

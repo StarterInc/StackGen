@@ -38,7 +38,7 @@ public class ASCIIArtPrinter {
 		ret.append("::::::::::::::::: Starter StackGen (v."
 				+ SystemConstants.IGNITE_MAJOR_VERSION + "."
 				+ SystemConstants.IGNITE_MINOR_VERSION
-				+ ") - http://starter.io/ignite :::::::::::::::::");
+				+ ") - https://stackgen.io :::::::::::::::::");
 		return ret.toString();
 	}
 }

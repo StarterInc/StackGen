@@ -78,3 +78,25 @@ import io.starter.ignite.secure.SecureField;
 private String ssn = ""; // social security number
 
 ```
+
+Notes on IDE Support for AspectJ:
+
+If you are using Eclipse, you should install the AspectJ Eclipse Plugin.
+
+You will need to add the update site:
+
+```
+AJDT site - http://download.eclipse.org/tools/ajdt/410/dev/update
+```
+
+And select:
+
+```
+AspectJ Development Tools
+```
+
+Once you have installed AspectJ, you will need to add the StackGen.jar to your Aspect Path.
+
+You can then open the "Cross References" View to see all of the places where the Aspects are applied as well as step through the Aspect calls in debugger. 
+
+[./screenshots/AspectJ-Eclipse-User-Cross-References.png]

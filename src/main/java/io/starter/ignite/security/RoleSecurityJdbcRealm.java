@@ -338,7 +338,7 @@ public class RoleSecurityJdbcRealm
 			logger.info("RoleSecurityJdbcRealm.initializeDB() Falling back to non-JNDI "
 					+ "ConnectionFactory connection:"
 					+ e.getLocalizedMessage());
-			dataSource = ConnectionFactory.getDataSource();
+			dataSource = ConnectionFactory.instance.getDataSource();
 			java.sql.Connection c = dataSource.getConnection();
 			setDataSource(dataSource);
 			c.close();

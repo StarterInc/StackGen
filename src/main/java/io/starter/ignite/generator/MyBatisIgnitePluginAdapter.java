@@ -23,218 +23,153 @@ import io.starter.toolkit.StringTool;
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms mcmahon
  *
  */
-public class MyBatisIgnitePluginAdapter extends PluginAdapter
-		implements Configuration {
+public class MyBatisIgnitePluginAdapter extends PluginAdapter implements Configuration {
 
-	protected static final Logger logger = LoggerFactory
-			.getLogger(MyBatisIgnitePluginAdapter.class);
+	protected static final Logger logger = LoggerFactory.getLogger(MyBatisIgnitePluginAdapter.class);
+	private final boolean useDelegate = false;
 
 	public MyBatisIgnitePluginAdapter() {
-		logger.error("Instantiating MyBatisIgnitePluginAdapter...");
+		MyBatisIgnitePluginAdapter.logger.error("Instantiating MyBatisIgnitePluginAdapter...");
 	}
 
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		String scn = getSuperClassName(topLevelClass);
-		Field f = new Field();
-		f.setName("delegate");
-		f.setVisibility(JavaVisibility.PUBLIC);
-		f.setInitializationString(" new " + scn + "()");
-		f.setType(new TopLevelClass(scn).getType());
-		topLevelClass.addField(f);
-		topLevelClass.addImportedType(scn);
 
-		FullyQualifiedJavaType dtx = new FullyQualifiedJavaType(
-				"java.util.Date");
+		// we are replacing the super type but still need the original import
+		topLevelClass.addImportedType(topLevelClass.getType());
+
+		final String scn = MyBatisIgnitePluginAdapter.getSuperClassName(topLevelClass);
+		final FullyQualifiedJavaType superClass = new FullyQualifiedJavaType(scn);
+		topLevelClass.addImportedType(superClass);
+		topLevelClass.setSuperClass(superClass);
+
+		final FullyQualifiedJavaType dtx = new FullyQualifiedJavaType("java.util.Date");
 		topLevelClass.addImportedType(dtx);
 
-		FullyQualifiedJavaType dtd = new FullyQualifiedJavaType(
-				"java.math.BigDecimal");
+		final FullyQualifiedJavaType dtd = new FullyQualifiedJavaType("java.math.BigDecimal");
 		topLevelClass.addImportedType(dtd);
 
-		FullyQualifiedJavaType dti = new FullyQualifiedJavaType(
-				"java.time.Instant");
+		final FullyQualifiedJavaType dti = new FullyQualifiedJavaType("java.time.Instant");
 		topLevelClass.addImportedType(dti);
 
-		FullyQualifiedJavaType dto = new FullyQualifiedJavaType(
-				"java.time.OffsetDateTime");
+		final FullyQualifiedJavaType dto = new FullyQualifiedJavaType("java.time.OffsetDateTime");
 		topLevelClass.addImportedType(dto);
 
-		FullyQualifiedJavaType dtz = new FullyQualifiedJavaType(
-				"java.time.ZoneOffset");
+		final FullyQualifiedJavaType dtz = new FullyQualifiedJavaType("java.time.ZoneOffset");
 		topLevelClass.addImportedType(dtz);
 
 		// add custom methods
-		Method tojson = new Method();
-		tojson.addAnnotation("@Override");
-		tojson.addBodyLine("return delegate.toJSON();");
-		tojson.setName("toJSON");
-		FullyQualifiedJavaType returnType = new FullyQualifiedJavaType(
-				"java.lang.String");
-		JavaVisibility visibility = JavaVisibility.PUBLIC;
-		tojson.setVisibility(visibility);
-		tojson.setReturnType(returnType);
-		topLevelClass.addMethod(tojson);
+		if (useDelegate) {
 
-		Method getdelegate = new Method();
-		getdelegate.addAnnotation("@Override");
-		getdelegate.addBodyLine("return delegate;");
-		getdelegate.setName("getDelegate");
-		
-		FullyQualifiedJavaType ret = new FullyQualifiedJavaType(
-				"io.starter.ignite.model.DataModelObject");
-		topLevelClass.addImportedType(ret);
-		getdelegate.setVisibility(visibility);
-		getdelegate.setReturnType(ret);
-		topLevelClass.addMethod(getdelegate);
+			final Field f = new Field("delegate", superClass);
+			f.setVisibility(JavaVisibility.PUBLIC);
+			f.setInitializationString(" new " + scn + "()");
+			topLevelClass.addField(f);
 
-		
+			final Method tojson = new Method("toJSON");
+			tojson.addAnnotation("@Override");
+			tojson.addBodyLine("return delegate.toJSON();");
+
+			final FullyQualifiedJavaType returnType = new FullyQualifiedJavaType("java.lang.String");
+			final JavaVisibility visibility = JavaVisibility.PUBLIC;
+			tojson.setVisibility(visibility);
+			tojson.setReturnType(returnType);
+			topLevelClass.addMethod(tojson);
+
+			final Method getdelegate = new Method("getDelegate");
+			getdelegate.addAnnotation("@Override");
+			getdelegate.addBodyLine("return delegate;");
+			getdelegate.setVisibility(visibility);
+
+			final FullyQualifiedJavaType ret = new FullyQualifiedJavaType("io.starter.ignite.model.DataModelObject");
+			topLevelClass.addImportedType(ret);
+
+			getdelegate.setReturnType(ret);
+			topLevelClass.addMethod(getdelegate);
+
+		}
 		return true;
 	}
 
 	/**
 	 * get the superclass name
-	 * 
+	 *
 	 * @param topLevelClass
 	 * @return
 	 */
-	private String getSuperClassName(TopLevelClass topLevelClass) {
+	public static String getSuperClassName(TopLevelClass topLevelClass) {
 
 		String cn = topLevelClass.getType().getFullyQualifiedName();
-
-		// handle stripping out the Schema name in the delegate
-		// class
-		// if (cn.toLowerCase().contains(schemaName)) {
-		// the schema is always lowercase, so adjust it for
-		// Camelcase
-		String ccsn = "dao." + schemaName;
-
+		final String ccsn = "dao." + StringTool.getUpperCaseFirstLetter(Configuration.schemaName);
+		if (!cn.contains(ccsn)) {
+			throw new RuntimeException("Could Not Strip DAO Package Name from the MyBatis DAO delegate field name");
+		}
 		cn = cn.replace(ccsn, "");
 
-		// replace package with actual delegate model package
-		cn = cn.replace(MODEL_DAO_PACKAGE, MODEL_PACKAGE);
-
 		if (cn.contains("..")) {
-			throw new IllegalStateException(
-					"Could not get getSuperClassName due to package collision: "
-							+ cn + ". Change value of schemaName: "
-							+ schemaName);
+			throw new IllegalStateException("Could not get getSuperClassName due to package collision: " + cn
+					+ ". Change value of schemaName: " + Configuration.schemaName);
 		}
-		// }
 
-		logger.info("SuperClass Name MYBATIS member: " + cn);
+		MyBatisIgnitePluginAdapter.logger.info("SuperClass Name MYBATIS member: " + cn);
 		return cn;
 	}
 
 	@Override
-	public boolean modelGetterMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, Plugin.ModelClassType modelClassType) {
-		String secn = introspectedColumn.getRemarks();
+	public boolean modelGetterMethodGenerated(Method method, TopLevelClass topLevelClass,
+			IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable,
+			Plugin.ModelClassType modelClassType) {
 
-		List<String> ln = method.getBodyLines();
+		final List<String> ln = method.getBodyLines();
 		for (String l : ln) {
 			method.getBodyLines().remove(l);
-			String cnm = introspectedColumn.getJdbcTypeName().toUpperCase();
-			l = l.replace("return ", "return delegate.");
-			if (cnm.contains("DATE") || cnm.contains("TIMESTAMP")) {
-				l = l.replace(";", ".toInstant().getNano() / 1000000);");
-				l = l.replace("return delegate.", "return new Date(delegate.");
-			} else if (secn.contains(MYBATIS_COL_ENUM_FLAG)) {
-				l = l.replace(";", ".getValue();");
+			if (useDelegate) {
+				l = l.replace("return ", "return delegate.");
 			}
 			method.addBodyLine(l);
 		}
-		return super.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, modelClassType);
+		return super.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable,
+				modelClassType);
 	}
 
 	@Override
-	public boolean modelSetterMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, Plugin.ModelClassType modelClassType) {
+	public boolean modelSetterMethodGenerated(Method method, TopLevelClass topLevelClass,
+			IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable,
+			Plugin.ModelClassType modelClassType) {
 
-		List<String> ln = method.getBodyLines();
+		final List<String> ln = method.getBodyLines();
 
-		String cnm = introspectedColumn.getJdbcTypeName().toUpperCase();
-		String secn = introspectedColumn.getRemarks();
-
-		List<String> it = ln.subList(0, ln.size());
+		final List<String> it = ln.subList(0, ln.size());
 		for (String l : it) {
 			method.getBodyLines().remove(l);
-			l = l.replace("this.", "delegate.");
-			String membername = l.substring(0, l.indexOf("="));
-			String varname = membername.substring(membername.indexOf(".") + 1);
-			if (cnm.contains("DATE") || cnm.contains("TIMESTAMP")) {
-
-				method.addBodyLine("Instant instant = " + varname
-						+ ".toInstant();");
-				method.addBodyLine("String TIMEZONE_OFFSET = \""
-						+ TIMEZONE_OFFSET + "\";");
-				method.addBodyLine("ZoneOffset offset = ZoneOffset.of(TIMEZONE_OFFSET);");
-
-				String bl = "OffsetDateTime odt = OffsetDateTime.ofInstant(instant, offset);";
-				method.addBodyLine(bl);
-				String stx = membername + " = odt;";
-				method.addBodyLine(stx);
-
-			} else if (secn.contains(MYBATIS_COL_ENUM_FLAG)) {
-				method.addBodyLine(getEnumHandling(varname, introspectedTable
-						.getAliasedFullyQualifiedTableNameAtRuntime()));
-			} else {
-				method.addBodyLine(l);
+			if (useDelegate) {
+				l = l.replace("this.", "delegate.");
 			}
-
+			method.addBodyLine(l);
 		}
-
-		return super.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable, modelClassType);
+		return super.modelGetterMethodGenerated(method, topLevelClass, introspectedColumn, introspectedTable,
+				modelClassType);
 	}
 
 	@Override
-	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
+	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
+			IntrospectedTable introspectedTable, ModelClassType modelClassType) {
 
-		logger.info("MyBatisIgnitePluginAdapter Generating: " + field + " name:"
-				+ field.getName() + LINE_FEED + " class:"
-				+ field.getType().getShortName());
+		MyBatisIgnitePluginAdapter.logger.info("MyBatisIgnitePluginAdapter Generating: " + field + " name:"
+				+ field.getName() + Configuration.LINE_FEED + " class:" + field.getType().getShortName());
 
 		field.setVisibility(JavaVisibility.PROTECTED);
-
-		/** TODO: add special annotations to field
-		if (ANNOTATAION_CLASS != null) {
-			topLevelClass.addImportedType(new FullyQualifiedJavaType(
-					ANNOTATAION_CLASS));
-		}
-		
-		if (field.getType().getFullyQualifiedName()
-				.equals("java.lang.String")) {
-			field.addAnnotation("@" + ANNOTATAION_CLASS);
-		} else if (field.getType().equals("java.util.Date")) {
-			logger.warn("MyBatisIgnitePluginAdapter SecureField TODO: handle dates: "
-					+ field);
-		}*/
 
 		return false;
 	}
 
-	private String getEnumHandling(String enumName, String tableName) {
-		tableName = tableName.substring(TABLE_NAME_PREFIX.length());
-		tableName = DBGen.camelize(tableName);
-		tableName = StringTool.getUpperCaseFirstLetter(tableName.trim());
-
-		enumName = enumName.trim();
-
-		String setEnumValMethod = StringTool.getSetMethodNameFromVar(enumName);
-
-		String fullEnumName = tableName + "."
-				+ StringTool.getUpperCaseFirstLetter(enumName.trim());;
-		String enumcode = "delegate." + setEnumValMethod.trim() + "("
-				+ fullEnumName + "Enum.fromValue(" + enumName
-				+ " == null ? null : " + enumName + ".trim()));";
-		return enumcode;
-	}
-
 	@Override
 	public boolean validate(List<String> warnings) {
-		logger.info("MyBatis Warnings: ");
-		for (String w : warnings) {
-			logger.info(w);
+		MyBatisIgnitePluginAdapter.logger.info("MyBatis Warnings: ");
+		for (final String w : warnings) {
+			MyBatisIgnitePluginAdapter.logger.info(w);
 		}
-		logger.info("End MyBatis Warnings");
+		MyBatisIgnitePluginAdapter.logger.info("End MyBatis Warnings");
 		return true;
 	}
 }

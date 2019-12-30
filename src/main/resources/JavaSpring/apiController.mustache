@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 {{/jdk8}}
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.stereotype.Controller;
 {{^jdk8}}
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,6 +71,7 @@ public class {{classname}}Controller implements {{classname}} {
 
 {{#isDelegate}}
     
+    @JsonIgnore
     @org.springframework.beans.factory.annotation.Autowired
     private {{classname}}Delegate delegate = null;
 
@@ -86,6 +88,7 @@ public class {{classname}}Controller implements {{classname}} {
     }
     {{#jdk8}}
 
+    @JsonIgnore
     @Override
     public {{classname}}Delegate getDelegate() {
         return delegate;

@@ -165,12 +165,9 @@ public class StackGenSpringCodegen extends AbstractJavaCodegen implements BeanVa
 
 		super.processOpts();
 
-		// clear model and api doc template as this codegen
-		// does not support auto-generated markdown doc at the
-		// moment
 		// TODO: add doc templates
-		modelDocTemplateFiles.remove("model_doc.mustache");
-		apiDocTemplateFiles.remove("api_doc.mustache");
+		// modelDocTemplateFiles.remove("model_doc.mustache");
+		// apiDocTemplateFiles.remove("api_doc.mustache");
 
 		if (additionalProperties.containsKey(TITLE)) {
 			this.setTitle((String) additionalProperties.get(TITLE));
@@ -335,6 +332,9 @@ public class StackGenSpringCodegen extends AbstractJavaCodegen implements BeanVa
 			additionalProperties.put("jdk8-no-delegate", true);
 		}
 
+		// TODO: add tests
+		// modelTestTemplateFiles.put("modelTest.mustache", "Test.java");
+		
 		if (this.delegatePattern && !this.delegateMethod) {
 			additionalProperties.put("isDelegate", "true");
 			apiTemplateFiles.put("apiDelegate.mustache", "Delegate.java");

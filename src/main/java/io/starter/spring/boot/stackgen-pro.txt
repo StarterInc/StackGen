@@ -15,6 +15,5 @@
 ::
 ::  Powered By:
 ::  Spring Boot :: ${spring-boot.formatted-version}
-::  Flowable :: (v${project.version})    
-
+::
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

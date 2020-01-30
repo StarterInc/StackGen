@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-                                    
+                                
     
     
     
     
     
     
-    
-    <wb-module deploy-name="StarterIgnite-1.2.1-SNAPSHOT">
-                                                                        
-        
+    <wb-module deploy-name="StackGen">
+                                                                
         
         
         
@@ -17,63 +15,38 @@
         
         
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
-                                                                        
-        
-        
-        
-        
-        
-        
-        
-        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
-                                                                        
-        
-        
-        
-        
-        
-        
-        
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-                                                                        
-        
-        
-        
-        
-        
-        
-        
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java/gen"/>
                                                 
         
         
         
         
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/resources"/>
-                        
+        <wb-resource deploy-path="/" source-path="/src/resources/static"/>
+                                
         
+        
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-test-sources/test-annotations"/>
+                
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/annotations"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/gen/src/main/java"/>
-                                                                        
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
+                                                                
         
         
         
         
         
         
-        
-        <property name="context-root" value="StarterIgnite"/>
-                                                                        
-        
+        <property name="context-root" value="StackGen"/>
+                                                                
         
         
         
         
         
         
-        <property name="java-output-path" value="/StarterIgnite/target/classes"/>
-                                                                    
-    
+        <property name="java-output-path" value="/StackGen/target/classes"/>
+                                                            
     
     
     
@@ -81,8 +54,7 @@
     
     
     </wb-module>
-                                
-
+                            
 
 
 

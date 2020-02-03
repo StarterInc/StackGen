@@ -1,8 +1,9 @@
-<div align="center">
-    <img src="https://docs.stackgen.io/logos/StackGenLogo-2019.png" alt="Logo"/>
-</div>
-![StackGen CI](https://github.com/StarterInc/StackGen/workflows/StackGen%20CI/badge.svg?branch=master)
+
+![StackGen Logo](https://docs.stackgen.io/logos/StackGenLogo-2019.png)
+
 # Starter StackGen Code Generator
+
+![StackGen CI](https://github.com/StarterInc/StackGen/workflows/StackGen%20CI/badge.svg?branch=master)
 
 ## Generate Apps and Stacks from OpenAPI/Swagger spec files -- CodeGen for Developers
 

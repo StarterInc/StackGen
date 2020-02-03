@@ -240,7 +240,7 @@ public class JavaGen extends Gen implements Generator {
 	 */
 	public MethodSpec createSetDelegate(String className) {
 
-		final String bname = JavaGen.getBaseJavaName(className);
+		JavaGen.getBaseJavaName(className);
 
 		final String methodText = setDelegateText(className); // bname + "Delegate = (" + className + ")bx";
 		try {
@@ -755,6 +755,11 @@ public class JavaGen extends Gen implements Generator {
 
 		final List<String> optionList = new ArrayList<>();
 		optionList.add("-classpath");
+
+		System.getProperties();
+
+		logger.info("COMPILING GENERATD FILES USING CP: " + System.getProperty("java.class.path"));
+
 		optionList.add(System.getProperty("java.class.path") + System.getProperty("path.separator")
 				+ Configuration.JAVA_GEN_SRC_FOLDER + System.getProperty("path.separator")
 				+ Configuration.SOURCE_MAIN_JAVA);
@@ -798,7 +803,7 @@ public class JavaGen extends Gen implements Generator {
 				} catch (final NullPointerException x) {
 					dsrc = diagnostic.toString(); // ignore
 				}
-				if ((dsrc != null)
+				if (dsrc != null
 						&& (dsrc.contains("Swagger2SpringBoot.java") || dsrc.contains("CAL10NAnnotationProcessor"))) {
 					// EXPECTED!
 				} else {
@@ -834,7 +839,7 @@ public class JavaGen extends Gen implements Generator {
 			final Class<?> loadedClass = classLoader.loadClass(loadClassName);
 			// Create a new instance...
 			if (!loadedClass.isInterface()) {
-				final Object obj = loadedClass.newInstance();
+				loadedClass.newInstance();
 				JavaGen.logger.trace("Successfully compiled class: " + loadClassName); // obj.toString());
 			} else {
 				JavaGen.logger.info("Successfully compiled interface: " + loadClassName);

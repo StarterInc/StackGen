@@ -15,7 +15,14 @@ public class JavaGenTest {
 
 		final Object o = Gen.getApiModelPropertyAnnotation(uc.getField("userName"));
 		Assert.assertEquals(o.toString(),
-				"@io.swagger.annotations.ApiModelProperty(dataField=, secureField=false, access=, notes=, hidden=false, maxValue=1.7976931348623157E308, dataType=, minLength=0, readOnly=false, accessMode=AUTO, required=false, example=Sparky, reference=, extensions=[@io.swagger.annotations.Extension(name=, properties=[@io.swagger.annotations.ExtensionProperty(name=, value=)])], minValue=4.9E-324, allowableValues=, allowEmptyValue=false, name=, position=0, value=, maxLength=256)");
+				"@io.swagger.annotations.ApiModelProperty(dataField=\"\", "
+						+ "secureField=false, access=\"\", notes=\"\", hidden=false, "
+						+ "maxValue=1.7976931348623157E308, minLength=0, dataType=\"\","
+						+ " readOnly=false, accessMode=AUTO, required=false, example=\"Sparky\", "
+						+ "reference=\"\", extensions={@io.swagger.annotations.Extension(name=\"\", "
+						+ "properties={@io.swagger.annotations.ExtensionProperty(name=\"\", value=\"\")})}, "
+						+ "minValue=4.9E-324, allowableValues=\"\", allowEmptyValue=false, name=\"\", position=0, "
+						+ "value=\"\", maxLength=256)");
 	}
 
 	@Test

@@ -13,62 +13,56 @@ import org.slf4j.LoggerFactory;
 /**
  * This differs from the ConnectionFactory in that it is a MyBatis session
  * factory, for use when we are connecting via mybatis.
- * 
+ *
  * Is there a reason to not connect with mybatis ever?
- * 
+ *
  * @author nick
- * 
+ *
  */
 public class MyBatisConnectionFactory {
-	private static SqlSessionFactory	sqlSessionFactory;
-	private static SqlSessionFactory	wp_SqlSessionFactory;
+	private static SqlSessionFactory sqlSessionFactory;
+	private static SqlSessionFactory wp_SqlSessionFactory;
 
-	protected static final Logger		logger				= LoggerFactory
-			.getLogger(MyBatisConnectionFactory.class);
-	private static final String			MYBATIS_CONFIG_FILE	= "MyBatisConfig.xml";
+	protected static final Logger logger = LoggerFactory.getLogger(MyBatisConnectionFactory.class);
+	private static final String MYBATIS_CONFIG_FILE = "MyBatisConfig.xml";
 
-	public static String				DATABASE_CHOICE		= "production";
+	public static String DATABASE_CHOICE = (System.getProperty("profile") != null ? System.getProperty("profile")
+			: "production");
 
 	static {
-		if (System.getProperty("PARAM1") != null && System.getProperty("PARAM1")
-				.equalsIgnoreCase("production")) {
-			// use default production DB
-		} else { // backup/staging
-			DATABASE_CHOICE = "staging";
-		}
-
 		try {
-			logger.info("MyBatisConnectionFactory loading: "
-					+ DATABASE_CHOICE);
-
-			String resource = MYBATIS_CONFIG_FILE;
-			InputStream inputStream = Resources.getResourceAsStream(resource);
-			if (sqlSessionFactory == null) {
-				sqlSessionFactory = new SqlSessionFactoryBuilder()
-						.build(inputStream, DATABASE_CHOICE, System
-								.getProperties());
-			}
-			inputStream.close();
-			inputStream = Resources.getResourceAsStream(resource);
-			if (wp_SqlSessionFactory == null) {
-				wp_SqlSessionFactory = new SqlSessionFactoryBuilder()
-						.build(inputStream, "wordpress", System
-								.getProperties());
-			}
-			inputStream.close();
-
-		} catch (FileNotFoundException fileNotFoundException) {
+			MyBatisConnectionFactory.initSqlSessionFactory();
+		} catch (final FileNotFoundException fileNotFoundException) {
 			fileNotFoundException.printStackTrace();
-		} catch (IOException iOException) {
+		} catch (final IOException iOException) {
 			iOException.printStackTrace();
 		}
 	}
 
+	private static void initSqlSessionFactory() throws IOException {
+		MyBatisConnectionFactory.logger
+				.info("MyBatisConnectionFactory loading: " + MyBatisConnectionFactory.DATABASE_CHOICE);
+
+		final String resource = MyBatisConnectionFactory.MYBATIS_CONFIG_FILE;
+		InputStream inputStream = Resources.getResourceAsStream(resource);
+		if (MyBatisConnectionFactory.sqlSessionFactory == null) {
+			MyBatisConnectionFactory.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream,
+					MyBatisConnectionFactory.DATABASE_CHOICE, System.getProperties());
+		}
+		inputStream.close();
+		inputStream = Resources.getResourceAsStream(resource);
+		if (MyBatisConnectionFactory.wp_SqlSessionFactory == null) {
+			MyBatisConnectionFactory.wp_SqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream,
+					"wordpress", System.getProperties());
+		}
+		inputStream.close();
+	}
+
 	public static SqlSessionFactory getSqlSessionFactory() {
-		return sqlSessionFactory;
+		return MyBatisConnectionFactory.sqlSessionFactory;
 	}
 
 	public static SqlSessionFactory getWpSqlSessionFactory() {
-		return wp_SqlSessionFactory;
+		return MyBatisConnectionFactory.wp_SqlSessionFactory;
 	}
 }

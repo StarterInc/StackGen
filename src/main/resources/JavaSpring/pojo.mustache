@@ -167,7 +167,7 @@ public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}} implement
 {{#vendorExtensions.extraAnnotation}}
   {{{vendorExtensions.extraAnnotation}}}
 {{/vendorExtensions.extraAnnotation}}
-  public {{{datatypeWithEnum}}} {{#isBoolean}}is{{/isBoolean}}{{getter}}() {
+  public {{{datatypeWithEnum}}} {{#isBoolean}}get{{/isBoolean}}{{getter}}() {
     return {{name}};
   }
   {{^isReadOnly}}
@@ -239,7 +239,7 @@ public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}} implement
   */
   @Override
   public DataModelObject getDelegate() {
-    return this; // no delegate here
+    return null; // no delegate here
   }
   
   /**

@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.regex.Pattern;
 
 import io.starter.ignite.generator.Configuration;
+import org.springframework.util.ReflectionUtils;
 
 /* ##LICENSE## */
 
@@ -30,45 +31,55 @@ public class SecureFieldAspect implements Configuration {
 
 	@Bean
 	private PasswordEncoder encoder(int strength) {
-		if(strength < 0 || strength > 31) {
+		if ((strength < 0) || (strength > 31)) {
 			strength = 15;
 		}
 		return new BCryptPasswordEncoder(strength);
 	}
-	
-	@Around(FIELD_GET)
+
+	@Around(SecureFieldAspect.FIELD_GET)
 	public Object getSecureField(ProceedingJoinPoint pjp) throws Throwable {
 
-		if (DISABLE_SECURE_FIELD_ASPECT) {
-			logger.trace("SKIPPING SECURE FIELD GETTER");
+		if (Configuration.DISABLE_SECURE_FIELD_ASPECT) {
+			SecureFieldAspect.logger.trace("SKIPPING SECURE FIELD GETTER");
 			return pjp.proceed();
 		} else {
-			logger.trace("INVOKING SECURE FIELD GETTER");
+			SecureFieldAspect.logger.trace("INVOKING SECURE FIELD GETTER");
 		}
 
 		if (rejectIbatisCall()) {
 			return pjp.proceed(pjp.getArgs());
 		}
 
-		logger.trace("Get Secure Field for: " + pjp.toLongString());
+		SecureFieldAspect.logger.trace("Get Secure Field for: " + pjp.toLongString());
 		final Object targetObject = pjp.getTarget();
 		final String secureFieldName = pjp.getSignature().getName();
 
-		final Field secureField = targetObject.getClass().getDeclaredField(secureFieldName);
-		secureField.setAccessible(true);
+		final Field secureField = ReflectionUtils.findField(targetObject.getClass(), secureFieldName);
+		final boolean isAccessible = secureField.isAccessible();
+		if (!isAccessible) {
+			secureField.setAccessible(true);
+		}
 		final Object encryptedObject = secureField.get(targetObject);
-		secureField.setAccessible(false);
+		if (!isAccessible) {
+			secureField.setAccessible(false);
+		}
+
+		// do not decrypt nulls
+		if (encryptedObject == null) {
+			return null;
+		}
 
 		final SecureField sf = secureField.getAnnotation(SecureField.class);
 
 		if (sf == null) {
-			logger.warn("Null SecureField Annotation on Field: " + secureField);
+			SecureFieldAspect.logger.warn("Null SecureField Annotation on Field: " + secureField);
 			return pjp.proceed(pjp.getArgs());
 		}
 		if (sf.enabled()) {
-			logger.trace("FOUND SECUREFIELD ANNOTATION: " + sf.toString());
+			SecureFieldAspect.logger.trace("FOUND SECUREFIELD ANNOTATION: " + sf.toString());
 		} else {
-			logger.trace("FOUND DISABLED SECUREFIELD ANNOTATION: " + sf.toString());
+			SecureFieldAspect.logger.trace("FOUND DISABLED SECUREFIELD ANNOTATION: " + sf.toString());
 		}
 
 		// password handling
@@ -80,9 +91,14 @@ public class SecureFieldAspect implements Configuration {
 		}
 
 		if (secureField.getType().equals(String.class)) {
-			return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
+			if (encryptedObject.toString().endsWith("=")) {
+				return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
+			} else {
+				return encryptedObject;
+			}
+
 		} else {
-			logger.warn("SecureFieldAspect only currently supports decrypting Text values: " + pjp);
+			SecureFieldAspect.logger.warn("SecureFieldAspect only currently supports decrypting Text values: " + pjp);
 			return pjp.proceed();
 		}
 	}
@@ -91,24 +107,24 @@ public class SecureFieldAspect implements Configuration {
 	 * @throws Throwable
 	 */
 	private boolean rejectIbatisCall() throws Throwable {
-		 StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+		final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
 		// if iBatis is calling, do not decrypt
 		// TODO: support other persistence implementations
-		for ( StackTraceElement o : ste ) {
+		for (final StackTraceElement o : ste) {
 			final String cnm = o.getClassName();
-			if (cnm.toLowerCase().contains("ibatis") && SKIP_IBATIS_CALLER) {
-				logger.warn("REJECT IBATIS CALL" + cnm);
+			if (cnm.toLowerCase().contains("ibatis") && SecureFieldAspect.SKIP_IBATIS_CALLER) {
+				SecureFieldAspect.logger.trace("REJECT IBATIS CALL" + cnm);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	@Around(FIELD_SET)
+	@Around(SecureFieldAspect.FIELD_SET)
 	public Object setSecureField(ProceedingJoinPoint pjp) throws Throwable {
 
-		if (DISABLE_SECURE_FIELD_ASPECT) {
-			logger.trace("SKIPPING SECURE FIELD SETTER");
+		if (Configuration.DISABLE_SECURE_FIELD_ASPECT) {
+			SecureFieldAspect.logger.trace("SKIPPING SECURE FIELD SETTER");
 			return pjp.proceed();
 		}
 
@@ -117,36 +133,39 @@ public class SecureFieldAspect implements Configuration {
 		}
 		final Object targetObject = pjp.getTarget();
 		final String secureFieldName = pjp.getSignature().getName();
-		final Field secureField = targetObject.getClass().getDeclaredField(secureFieldName);
+		final Field secureField = ReflectionUtils.findField(targetObject.getClass(), secureFieldName);
 		final boolean access = secureField.isAccessible();
 
-		logger.trace("Set Secure Field for: " + pjp.toLongString());
+		SecureFieldAspect.logger.trace("Set Secure Field for: " + pjp.toLongString());
 		final String clearTextValue = String.valueOf(pjp.getArgs()[0]);
 		final SecureField sf = secureField.getAnnotation(SecureField.class);
 
 		if (sf == null) {
-			logger.warn("Null SecureField Annotation on Field being advised by SecureFieldAspect: " + secureField);
+			SecureFieldAspect.logger
+					.error("Null SecureField Annotation on Field being advised by SecureFieldAspect: " + secureField);
 			return pjp.proceed();
 		}
-		
+
 		if (sf.enabled()) {
-			logger.trace("PROCESSING SECUREFIELD ANNOTATION: " + sf.toString());
-		
-			String currentStringValue = (secureField.get(targetObject)!=null? secureField.get(targetObject).toString() : null);
+			SecureFieldAspect.logger.trace("PROCESSING SECUREFIELD ANNOTATION: " + sf.toString());
+			secureField.setAccessible(true);
+			final String currentStringValue = (secureField.get(targetObject) != null
+					? secureField.get(targetObject).toString()
+					: null);
 			String encryptedValue = null;
 			// password handling
 			if (sf.type() == SecureField.Type.HASHED) {
-				if (BCRYPT_PATTERN.matcher(clearTextValue).matches()) {
+				if (SecureFieldAspect.BCRYPT_PATTERN.matcher(clearTextValue).matches()) {
 					// clearTextValue is an encoded bcrypt value -- do not double encrypt.
 					if (!clearTextValue.equals(currentStringValue)) {
-						logger.error("WRITE FAILURE: value for: " + secureField.getName() + " not changed on: "
-								+ targetObject.getClass().getName() + ". Are you setting a BCrypt value on a "
-								+ SecureField.Type.SYMMETRIC
+						SecureFieldAspect.logger.error("WRITE FAILURE: value for: " + secureField.getName()
+								+ " not changed on: " + targetObject.getClass().getName()
+								+ ". Are you setting a BCrypt value on a " + SecureField.Type.SYMMETRIC
 								+ " SecureField. Cannot overwrite BCrypt value with probably BCrypt value.");
 					}
 				} else {
 					// handle one-way secure hash encryption
-					int strength = sf.strength();
+					final int strength = sf.strength();
 					encryptedValue = encoder(strength).encode(clearTextValue);
 				}
 			} else {
@@ -159,18 +178,17 @@ public class SecureFieldAspect implements Configuration {
 				secureField.set(targetObject, encryptedValue);
 				secureField.setAccessible(access);
 			} else {
-				logger.warn("SecureFieldAspect only currently supports encrypting Text values: " + pjp);
+				secureField.setAccessible(access);
+				SecureFieldAspect.logger
+						.warn("SecureFieldAspect only currently supports encrypting Text values: " + pjp);
 				return pjp.proceed();
 			}
-		
-		
+
 		} else {
-			logger.warn("FOUND DISABLED SECUREFIELD ANNOTATION: " + sf.toString());
+			SecureFieldAspect.logger.warn("FOUND DISABLED SECUREFIELD ANNOTATION: " + sf.toString());
 		}
-		
-		
+
 		return null;
 	}
-
 
 }

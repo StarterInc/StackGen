@@ -14,80 +14,67 @@ import io.starter.ignite.security.securefield.SecureField;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- User
+ * User
  */
 public class User implements io.starter.ignite.model.DataModelObject {
 
 	@JsonProperty("id")
-	public Long				id				= null;
+	public Long id = null;
 
 	// add the Starter Ignite Annotations
-	@io.starter.ignite.security.securefield.SecureField(
-			enabled = true,
-			strength = 128)
+	@io.starter.ignite.security.securefield.SecureField(enabled = true)
 	@JsonProperty("fingerprint")
-	public String			fingerprint		= null;
+	public String fingerprint = null;
 
 	// add the Starter Ignite Annotations
-	@io.starter.ignite.security.securefield.SecureField(
-			enabled = true,
-			strength = 256)
+	@io.starter.ignite.security.securefield.SecureField(enabled = true)
 	@JsonProperty("firstName")
-	public String			firstName		= null;
+	public String firstName = null;
 
 	// add the Starter Ignite Annotations
-	@io.starter.ignite.security.securefield.SecureField(
-			enabled = true,
-			strength = 128)
+	@io.starter.ignite.security.securefield.SecureField(enabled = true)
 	@JsonProperty("lastName")
-	public String			lastName		= null;
+	public String lastName = null;
 
 	// add the Starter Ignite Annotations
-	@io.starter.ignite.security.securefield.SecureField(
-			enabled = true,
-			strength = 256)
+	@io.starter.ignite.security.securefield.SecureField(enabled = true)
 	@JsonProperty("governmentId")
-	public String			governmentId	= null;
+	public String governmentId = null;
 
 	@JsonProperty("userName")
-	public String			userName		= null;
+	public String userName = null;
 
 	// EXAMPLE HASHED IMPLEMENTATION
-	@io.starter.ignite.security.securefield.SecureField(
-			enabled = true,
-			type = SecureField.Type.HASHED,
-			strength = 10)
+	@io.starter.ignite.security.securefield.SecureField(enabled = true, type = SecureField.Type.HASHED, strength = 10)
 	@JsonProperty("password")
-	public String			password		= null;
+	public String password = null;
 
 	@JsonProperty("homePage")
-	public String			homePage		= null;
+	public String homePage = null;
 
 	// add the Starter Ignite Annotations
-	@io.starter.ignite.security.securefield.SecureField(
-			enabled = true,
-			strength = 256)
+	@io.starter.ignite.security.securefield.SecureField(enabled = true, strength = 256)
 	@JsonProperty("email")
-	public String			email			= null;
+	public String email = null;
 
 	@JsonProperty("social")
-	public String			social			= null;
+	public String social = null;
 
 	@JsonProperty("keyVersion")
-	public Long				keyVersion		= null;
+	public Long keyVersion = null;
 
 	@JsonProperty("keySpec")
-	public String			keySpec			= "dev";
+	public String keySpec = "dev";
 
 	@io.starter.ignite.model.DataField()
 	@JsonProperty("ownerId")
-	public Long				ownerId			= null;
+	public Long ownerId = null;
 
 	@JsonProperty("createdDate")
-	public OffsetDateTime	createdDate		= null;
+	public OffsetDateTime createdDate = null;
 
 	@JsonProperty("modifiedDate")
-	public OffsetDateTime	modifiedDate	= null;
+	public OffsetDateTime modifiedDate = null;
 
 	public User id(Long id) {
 		this.id = id;
@@ -95,9 +82,10 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* Primary Key for Object (generated)
-	* @return id
-	**/
+	 * Primary Key for Object (generated)
+	 *
+	 * @return id
+	 **/
 
 	@ApiModelProperty(value = "Primary Key for Object (generated)")
 	public Long getId() {
@@ -114,9 +102,10 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* Get fingerprint
-	* @return fingerprint
-	**/
+	 * Get fingerprint
+	 *
+	 * @return fingerprint
+	 **/
 
 	@ApiModelProperty(example = "DK$DFSJaraDD", value = "")
 	public String getFingerprint() {
@@ -133,13 +122,12 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* first name of person (encrypted)
-	* @return firstName
-	**/
+	 * first name of person (encrypted)
+	 *
+	 * @return firstName
+	 **/
 
-	@ApiModelProperty(
-			example = "Karena",
-			value = "first name of person (encrypted)")
+	@ApiModelProperty(example = "Karena", value = "first name of person (encrypted)")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -154,13 +142,12 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* last name of person (encrypted)
-	* @return lastName
-	**/
+	 * last name of person (encrypted)
+	 *
+	 * @return lastName
+	 **/
 
-	@ApiModelProperty(
-			example = "Jones",
-			value = "last name of person (encrypted)")
+	@ApiModelProperty(example = "Jones", value = "last name of person (encrypted)")
 	public String getLastName() {
 		return lastName;
 	}
@@ -175,16 +162,13 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* a 10 digit government ID (encrypted)
-	* @return governmentId
-	**/
+	 * a 10 digit government ID (encrypted)
+	 *
+	 * @return governmentId
+	 **/
 
 	@Size(min = 10, max = 10)
-	@ApiModelProperty(
-			example = "1112233334",
-			minLength = 10,
-			maxLength = 10,
-			value = "a 10 digit government ID (encrypted)")
+	@ApiModelProperty(example = "1112233334", minLength = 10, maxLength = 10, value = "a 10 digit government ID (encrypted)")
 	public String getGovernmentId() {
 		return governmentId;
 	}
@@ -199,9 +183,10 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* Get userName
-	* @return userName
-	**/
+	 * Get userName
+	 *
+	 * @return userName
+	 **/
 
 	@ApiModelProperty(example = "Sparky", value = "")
 	public String getUserName() {
@@ -218,27 +203,20 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* Get password
-	* @return password
-	**/
+	 * Get password
+	 *
+	 * @return password
+	 **/
 	@NotNull
 
 	@Size(min = 10)
-	@ApiModelProperty(
-			example = "HardToGuess1980",
-			minLength = 10,
-			required = true,
-			value = "")
+	@ApiModelProperty(example = "HardToGuess1980", minLength = 10, required = true, value = "")
 	public String getPassword() {
 		return password;
 	}
-	
+
 	@Size(min = 10)
-	@ApiModelProperty(
-			example = "HardToGuess1980",
-			minLength = 10,
-			required = true,
-			value = "")
+	@ApiModelProperty(example = "HardToGuess1980", minLength = 10, required = true, value = "")
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -249,9 +227,10 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* Get homePage
-	* @return homePage
-	**/
+	 * Get homePage
+	 *
+	 * @return homePage
+	 **/
 
 	@ApiModelProperty(example = "https://www.acme-corp.com", value = "")
 	public String getHomePage() {
@@ -268,15 +247,13 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* the main email address for the user  (encrypted)
-	* @return email
-	**/
+	 * the main email address for the user (encrypted)
+	 *
+	 * @return email
+	 **/
 	@NotNull
 
-	@ApiModelProperty(
-			example = "wiley.coyote@acme-corp.com",
-			required = true,
-			value = "the main email address for the user  (encrypted)")
+	@ApiModelProperty(example = "wiley.coyote@acme-corp.com", required = true, value = "the main email address for the user  (encrypted)")
 	public String getEmail() {
 		return email;
 	}
@@ -291,9 +268,10 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* Get social
-	* @return social
-	**/
+	 * Get social
+	 *
+	 * @return social
+	 **/
 
 	@ApiModelProperty(example = "https://twitter.com/StackGen", value = "")
 	public String getSocial() {
@@ -310,12 +288,12 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* The version of the SecureField key used to crypt this row (generated)
-	* @return keyVersion
-	**/
+	 * The version of the SecureField key used to crypt this row (generated)
+	 *
+	 * @return keyVersion
+	 **/
 
-	@ApiModelProperty(
-			value = "The version of the SecureField key used to crypt this row (generated)")
+	@ApiModelProperty(value = "The version of the SecureField key used to crypt this row (generated)")
 	public Long getKeyVersion() {
 		return keyVersion;
 	}
@@ -330,13 +308,12 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* The spec of the SecureField key used to crypt this row (generated)
-	* @return keySpec
-	**/
+	 * The spec of the SecureField key used to crypt this row (generated)
+	 *
+	 * @return keySpec
+	 **/
 
-	@ApiModelProperty(
-			example = "{keyOwner:111, keySource:'session | system'}",
-			value = "The spec of the SecureField key used to crypt this row (generated)")
+	@ApiModelProperty(example = "{keyOwner:111, keySource:'session | system'}", value = "The spec of the SecureField key used to crypt this row (generated)")
 	public String getKeySpec() {
 		return keySpec;
 	}
@@ -351,12 +328,12 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* The ID of the user that owns this data (generated)
-	* @return ownerId
-	**/
+	 * The ID of the user that owns this data (generated)
+	 *
+	 * @return ownerId
+	 **/
 
-	@ApiModelProperty(
-			value = "The ID of the user that owns this data (generated)")
+	@ApiModelProperty(value = "The ID of the user that owns this data (generated)")
 	public Long getOwnerId() {
 		return ownerId;
 	}
@@ -371,14 +348,14 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* The created date for this record/object (generated)
-	* @return createdDate
-	**/
+	 * The created date for this record/object (generated)
+	 *
+	 * @return createdDate
+	 **/
 
 	@Valid
 
-	@ApiModelProperty(
-			value = "The created date for this record/object (generated)")
+	@ApiModelProperty(value = "The created date for this record/object (generated)")
 	public OffsetDateTime getCreatedDate() {
 		return createdDate;
 	}
@@ -393,14 +370,14 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	}
 
 	/**
-	* The last-modified date for this record/object (generated)
-	* @return modifiedDate
-	**/
+	 * The last-modified date for this record/object (generated)
+	 *
+	 * @return modifiedDate
+	 **/
 
 	@Valid
 
-	@ApiModelProperty(
-			value = "The last-modified date for this record/object (generated)")
+	@ApiModelProperty(value = "The last-modified date for this record/object (generated)")
 	public OffsetDateTime getModifiedDate() {
 		return modifiedDate;
 	}
@@ -414,72 +391,53 @@ public class User implements io.starter.ignite.model.DataModelObject {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if ((o == null) || (getClass() != o.getClass())) {
 			return false;
 		}
-		User user = (User) o;
-		return Objects.equals(this.id, user.id)
-				&& Objects.equals(this.fingerprint, user.fingerprint)
-				&& Objects.equals(this.firstName, user.firstName)
-				&& Objects.equals(this.lastName, user.lastName)
-				&& Objects.equals(this.governmentId, user.governmentId)
-				&& Objects.equals(this.userName, user.userName)
-				&& Objects.equals(this.password, user.password)
-				&& Objects.equals(this.homePage, user.homePage)
-				&& Objects.equals(this.email, user.email)
-				&& Objects.equals(this.social, user.social)
-				&& Objects.equals(this.keyVersion, user.keyVersion)
-				&& Objects.equals(this.keySpec, user.keySpec)
-				&& Objects.equals(this.ownerId, user.ownerId)
-				&& Objects.equals(this.createdDate, user.createdDate)
-				&& Objects.equals(this.modifiedDate, user.modifiedDate);
+		final User user = (User) o;
+		return Objects.equals(id, user.id) && Objects.equals(fingerprint, user.fingerprint)
+				&& Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName)
+				&& Objects.equals(governmentId, user.governmentId) && Objects.equals(userName, user.userName)
+				&& Objects.equals(password, user.password) && Objects.equals(homePage, user.homePage)
+				&& Objects.equals(email, user.email) && Objects.equals(social, user.social)
+				&& Objects.equals(keyVersion, user.keyVersion) && Objects.equals(keySpec, user.keySpec)
+				&& Objects.equals(ownerId, user.ownerId) && Objects.equals(createdDate, user.createdDate)
+				&& Objects.equals(modifiedDate, user.modifiedDate);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects
-				.hash(id, fingerprint, firstName, lastName, governmentId, userName, password, homePage, email, social, keyVersion, keySpec, ownerId, createdDate, modifiedDate);
+		return Objects.hash(id, fingerprint, firstName, lastName, governmentId, userName, password, homePage, email,
+				social, keyVersion, keySpec, ownerId, createdDate, modifiedDate);
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("class User {\n");
 
 		sb.append("    id: ").append(toIndentedString(id)).append("\n");
-		sb.append("    fingerprint: ").append(toIndentedString(fingerprint))
-				.append("\n");
-		sb.append("    firstName: ").append(toIndentedString(firstName))
-				.append("\n");
-		sb.append("    lastName: ").append(toIndentedString(lastName))
-				.append("\n");
-		sb.append("    governmentId: ").append(toIndentedString(governmentId))
-				.append("\n");
-		sb.append("    userName: ").append(toIndentedString(userName))
-				.append("\n");
-		sb.append("    password: ").append(toIndentedString(password))
-				.append("\n");
-		sb.append("    homePage: ").append(toIndentedString(homePage))
-				.append("\n");
+		sb.append("    fingerprint: ").append(toIndentedString(fingerprint)).append("\n");
+		sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
+		sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
+		sb.append("    governmentId: ").append(toIndentedString(governmentId)).append("\n");
+		sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
+		sb.append("    password: ").append(toIndentedString(password)).append("\n");
+		sb.append("    homePage: ").append(toIndentedString(homePage)).append("\n");
 		sb.append("    email: ").append(toIndentedString(email)).append("\n");
 		sb.append("    social: ").append(toIndentedString(social)).append("\n");
-		sb.append("    keyVersion: ").append(toIndentedString(keyVersion))
-				.append("\n");
-		sb.append("    keySpec: ").append(toIndentedString(keySpec))
-				.append("\n");
-		sb.append("    ownerId: ").append(toIndentedString(ownerId))
-				.append("\n");
-		sb.append("    createdDate: ").append(toIndentedString(createdDate))
-				.append("\n");
-		sb.append("    modifiedDate: ").append(toIndentedString(modifiedDate))
-				.append("\n");
+		sb.append("    keyVersion: ").append(toIndentedString(keyVersion)).append("\n");
+		sb.append("    keySpec: ").append(toIndentedString(keySpec)).append("\n");
+		sb.append("    ownerId: ").append(toIndentedString(ownerId)).append("\n");
+		sb.append("    createdDate: ").append(toIndentedString(createdDate)).append("\n");
+		sb.append("    modifiedDate: ").append(toIndentedString(modifiedDate)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
 
 	/**
-	* Starter Ignite JSON method
-	*/
+	 * Starter Ignite JSON method
+	 */
 	@Override
 	public String toJSON() {
 		String ret = new org.json.JSONObject(this).toString();

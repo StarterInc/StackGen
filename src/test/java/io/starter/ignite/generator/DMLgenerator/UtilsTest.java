@@ -42,16 +42,16 @@ public class UtilsTest implements Configuration {
 			String t = Table.convertToDBSyntax(c);
 			String x = Table.convertToJavaSyntax(t);
 			String x1 = Table.convertToDBSyntax(t);
-			assertEquals(t, "ignite$_key_version");
+			assertEquals(t, "stackgen$_key_version");
 			assertEquals(x, "KeyVersion");
-			assertEquals(x1, "ignite$_key_version");
+			assertEquals(x1, "stackgen$_key_version");
 		}
 	}
 
 	@Test
 	public void roundTripDB() {
-		String[] colNames = { "IGNITE$USER_PREF_ACCESS.CTL",
-				"IGNITE$DBPASSWORD", "IGNITE$IBN_DYT_BUNDLE" };
+		String[] colNames = { "STACKGEN$IGNITE$USER_PREF_ACCESS.CTL",
+				"STACKGEN$IGNITE$DBPASSWORD", "STACKGEN$IGNITE$IBN_DYT_BUNDLE" };
 		for (String c : colNames) {
 			String x = Table.convertToJavaSyntax(c);
 			// enforce uppercase here
@@ -87,7 +87,7 @@ public class UtilsTest implements Configuration {
 		String a = Table.convertToDBSyntax(colName3);
 		String a1 = DBGen.decamelize(colName3);
 
-		assertEquals(t, "ignite$rdspassword");
+		assertEquals( "stackgen$rdspassword" , t);
 	}
 
 	@Test
@@ -109,7 +109,7 @@ public class UtilsTest implements Configuration {
 
 	@Test
 	public void colRDS_PASSWORDDeConversion() {
-		String colName1 = "ignite$rds_password";
+		String colName1 = "stackgen$rds_password";
 		String t = Table.convertToJavaSyntax(colName1);
 		String t1 = DBGen.camelize(colName1);
 		assertEquals(t, "rdsPassword"); // lost case

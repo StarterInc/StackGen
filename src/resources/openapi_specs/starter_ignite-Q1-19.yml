@@ -142,7 +142,9 @@ definitions:
         enum:
         - "ready"
         - "closed"
-        - "executed"
+        - "open"
+        - "free"
+        - "foreign"
       verified:
         type: "boolean"
         default: false
@@ -335,11 +337,11 @@ definitions:
         example: twitter handle
       accountSecretKey:
         type: string
-        example: account secret key (ie: Oauth, AWS_SECRET, etc.) -- Field Encrypted with SecureField[tm]
+        example: account secret key Field Encrypted with SecureField
         x-starter-secureField: true
       accountPassword:
         type: string
-        example: account password -- Field Encrypted with SecureField[tm]
+        example: account password -- Field Encrypted with SecureField
         x-starter-secureField: true
       accountType:
         type: string
@@ -594,7 +596,8 @@ definitions:
         type: "string" 
 externalDocs:
   description: "Find out more about Starter Ignite"
-  url: "http://ignite.starter.io/"    swagger: '2.0'
+  url: "http://ignite.starter.io/"    
+  swagger: '2.0'
 info:
   description: This is the Starter Ignite API
   version: 1.0.0
@@ -931,11 +934,11 @@ definitions:
         example: twitter handle
       accountSecretKey:
         type: string
-        example: account secret key (ie: Oauth, AWS_SECRET, etc.) -- Field Encrypted with SecureField[tm]
+        example: account secret key Field Encrypted with SecureField
         x-starter-secureField: true
       accountPassword:
         type: string
-        example: account password -- Field Encrypted with SecureField[tm]
+        example: account password -- Field Encrypted with SecureField
         x-starter-secureField: true
       accountType:
         type: string

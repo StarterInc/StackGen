@@ -43,10 +43,10 @@ public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
 	protected static final Logger	logger				= LoggerFactory
 			.getLogger(SwaggerDocumentationConfig.class);
 
-	@Value("${io.starter.stackgen.CORSOrigins:localhost}")
+	@Value("${CORSOrigins:http://localhost:8100}")
 	public String					CORSOrigins;
 
-	@Value("${io.starter.stackgen.CORSMapping:/**}")
+	@Value("${CORSMapping:/**}")
 	public String					CORSMapping;
 
 	/**
@@ -56,9 +56,9 @@ public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
-		logger.warn("Initializing CORS Config Origins: CORSOrigins "
+		logger.warn("Init CORS Config Origins: CORSOrigins "
 				+ CORSOrigins);
-		logger.warn("Initializing CORS Config Mapping: CORSMapping "
+		logger.warn("Init CORS Config Mapping: CORSMapping "
 				+ CORSMapping);
 		final CorsConfiguration configuration = new CorsConfiguration();
 		configuration.addAllowedHeader("*");

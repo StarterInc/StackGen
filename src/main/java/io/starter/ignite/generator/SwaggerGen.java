@@ -58,7 +58,7 @@ public class SwaggerGen implements Configuration {
 	 * @param configurator the configurator to set
 	 */
 	public void setConfigurator(StackGenCodegenConfigurator configurator) {
-		this.configurator = (StackGenCodegenConfigurator) configurator;
+		this.configurator = configurator;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class SwaggerGen implements Configuration {
 	public SwaggerGen(JSONObject config) {
 		this.configObj = config;
 
-		this.configurator = (StackGenCodegenConfigurator) getConfig(SPEC_LOCATION
+		this.configurator = getConfig(SPEC_LOCATION
 				+ config.getString("schemaFile"));
 		logger.info("Create Swagger Client Apis for:" + config);
 	}
@@ -113,7 +113,7 @@ public class SwaggerGen implements Configuration {
 	 *            filename of spec (file in templateDirectory)
 	 */
 	public SwaggerGen(String spec) {
-		this.configurator = (StackGenCodegenConfigurator) getConfig(spec);
+		this.configurator = getConfig(spec);
 		logger.info("Create Swagger Client Apis for:" + spec);
 	}
 

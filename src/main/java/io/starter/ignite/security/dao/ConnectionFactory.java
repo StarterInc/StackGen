@@ -29,7 +29,7 @@ public class ConnectionFactory {
 
 	// Connect to the data storage
 	private static int sourcePort = 3306;
-	private static String driverName = "com.mysql.cj.jdbc.Driver";
+	private static String driverName = SystemConstants.dbDriver;
 	private static String dbName = SystemConstants.dbName;
 	private static String sourceURL = SystemConstants.dbUrl;
 	private static String userName = SystemConstants.dbUser;
@@ -37,7 +37,7 @@ public class ConnectionFactory {
 	private static String backupURL = SystemConstants.dbUrl;
 	private static String backupPassword = SystemConstants.dbPassword;
 
-	private DataSource dsx = null;
+	private static DataSource dsx = null;
 
 	// Call the private constructor to initialize the
 	// DriverManager
@@ -80,9 +80,11 @@ public class ConnectionFactory {
 	 * @throws SQLException
 	 */
 	public static Connection getConnection() throws SQLException {
-		final Connection cx = DriverManager.getConnection(ConnectionFactory.sourceURL + "/" + ConnectionFactory.dbName + "?"
-				+ "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
-		// if(cx.isValid(timeout))
+		final Connection cx = DriverManager.getConnection(ConnectionFactory.sourceURL + "/" + ConnectionFactory.dbName
+				+ "?" + "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
+		if (!cx.isValid(5000)) {
+			return dsx.getConnection();
+		}
 		return cx;
 
 	}
@@ -156,7 +158,7 @@ public class ConnectionFactory {
 		((org.apache.tomcat.jdbc.pool.DataSource) dsx).setDbProperties(dbProperties);
 		((org.apache.tomcat.jdbc.pool.DataSource) dsx).setUsername(ConnectionFactory.userName);
 
-		p.setDriverClassName("com.mysql.cj.jdbc.Driver");
+		p.setDriverClassName(driverName);
 		p.setUsername(ConnectionFactory.userName);
 
 		p.setJmxEnabled(true);
@@ -165,15 +167,20 @@ public class ConnectionFactory {
 		p.setValidationQuery("SELECT 1");
 		p.setTestOnReturn(false);
 		p.setValidationInterval(30000);
-		p.setTimeBetweenEvictionRunsMillis(30000);
+
+		p.setTimeBetweenEvictionRunsMillis(5000);
+
 		p.setMaxActive(100);
 		p.setInitialSize(10);
+
 		p.setMaxWait(10000);
-		p.setRemoveAbandonedTimeout(6000);
-		p.setMinEvictableIdleTimeMillis(30000);
-		p.setMinIdle(10);
+
 		p.setLogAbandoned(false);
 		p.setRemoveAbandoned(true);
+		p.setRemoveAbandonedTimeout(600);
+
+		p.setMinEvictableIdleTimeMillis(60000);
+		p.setMinIdle(10);
 
 		// crucial to avoid abandoned PooledConnection errors.
 		p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"

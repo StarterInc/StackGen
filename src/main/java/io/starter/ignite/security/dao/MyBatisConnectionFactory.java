@@ -26,8 +26,8 @@ public class MyBatisConnectionFactory {
 	protected static final Logger logger = LoggerFactory.getLogger(MyBatisConnectionFactory.class);
 	private static final String MYBATIS_CONFIG_FILE = "MyBatisConfig.xml";
 
-	public static String DATABASE_CHOICE = (System.getProperty("profile") != null ? System.getProperty("profile")
-			: "production");
+	public static String DATABASE_CHOICE = System.getProperty("profile") != null ? System.getProperty("profile")
+			: "production";
 
 	static {
 		try {

@@ -122,7 +122,7 @@ public class Main implements Configuration, CommandLineRunner {
 		String inputSpecFile = "simple_cms.yml";
 
 		// check to see if the String array is empty
-		if ((args == null) || (args.length == 0) || (args[0] == null)) {
+		if (args == null || args.length == 0 || args[0] == null) {
 			System.out.println("No command line arguments Usage:");
 			System.out.println();
 			System.out.println("java io.starter.ignite.generator.Main <input.yml> -D<option_name>=<option_value> ... ");
@@ -206,33 +206,13 @@ public class Main implements Configuration, CommandLineRunner {
 
 		// generate swqgger api clients
 		if (!Configuration.skipJavaGen) {
-			List<File> gfiles = null;
-			if (Configuration.iteratePluginGen) {
-				gfiles = Main.iteratePluginsGen(inputSpecFile);
-			} else if (Configuration.mergePluginGen) {
-				gfiles = Main.mergePluginsGen(inputSpecFile);
-			} else {
-				final SwaggerGen swaggerGen = new SwaggerGen(Configuration.SPEC_LOCATION + inputSpecFile);
-				gfiles = swaggerGen.generate();
-			}
-			Main.logger
-					.info("####### SWAGGER Generated: " + (gfiles != null ? gfiles.size() : " NO ") + " Source Files");
+
+			generateSwagger(inputSpecFile);
+
+			reCompileAll();
+
 		} else {
 			Main.logger.info("####### SWAGGER Generation: SKIPPED");
-		}
-
-		try {
-			JavaGen.compile(Configuration.PACKAGE_DIR);
-			JavaGen.compile(Configuration.API_PACKAGE_DIR);
-		} catch (final FileNotFoundException x) {
-			Main.logger.error("NO INPUT FILES AT: " + Configuration.PACKAGE_DIR + " Exiting");
-			return;
-		}
-
-		try {
-			JavaGen.compile(Configuration.MODEL_PACKAGE_DIR);
-		} catch (final Throwable e) {
-			// this one fails in regen mode sometimes. ignore
 		}
 
 		if (!Configuration.skipDbGen) {
@@ -250,7 +230,7 @@ public class Main implements Configuration, CommandLineRunner {
 		// compile the DataObject Classes
 		JavaGen.compile(Configuration.MODEL_DAO_PACKAGE_DIR);
 
-		JavaGen.compile(Configuration.PACKAGE_DIR);
+		// JavaGen.compile(Configuration.PACKAGE_DIR);
 
 		// delegates calls to/from api to the mybatis entity
 		JavaGen.generateClassesFromModelFolder();
@@ -268,6 +248,37 @@ public class Main implements Configuration, CommandLineRunner {
 
 		Main.logger.info("Backend Stack Generation Complete.");
 
+	}
+
+	private static void reCompileAll()
+			throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+		try {
+			JavaGen.compile(Configuration.PACKAGE_DIR);
+			JavaGen.compile(Configuration.API_PACKAGE_DIR);
+		} catch (final FileNotFoundException x) {
+			Main.logger.error("NO INPUT FILES AT: " + Configuration.PACKAGE_DIR + " Exiting");
+			return;
+		}
+
+		try {
+			JavaGen.compile(Configuration.MODEL_PACKAGE_DIR);
+		} catch (final Throwable e) {
+			// this one fails in regen mode sometimes. ignore
+		}
+	}
+
+	private static void generateSwagger(String inputSpecFile) {
+		List<File> gfiles = null;
+		if (Configuration.iteratePluginGen) {
+			gfiles = Main.iteratePluginsGen(inputSpecFile);
+		} else if (Configuration.mergePluginGen) {
+			gfiles = Main.mergePluginsGen(inputSpecFile);
+		} else {
+			final SwaggerGen swaggerGen = new SwaggerGen(Configuration.SPEC_LOCATION + inputSpecFile);
+
+			gfiles = swaggerGen.generate();
+		}
+		Main.logger.info("####### SWAGGER Generated: " + (gfiles != null ? gfiles.size() : " NO ") + " Source Files");
 	}
 
 	/**
@@ -354,7 +365,7 @@ public class Main implements Configuration, CommandLineRunner {
 			return false;
 		});
 
-		if ((pluginFiles != null) && (pluginFiles.length < 1)) {
+		if (pluginFiles != null && pluginFiles.length < 1) {
 			throw new IllegalStateException("Gen.getPluginFiles Failure: no plugin schemas found: "
 					+ Configuration.PLUGIN_SPEC_LOCATION + ". Check the PLUGIN_SPEC_LOCATION config value.");
 		}

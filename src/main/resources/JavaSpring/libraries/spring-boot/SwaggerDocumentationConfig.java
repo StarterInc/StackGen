@@ -190,7 +190,7 @@ public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title("Starter StackGen API")
+		return new springfox.documentation.builders.ApiInfoBuilder().title("Starter StackGen API")
 				.description("This is the Starter StackGen API")
 				.license("AGPL 3.0")
 				.licenseUrl("https://www.gnu.org/licenses/agpl-3.0.html")

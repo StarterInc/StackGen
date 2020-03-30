@@ -2,16 +2,13 @@
 PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    	<!-- disable local cache -->
-    	<setting name="localCacheScope" value="STATEMENT"/>
+	<!-- disable local cache -->
+	<setting name="localCacheScope" value="STATEMENT" />
 
 	<environments default="production">
 
-		<!-- production JDBC data source 
-		
-		TODO: make Driver Configurable
-		TODO: update mysql driver to com.mysql.cj.jdbc.Driver
-		-->
+		<!-- production JDBC data source TODO: make Driver Configurable TODO: update 
+			mysql driver to com.mysql.cj.jdbc.Driver -->
 		<environment id="production">
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
@@ -56,5 +53,5 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 
 	</environments>
 
-	
+
 </configuration>

@@ -12,10 +12,11 @@
 			connectionURL="${dbUrl}/${dbName}?autoReconnect=true"
 			userId="${dbUser}" password="${dbPassword}" />
 
-		<javaTypeResolver type="io.starter.ignite.generator.MyBatisOffsetDateTimeTypeResolver">
+		<javaTypeResolver
+			type="io.starter.ignite.generator.MyBatisOffsetDateTimeTypeResolver">
 			<property name="useJSR310Types" value="true" />
 		</javaTypeResolver>
-		
+
 		<!-- Model Class -->
 		<javaModelGenerator
 			targetPackage="${MODEL_DAO_PACKAGE}"
@@ -30,13 +31,13 @@
 			<property name="addRemarkComments" value="true" />
 		</javaModelGenerator>
 
-		<javaClientGenerator 
-			type="io.starter.ignite.generator.MyBatisIgniteJavaMapperGenerator" 
+		<javaClientGenerator
+			type="io.starter.ignite.generator.MyBatisIgniteJavaMapperGenerator"
 			targetPackage="${MODEL_DAO_PACKAGE}"
 			targetProject="${myBatisMain}main/java">
 			<property name="useActualColumnNames" value="true" />
 		</javaClientGenerator>
-		
+
 		<table schema="${artifactId}" tableName="PLACEHOLDER_NODE"
 			modelType="hierarchical" />
 		<table schema="StackGen" tableName="stackgen$_csat">

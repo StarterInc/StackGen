@@ -1,5 +1,5 @@
 {
-  "groupId":"io.starter",
-  "artifactId":"StarterIgnite",
-  "artifactVersion":"1.0.0"
+	"groupId": "io.starter",
+	"artifactId": "StarterIgnite",
+	"artifactVersion": "1.0.0"
 }

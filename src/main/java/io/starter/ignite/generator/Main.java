@@ -122,25 +122,19 @@ public class Main implements Configuration, CommandLineRunner {
 		String inputSpecFile = "simple_cms.yml";
 
 		// check to see if the String array is empty
-		if (args == null || args.length == 0 || args[0] == null) {
-			System.out.println("No command line arguments Usage:");
-			System.out.println();
-			System.out.println("java io.starter.ignite.generator.Main <input.yml> -D<option_name>=<option_value> ... ");
-			return;
-		} else {
-			// copy any args to sysprops
-			for (final String argument : args) {
-				if (argument.toLowerCase().endsWith(".yml") || argument.toLowerCase().endsWith(".json")) {
-					inputSpecFile = argument;
-				} else if (argument.contains("=")) {
-					final int p = argument.indexOf("=");
-					try {
-						final String narg = argument.substring(0, argument.indexOf(p));
-						final String varg = argument.substring(argument.indexOf(p));
-						System.setProperty(narg, varg);
-					} catch (final Exception e) {
-						Main.logger.warn("Could not set property from arg: " + argument + " due to: " + e.toString());
-					}
+
+		// copy any args to sysprops
+		for (final String argument : args) {
+			if (argument.toLowerCase().endsWith(".yml") || argument.toLowerCase().endsWith(".json")) {
+				inputSpecFile = argument;
+			} else if (argument.contains("=")) {
+				final int p = argument.indexOf("=");
+				try {
+					final String narg = argument.substring(0, argument.indexOf(p));
+					final String varg = argument.substring(argument.indexOf(p));
+					System.setProperty(narg, varg);
+				} catch (final Exception e) {
+					Main.logger.warn("Could not set property from arg: " + argument + " due to: " + e.toString());
 				}
 			}
 		}

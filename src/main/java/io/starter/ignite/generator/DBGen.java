@@ -215,7 +215,7 @@ public class DBGen extends Gen implements Generator {
 	/**
 	 * generate DB table from classfile
 	 */
-	public synchronized void generate(String className, List<FieldSpec> fieldList, List<MethodSpec> getters,
+	public synchronized void generate(String className, List<Object> fieldList, List<MethodSpec> getters,
 			List<MethodSpec> setters) throws Exception {
 		// String packageName = null;
 		final int dotpos = className.lastIndexOf(".");

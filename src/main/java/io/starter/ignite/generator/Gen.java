@@ -78,7 +78,7 @@ public class Gen implements Configuration {
 		results.put(className, ob);
 
 		final java.lang.reflect.Field[] fields = ob.getDeclaredFields();
-		final List<FieldSpec> fieldList = new ArrayList<FieldSpec>();
+		final List<Object> fieldList = new ArrayList<Object>();
 		final List<MethodSpec> getters = new ArrayList<MethodSpec>();
 		final List<MethodSpec> setters = new ArrayList<MethodSpec>();
 
@@ -97,7 +97,7 @@ public class Gen implements Configuration {
 				// logger.trace(this.toString() + " generating Field : "
 				// + f.getName() + " Type: " + f.getType());
 
-				final FieldSpec fldObj = (FieldSpec)impl.createMember(f);
+				final Object fldObj = (Object)impl.createMember(f);
 				if ((fldObj != null) && (impl instanceof DBGen)) {
 					fieldList.add(fldObj);
 				}

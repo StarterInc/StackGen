@@ -13,5 +13,5 @@ public interface Generator extends Configuration {
 
 	Object createMember(Field f);
 
-	void generate(String className, List<FieldSpec> fieldList, List<MethodSpec> getters, List<MethodSpec> setters) throws Exception;
+	void generate(String className, List<Object> fieldList, List<MethodSpec> getters, List<MethodSpec> setters) throws Exception;
 }

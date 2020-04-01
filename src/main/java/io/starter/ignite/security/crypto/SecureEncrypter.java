@@ -100,7 +100,7 @@ public class SecureEncrypter implements SystemConstants {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String encrypt(String cleartext) throws Exception {
+	public synchronized static String encrypt(String cleartext) throws Exception {
 		if (keyGenerator == null) {
 			init();
 		}
@@ -128,7 +128,7 @@ public class SecureEncrypter implements SystemConstants {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String decrypt(String ciphertext) throws Exception {
+	public synchronized static String decrypt(String ciphertext) throws Exception {
 		if (keyGenerator == null) {
 			init();
 		}

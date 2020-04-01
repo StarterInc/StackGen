@@ -39,9 +39,9 @@ public class Table implements Configuration {
 				+ "  PRIMARY KEY (`id`),\n" + "  UNIQUE KEY `StackGenUQIDX` (`${MY_TABLE}_id`,`${REF_TABLE}_id`))");
 
 		aMap.put("Timestamp.createdDate",
-				" TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Auto create record create date - do not update'");
+				" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Auto create record create date - do not update'");
 		aMap.put("Timestamp.modifiedDate",
-				"  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Auto update record modification date - do not update'");
+				"  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Auto update record modification date - do not update'");
 
 		// Standard Data Type Handling
 		aMap.put("Boolean", "TINYINT(1) ${NOT_NULL} ${COMMENT}");

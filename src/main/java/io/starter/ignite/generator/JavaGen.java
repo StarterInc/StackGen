@@ -21,6 +21,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
+import org.apache.ibatis.javassist.bytecode.Descriptor.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,13 +60,6 @@ public class JavaGen extends Gen implements Generator {
 
 	@Override
 	public Object createAccessor(Field fld) {
-
-		try {
-			final ApiModelProperty apimp = Gen.getApiModelPropertyAnnotation(fld);
-			apimp.secureField();
-		} catch (NoSuchMethodException | SecurityException e1) {
-			// no worries
-		}
 
 		final String fieldName = fld.getName();
 		if (fieldName.startsWith("ajc$") || fieldName.equals("delegate") || fieldName.equals("serialVersionUID")) {
@@ -531,7 +525,7 @@ public class JavaGen extends Gen implements Generator {
 	// ## END MYBATIS INSERT/UPDATE/DELETE/LIST
 
 	@Override
-	public synchronized void generate(String className, List<FieldSpec> fieldList, List<MethodSpec> getters,
+	public synchronized void generate(String className, List<Object> fieldList, List<MethodSpec> getters,
 			List<MethodSpec> setters)
 			throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 
@@ -627,13 +621,18 @@ public class JavaGen extends Gen implements Generator {
 		final MethodSpec constructor = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).build();
 		methodList.add(constructor);
 
+		List<FieldSpec> fl = new ArrayList<FieldSpec>();
+		for(Object f : fieldList) {
+			fl.add((FieldSpec)f);
+		}
+		
 		// create the Java Class
 		final com.squareup.javapoet.TypeSpec.Builder builder = TypeSpec.classBuilder(className)
 				.addModifiers(Modifier.PUBLIC).addField(member)
 				// .superclass(null)
 				.addJavadoc("StackGen 'JavaGen' Generated Class: " + Configuration.LINE_FEED
 						+ Configuration.DATE_FORMAT.format(new Date()))
-				.addFields(fieldList).addMethods(setters).addMethods(getters).addMethods(methodList);
+				.addFields(fl).addMethods(setters).addMethods(getters).addMethods(methodList);
 
 		// finally associate the service class with the delegate
 		if (delegateInterfaceClass != null) {
@@ -756,9 +755,10 @@ public class JavaGen extends Gen implements Generator {
 		final List<String> optionList = new ArrayList<>();
 		optionList.add("-classpath");
 
-		System.getProperties();
+		Properties px = System.getProperties();
+		logger.info(px.toString());
 
-		logger.info("COMPILING GENERATD FILES USING CP: " + System.getProperty("java.class.path"));
+		logger.info("COMPILING GENERATED FILES USING CP: " + System.getProperty("java.class.path"));
 
 		optionList.add(System.getProperty("java.class.path") + System.getProperty("path.separator")
 				+ Configuration.JAVA_GEN_SRC_FOLDER + System.getProperty("path.separator")

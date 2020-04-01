@@ -34,7 +34,7 @@
     </developers>
 
    <properties>
-   		   		<stackgen.version>0.9.8-SNAPSHOT</stackgen.version>
+   		<stackgen.version>0.9.12-SNAPSHOT</stackgen.version>
     	<aspectjplugin.version>1.12.9</aspectjplugin.version>
     	<aspectj.version>1.9.2</aspectj.version>
     	
@@ -282,8 +282,8 @@
 							<goal>yarn</goal>
 						</goals>
 						<configuration>
-							<installDirectory>src/main/react/${project.artifactId}/</installDirectory>
-							<workingDirectory>src/main/react/${project.artifactId}/</workingDirectory>
+							<installDirectory>${project.workingDir}src/main/react/${project.artifactId}/</installDirectory>
+							<workingDirectory>${project.workingDir}src/main/react/${project.artifactId}/</workingDirectory>
 							<arguments>install</arguments>
 						</configuration>
 					</execution>

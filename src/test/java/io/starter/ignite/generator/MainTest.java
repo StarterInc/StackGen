@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +69,8 @@ public class MainTest implements Configuration {
 		JSONObject job = new JSONObject(inputJSON);
 
 		SwaggerGen swaggerGen = new SwaggerGen(job);
+		
+		swaggerGen.mergePluginSwaggers();
 	}
 
 	@Test

@@ -1,6 +1,5 @@
 package io.starter.ignite.generator;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

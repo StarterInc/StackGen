@@ -130,7 +130,7 @@ public class S3FS extends StorageServiceEventAdaptor
 	}
 
 	private void readFolderContents(File folder) throws NoSuchAlgorithmException, IOException, S3ServiceException {
-		Iterator filesinFolder = fileUtils.iterateFiles(folder, null, true);
+		Iterator<?> filesinFolder = fileUtils.iterateFiles(folder, null, true);
 		while (filesinFolder.hasNext()) {
 			Object file = filesinFolder.next();
 			logger.info("File: " + file);

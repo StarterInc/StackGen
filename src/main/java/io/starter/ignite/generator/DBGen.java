@@ -132,9 +132,9 @@ public class DBGen extends Gen implements Generator {
 		// ${CHAR_SET} ${DEFAULT}
 		final String defaultval = "";
 		final String charset = ""; // "'utf8'";
-		int minleng = 0;
-		double minVal = 0d;
-		double maxVal = Double.MAX_VALUE;
+		//int minleng = 0;
+		////double minVal = 0d;
+		//double maxVal = Double.MAX_VALUE;
 		boolean isSecure = false;
 		boolean isDataField = false;
 
@@ -174,9 +174,9 @@ public class DBGen extends Gen implements Generator {
 			nullable = !anno.required();
 			leng = anno.maxLength();
 			// TODO: implement other configs
-			minleng = anno.minLength();
-			minVal = anno.minValue();
-			maxVal = anno.maxValue();
+		//	minleng = anno.minLength();
+		//	minVal = anno.minValue();
+		//	maxVal = anno.maxValue();
 		}
 
 		if (!notes.isEmpty()) {
@@ -211,7 +211,6 @@ public class DBGen extends Gen implements Generator {
 
 	static Connection conn = null;
 
-	@SuppressWarnings("deprecation")
 	@Override
 	/**
 	 * generate DB table from classfile
@@ -414,7 +413,6 @@ public class DBGen extends Gen implements Generator {
 		}
 
 		final StringBuilder sb = new StringBuilder();
-		int x = 0;
 		for (final char c : name.toCharArray()) {
 			if (Character.isUpperCase(c)) {
 				sb.append('_');
@@ -424,7 +422,6 @@ public class DBGen extends Gen implements Generator {
 					sb.append(c);
 				}
 			}
-			x++;
 		}
 		String ret = sb.toString();
 		if (Configuration.columnsUpperCase) {

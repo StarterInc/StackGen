@@ -26,7 +26,7 @@ public class EncryptionUtil implements SystemConstants {
 	public static String getEncryptedFieldVal(Object ob, String fieldName) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
 		Field fx = ob.getClass().getDeclaredField(fieldName);
-		boolean accessible = fx.isAccessible();
+		boolean accessible = fx.canAccess(ob);
 		fx.setAccessible(true);
 		String encryptedValue = String.valueOf(fx.get(ob));
 		fx.setAccessible(accessible);

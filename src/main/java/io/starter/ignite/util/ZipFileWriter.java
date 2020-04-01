@@ -97,14 +97,15 @@ public class ZipFileWriter {
 	private void zipFile(File file, ZipOutputStream zos) throws FileNotFoundException, IOException {
 		zos.putNextEntry(new ZipEntry(file.getName()));
 		final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-		long bytesRead = 0;
+		// long bytesRead = 0;
 		final byte[] bytesIn = new byte[ZipFileWriter.BUFFER_SIZE];
 		int read = 0;
 		while ((read = bis.read(bytesIn)) != -1) {
 			zos.write(bytesIn, 0, read);
-			bytesRead += read;
+			// bytesRead += read;
 		}
 		zos.closeEntry();
+		bis.close();
 	}
 
 	public void zip(File file, String destZipFile) throws Exception {

@@ -17,6 +17,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 
 import io.starter.ignite.model.DataField;
@@ -77,9 +78,9 @@ public class Gen implements Configuration {
 		results.put(className, ob);
 
 		final java.lang.reflect.Field[] fields = ob.getDeclaredFields();
-		final List fieldList = new ArrayList();
-		final List getters = new ArrayList();
-		final List setters = new ArrayList();
+		final List<FieldSpec> fieldList = new ArrayList<FieldSpec>();
+		final List<MethodSpec> getters = new ArrayList<MethodSpec>();
+		final List<MethodSpec> setters = new ArrayList<MethodSpec>();
 
 		// recursively crawl the member objects
 		for (final Field f : fields) {
@@ -96,7 +97,7 @@ public class Gen implements Configuration {
 				// logger.trace(this.toString() + " generating Field : "
 				// + f.getName() + " Type: " + f.getType());
 
-				final Object fldObj = impl.createMember(f);
+				final FieldSpec fldObj = (FieldSpec)impl.createMember(f);
 				if ((fldObj != null) && (impl instanceof DBGen)) {
 					fieldList.add(fldObj);
 				}

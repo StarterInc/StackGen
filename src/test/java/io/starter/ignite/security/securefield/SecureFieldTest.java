@@ -1,9 +1,5 @@
 package io.starter.ignite.security.securefield;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.reflect.Field;
 import java.security.NoSuchAlgorithmException;
 

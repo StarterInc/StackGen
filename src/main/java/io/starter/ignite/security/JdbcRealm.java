@@ -448,7 +448,7 @@ public class JdbcRealm extends AuthorizingRealm {
 		return roleNames;
 	}
 
-	protected final Map cachedPermissions = new HashMap();
+	protected final Map<String, Set<String>> cachedPermissions = new HashMap<String, Set<String>>();
 
 	/**
 	 * refactored this to perform a single query -- much more performant
@@ -463,7 +463,7 @@ public class JdbcRealm extends AuthorizingRealm {
 
 		if (cachedPermissions.get(username) != null) {
 			logger.info("JdbcRealm permissions cache hit for: " + username);
-			return (Set) cachedPermissions.get(username);
+			return (Set<String>) cachedPermissions.get(username);
 		}
 		PreparedStatement ps = null;
 		Set<String> permissions = new LinkedHashSet<String>();

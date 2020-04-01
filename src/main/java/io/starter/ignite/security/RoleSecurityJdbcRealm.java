@@ -94,7 +94,7 @@ public class RoleSecurityJdbcRealm
 
 	public boolean clearCacheForAllActiveUsers() {
 
-		Iterator itx = cachedPermissions.keySet().iterator();
+		Iterator<?> itx = cachedPermissions.keySet().iterator();
 		while (itx.hasNext()) {
 			Object o = itx.next();
 			cachedPermissions.remove(o);

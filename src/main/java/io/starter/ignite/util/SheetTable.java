@@ -29,7 +29,7 @@ public class SheetTable {
 	/**
 	 * @return the headers
 	 */
-	public List getHeaders() {
+	public List<String> getHeaders() {
 		return headers;
 	}
 

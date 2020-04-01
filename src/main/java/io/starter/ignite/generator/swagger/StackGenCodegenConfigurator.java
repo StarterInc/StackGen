@@ -6,7 +6,6 @@ import io.swagger.codegen.CliOption;
 import io.swagger.codegen.ClientOptInput;
 import io.swagger.codegen.ClientOpts;
 import io.swagger.codegen.CodegenConfig;
-import io.swagger.codegen.CodegenConfigLoader;
 import io.swagger.codegen.CodegenConstants;
 import io.swagger.codegen.auth.AuthParser;
 import io.swagger.codegen.config.CodegenConfigurator;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,91 +83,111 @@ public class StackGenCodegenConfigurator extends CodegenConfigurator {
         this.setOutputDir(".");
     }
 
+	@Override
 	public CodegenConfigurator setLang(String lang) {
 		this.lang = lang;
 		return this;
 	}
 
+	@Override
 	public CodegenConfigurator setInputSpec(String inputSpec) {
 		this.inputSpec = inputSpec;
 		return this;
 	}
 
+	@Override
 	public String getInputSpec() {
 		return inputSpec;
 	}
 
+	@Override
 	public String getOutputDir() {
 		return outputDir;
 	}
 
+	@Override
 	public CodegenConfigurator setOutputDir(String outputDir) {
 		this.outputDir = toAbsolutePathStr(outputDir);
 		return this;
 	}
 
+	@Override
 	public String getModelPackage() {
 		return modelPackage;
 	}
 
+	@Override
 	public CodegenConfigurator setModelPackage(String modelPackage) {
 		this.modelPackage = modelPackage;
 		return this;
 	}
 
+	@Override
 	public String getModelNamePrefix() {
 		return modelNamePrefix;
 	}
 
+	@Override
 	public CodegenConfigurator setModelNamePrefix(String prefix) {
 		this.modelNamePrefix = prefix;
 		return this;
 	}
 
+	@Override
 	public boolean getRemoveOperationIdPrefix() {
 		return removeOperationIdPrefix;
 	}
 
+	@Override
 	public CodegenConfigurator setRemoveOperationIdPrefix(boolean removeOperationIdPrefix) {
 		this.removeOperationIdPrefix = removeOperationIdPrefix;
 		return this;
 	}
 
+	@Override
 	public String getModelNameSuffix() {
 		return modelNameSuffix;
 	}
 
+	@Override
 	public CodegenConfigurator setModelNameSuffix(String suffix) {
 		this.modelNameSuffix = suffix;
 		return this;
 	}
 
+	@Override
 	public boolean isVerbose() {
 		return verbose;
 	}
 
+	@Override
 	public CodegenConfigurator setVerbose(boolean verbose) {
 		this.verbose = verbose;
 		return this;
 	}
 
+	@Override
 	public boolean isSkipOverwrite() {
 		return skipOverwrite;
 	}
 
+	@Override
 	public CodegenConfigurator setSkipOverwrite(boolean skipOverwrite) {
 		this.skipOverwrite = skipOverwrite;
 		return this;
 	}
 
+	@Override
 	public String getLang() {
 		return lang;
 	}
 
+	@Override
 	public String getTemplateDir() {
 		return templateDir;
 	}
 
+	@Override
 	public CodegenConfigurator setTemplateDir(String templateDir) {
 		File f = new File(templateDir);
 
@@ -182,212 +200,258 @@ public class StackGenCodegenConfigurator extends CodegenConfigurator {
 		return this;
 	}
 
+	@Override
 	public String getAuth() {
 		return auth;
 	}
 
+	@Override
 	public CodegenConfigurator setAuth(String auth) {
 		this.auth = auth;
 		return this;
 	}
 
+	@Override
 	public String getApiPackage() {
 		return apiPackage;
 	}
 
+	@Override
 	public CodegenConfigurator setApiPackage(String apiPackage) {
 		this.apiPackage = apiPackage;
 		return this;
 	}
 
+	@Override
 	public String getInvokerPackage() {
 		return invokerPackage;
 	}
 
+	@Override
 	public CodegenConfigurator setInvokerPackage(String invokerPackage) {
 		this.invokerPackage = invokerPackage;
 		return this;
 	}
 
+	@Override
 	public String getGroupId() {
 		return groupId;
 	}
 
+	@Override
 	public CodegenConfigurator setGroupId(String groupId) {
 		this.groupId = groupId;
 		return this;
 	}
 
+	@Override
 	public String getArtifactId() {
 		return artifactId;
 	}
 
+	@Override
 	public CodegenConfigurator setArtifactId(String artifactId) {
 		this.artifactId = artifactId;
 		return this;
 	}
 
+	@Override
 	public String getArtifactVersion() {
 		return artifactVersion;
 	}
 
+	@Override
 	public CodegenConfigurator setArtifactVersion(String artifactVersion) {
 		this.artifactVersion = artifactVersion;
 		return this;
 	}
 
+	@Override
 	public Map<String, String> getSystemProperties() {
 		return systemProperties;
 	}
 
+	@Override
 	public CodegenConfigurator setSystemProperties(Map<String, String> systemProperties) {
 		this.systemProperties = systemProperties;
 		return this;
 	}
 
+	@Override
 	public CodegenConfigurator addSystemProperty(String key, String value) {
 		this.systemProperties.put(key, value);
 		return this;
 	}
 
+	@Override
 	public Map<String, String> getInstantiationTypes() {
 		return instantiationTypes;
 	}
 
+	@Override
 	public CodegenConfigurator setInstantiationTypes(Map<String, String> instantiationTypes) {
 		this.instantiationTypes = instantiationTypes;
 		return this;
 	}
 
+	@Override
 	public CodegenConfigurator addInstantiationType(String key, String value) {
 		this.instantiationTypes.put(key, value);
 		return this;
 	}
 
+	@Override
 	public Map<String, String> getTypeMappings() {
 		return typeMappings;
 	}
 
+	@Override
 	public CodegenConfigurator setTypeMappings(Map<String, String> typeMappings) {
 		this.typeMappings = typeMappings;
 		return this;
 	}
 
+	@Override
 	public CodegenConfigurator addTypeMapping(String key, String value) {
 		this.typeMappings.put(key, value);
 		return this;
 	}
 
+	@Override
 	public Map<String, Object> getAdditionalProperties() {
 		return additionalProperties;
 	}
 
+	@Override
 	public CodegenConfigurator setAdditionalProperties(Map<String, Object> additionalProperties) {
 		this.additionalProperties = additionalProperties;
 		return this;
 	}
 
+	@Override
 	public CodegenConfigurator addAdditionalProperty(String key, Object value) {
 		this.additionalProperties.put(key, value);
 		return this;
 	}
 
+	@Override
 	public Map<String, String> getImportMappings() {
 		return importMappings;
 	}
 
+	@Override
 	public CodegenConfigurator setImportMappings(Map<String, String> importMappings) {
 		this.importMappings = importMappings;
 		return this;
 	}
 
+	@Override
 	public CodegenConfigurator addImportMapping(String key, String value) {
 		this.importMappings.put(key, value);
 		return this;
 	}
 
+	@Override
 	public Set<String> getLanguageSpecificPrimitives() {
 		return languageSpecificPrimitives;
 	}
 
+	@Override
 	public CodegenConfigurator setLanguageSpecificPrimitives(Set<String> languageSpecificPrimitives) {
 		this.languageSpecificPrimitives = languageSpecificPrimitives;
 		return this;
 	}
 
+	@Override
 	public CodegenConfigurator addLanguageSpecificPrimitive(String value) {
 		this.languageSpecificPrimitives.add(value);
 		return this;
 	}
 
+	@Override
 	public String getLibrary() {
 		return library;
 	}
 
+	@Override
 	public CodegenConfigurator setLibrary(String library) {
 		this.library = library;
 		return this;
 	}
 
+	@Override
 	public String getGitUserId() {
 		return gitUserId;
 	}
 
+	@Override
 	public CodegenConfigurator setGitUserId(String gitUserId) {
 		this.gitUserId = gitUserId;
 		return this;
 	}
 
+	@Override
 	public String getGitRepoId() {
 		return gitRepoId;
 	}
 
+	@Override
 	public CodegenConfigurator setGitRepoId(String gitRepoId) {
 		this.gitRepoId = gitRepoId;
 		return this;
 	}
 
+	@Override
 	public String getReleaseNote() {
 		return releaseNote;
 	}
 
+	@Override
 	public CodegenConfigurator setReleaseNote(String releaseNote) {
 		this.releaseNote = releaseNote;
 		return this;
 	}
 
+	@Override
 	public String getHttpUserAgent() {
 		return httpUserAgent;
 	}
 
+	@Override
 	public CodegenConfigurator setHttpUserAgent(String httpUserAgent) {
 		this.httpUserAgent = httpUserAgent;
 		return this;
 	}
 
+	@Override
 	public Map<String, String> getReservedWordsMappings() {
 		return reservedWordMappings;
 	}
 
+	@Override
 	public CodegenConfigurator setReservedWordsMappings(Map<String, String> reservedWordsMappings) {
 		this.reservedWordMappings = reservedWordsMappings;
 		return this;
 	}
 
+	@Override
 	public CodegenConfigurator addAdditionalReservedWordMapping(String key, String value) {
 		this.reservedWordMappings.put(key, value);
 		return this;
 	}
 
+	@Override
 	public String getIgnoreFileOverride() {
 		return ignoreFileOverride;
 	}
 
+	@Override
 	public CodegenConfigurator setIgnoreFileOverride(final String ignoreFileOverride) {
 		this.ignoreFileOverride = ignoreFileOverride;
 		return this;
 	}
 
+	@Override
 	public ClientOptInput toClientOptInput() {
 
 		Validate.notEmpty(lang, "language must be specified");
@@ -443,12 +507,14 @@ public class StackGenCodegenConfigurator extends CodegenConfigurator {
 		return input;
 	}
 
+	@Override
 	@JsonAnySetter
 	public CodegenConfigurator addDynamicProperty(String name, Object value) {
 		dynamicProperties.put(name, value);
 		return this;
 	}
 
+	@Override
 	@JsonAnyGetter
 	public Map<String, Object> getDynamicProperties() {
 		return dynamicProperties;

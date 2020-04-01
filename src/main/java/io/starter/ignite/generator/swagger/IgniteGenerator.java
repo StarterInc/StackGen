@@ -133,12 +133,11 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 		// Starter enhancements
 		generateStarterModelEnhancements = Boolean.valueOf(config
 				.additionalProperties()
-				.getOrDefault("igniteGenerateModelEnhancements", new Boolean(
-						true))
+				.getOrDefault("igniteGenerateModelEnhancements", true)
 				.toString());
 
 		generateStarterCRUDOps = Boolean.valueOf(config.additionalProperties()
-				.getOrDefault("igniteGenerateCRUDOps", new Boolean(true))
+				.getOrDefault("igniteGenerateCRUDOps", true)
 				.toString());
 		// end Starter enhancements
 

@@ -376,7 +376,7 @@ public class Main implements Configuration, CommandLineRunner {
 		File genDir = new File(Configuration.genOutputFolder);
 		Main.logger
 				.info("Initializing output folder: " + Configuration.genOutputFolder + " exists: " + genDir.exists());
-		final String marker = new Long(System.currentTimeMillis()).toString() + ".zip";
+		final String marker = System.currentTimeMillis() + ".zip";
 		if (genDir.exists()) {
 			final String fx = Configuration.javaGenArchivePath + "/" + marker;
 			final File toF = new File(fx);

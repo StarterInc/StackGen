@@ -39,7 +39,7 @@ public class MyBatisGen extends Gen implements Generator {
 
 	List<String> alreadyAdded = new ArrayList<>(); // dedupe
 
-	public static Map createMyBatis(Class c, MyBatisGen gen) throws Exception {
+	public static Map<String, Object> createMyBatis(Class<?> c, MyBatisGen gen) throws Exception {
 
 		MyBatisGen.logger.info("Generate MyBatis...");
 

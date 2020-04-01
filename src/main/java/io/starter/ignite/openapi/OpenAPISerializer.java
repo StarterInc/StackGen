@@ -20,19 +20,19 @@ public class OpenAPISerializer {
 		String[] modelFiles = Gen.getModelFileNames();
 
 		for (String f : modelFiles) {
-			Class c = Class.forName(f);
+			Class<?> c = Class.forName(f);
 			writeOut(c);
 
 		}
 
 	}
 
-	private static void writeOut(Class c) {
+	private static void writeOut(Class<?> c) {
 		JSONObject o = getJSON(c);
 
 	}
 
-	private static JSONObject getJSON(Class c) {
+	private static JSONObject getJSON(Class<?> c) {
 		JSONObject job = new JSONObject(c);
 		return job;
 	}

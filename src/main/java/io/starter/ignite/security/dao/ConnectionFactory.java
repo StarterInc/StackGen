@@ -80,13 +80,13 @@ public class ConnectionFactory {
 	 * @throws SQLException
 	 */
 	public static Connection getConnection() throws SQLException {
-		final Connection cx = DriverManager.getConnection(ConnectionFactory.sourceURL + "/" + ConnectionFactory.dbName
-				+ "?" + "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
+		Connection cx = getDataSource().getConnection();
 		if (!cx.isValid(5000)) {
-			return dsx.getConnection();
+			dsx = null;
+			cx = DriverManager.getConnection(ConnectionFactory.sourceURL + "/" + ConnectionFactory.dbName
+				+ "?" + "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
 		}
 		return cx;
-
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class ConnectionFactory {
 	 *
 	 * @return
 	 */
-	public DataSource getDataSource() {
+	public static DataSource getDataSource() {
 
 		if (dsx != null) {
 			return dsx;
@@ -162,25 +162,25 @@ public class ConnectionFactory {
 		p.setUsername(ConnectionFactory.userName);
 
 		p.setJmxEnabled(true);
-		p.setTestWhileIdle(false);
-		p.setTestOnBorrow(true);
+//		p.setTestWhileIdle(false);
+//		p.setTestOnBorrow(true);
 		p.setValidationQuery("SELECT 1");
-		p.setTestOnReturn(false);
-		p.setValidationInterval(30000);
+//		p.setTestOnReturn(false);
+//		p.setValidationInterval(30000);
 
-		p.setTimeBetweenEvictionRunsMillis(5000);
+//		p.setTimeBetweenEvictionRunsMillis(5000);
 
 		p.setMaxActive(100);
 		p.setInitialSize(10);
 
-		p.setMaxWait(10000);
+//		p.setMaxWait(10000);
 
-		p.setLogAbandoned(false);
-		p.setRemoveAbandoned(true);
-		p.setRemoveAbandonedTimeout(600);
+//		p.setLogAbandoned(false);
+//		p.setRemoveAbandoned(true);
+//		p.setRemoveAbandonedTimeout(600);
 
-		p.setMinEvictableIdleTimeMillis(60000);
-		p.setMinIdle(10);
+//		p.setMinEvictableIdleTimeMillis(60000);
+//		p.setMinIdle(10);
 
 		// crucial to avoid abandoned PooledConnection errors.
 		p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"

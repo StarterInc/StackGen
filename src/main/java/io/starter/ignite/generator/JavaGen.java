@@ -404,17 +404,17 @@ public class JavaGen extends Gen implements Generator {
 
 	public static String getMapperText(String className) {
 		final String m = JavaGen.getMyBatisSQLMapsName(className);
-		return String.format("if (selectByMapper == null) {\n" + "			if (sqlSessionFactory == null) {\n"
+		return String.format("if (selectByMapper == null) {\n" 
 				+ "sqlSessionFactory = io.starter.ignite.security.dao.MyBatisConnectionFactory\n"
 				+ "  			.getSqlSessionFactory();\n" + "}\n"
 				+ "			if (!sqlSessionFactory.getConfiguration()\n"
 				+ "					.hasMapper(%1$sMapper.class)) {\n"
 				+ "				sqlSessionFactory.getConfiguration()\n"
 				+ "						.addMapper(%1$sMapper.class);\n" + "			}\n" + "			try {\n"
-				+ "				selectByMapper = sqlSessionFactory.openSession(io.starter.ignite.security.dao.ConnectionFactory.instance.getDataSource().getConnection())\n"
+				+ "				selectByMapper = sqlSessionFactory.openSession(io.starter.ignite.security.dao.ConnectionFactory.instance.getConnection())\n"
 				+ "						.getMapper(%1$sMapper.class);\n"
 				+ "			} catch (java.sql.SQLException e) {\n" + "				e.printStackTrace();\n"
-				+ "			}\n" + "		}\n" + "		return selectByMapper", m);
+				+ "			}\n		return selectByMapper", m);
 	}
 
 	public static String loadMethodText(String className) {
@@ -430,7 +430,7 @@ public class JavaGen extends Gen implements Generator {
 		final String l = JavaGen.getBaseJavaName(className);
 		final String m = JavaGen.getMyBatisSQLMapsName(className);
 
-		return String.format("	getSelectByMapper() \n" + "	.insert(this.%1$sDelegate ); \n" + "	return getId()", l,
+		return String.format("	getSelectByMapper() \n" + "	.insertSelective(this.%1$sDelegate ); \n" + "	return getId()", l,
 				m);
 	}
 

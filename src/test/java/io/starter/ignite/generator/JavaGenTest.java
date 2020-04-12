@@ -27,7 +27,7 @@ public class JavaGenTest {
 		Assert.assertEquals("int rows = \n" + "	getSelectByMapper() \n" + "	.deleteByPrimaryKey((long)getId()); \n"
 				+ "	return rows", JavaGen.deleteMethodText(className));
 
-		Assert.assertEquals("	getSelectByMapper() \n" + "	.insert(this.UserDelegate ); \n" + "	return getId()",
+		Assert.assertEquals("	getSelectByMapper() \n" + "	.insertSelective(this.UserDelegate ); \n" + "	return getId()",
 				JavaGen.insertMethodText(className));
 
 		Assert.assertEquals("	// similar to old updateByExampleSelective method\n"

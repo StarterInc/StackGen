@@ -10,6 +10,7 @@ import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,13 +81,19 @@ public class ConnectionFactory {
 	 * @throws SQLException
 	 */
 	public static Connection getConnection() throws SQLException {
-		Connection cx = getDataSource().getConnection();
-		if (!cx.isValid(5000)) {
+		try {
+			Connection cx = getDataSource().getConnection();
+			if (!cx.isValid(5000)) {
+				dsx = null;
+				cx = DriverManager.getConnection(ConnectionFactory.sourceURL + "/" + ConnectionFactory.dbName
+					+ "?" + "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
+			}
+			return cx;
+		}catch(PoolExhaustedException x) {
 			dsx = null;
-			cx = DriverManager.getConnection(ConnectionFactory.sourceURL + "/" + ConnectionFactory.dbName
-				+ "?" + "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
+			dsx = getDataSource();
+			return dsx.getConnection();
 		}
-		return cx;
 	}
 
 	/**

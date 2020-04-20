@@ -31,7 +31,7 @@ public class DataFieldAspect implements Configuration {
 	public Object getDataField(ProceedingJoinPoint pjp) throws Throwable {
 
 		if (DISABLE_DATA_FIELD_ASPECT) {
-			logger.info("SKIPPING DATA FIELD GETTER");
+			logger.trace("SKIPPING DATA FIELD GETTER");
 			return pjp.proceed();
 		}
 

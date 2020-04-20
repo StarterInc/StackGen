@@ -14,7 +14,7 @@
 
 		<javaTypeResolver
 			type="io.starter.ignite.generator.MyBatisOffsetDateTimeTypeResolver">
-			<property name="useJSR310Types" value="true" />
+			<property name="useJSR310Types" value="false" />
 		</javaTypeResolver>
 
 		<!-- Model Class -->

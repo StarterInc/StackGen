@@ -82,6 +82,7 @@ public class ConnectionFactory {
 	 */
 	public static Connection getConnection() throws SQLException {
 		try {
+			
 			Connection cx = getDataSource().getConnection();
 			if (!cx.isValid(5000)) {
 				dsx = null;
@@ -89,7 +90,7 @@ public class ConnectionFactory {
 					+ "?" + "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
 			}
 			return cx;
-		}catch(PoolExhaustedException x) {
+		}catch(Exception x) {
 			dsx = null;
 			dsx = getDataSource();
 			return dsx.getConnection();

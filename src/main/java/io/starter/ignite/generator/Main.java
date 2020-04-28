@@ -268,7 +268,10 @@ public class Main implements Configuration, CommandLineRunner {
 		} else if (Configuration.mergePluginGen) {
 			gfiles = Main.mergePluginsGen(inputSpecFile);
 		} else {
-			final SwaggerGen swaggerGen = new SwaggerGen(Configuration.SPEC_LOCATION + inputSpecFile);
+			if(!new File(inputSpecFile).canWrite()) {
+				inputSpecFile = Configuration.SPEC_LOCATION + inputSpecFile;
+			}
+			final SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile);
 
 			gfiles = swaggerGen.generate();
 		}

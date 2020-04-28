@@ -103,7 +103,7 @@ public class SwaggerGen implements Configuration {
 
 		this.configurator = getConfig(SPEC_LOCATION
 				+ config.getString("schemaFile"));
-		logger.info("Create Swagger Client Apis for:" + config);
+		logger.info("Create Swagger Client Apis for:" + config.get("schema"));
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class SwaggerGen implements Configuration {
 	 */
 	public SwaggerGen(String spec) {
 		this.configurator = getConfig(spec);
-		logger.info("Create Swagger Client Apis for:" + spec);
+		logger.info("Swagger Stack Spec Initialized: "+ this.configurator.toString());
 	}
 
 	/**

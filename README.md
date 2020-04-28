@@ -14,10 +14,10 @@ Generates Spring MVC/Model Objects and publishes via REST apis. Full stack RESTf
 ### Don't refactor... Regenerate!
 
  Generate an app from swagger YAML
- *   - YAML -> Swagger client
- *   - Swagger Client -> entity classes
- *   - Swagger Client -> DML for database
- *   - Swagger CLient -> React/React Native JS screens
+ - YAML -> Swagger client
+ - Swagger Client -> entity classes
+ - Swagger Client -> DML for database
+ - Swagger Client -> ReactJS/ReactNative/React360 screens
 
 #### Introduction
 

@@ -21,7 +21,6 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import org.apache.ibatis.javassist.bytecode.Descriptor.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,6 @@ import com.squareup.javapoet.TypeSpec;
 
 import io.starter.ignite.generator.DMLgenerator.Table;
 import io.starter.toolkit.StringTool;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Generating Java code
@@ -404,17 +402,16 @@ public class JavaGen extends Gen implements Generator {
 
 	public static String getMapperText(String className) {
 		final String m = JavaGen.getMyBatisSQLMapsName(className);
-		return String.format("if (selectByMapper == null) {\n" 
+		return String.format("if (selectByMapper == null) {\n"
 				+ "sqlSessionFactory = io.starter.ignite.security.dao.MyBatisConnectionFactory\n"
-				+ "  			.getSqlSessionFactory();\n" + "}\n"
-				+ "			if (!sqlSessionFactory.getConfiguration()\n"
-				+ "					.hasMapper(%1$sMapper.class)) {\n"
-				+ "				sqlSessionFactory.getConfiguration()\n"
-				+ "						.addMapper(%1$sMapper.class);\n" + "			}\n" + "			try {\n"
-				+ "				selectByMapper = sqlSessionFactory.openSession(io.starter.ignite.security.dao.ConnectionFactory.instance.getConnection())\n"
-				+ "						.getMapper(%1$sMapper.class);\n"
-				+ "			} catch (java.sql.SQLException e) {\n" + "				e.printStackTrace();\n"
-				+ "			}\n		return selectByMapper", m);
+				+ "  			.getSqlSessionFactory();\n" + "}\n" + " else {\n"
+				+ "        	return selectByMapper;\n" + "        }" + "\n"
+				+ "if (!sqlSessionFactory.getConfiguration()\n" + "			.hasMapper(%1$sMapper.class)) {\n"
+				+ "			sqlSessionFactory.getConfiguration()\n" + "					.addMapper(%1$sMapper.class);\n"
+				+ "			}\n" + "			try {\n"
+				+ "			selectByMapper = sqlSessionFactory.openSession(io.starter.ignite.security.dao.ConnectionFactory.instance.getConnection())\n"
+				+ "					.getMapper(%1$sMapper.class);\n" + "		} catch (java.sql.SQLException e) {\n"
+				+ "				e.printStackTrace();\n" + "}\n		return selectByMapper", m);
 	}
 
 	public static String loadMethodText(String className) {
@@ -430,8 +427,8 @@ public class JavaGen extends Gen implements Generator {
 		final String l = JavaGen.getBaseJavaName(className);
 		final String m = JavaGen.getMyBatisSQLMapsName(className);
 
-		return String.format("	getSelectByMapper() \n" + "	.insertSelective(this.%1$sDelegate ); \n" + "	return getId()", l,
-				m);
+		return String.format(
+				"	getSelectByMapper() \n" + "	.insertSelective(this.%1$sDelegate ); \n" + "	return getId()", l, m);
 	}
 
 	public static String deleteMethodText(String className) {
@@ -622,10 +619,10 @@ public class JavaGen extends Gen implements Generator {
 		methodList.add(constructor);
 
 		List<FieldSpec> fl = new ArrayList<FieldSpec>();
-		for(Object f : fieldList) {
-			fl.add((FieldSpec)f);
+		for (Object f : fieldList) {
+			fl.add((FieldSpec) f);
 		}
-		
+
 		// create the Java Class
 		final com.squareup.javapoet.TypeSpec.Builder builder = TypeSpec.classBuilder(className)
 				.addModifiers(Modifier.PUBLIC).addField(member)

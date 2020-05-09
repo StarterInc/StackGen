@@ -2,6 +2,7 @@ package io.starter.ignite.openapi;
 
 import org.json.JSONObject;
 
+import io.starter.ignite.generator.StackGenConfigurator;
 import io.starter.ignite.generator.Gen;
 
 /**
@@ -17,7 +18,8 @@ public class OpenAPISerializer {
 		// load folder of classfiles
 
 		// iterate for each class make a JSON model
-		String[] modelFiles = Gen.getModelFileNames();
+		StackGenConfigurator config = new StackGenConfigurator();
+		String[] modelFiles = new Gen(config).getModelFileNames();
 
 		for (String f : modelFiles) {
 			Class<?> c = Class.forName(f);

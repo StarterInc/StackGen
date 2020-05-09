@@ -17,7 +17,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 
 import io.starter.ignite.model.DataField;
@@ -29,10 +28,24 @@ import io.swagger.annotations.ApiModelProperty;
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
-public class Gen implements Configuration {
+public class Gen {
 
 	protected static final Logger logger = LoggerFactory.getLogger(Gen.class);
-
+	
+	StackGenConfigurator config;
+	public String LINE_FEED = "\r\n";
+	public StackGenConfigurator getConfig() {
+		return config;
+	}
+	
+	public Gen() {
+		config = new StackGenConfigurator();
+	}
+	
+	public Gen(StackGenConfigurator cfg) {
+		config= cfg;
+	}
+	
 	/**
 	 * iterate over the Class heirarchy and build a list of public classes and
 	 * methods
@@ -60,7 +73,7 @@ public class Gen implements Configuration {
 		className = className.substring(dotpos + 1);
 		className = StringTool.replaceChars(";", className, "");
 
-		final String packageDir = Configuration.JAVA_GEN_SRC_FOLDER + "/"
+		final String packageDir = config.getJavaGenSourceFolder() + "/"
 				+ StringTool.replaceChars(".", packageName, "/");
 
 		final java.io.File pkg = new java.io.File(packageDir);
@@ -97,7 +110,7 @@ public class Gen implements Configuration {
 				// logger.trace(this.toString() + " generating Field : "
 				// + f.getName() + " Type: " + f.getType());
 
-				final Object fldObj = (Object)impl.createMember(f);
+				final Object fldObj = impl.createMember(f);
 				if ((fldObj != null) && (impl instanceof DBGen)) {
 					fieldList.add(fldObj);
 				}
@@ -128,9 +141,9 @@ public class Gen implements Configuration {
 	 *
 	 * @return list of generated model file names
 	 */
-	public static String[] getModelFileNames() {
+	public String[] getModelFileNames() {
 		// convert dots to slashes (package names)
-		final String mc = Configuration.MODEL_CLASSES.replace(".", "/");
+		final String mc = config.getModelClasses().replace(".", "/");
 		final File modelDir = new File(mc);
 
 		if (!modelDir.exists()) {
@@ -143,7 +156,7 @@ public class Gen implements Configuration {
 			if (name.contains("Mapper")) {
 				return false;
 			}
-			if (name.contains(Configuration.ADD_GEN_CLASS_NAME)) {
+			if (name.contains(config.ADD_GEN_CLASS_NAME)) {
 				return false;
 			}
 			return name.toLowerCase().endsWith(".java");
@@ -157,7 +170,7 @@ public class Gen implements Configuration {
 	}
 
 	public static File[] getJavaFiles(String path, boolean recursive) throws FileNotFoundException {
-		// ie: Configuration.MODEL_CLASSES
+		// ie: config.MODEL_CLASSES
 
 		// convert dots to slashes (package names)
 		path = path.replace(".", "/");
@@ -188,7 +201,7 @@ public class Gen implements Configuration {
 		return folderFiles.toArray(new File[folderFiles.size()]);
 	}
 
-	public static File[] getSourceFilesInFolder(File f, List<String> skipList) {
+	public File[] getSourceFilesInFolder(File f, List<String> skipList) {
 
 		if (!f.exists()) {
 			throw new IllegalStateException("getSourceFilesInFolder Failure: no path here " + f);
@@ -279,7 +292,7 @@ public class Gen implements Configuration {
 		final List<File> folderFiles = new ArrayList<>();
 		for (final File fx : modelFiles) {
 			if (fx.isDirectory()) {
-				final File[] subdirFiles = Gen.getSourceFilesInFolder(fx, Configuration.FOLDER_SKIP_LIST);
+				final File[] subdirFiles = getSourceFilesInFolder(fx, config.FOLDER_SKIP_LIST);
 				folderFiles.addAll(Arrays.asList(subdirFiles));
 			} else {
 				if (!folderFiles.contains(fx)) { // DEDUPES NOT WORK??!

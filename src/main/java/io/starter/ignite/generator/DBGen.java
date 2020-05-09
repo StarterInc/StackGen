@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,12 +14,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 
+import io.netty.util.CharsetUtil;
 import io.starter.ignite.generator.DMLgenerator.Table;
 import io.starter.ignite.model.DataField;
 import io.starter.ignite.security.dao.ConnectionFactory;
@@ -34,13 +36,18 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class DBGen extends Gen implements Generator {
 
-	protected static final Logger logger = LoggerFactory.getLogger(DBGen.class);
+	public DBGen(StackGenConfigurator cfg) {
+		super(cfg);
+		// TODO Auto-generated constructor stub
+	}
 
+	protected static final Logger logger = LoggerFactory.getLogger(DBGen.class);
+	
 	public void init() throws SQLException, IOException {
-		DBGen.logger.info("Generating DB...");
-		DBGen.logger.info("Create DB Connection...");
-		DBGen.conn = ConnectionFactory.getConnection();
-		DBGen.logger.info((DBGen.conn.isValid(Configuration.DB_TIMEOUT) ? "OK!" : "FAILED!"));
+		logger.info("Generating DB...");
+		logger.info("Create DB Connection...");
+		conn = ConnectionFactory.instance.getConnection();
+		logger.info((conn.isValid(config.DB_TIMEOUT) ? "OK!" : "FAILED!"));
 	}
 
 	/**
@@ -72,7 +79,7 @@ public class DBGen extends Gen implements Generator {
 	@Override
 	public Object createMember(Field f) {
 
-		final String colName = DBGen.decamelize(f.getName());
+		final String colName = decamelize(f.getName());
 		final Class<?> colType = f.getType();
 
 		String colTypeName = colType.getName();
@@ -104,7 +111,7 @@ public class DBGen extends Gen implements Generator {
 			dml = Table.myMap.get("String");
 		} else if (dml == null) {
 			// TODO: handle complex data types
-			DBGen.logger.info("Could not map: " + f.getType().getName() + " of coltype: " + colTypeName
+			logger.info("Could not map: " + f.getType().getName() + " of coltype: " + colTypeName
 					+ " to a Database Column");
 			return null;
 		}
@@ -145,7 +152,7 @@ public class DBGen extends Gen implements Generator {
 		} catch (final NoSuchMethodException nsme) {
 			// normal, no SecureField
 		} catch (final SecurityException e) {
-			DBGen.logger.warn("Problem getting SecureField Annotation on: " + f.getName() + " " + e.toString());
+			logger.warn("Problem getting SecureField Annotation on: " + f.getName() + " " + e.toString());
 			e.printStackTrace();
 		}
 
@@ -156,7 +163,7 @@ public class DBGen extends Gen implements Generator {
 		} catch (final NoSuchMethodException nsme) {
 			// normal, no SecureField
 		} catch (final SecurityException e) {
-			DBGen.logger.warn("Problem getting DataField Annotation on: " + f.getName() + " " + e.toString());
+			logger.warn("Problem getting DataField Annotation on: " + f.getName() + " " + e.toString());
 			e.printStackTrace();
 		}
 		ApiModelProperty anno = null;
@@ -165,7 +172,7 @@ public class DBGen extends Gen implements Generator {
 		} catch (final NoSuchMethodException nsme) {
 			// normal, no getter
 		} catch (final SecurityException e) {
-			DBGen.logger.warn("Problem getting Annotation on: " + f.getName() + " " + e.toString());
+			logger.warn("Problem getting Annotation on: " + f.getName() + " " + e.toString());
 			e.printStackTrace();
 		}
 
@@ -179,23 +186,19 @@ public class DBGen extends Gen implements Generator {
 		//	maxVal = anno.maxValue();
 		}
 
-		if (!notes.isEmpty()) {
-			DBGen.logger.info(" notes: " + notes);
+		if (config.debug && !notes.isEmpty()) {
+			logger.info("Field notes: " + notes);
 		}
 		dml = dml.replace("${COMMENT}", notes);
 
-		DBGen.logger.info(" nullable: " + nullable);
+		logger.trace("Creating column for field: " + f.getName() + " charset: " + charset + " defaultVal: " + defaultval + " nullable: " + nullable);
 		dml = dml.replace("${NOT_NULL}", (nullable ? "" : "NOT NULL"));
-
-		DBGen.logger.info(" charset: " + charset);
 		dml = dml.replace("${CHAR_SET}", charset);
-
-		DBGen.logger.info(" defaultVal: " + defaultval);
 		dml = dml.replace("${DEFAULT}", defaultval);
 
 		// TODO: implement a smarter way to handle crypto expansion
 		if (isSecure) {
-			leng *= Configuration.DB_ENCRYPTED_COLUMN_MULTIPLIER;
+			leng *= config.DB_ENCRYPTED_COLUMN_MULTIPLIER;
 		}
 
 		// Column length too big for column 'NAME' (max = 65535);
@@ -218,6 +221,7 @@ public class DBGen extends Gen implements Generator {
 	public synchronized void generate(String className, List<Object> fieldList, List<MethodSpec> getters,
 			List<MethodSpec> setters) throws Exception {
 		// String packageName = null;
+		Table table = new Table(config);
 		final int dotpos = className.lastIndexOf(".");
 		if ((dotpos < 0) || (dotpos >= className.length())) {
 			return;
@@ -227,7 +231,7 @@ public class DBGen extends Gen implements Generator {
 		className = className.substring(dotpos + 1);
 
 		// collect the COLUMNs and add to Table then generate
-		String tableDML = Table.generateTableBeginningDML(className);
+		String tableDML = table.generateTableBeginningDML(className);
 		final Iterator<?> cols = fieldList.iterator();
 		boolean isEmpty = true;
 		String extraColumnDML = "";
@@ -239,49 +243,48 @@ public class DBGen extends Gen implements Generator {
 			String colName = o.toString();
 			colName = colName.substring(0, colName.indexOf(" "));
 			if (colName.equalsIgnoreCase("id")) {
-				extraColumnDML += Configuration.LINE_FEED + Table.myMap.get("pkid");
+				extraColumnDML += config.LINE_FEED + Table.myMap.get("pkid");
 			}
 			tableDML += ",";
-			tableDML += Configuration.LINE_FEED;
+			tableDML += config.LINE_FEED;
 		}
 
 		// indexes
 		tableDML += extraColumnDML;
 		if (!isEmpty) {
 			tableDML = tableDML.substring(0, tableDML.lastIndexOf(","));
-			tableDML += Configuration.LINE_FEED;
+			tableDML += config.LINE_FEED;
 		} else {
 			return;
 		}
 
-		tableDML += Configuration.CREATE_TABLE_END_BLOCK;
+		tableDML += Table.CREATE_TABLE_END_BLOCK;
 
-		if (DBGen.conn == null) {
-			DBGen.conn = ConnectionFactory.instance.getDataSource().getConnection();
+		if (conn == null) {
+			conn = ConnectionFactory.getDataSource().getConnection();
 		}
 
 		// use database
-		DBGen.conn.setSchema(SystemConstants.dbName);
+		conn.setSchema(SystemConstants.dbName);
 
-		final PreparedStatement ps = DBGen.conn.prepareStatement(tableDML);
+		final PreparedStatement ps = conn.prepareStatement(tableDML);
 		final List<String> triedList = new ArrayList<>();
 
 		// log the DML for troubleshooting
-		if (Configuration.debug) {
-			// FileUtils.writeStringToFile(new File("IgniteDML.sql"),
-			// tableDML
-			// + Configuration.LINE_FEED, true);
+		if (config.debug) {
+			Charset ch = CharsetUtil.UTF_8;
+			FileUtils.write(new File("IgniteDML.sql"), tableDML, ch);
 		}
 
 		try {
 			ps.execute();
 			ps.close();
-			DBGen.logger.info("SUCCESS: creating table for: " + className);
+			logger.info("SUCCESS: creating table for: " + className);
 
 		} catch (final Exception e) {
-			if (e.toString().contains("already exists") && Configuration.dbGenDropTable) {
-				DBGen.logger.info("Table for: " + className + " already exists.");
-				if (!triedList.contains(className) && Configuration.dbGenDropTable) {
+			if (e.toString().contains("already exists") && config.dbGenDropTable) {
+				logger.info("Table for: " + className + " already exists.");
+				if (!triedList.contains(className) && config.dbGenDropTable) {
 
 					if (renameTable(className, triedList)) {
 
@@ -292,12 +295,12 @@ public class DBGen extends Gen implements Generator {
 					}
 
 				} else {
-					DBGen.logger.warn("Skipping Retry of Table Creation for: " + className);
+					logger.warn("Skipping Retry of Table Creation for: " + className);
 				}
 			} else {
-				DBGen.logger
+				logger
 						.error("Failed to execute DML for: " + className + " -- " + ConnectionFactory.toConfigString()
-								+ Configuration.LINE_FEED + e.getMessage() + Configuration.LINE_FEED + tableDML);
+								+ config.LINE_FEED + e.getMessage() + config.LINE_FEED + tableDML);
 			}
 		}
 	}
@@ -309,7 +312,7 @@ public class DBGen extends Gen implements Generator {
 	 */
 	private void migrateData(String className) {
 		// TODO Auto-generated method stub
-		DBGen.logger.info("TODO: migrate table data from old to new");
+		logger.info("TODO: migrate table data from old to new");
 	}
 
 	/**
@@ -319,22 +322,22 @@ public class DBGen extends Gen implements Generator {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static boolean createIDXTables(List<MyBatisJoin> tl) throws SQLException {
-		if (!Configuration.skipDbGen) {
+	public boolean createIDXTables(List<MyBatisJoin> tl) throws SQLException {
+		if (!config.skipDbGen) {
 			for (final MyBatisJoin j : tl) {
 				final String tableName = j.myTable;
-				DBGen.logger.info("Creating IDX TABLE: " + tableName);
+				logger.info("Creating IDX TABLE: " + tableName);
 
 				// generate the table
-				if (DBGen.conn == null) {
-					DBGen.conn = ConnectionFactory.instance.getDataSource().getConnection();
+				if (conn == null) {
+					conn = ConnectionFactory.getDataSource().getConnection();
 				}
-				final PreparedStatement psx = DBGen.conn.prepareStatement(j.getDML());
+				final PreparedStatement psx = conn.prepareStatement(j.getDML());
 				try {
 					psx.execute();
 					psx.close();
 				} catch (final Exception ex) {
-					DBGen.logger.error("Failed to createIDXTable table with DML: " + ex.toString());
+					logger.error("Failed to createIDXTable table with DML: " + ex.toString());
 					return false;
 				}
 			}
@@ -343,20 +346,21 @@ public class DBGen extends Gen implements Generator {
 	}
 
 	private boolean renameTable(String className, List<String> triedList) throws SQLException {
-		if (!Configuration.skipDbGen) {
-			DBGen.logger.info("RENAMING TABLE: " + className);
+		Table table = new Table(config);
+		if (!config.skipDbGen) {
+			logger.info("RENAMING TABLE: " + className);
 			triedList.add(className);
 			// rename the table
-			final String renameTableDML = Table.generateTableRenameDML(className);
-			if (DBGen.conn == null) {
-				DBGen.conn = ConnectionFactory.instance.getDataSource().getConnection();
+			final String renameTableDML = table.generateTableRenameDML(className);
+			if (conn == null) {
+				conn = ConnectionFactory.getDataSource().getConnection();
 			}
-			final PreparedStatement psx = DBGen.conn.prepareStatement(renameTableDML);
+			final PreparedStatement psx = conn.prepareStatement(renameTableDML);
 			try {
 				psx.execute();
 				psx.close();
 			} catch (final Exception ex) {
-				DBGen.logger.error("Failed to drop table with DML: " + renameTableDML + "  : " + ex.toString());
+				logger.error("Failed to drop table with DML: " + renameTableDML + "  : " + ex.toString());
 				return false;
 			}
 		}
@@ -373,29 +377,29 @@ public class DBGen extends Gen implements Generator {
 	 *
 	 * @throws Exception
 	 */
-	static void createDatabaseTablesFromModelFolder() throws Exception {
-		DBGen.logger.info("Iterate Swagger Entities and create Tables...");
+	void createDatabaseTablesFromModelFolder() throws Exception {
+		logger.info("Iterate Swagger Entities and create Tables...");
 		final File[] modelFiles = Gen
-				.getJavaFiles(Configuration.JAVA_GEN_SRC_FOLDER + "/" + Configuration.MODEL_PACKAGE_DIR, false);
-		final DBGen gen = new DBGen();
+				.getJavaFiles(config.getJavaGenSourceFolder() + "/" + config.getModelPackageDir() , false);
+		final DBGen gen = new DBGen(getConfig());
 		// classes, this should point to the top of the package
 		// structure!
-		final URL packagedir = new File(Configuration.JAVA_GEN_SRC_FOLDER).toURI().toURL();
+		final URL packagedir = new File(config.getJavaGenSourceFolder()).toURI().toURL();
 		final URLClassLoader classLoader = new URLClassLoader(new URL[] { packagedir });
-		DBGen.logger.info("Created Classloader: " + classLoader);
+		logger.info("Created Classloader: " + classLoader);
 
 		for (final File mf : modelFiles) {
 			try {
 				String cn = mf.getName().substring(0, mf.getName().indexOf("."));
 				// cn = cn + ".class";
-				cn = Configuration.IGNITE_MODEL_PACKAGE + "." + cn;
-				DBGen.logger.info("Loading Classes from ModelFile: " + cn);
+				cn = config.getIgniteModelPackage() + "." + cn;
+				logger.info("Loading Classes from ModelFile: " + cn);
 				// TODO: fails in web runner
 				final Class<?> loadedClass = classLoader.loadClass(cn);
 
 				DBGen.createTableFromClass(loadedClass, gen);
 			} catch (final Exception e) {
-				DBGen.logger.error("Could not create Table for: " + mf.getName() + " :" + e.toString());
+				logger.error("Could not create Table for: " + mf.getName() + " :" + e.toString());
 			}
 		}
 		classLoader.close();
@@ -407,7 +411,7 @@ public class DBGen extends Gen implements Generator {
 	 *
 	 * ie: take upperCamelCase and turn into upper_camel_case
 	 */
-	public static String decamelize(String name) {
+	public String decamelize(String name) {
 		if (name.equals(name.toLowerCase()) || name.equals(name.toUpperCase())) { // case insensitive
 			return name;
 		}
@@ -424,7 +428,7 @@ public class DBGen extends Gen implements Generator {
 			}
 		}
 		String ret = sb.toString();
-		if (Configuration.columnsUpperCase) {
+		if (config.columnsUpperCase) {
 			ret = ret.toUpperCase();
 		} else {
 			ret = ret.toLowerCase();

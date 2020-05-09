@@ -8,8 +8,10 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import io.starter.toolkit.StringTool;
 
 public class MyBatisOffsetDateTimeTypeResolver extends org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl
-		implements JavaTypeResolver, Configuration {
+		implements JavaTypeResolver {
 
+	static String MYBATIS_COL_ENUM_FLAG = "ENUM";
+			
 	@Override
 	protected FullyQualifiedJavaType overrideDefaultType(IntrospectedColumn column,
 			FullyQualifiedJavaType defaultType) {
@@ -31,7 +33,7 @@ public class MyBatisOffsetDateTimeTypeResolver extends org.mybatis.generator.int
 			FullyQualifiedJavaType defaultType) {
 		FullyQualifiedJavaType answer;
 		final String enumCheck = column.getRemarks();
-		if (enumCheck.contains(Configuration.MYBATIS_COL_ENUM_FLAG)) {
+		if (enumCheck.contains(MYBATIS_COL_ENUM_FLAG)) {
 			String secn = column.getActualColumnName();
 			secn = DBGen.camelize(secn);
 			secn = StringTool.getUpperCaseFirstLetter(secn);

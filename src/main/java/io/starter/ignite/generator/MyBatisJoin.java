@@ -38,6 +38,7 @@ public class MyBatisJoin {
 	protected static final Logger	logger		= LoggerFactory
 			.getLogger(MyBatisJoin.class);
 
+	StackGenConfigurator config;
 	Model							source		= null;
 	Model							target		= null;
 
@@ -50,20 +51,23 @@ public class MyBatisJoin {
 	private String					selectName	= "undefined";
 
 	private String					propName	= "undefined";
-
-	public MyBatisJoin(String field, Model src, Model ref) {
+	String TUPLE_TABLE_SUFFIX = "_idx";
+	public MyBatisJoin(String field, Model src, Model ref, StackGenConfigurator config) {
 		this.source = src;
 		this.target = ref;
+		this.config = config;
 		this.propName = field;
 		this.refTypeName = ref.getTitle();
-		this.myTable = DBGen.decamelize(src.getTitle());
-		this.joinTable = DBGen.decamelize(ref.getTitle());
+		DBGen dbg = new DBGen(config);
+		this.myTable = dbg.decamelize(src.getTitle());
+		this.joinTable = dbg.decamelize(ref.getTitle());
 
 		this.selectName = "get" + this.refTypeName + "sFor" + src.getTitle();
 		myColumn = field;
 
-		tableName = Table.convertToDBSyntax(src.getTitle()) + joinTable
-				+ Configuration.TUPLE_TABLE_SUFFIX;
+		Table table = new Table(config);
+		tableName = table.convertToDBSyntax(src.getTitle()) + joinTable
+				+ TUPLE_TABLE_SUFFIX;
 	}
 
 	/**
@@ -77,7 +81,7 @@ public class MyBatisJoin {
 	 */
 	public String getXML() {
 		return "<collection column=\"id\" javaType=\"ArrayList\"" + " ofType=\""
-				+ Configuration.API_MODEL_PACKAGE + "." + refTypeName
+				+ config.getApiModelPackage() + "." + refTypeName
 				+ "\" property=\"" + propName + "\" select=\"" + selectName
 				+ "\" />";
 	}
@@ -89,10 +93,10 @@ public class MyBatisJoin {
 	 *
 	 * @return
 	 */
-	public String getQueryXML() {
+	public String getQueryXML(StackGenConfigurator config) {
 		return "<select id=\"" + selectName
 				+ "\" parameterType=\"java.lang.Integer\" resultMap=\""
-				+ Configuration.API_MODEL_PACKAGE + "." + refTypeName + "\">\n"
+				+ config.getApiModelPackage() + "." + refTypeName + "\">\n"
 				+ "			SELECT R.*\n" + "			FROM " + this.myTable
 				+ " R, " + this.joinTable + " U, " + tableName + " I\n"
 				+ "			WHERE user_id\n"

@@ -15,7 +15,7 @@ public class DOMEditor {
 
 	public static Document parse(String namespace, String filename)
 			throws JDOMException, IOException {
-		final Namespace ns = Namespace.getNamespace(namespace);
+		// final Namespace ns = Namespace.getNamespace(namespace);
 
 		// Get the JDOM document
 		org.jdom.Document doc = useSAXParser(filename);

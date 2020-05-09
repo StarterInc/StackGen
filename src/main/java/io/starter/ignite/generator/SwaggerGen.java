@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.starter.ignite.generator.swagger.IgniteGenerator;
-import io.starter.ignite.generator.swagger.StackGenCodegenConfigurator;
+import io.starter.ignite.util.SystemConstants;
 import io.swagger.codegen.ClientOptInput;
 import io.swagger.codegen.CodegenConstants;
 import io.swagger.models.Model;
@@ -25,13 +25,11 @@ import io.swagger.models.parameters.Parameter;
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  * 
  */
-public class SwaggerGen implements Configuration {
+public class SwaggerGen extends Gen {
 
-	protected static final Logger	logger		= LoggerFactory
-			.getLogger(SwaggerGen.class);
+	protected static final Logger logger = LoggerFactory.getLogger(SwaggerGen.class);
 
-	IgniteGenerator					generator	= new IgniteGenerator();
-	StackGenCodegenConfigurator				configurator;
+	IgniteGenerator generator = new IgniteGenerator(config);
 
 	/**
 	 * @return the generator
@@ -45,20 +43,6 @@ public class SwaggerGen implements Configuration {
 	 */
 	public void setGenerator(IgniteGenerator generator) {
 		this.generator = generator;
-	}
-
-	/**
-	 * @return the configurator
-	 */
-	public StackGenCodegenConfigurator getConfigurator() {
-		return configurator;
-	}
-
-	/**
-	 * @param configurator the configurator to set
-	 */
-	public void setConfigurator(StackGenCodegenConfigurator configurator) {
-		this.configurator = configurator;
 	}
 
 	/**
@@ -89,42 +73,50 @@ public class SwaggerGen implements Configuration {
 		this.pluginSwaggers = pluginSwaggers;
 	}
 
-	private JSONObject	configObj;
-	List<SwaggerGen>	pluginSwaggers	= new ArrayList<SwaggerGen>();
+	// the configObj is basically the
+	// command line stackgen values only
+	private JSONObject configObj;
+
+	List<SwaggerGen> pluginSwaggers = new ArrayList<SwaggerGen>();
+
+	public SwaggerGen(StackGenConfigurator cfg) {
+		super(cfg);
+		setStaticConfiguration();
+	}
 
 	/**
 	 * Create and initialize a new SwaggerGen from a JSON config object
 	 * 
-	 * @param inputSpec
-	 *            JSONObject containing config data
+	 * @param inputSpec JSONObject containing config data
 	 */
-	public SwaggerGen(JSONObject config) {
-		this.configObj = config;
+	public SwaggerGen(JSONObject cfg) {
+		super();
+		this.configObj = cfg;
 
-		this.configurator = getConfig(SPEC_LOCATION
-				+ config.getString("schemaFile"));
-		logger.info("Create Swagger Client Apis for:" + config.get("schema"));
+		config = getConfig(config.getSpecLocation() + cfg.getString("schemaFile"));
+
+		logger.info("Configured StackGen Schema for:" + config.schemaName);
 	}
 
 	/**
 	 * Create and initialize a new SwaggerGen
 	 * 
-	 * @param inputSpec
-	 *            filename of spec (file in templateDirectory)
+	 * @param inputSpec filename of spec (file in templateDirectory)
 	 */
 	public SwaggerGen(String spec) {
-		this.configurator = getConfig(spec);
-		logger.info("Swagger Stack Spec Initialized: "+ this.configurator.toString());
+		super();
+		config = getConfig(spec);
+		logger.info("StackGen Schema Initialized: " + config.schemaName);
 	}
 
 	/**
 	 * Create and initialize a new SwaggerGen
 	 * 
-	 * @param inputSpec
-	 *            spe file in templateDirectory
+	 * @param inputSpec spe file in templateDirectory
 	 */
 	public SwaggerGen(File spec) {
-		this.configurator = (StackGenCodegenConfigurator) StackGenCodegenConfigurator.fromFile(spec.getPath());
+		super();
+		config = (StackGenConfigurator) StackGenConfigurator.fromFile(spec.getPath());
 		logger.info("Create Swagger Client Apis for:" + spec);
 	}
 
@@ -134,86 +126,86 @@ public class SwaggerGen implements Configuration {
 	 * @param spec
 	 * @param configurator
 	 */
-	private StackGenCodegenConfigurator getConfig(String spec) {
-		StackGenCodegenConfigurator conf = new StackGenCodegenConfigurator();
-
-		setStaticConfiguration(spec, conf);
-
-		// main output type
-		// (ie: spring, jersey2)
-		conf.setLang(getVal("swaggerLang", swaggerLang));
-		
-		// the JSON serialization library to use
-		// (ie: jersey2, resteasy, resttemplate)
-		conf.setLibrary(getVal("swaggerLib", "spring-boot"));
-		
-		// conf.setReleaseNote(getVal("description"), description);
-		
-		conf.setOutputDir(getVal("genOutputFolder", genOutputFolder));
-
-		conf.setApiPackage(getVal("API_PACKAGE", API_PACKAGE));
-		conf.setModelPackage(getVal("API_MODEL_PACKAGE", API_MODEL_PACKAGE));
-		conf.setInvokerPackage(getVal("INVOKER_PACKAGE", INVOKER_PACKAGE));
-		String gid = orgPackage.substring(0, orgPackage.length() - 1);
-		conf.setGroupId(gid);
-
-		conf.setArtifactId(getVal("artifactId", artifactId));
-		conf.setArtifactVersion(getVal("artifactVersion", artifactVersion));
-
-		return conf;
+	private StackGenConfigurator getConfig(String spec) {
+		setStaticConfiguration();
+		if (!spec.contains(config.getTemplateDir())) {
+			spec = config.getTemplateDir() + "/" + spec;
+		}
+		config.setInputSpec(spec);
+		return config;
 	}
 
 	/**
 	 * @param spec
-	 * @param conf
+	 * @param config
 	 */
-	private void setStaticConfiguration(String spec, StackGenCodegenConfigurator conf) {
+	private void setStaticConfiguration() {
 
-		conf.setVerbose(verbose);
-		conf.addDynamicProperty("dynamic-html", "true");
-		conf.addDynamicProperty("dateLibrary", "java8");
+		// config.setVerbose(verbose);
+
+		// main output type
+		// (ie: spring, jersey2)
+		config.setLang(getVal("swaggerLang", config.swaggerLang));
+
+		// the JSON serialization library to use
+		// (ie: jersey2, resteasy, resttemplate)
+		config.setLibrary(getVal("swaggerLib", "spring-boot"));
+
+		// config.setReleaseNote(getVal("description"), description);
+
+		config.setOutputDir(getVal("genOutputFolder", config.getGenOutputFolder() ));
+
+		config.setApiPackage(getVal("API_PACKAGE", config.getApiPackage()));
+		config.setModelPackage(getVal("API_MODEL_PACKAGE", config.getApiModelPackage()));
+		config.setInvokerPackage(getVal("INVOKER_PACKAGE", config.getInvokerPackage()));
+		String gid = config.getOrgPackage().substring(0, config.getOrgPackage().length() - 1);
+		config.setGroupId(gid);
+
+		config.setArtifactId(getVal("artifactId", config.getArtifactId()));
+		config.setArtifactVersion(getVal("artifactVersion", config.getArtifactVersion()));
+
+		config.addDynamicProperty("dynamic-html", "true");
+		config.addDynamicProperty("dateLibrary", "java8");
 
 		// whether to enhance REST api with default Object CRUD
-		conf.addAdditionalProperty(IGNITE_GEN_MODEL_CRUD_OPS, "true");
-		conf.addAdditionalProperty(IGNITE_GEN_MODEL_ENHANCEMENTS, "true");
+		config.addAdditionalProperty(config.IGNITE_GEN_MODEL_CRUD_OPS, "true");
+		config.addAdditionalProperty(config.IGNITE_GEN_MODEL_ENHANCEMENTS, "true");
 
 		// app config
-		conf.setAuth("oauth");
-		conf.setInputSpec(spec);
-		conf.addAdditionalProperty("CORSMapping", CORSMapping);
-		conf.addAdditionalProperty("CORSOrigins", CORSOrigins);
+		config.setAuth("oauth");
+		config.addAdditionalProperty("CORSMapping", config.getCORSMapping());
+		config.addAdditionalProperty("CORSOrigins", config.getCORSOrigins());
 
 		// github
-		conf.setGitRepoId(gitRepoId);
-		conf.setGitUserId(gitUserId);
+		config.setGitRepoId(config.gitRepoId);
+		config.setGitUserId(config.gitUserId);
 
 		// locations
-		conf.setTemplateDir(getVal("SPEC_LOCATION", SPEC_LOCATION));
+		config.setTemplateDir(getVal("SPEC_LOCATION", config.getSpecLocation()));
 
 		// server info
-		conf.addDynamicProperty("serverHost", defaultHostname);
-		conf.addDynamicProperty("serverPort", defaultPort);
+		config.addDynamicProperty("serverHost", config.defaultHostname);
+		config.addDynamicProperty("serverPort", config.defaultPort);
 
 		// company info
-		conf.addDynamicProperty("developerName", developerName);
-		conf.addDynamicProperty("developerEmail", developerEmail);
-		conf.addDynamicProperty("developerOrganization", developerOrganization);
-		conf.addDynamicProperty("developerOrganizationUrl", developerOrganizationUrl);
+		config.addDynamicProperty("developerName", config.developerName);
+		config.addDynamicProperty("developerEmail", config.developerEmail);
+		config.addDynamicProperty("developerOrganization", config.developerOrganization);
+		config.addDynamicProperty("developerOrganizationUrl", config.developerOrganizationUrl);
 
 		// SPRING properties
-		conf.addAdditionalProperty("java8", "true");
-		conf.addAdditionalProperty("delegatePattern", "true");
-		conf.addAdditionalProperty("asynch", "true");
-		conf.addAdditionalProperty("useDelegateValidation", "true");
-		conf.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
+		config.addAdditionalProperty("java8", "true");
+		config.addAdditionalProperty("delegatePattern", "true");
+		config.addAdditionalProperty("asynch", "true");
+		config.addAdditionalProperty("useDelegateValidation", "true");
+		config.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
 	}
 
 	/**
-	 * JSONObject overrides
-	 * Sysprops
+	 * JSONObject overrides Sysprops
 	 * 
 	 * @param swaggerlang
-	 * @param swaggerlang2 
+	 * @param swaggerlang2
 	 * @return
 	 */
 	private String getVal(String fieldName, String systemVal) {
@@ -244,21 +236,25 @@ public class SwaggerGen implements Configuration {
 	 * @see addSwagger(SwaggerGen x)
 	 */
 	ClientOptInput mergePluginSwaggers() {
-		final ClientOptInput clientOptInput = configurator.toClientOptInput();
+		try {
+			final ClientOptInput clientOptInput = config.toClientOptInput();
 
-		// merge swagger
-		Swagger x = clientOptInput.getSwagger();
-		for (SwaggerGen t : pluginSwaggers) {
-			try {
-				logger.info("Merging plugin swagger: " + t);
-				Swagger s = t.configurator.toClientOptInput().getSwagger();
-				if (s != null)
-					mergeSwagger(s, x);
-			} catch (Throwable e) {
-				logger.warn("Merging plugin swagger " + t + " failed: " + e);
+			// merge swagger
+			Swagger x = clientOptInput.getSwagger();
+			for (SwaggerGen t : pluginSwaggers) {
+				try {
+					logger.info("Merging plugin swagger: " + t);
+					Swagger s = t.config.toClientOptInput().getSwagger();
+					if (s != null)
+						mergeSwagger(s, x);
+				} catch (Throwable e) {
+					logger.warn("Merging plugin swagger " + t + " failed: " + e);
+				}
 			}
+			return clientOptInput;
+		} catch (Exception e) {
+			throw e;
 		}
-		return clientOptInput;
 	}
 
 	/**

@@ -8,10 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.starter.ignite.generator.Configuration;
-
 @Aspect
-public class DataFieldAspect implements Configuration {
+public class DataFieldAspect {
 
 	protected static final Logger	logger				= LoggerFactory
 			.getLogger(DataFieldAspect.class);
@@ -26,6 +24,8 @@ public class DataFieldAspect implements Configuration {
 
 	private final static String		FIELD_GET			= "get(@io.starter.ignite.model.DataField * *)";
 	private final static String		FIELD_SET			= "set(@io.starter.ignite.model.DataField * *)";
+
+	private static final boolean DISABLE_DATA_FIELD_ASPECT = true;
 
 	@Around(FIELD_GET)
 	public Object getDataField(ProceedingJoinPoint pjp) throws Throwable {
@@ -68,7 +68,7 @@ public class DataFieldAspect implements Configuration {
 		String clearTextValue = String.valueOf(pjp.getArgs()[0]);
 
 		// TODO: init with a pre-existing value...
-		String persistedValue =
+		Object persistedValue =
 		 DataPersister.persist(clearTextValue);
 
 		Object targetObject = pjp.getTarget();

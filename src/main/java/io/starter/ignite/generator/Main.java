@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.aspectj.util.FileUtil;
 import org.codehaus.plexus.util.FileUtils;
@@ -14,8 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.context.ConfigurableApplicationContext;
+
 import io.starter.ignite.util.ASCIIArtPrinter;
-import io.starter.ignite.util.SystemConstants;
 import io.starter.ignite.util.ZipFileWriter;
 
 /**
@@ -42,7 +45,7 @@ import io.starter.ignite.util.ZipFileWriter;
  */
 // @SpringBootApplication
 // @Order(Ordered.LOWEST_PRECEDENCE) // run before ReactGenerator
-public class Main implements Configuration, CommandLineRunner {
+public class Main extends Gen implements CommandLineRunner {
 
 	protected static final Logger logger = LoggerFactory.getLogger(Main.class);
 
@@ -50,7 +53,13 @@ public class Main implements Configuration, CommandLineRunner {
 		if (args == null) {
 			args = new String[0];
 		}
-		SpringApplication.run(Main.class, args);
+		
+		SpringApplication app = new SpringApplication(Main.class);
+		app.setWebApplicationType(WebApplicationType.NONE);
+		ConfigurableApplicationContext context = app.run(args);
+	    logger.debug("CLOSING $type Extractor...");
+	    context.close();
+		
 	}
 
 	/**
@@ -71,17 +80,17 @@ public class Main implements Configuration, CommandLineRunner {
 			{ "/src/test/java/io/starter/ignite/security/securefield/SecureFieldTest.java",
 					"/src/test/java/io/starter/ignite/security/securefield/SecureFieldTest.java" } };
 
-	protected static void copyStaticFiles(String[][] staticFiles) {
-		final File genDir = new File(Configuration.genOutputFolder);
+	protected void copyStaticFiles(String[][] staticFiles) {
+		final File genDir = new File(config.getGenOutputFolder() );
 		if (!genDir.exists()) {
 			genDir.mkdirs();
 		}
-		Main.logger.info(
-				"Copying static files to folder: " + Configuration.genOutputFolder + " exists: " + genDir.exists());
+		Main.logger.info("Copying static files to folder: " + config.getGenOutputFolder()  + " exists: " + genDir.exists());
 		if (genDir.exists()) {
+			String projectdir = System.getProperty("user.dir");
 			for (final String[] fx : staticFiles) {
-				final File fromF = new File(SystemConstants.rootFolder + fx[0]);
-				final File toF = new File(Configuration.genOutputFolder + fx[1]);
+				final File fromF = new File( projectdir + fx[0]);
+				final File toF = new File(config.getGenOutputFolder()  + fx[1]);
 				if (fromF.exists()) {
 					Main.logger.info("Copying static file : " + fromF + " to: " + toF);
 
@@ -99,7 +108,7 @@ public class Main implements Configuration, CommandLineRunner {
 				}
 			}
 		}
-		Main.logger.info("Done copying static files to " + Configuration.genOutputFolder);
+		Main.logger.info("Done copying static files to " + config.getGenOutputFolder() );
 	}
 
 	/**
@@ -116,14 +125,11 @@ public class Main implements Configuration, CommandLineRunner {
 		}
 	}
 
+
 	@Override
 	public void run(String... args) throws IllegalArgumentException, IllegalAccessException, NoSuchAlgorithmException {
-		Configuration.copyConfigurationToSysprops();
-		String inputSpecFile = "simple_cms.yml";
+		String inputSpecFile = null;
 
-		// check to see if the String array is empty
-
-		// copy any args to sysprops
 		for (final String argument : args) {
 			if (argument.toLowerCase().endsWith(".yml") || argument.toLowerCase().endsWith(".json")) {
 				inputSpecFile = argument;
@@ -139,7 +145,7 @@ public class Main implements Configuration, CommandLineRunner {
 			}
 		}
 
-		if (System.getProperty("schemaFile") != null) {
+		if (inputSpecFile == null && System.getProperty("schemaFile") != null) {
 			inputSpecFile = System.getProperty("schemaFile");
 		}
 		if (System.getProperty("generateKey") != null) {
@@ -149,14 +155,17 @@ public class Main implements Configuration, CommandLineRunner {
 				System.out.println("--- End Generated Key ---");
 			} else {
 				System.out.println("Usage:");
-				System.out.println("java io.starter.ignite.generator.Main -DgenerateKey=<secretkey>");
+				System.out.println(
+						"java io.starter.ignite.generator.Main -DgenerateKey=<secretkey> -jar target/stackgen-1.0.1.jar");
 			}
 			return;
 		}
-		Main.logger.info("with: " + inputSpecFile + (args != null ? " and args: " + args.toString() : ""));
+		logger.info("with: " + inputSpecFile + (args != null ? " and args: " + args.toString() : ""));
 
 		try {
-			Main.generateStack(inputSpecFile);
+			config = getConfig();
+			config.setInputSpec(inputSpecFile);
+			generateStack(config);
 		} catch (final Exception e) {
 			e.printStackTrace();
 			throw new IgniteException("STACKGEN FAILURE: " + e.toString());
@@ -169,16 +178,15 @@ public class Main implements Configuration, CommandLineRunner {
 	 * @param inputSpec JSONObject containing config data
 	 * @return
 	 */
-	public static void generateApp(JSONObject config) throws Exception {
+	public void generateApp(JSONObject cfg) throws Exception {
 
 		try {
-			Configuration.copyJSONConfigToSysprops(config);
+			config = StackGenConfigurator.configureFromJSON(cfg, config);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			Main.logger
-					.error("Copying Configuration values from JSON to Sysprops failed while starting App Generation");
+			Main.logger.error("Copying config values from JSON to Sysprops failed while starting App Generation");
 			e.printStackTrace();
 		}
-		Main.generateStack(config.getString("schemaFile"));
+		generateStack(config);
 
 	}
 
@@ -187,56 +195,62 @@ public class Main implements Configuration, CommandLineRunner {
 	 *
 	 * @param inputSpecFile
 	 */
-	public static void generateStack(String inputSpecFile) throws Exception {
+	public void generateStack(StackGenConfigurator cfg) throws Exception {
+
+		this.config = cfg;
+
 		System.out.println(ASCIIArtPrinter.print());
 		System.out.println();
 
-		Main.logger.info("Starting App Generation");
+		Main.logger.info("Starting Stack Generation");
 
+		// JavaGen initialized first as it handles compilations
+		JavaGen jg = new JavaGen(config);
+		
 		// Clear out the gen and
-		if (Configuration.overwriteMode) {
-			Main.initOutputFolders();
+		if (config.overwriteMode) {
+			initOutputFolders();
 		}
 
 		// generate swqgger api clients
-		if (!Configuration.skipJavaGen) {
+		if (!config.skipJavaGen) {
 
-			generateSwagger(inputSpecFile);
+			generateSwagger(config);
 
-			reCompileAll();
+			reCompileAll(jg);
 
 		} else {
 			Main.logger.info("####### SWAGGER Generation: SKIPPED");
 		}
 
-		if (!Configuration.skipDbGen) {
+		if (!config.skipDbGen) {
 			// generate corresponding DML
 			// statements to create a JDBC database
 			// execute DB creation, connect and test
-			DBGen.createDatabaseTablesFromModelFolder();
+			new DBGen(config).createDatabaseTablesFromModelFolder();
 		}
 
 		// generate MyBatis client classes XML configuration file
-		if (!Configuration.skipMybatisGen) {
-			MyBatisGen.createMyBatisFromModelFolder();
+		if (!config.skipMybatisGen) {
+			new MyBatisGen(config).createMyBatisFromModelFolder();
 		}
 
 		// compile the DataObject Classes
-		JavaGen.compile(Configuration.MODEL_DAO_PACKAGE_DIR);
+		jg.compile(config.getModelDaoPackageDir());
 
-		// JavaGen.compile(Configuration.PACKAGE_DIR);
+		// JavaGen.compile(config.PACKAGE_DIR);
 
 		// delegates calls to/from api to the mybatis entity
-		JavaGen.generateClassesFromModelFolder();
+		jg.generateClassesFromModelFolder();
 
 		// final compile
-		JavaGen.compile(Configuration.PACKAGE_DIR);
+		jg.compile(config.getPackageDir());
 
 		// copy misc files into gen project
-		Main.copyStaticFiles(Main.staticFiles);
+		copyStaticFiles(staticFiles);
 
 		// package the microservice for deployment
-		if (!Configuration.skipMavenBuildGeneratedApp) {
+		if (!config.skipMavenBuildGeneratedApp) {
 			MavenBuilder.build();
 		}
 
@@ -244,37 +258,58 @@ public class Main implements Configuration, CommandLineRunner {
 
 	}
 
-	private static void reCompileAll()
+	private void reCompileAll(JavaGen jg)
 			throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		try {
-			JavaGen.compile(Configuration.PACKAGE_DIR);
-			JavaGen.compile(Configuration.API_PACKAGE_DIR);
+			jg.compile(config.getPackageDir());
+			jg.compile(config.getApiPackageDir());
 		} catch (final FileNotFoundException x) {
-			Main.logger.error("NO INPUT FILES AT: " + Configuration.PACKAGE_DIR + " Exiting");
+			Main.logger.error("NO INPUT FILES AT: " + config.getPackageDir() + " Exiting");
 			return;
 		}
 
 		try {
-			JavaGen.compile(Configuration.MODEL_PACKAGE_DIR);
+			jg.compile(config.getModelPackageDir() );
 		} catch (final Throwable e) {
 			// this one fails in regen mode sometimes. ignore
 		}
 	}
 
-	private static void generateSwagger(String inputSpecFile) {
+	private void generateSwagger(StackGenConfigurator config) throws IOException {
+		logger.info("Generating Swagger Files From Plugins");
+		String inputSpecFile = config.getInputSpec();
 		List<File> gfiles = null;
-		if (Configuration.iteratePluginGen) {
-			gfiles = Main.iteratePluginsGen(inputSpecFile);
-		} else if (Configuration.mergePluginGen) {
-			gfiles = Main.mergePluginsGen(inputSpecFile);
-		} else {
-			if(!new File(inputSpecFile).canWrite()) {
-				inputSpecFile = Configuration.SPEC_LOCATION + inputSpecFile;
-			}
-			final SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile);
 
-			gfiles = swaggerGen.generate();
+		// handle file-based Schemas
+		if (inputSpecFile != null && !inputSpecFile.isEmpty()) {
+			// append the input spec path if we aren't able to use default
+			if (!new File(inputSpecFile).exists()) {
+				inputSpecFile = config.getSpecLocation() + inputSpecFile;
+				config.setInputSpec(inputSpecFile);
+			}
+			
+			if (config.iteratePluginGen) {
+				logger.info("Iterating Swagger Plugins");
+				gfiles = iteratePluginsGen(inputSpecFile);
+			} else if (config.mergePluginGen) {
+				logger.info("Merging Swagger Plugins");
+				gfiles = mergePluginsGen(inputSpecFile);
+			}
+		} else if(config.schemaData != null){
+			String generatedSchemaFileName = config.getJavaGenResourcesFolder() + "/stackgen-schema.yml";
+			File fout = new File(generatedSchemaFileName);
+			if(!fout.canWrite()) {
+				fout.mkdirs();
+				fout.delete();
+			}
+			FileUtils.fileWrite(generatedSchemaFileName, config.schemaData);
+			
+			config.setInputSpec(generatedSchemaFileName);
+		}else {
+			throw new IgniteException("No Swagger/OpenAPI Schema found for:" + config.schemaName);
 		}
+		logger.info("File Generation");
+		gfiles = new SwaggerGen(config).generate();
 		Main.logger.info("####### SWAGGER Generated: " + (gfiles != null ? gfiles.size() : " NO ") + " Source Files");
 	}
 
@@ -285,11 +320,11 @@ public class Main implements Configuration, CommandLineRunner {
 	 * @param inputSpecFile of Main Swagger gen
 	 * @return
 	 */
-	private static List<File> mergePluginsGen(String inputSpecFile) {
-		final SwaggerGen swaggerGen = new SwaggerGen(Configuration.SPEC_LOCATION + inputSpecFile);
+	private List<File> mergePluginsGen(String inputSpecFile) {
+		final SwaggerGen swaggerGen = new SwaggerGen(config.getSpecLocation() + inputSpecFile);
 
 		// iterate the files in the plugins folder
-		final String[] fin = Main.getPluginFiles();
+		final String[] fin = getPluginFiles();
 		if (fin != null) {
 			for (final String fs : fin) {
 				final File f = new File(fs);
@@ -306,14 +341,15 @@ public class Main implements Configuration, CommandLineRunner {
 	 *
 	 * @param inputSpecFile of Main Swagger gen
 	 */
-	private static List<File> iteratePluginsGen(String inputSpecFile) {
+	private List<File> iteratePluginsGen(String inputSpecFile) {
 		final List<File> allGen = new ArrayList<>();
-		final SwaggerGen swaggerGen = new SwaggerGen(Configuration.SPEC_LOCATION + inputSpecFile);
+		logger.warn("iterating plugins...");
+		final SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile);
 
 		// iterate the files in the plugins folder
-		final String[] fin = Main.getPluginFiles();
+		final String[] fin = getPluginFiles();
 		for (final String fs : fin) {
-			final File f = new File(Configuration.PLUGIN_SPEC_LOCATION + fs);
+			final File f = new File(config.PLUGIN_SPEC_LOCATION + fs);
 			Main.logger.info("Generating Plugin: " + f.getName());
 			final SwaggerGen pluginSwag = new SwaggerGen(f.getAbsolutePath());
 			final List<File> fxs = pluginSwag.generate();
@@ -344,11 +380,10 @@ public class Main implements Configuration, CommandLineRunner {
 	 *
 	 * @return array of schema files
 	 */
-	public static String[] getPluginFiles() {
-		final File pluginDir = new File(Configuration.PLUGIN_SPEC_LOCATION);
+	public String[] getPluginFiles() {
+		final File pluginDir = new File(config.PLUGIN_SPEC_LOCATION);
 		if (!pluginDir.exists()) {
-			throw new IllegalStateException(
-					"getPluginFiles Failure: no path here " + Configuration.PLUGIN_SPEC_LOCATION);
+			throw new IllegalStateException("getPluginFiles Failure: no path here " + config.PLUGIN_SPEC_LOCATION);
 		}
 		final String[] pluginFiles = pluginDir.list((dir, name) -> {
 			if (name.toLowerCase().endsWith(".json")) {
@@ -364,18 +399,21 @@ public class Main implements Configuration, CommandLineRunner {
 
 		if (pluginFiles != null && pluginFiles.length < 1) {
 			throw new IllegalStateException("Gen.getPluginFiles Failure: no plugin schemas found: "
-					+ Configuration.PLUGIN_SPEC_LOCATION + ". Check the PLUGIN_SPEC_LOCATION config value.");
+					+ config.PLUGIN_SPEC_LOCATION + ". Check the PLUGIN_SPEC_LOCATION config value.");
 		}
 		return pluginFiles;
 	}
 
-	private static void initOutputFolders() throws IOException {
-		File genDir = new File(Configuration.genOutputFolder);
-		Main.logger
-				.info("Initializing output folder: " + Configuration.genOutputFolder + " exists: " + genDir.exists());
+	private void initOutputFolders() throws IOException {
+		File genDir = new File(config.getGenOutputFolder() );
+		logger.info("Initializing output folder: " + config.getGenOutputFolder()  + " exists: " + genDir.exists());
 		final String marker = System.currentTimeMillis() + ".zip";
 		if (genDir.exists()) {
-			final String fx = Configuration.javaGenArchivePath + "/" + marker;
+
+			
+			final String fx = config.getJavaGenArchivePath() + "/" + marker;
+			
+			
 			final File toF = new File(fx);
 			if (!toF.exists()) {
 				toF.mkdirs();
@@ -389,20 +427,20 @@ public class Main implements Configuration, CommandLineRunner {
 			try {
 				zfw.zip(genDir, fx);
 			} catch (final Exception e) {
-				throw new IgniteException("Could not zip: " + Configuration.genOutputFolder + " to: " + fx + "\n"
-						+ e.getLocalizedMessage());
+				throw new IgniteException(
+						"Could not zip: " + config.getGenOutputFolder()  + " to: " + fx + "\n" + e.getLocalizedMessage());
 			}
-
-			final File ft = new File(System.getProperty("tmp.dir") + "deletedStackGenProjecct-" + marker);
+			Properties sysp = System.getProperties();
+			final File ft = new File(sysp.getProperty("java.io.tmpdir") + "/deletedStackGenProjecct-" + marker);
 			if (!genDir.renameTo(ft)) {
-				throw new IgniteException("Could not delete: " + Configuration.genOutputFolder);
+				throw new IgniteException("Could not delete: " + config.getGenOutputFolder() );
 			}
 
-			genDir = new File(Configuration.genOutputFolder);
+			genDir = new File(config.getGenOutputFolder() );
 			genDir.mkdirs();
 		}
 
-		final boolean outputDir = new File(Configuration.genOutputFolder + "/src/").mkdirs();
+		final boolean outputDir = new File(config.getGenOutputFolder()  + "/src/").mkdirs();
 		if (!outputDir) {
 			Main.logger.error("Could not init: " + outputDir + ". Exiting.");
 		}

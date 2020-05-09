@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.regex.Pattern;
 
-import io.starter.ignite.generator.Configuration;
 import org.springframework.util.ReflectionUtils;
 
 /* ##LICENSE## */
@@ -20,7 +19,7 @@ import org.springframework.util.ReflectionUtils;
 import io.starter.ignite.security.crypto.SecureEncrypter;
 
 @Aspect
-public class SecureFieldAspect implements Configuration {
+public class SecureFieldAspect {
 
 	protected static final Logger logger = LoggerFactory.getLogger(SecureFieldAspect.class);
 
@@ -28,6 +27,8 @@ public class SecureFieldAspect implements Configuration {
 	private final static String FIELD_GET = "get(@io.starter.ignite.security.securefield.SecureField * *)";
 	private final static String FIELD_SET = "set(@io.starter.ignite.security.securefield.SecureField * *)";
 	private final static Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2a?\\$\\d\\d\\$[./0-9A-Za-z]{53}");
+
+	private static final boolean DISABLE_SECURE_FIELD_ASPECT = false;
 
 	@Bean
 	private PasswordEncoder encoder(int strength) {
@@ -40,7 +41,7 @@ public class SecureFieldAspect implements Configuration {
 	@Around(SecureFieldAspect.FIELD_GET)
 	public Object getSecureField(ProceedingJoinPoint pjp) throws Throwable {
 
-		if (Configuration.DISABLE_SECURE_FIELD_ASPECT) {
+		if (DISABLE_SECURE_FIELD_ASPECT) {
 			SecureFieldAspect.logger.trace("SKIPPING SECURE FIELD GETTER");
 			return pjp.proceed();
 		} else {
@@ -56,7 +57,7 @@ public class SecureFieldAspect implements Configuration {
 		final String secureFieldName = pjp.getSignature().getName();
 
 		final Field secureField = ReflectionUtils.findField(targetObject.getClass(), secureFieldName);
-		final boolean isAccessible = secureField.isAccessible();
+		final boolean isAccessible = secureField.canAccess(targetObject);
 		if (!isAccessible) {
 			secureField.setAccessible(true);
 		}
@@ -123,7 +124,7 @@ public class SecureFieldAspect implements Configuration {
 	@Around(SecureFieldAspect.FIELD_SET)
 	public Object setSecureField(ProceedingJoinPoint pjp) throws Throwable {
 
-		if (Configuration.DISABLE_SECURE_FIELD_ASPECT) {
+		if (DISABLE_SECURE_FIELD_ASPECT) {
 			SecureFieldAspect.logger.trace("SKIPPING SECURE FIELD SETTER");
 			return pjp.proceed();
 		}
@@ -134,7 +135,7 @@ public class SecureFieldAspect implements Configuration {
 		final Object targetObject = pjp.getTarget();
 		final String secureFieldName = pjp.getSignature().getName();
 		final Field secureField = ReflectionUtils.findField(targetObject.getClass(), secureFieldName);
-		final boolean access = secureField.isAccessible();
+		final boolean access = secureField.canAccess(targetObject);
 
 		SecureFieldAspect.logger.trace("Set Secure Field for: " + pjp.toLongString());
 		final String clearTextValue = String.valueOf(pjp.getArgs()[0]);

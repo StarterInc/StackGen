@@ -21,15 +21,15 @@ Generates Spring MVC/Model Objects and publishes via REST apis. Full stack RESTf
 
 #### Introduction
 
-Starter Ignite can be used either as a Java command-line program, or as a library called from your own Java code.
+Starter StackGen can be used either as a Java command-line program, or as a library called from your own Java code.
 
 The primary means of controlling the output of the program is via command line arguments.
 
 ```
-java -jar StarterIgnite-1.0.0.jar -DSWAGGER_LANG=spring -DSWAGGER_LIB=resteasy ...
+java -jar StarterStackGen-1.0.0.jar -DSWAGGER_LANG=spring -DSWAGGER_LIB=resteasy ...
 ```
 
-These settings are converted to System properties within the Ignite program and are used to configure the output from the program.
+These settings are converted to System properties within the StackGen program and are used to configure the output from the program.
 
 ```java
 
@@ -42,7 +42,7 @@ configurator.setLang(SWAGGER_LANG);
 configurator.setLibrary(SWAGGER_LIB);
 ```
 
-#### Step 0: Download and Install Ignite Dev Prerequisites
+#### Step 0: Download and Install StackGen Dev Prerequisites
 
 - Java8+ JDK Installed
 
@@ -61,11 +61,11 @@ Linux:
 ```
 sudo apt-get git
 ```
-- Clone Ignite github project
+- Clone StackGen github project
 
 Linus/OSX:
 ```
-git clone https://github.com/StarterInc/Ignite.git
+git clone https://github.com/StarterInc/StackGen.git
 ```
 
 - Install Node and NPM
@@ -76,13 +76,13 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 brew install node
 ```
 
-> NOTE: Currently Ignite is configured for generation of MySQL database schemas.
+> NOTE: Currently StackGen is configured for generation of MySQL database schemas.
 
 **Roadmap** Support for PostgreSQL, Oracle, and noSQL databases TBD
 
 #### Development Best Practices
 
-- Fork the Ignite project and leverage github with Conventional Commits  [Conventional Commits](https://conventionalcommits.org/)
+- Fork the StackGen project and leverage github with Conventional Commits  [Conventional Commits](https://conventionalcommits.org/)
 
 - Only connect to database server via https.
 
@@ -94,24 +94,24 @@ brew install node
 
 Keep in mind SecureField&trade;s cannot be used in searches, so consider adding appropriate keyword-based search fields.
 
-#### Starter Ignite Code Generation Steps:
+#### Starter StackGen Code Generation Steps:
 
 1. Swagger Schema -> Java POJOs
 2. Java POJOs -> SQL Database Tables
 2. SQL Database -> ORM Mapping Data Objects (MyBatis)
-3. ORM Mapping Data Objects Wrapped by Ignite Model Objects
-4. Use Ignite Model Objects in your Java code (optional)
+3. ORM Mapping Data Objects Wrapped by StackGen Model Objects
+4. Use StackGen Model Objects in your Java code (optional)
 5. Start Spring Boot microservice and access Model Objects via REST apis  (optional)
 
 #### Step 1: Create an Swagger Schema for your Application
 
-Generating a Starter Ignite application requires that you provide/create an
+Generating a Starter StackGen application requires that you provide/create an
 OpenAPI schema that defines the application's objects, RESTful APIs and the schema
 for your SQL database.
 
 [Learn about OpenAPI](http://openapi.org/)
 
-Inputting your Swagger schema to Starter Ignite will result in the creation of a
+Inputting your Swagger schema to Starter StackGen will result in the creation of a
 Java Maven application residing in the generator output folder ("./gen" by default).
 
   **[Apache Maven](https://maven.apache.org)** is a popular open source Java build tool which manages dependencies, builds the appliction, and allows for
@@ -119,7 +119,7 @@ Java Maven application residing in the generator output folder ("./gen" by defau
 
   **[MyBatis ORM](http://blog.mybatis.org)** is a popular open source Java Object Relational Mapping library which allows you to define simple and complex Data Objects that map to your SQL database (in this case MySQL).  Using MyBatis, you can easily insert, update, delete and search for data in your Database using convenient Java Data Objects. If you are new to MyBatis, you should check out this [Excellent Tutorial](http://zetcode.com/db/mybatis/).
 
-Before running Starter Ignite on your Swagger spec, you will need to create a Database (MySQL) and a default schema.
+Before running Starter StackGen on your Swagger spec, you will need to create a Database (MySQL) and a default schema.
 
 We recommend the use of an AWS LightSail Database instance to run the database and using MySQL Workbench free database management utility to work with the data.
 
@@ -187,7 +187,7 @@ INFO: Starting Swagger2SpringBoot v1.0.1 on Johns-MacBook.local with PID 22593 (
 ```
 
 
-You should see the Starter Ignite banner and assuming the application starts correctly,
+You should see the Starter StackGen banner and assuming the application starts correctly,
 you will see output similar to the following on the console:
 
 ```
@@ -200,13 +200,13 @@ INFO: Started Swagger2SpringBoot in 20.395 seconds (JVM running for 38.247)
 
 #### Step 3: Access the Running Application
 
-Once launched, your new Starter Ignite application is ready to serve JSON data from then
+Once launched, your new Starter StackGen application is ready to serve JSON data from then
 RESTful endpoints that were defined in the OpenAPI schema.
 
 1. Open a browser: [http://localhost:8080](http://localhost:8080)
 2. Verify that the RESTful endpoints match your expectations from the input file
 3. If there are problems with your REST api, you can easily fix the OpenAPI schema
-and then re-run the Ignite generation script.
+and then re-run the StackGen generation script.
 
 Now is the time to correct any obvious errors in the Schema as it will speed up further
 development the more complete and correct your underlying application is.
@@ -219,7 +219,7 @@ Encrypted data can only be recovered from SecureFields&trade; columns if the Sec
 setting is enabled on the field in the OpenAPI schema.
 
 4. As you can see the application data can be accessed from the REST api, however
-Starter Ignite also generates a jar file which is usable as a dependency in your
+Starter StackGen also generates a jar file which is usable as a dependency in your
 projects without running the Spring Boot RESTful service.
 
 So you can use your generated Java objects from within your application directly,

@@ -22,6 +22,8 @@ public class MyBatisJoinTest {
 
 	Model m1, m2;
 
+	StackGenConfigurator config = new StackGenConfigurator();
+	
 	@Before
 	public void setup() {
 
@@ -41,7 +43,7 @@ public class MyBatisJoinTest {
 
 		// handle the join condition
 		final String field = "orderdetails";
-		final MyBatisJoin j = new MyBatisJoin(field, m1, m2);
+		final MyBatisJoin j = new MyBatisJoin(field, m1, m2, config);
 
 		// lock this down
 		Assert.assertEquals("should never change", "CREATE TABLE `stackgen$_order_order_detail_idx` (\n"
@@ -56,7 +58,7 @@ public class MyBatisJoinTest {
 
 		// handle the join condition
 		final String field = "orderdetails";
-		final MyBatisJoin j = new MyBatisJoin(field, m1, m2);
+		final MyBatisJoin j = new MyBatisJoin(field, m1, m2, config);
 
 		// lock this down
 		Assert.assertEquals("should never change",
@@ -66,7 +68,7 @@ public class MyBatisJoinTest {
 						+ "			WHERE user_id\n" + "			= #{id,jdbcType=INTEGER}\n"
 						+ "			AND I._order_id = U.id\n" + "			AND I._order_detail_id = R.id\n"
 						+ "		</select>",
-				j.getQueryXML());
+				j.getQueryXML(config));
 	}
 
 	@Test
@@ -74,7 +76,7 @@ public class MyBatisJoinTest {
 
 		// handle the join condition
 		final String field = "orderdetails";
-		final MyBatisJoin j = new MyBatisJoin(field, m1, m2);
+		final MyBatisJoin j = new MyBatisJoin(field, m1, m2, config);
 
 		// lock this down
 		Assert.assertEquals("should never change",

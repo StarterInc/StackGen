@@ -8,19 +8,18 @@
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
 
 
-		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+		<jdbcConnection driverClass="${dbDriver}"
 			connectionURL="${dbUrl}/${dbName}?autoReconnect=true"
 			userId="${dbUser}" password="${dbPassword}" />
 
-		<javaTypeResolver
-			type="io.starter.ignite.generator.MyBatisOffsetDateTimeTypeResolver">
-			<property name="useJSR310Types" value="false" />
+		<javaTypeResolver type="io.starter.ignite.generator.MyBatisOffsetDateTimeTypeResolver">
+			<property name="useJSR310Types" value="true" />
 		</javaTypeResolver>
 
 		<!-- Model Class -->
 		<javaModelGenerator
 			targetPackage="${MODEL_DAO_PACKAGE}"
-			targetProject="${myBatisMain}main/java">
+			targetProject="${genOutputFolder}/src/main/java">
 			<property name="useActualColumnNames" value="true" />
 			<property name="enableSubPackages" value="false" />
 			<property name="trimStrings" value="true" />
@@ -34,18 +33,12 @@
 		<javaClientGenerator
 			type="io.starter.ignite.generator.MyBatisIgniteJavaMapperGenerator"
 			targetPackage="${MODEL_DAO_PACKAGE}"
-			targetProject="${myBatisMain}main/java">
+			targetProject="${genOutputFolder}/src/main/java">
 			<property name="useActualColumnNames" value="true" />
 		</javaClientGenerator>
 
 		<table schema="${artifactId}" tableName="PLACEHOLDER_NODE"
 			modelType="hierarchical" />
-		<table schema="StackGen" tableName="stackgen$_csat">
-			<generatedKey column="id" sqlStatement="JDBC" />
-		</table>
-		<table schema="StackGen" tableName="stackgen$_location">
-			<generatedKey column="id" sqlStatement="JDBC" />
-		</table>
 	</context>
 
 </generatorConfiguration>

@@ -8,11 +8,11 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<environments default="production">
 
 		<!-- production JDBC data source TODO: make Driver Configurable TODO: update 
-			mysql driver to com.mysql.cj.jdbc.Driver -->
+			mysql driver to ${dbDriver} -->
 		<environment id="production">
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
-				<property name="driver" value="com.mysql.cj.jdbc.Driver" />
+				<property name="driver" value="${dbDriver}" />
 				<property name="url"
 					value="${dbUrl}/${dbName}?autoReconnect=true" />
 				<property name="username" value="${dbUser}" />
@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<environment id="staging">
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
-				<property name="driver" value="com.mysql.cj.jdbc.Driver" />
+				<property name="driver" value="${dbDriver}" />
 				<property name="url"
 					value="${dbUrl}/${dbName}?autoReconnect=true" />
 				<property name="username" value="${dbUser}" />
@@ -42,6 +42,5 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		</environment>
 
 	</environments>
-
-
+	<mappers />
 </configuration>

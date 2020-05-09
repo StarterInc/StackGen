@@ -23,22 +23,24 @@ import io.starter.toolkit.StringTool;
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms mcmahon
  *
  */
-public class MyBatisIgnitePluginAdapter extends PluginAdapter implements Configuration {
+public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 
 	protected static final Logger logger = LoggerFactory.getLogger(MyBatisIgnitePluginAdapter.class);
 	private final boolean useDelegate = false;
-
-	public MyBatisIgnitePluginAdapter() {
-		MyBatisIgnitePluginAdapter.logger.error("Instantiating MyBatisIgnitePluginAdapter...");
-	}
-
+	
+	public static String LINE_FEED = "\r\n";
+	
+	//public MyBatisIgnitePluginAdapter() {
+	//	logger.info("Instantiating MyBatisIgnitePluginAdapter...");
+	//}
+	
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-
+		String schemaName = context.getProperty("schemaName");
 		// we are replacing the super type but still need the original import
 		topLevelClass.addImportedType(topLevelClass.getType());
 
-		final String scn = MyBatisIgnitePluginAdapter.getSuperClassName(topLevelClass);
+		final String scn = getSuperClassName(topLevelClass);
 		final FullyQualifiedJavaType superClass = new FullyQualifiedJavaType(scn);
 		topLevelClass.addImportedType(superClass);
 		topLevelClass.setSuperClass(superClass);
@@ -97,21 +99,24 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter implements Configu
 	 * @param topLevelClass
 	 * @return
 	 */
-	public static String getSuperClassName(TopLevelClass topLevelClass) {
-
+	public String getSuperClassName(TopLevelClass topLevelClass) {
+		String schemaName = context.getProperty("schemaName");
 		String cn = topLevelClass.getType().getFullyQualifiedName();
-		final String ccsn = "dao." + StringTool.getUpperCaseFirstLetter(Configuration.schemaName);
+		
+		List<Method> methods = topLevelClass.getMethods();
+		
+		final String ccsn = "dao." + StringTool.getUpperCaseFirstLetter(schemaName );
 		if (!cn.contains(ccsn)) {
-			throw new RuntimeException("Could Not Strip DAO Package Name from the MyBatis DAO delegate field name");
+			throw new RuntimeException("Could Not Strip DAO Package Name from the MyBatis DAO delegate field name: " + cn  + " / " + ccsn);
 		}
 		cn = cn.replace(ccsn, "");
 
 		if (cn.contains("..")) {
 			throw new IllegalStateException("Could not get getSuperClassName due to package collision: " + cn
-					+ ". Change value of schemaName: " + Configuration.schemaName);
+					+ ". Change value of schemaName: " + schemaName);
 		}
 
-		MyBatisIgnitePluginAdapter.logger.info("SuperClass Name MYBATIS member: " + cn);
+		logger.trace("SuperClass Name MYBATIS member: " + cn);
 		return cn;
 	}
 
@@ -155,8 +160,8 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter implements Configu
 	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
 			IntrospectedTable introspectedTable, ModelClassType modelClassType) {
 
-		MyBatisIgnitePluginAdapter.logger.info("MyBatisIgnitePluginAdapter Generating: " + field + " name:"
-				+ field.getName() + Configuration.LINE_FEED + " class:" + field.getType().getShortName());
+		logger.trace("MyBatisIgnitePluginAdapter Generating: " + field + " name:"
+				+ field.getName() + LINE_FEED + " class:" + field.getType().getShortName());
 
 		field.setVisibility(JavaVisibility.PROTECTED);
 
@@ -165,11 +170,11 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter implements Configu
 
 	@Override
 	public boolean validate(List<String> warnings) {
-		MyBatisIgnitePluginAdapter.logger.info("MyBatis Warnings: ");
+		logger.info("MyBatis Warnings: ");
 		for (final String w : warnings) {
-			MyBatisIgnitePluginAdapter.logger.info(w);
+			logger.warn(w);
 		}
-		MyBatisIgnitePluginAdapter.logger.info("End MyBatis Warnings");
+		logger.warn("End MyBatis Warnings");
 		return true;
 	}
 }

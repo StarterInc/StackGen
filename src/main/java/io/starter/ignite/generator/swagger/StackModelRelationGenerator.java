@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.starter.ignite.generator.StackGenConfigurator;
 import io.starter.ignite.generator.MyBatisJoin;
 import io.swagger.models.Model;
 import io.swagger.models.Swagger;
@@ -51,7 +52,7 @@ public class StackModelRelationGenerator {
 	protected final Logger logger = LoggerFactory
 			.getLogger(StackModelRelationGenerator.class);
 
-	public List<MyBatisJoin> generate(Swagger swagger) {
+	public List<MyBatisJoin> generate(Swagger swagger, StackGenConfigurator config) {
 		logger.warn("DISABLED: Generating Stack Model Relationships for : "
 				+ swagger.getInfo().getDescription());
 
@@ -63,7 +64,6 @@ public class StackModelRelationGenerator {
 		// for each model, iterate the props
 		// if it is an ARRAY value,
 		Map<String, Model> models = swagger.getDefinitions();
-
 		fixTitles(models);
 
 		for (Model mdx : models.values()) {
@@ -108,7 +108,7 @@ public class StackModelRelationGenerator {
 						if (rpm.getTitle() == null) {
 							rpm.setTitle(sr1);
 						}
-						MyBatisJoin j = new MyBatisJoin(field, mdx, rpm);
+						MyBatisJoin j = new MyBatisJoin(field, mdx, rpm, config);
 						// creates the *Ref XML to inject into the Main Object
 						// Mapping
 						refs.add(j);

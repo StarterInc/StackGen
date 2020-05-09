@@ -7,7 +7,7 @@ import org.junit.Test;
 import io.starter.stackgentest.model.User;
 
 public class JavaGenTest {
-
+	StackGenConfigurator cfg = new StackGenConfigurator();
 	@Test
 	@Ignore(value="serializing weird")
 	public void getApiModelPropertyAnnotationFromField()
@@ -23,22 +23,25 @@ public class JavaGenTest {
 	@Test
 	public void stringReplaceMethodText() {
 
+		
+		JavaGen jg = new JavaGen(cfg);
+		
 		final String className = "User";
 		Assert.assertEquals("int rows = \n" + "	getSelectByMapper() \n" + "	.deleteByPrimaryKey((long)getId()); \n"
-				+ "	return rows", JavaGen.deleteMethodText(className));
+				+ "	return rows", jg.deleteMethodText(className));
 
 		Assert.assertEquals("	getSelectByMapper() \n" + "	.insertSelective(this.UserDelegate ); \n" + "	return getId()",
-				JavaGen.insertMethodText(className));
+				jg.insertMethodText(className));
 
 		Assert.assertEquals("	// similar to old updateByExampleSelective method\n"
 				+ "		int rows =  getSelectByMapper().update(c ->\n"
 				+ "		io.starter.stackgen.model.dao.StackgenUserMapper.updateSelectiveColumns(this.UserDelegate , c)\n"
 				+ "		.where(io.starter.stackgen.model.dao.StackgenUserDynamicSqlSupport.id,  isEqualTo(getId())));\n"
-				+ "		return rows", JavaGen.updateMethodText(className));
+				+ "		return rows", jg.updateMethodText(className));
 
 		Assert.assertEquals(
 				"this.UserDelegate = getSelectByMapper().selectByPrimaryKey(getId()).get();\n" + "		return this",
-				JavaGen.loadMethodText(className));
+				jg.loadMethodText(className));
 
 	}
 }

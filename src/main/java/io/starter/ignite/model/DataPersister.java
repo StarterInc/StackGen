@@ -22,7 +22,7 @@ public class DataPersister {
 		return valueOf;
 	}
 
-	public static String persist(String clearTextValue) {
+	public static Object persist(String clearTextValue) {
 		logger.info("DataPersister.persist: " + clearTextValue);
 		return clearTextValue;
 	}

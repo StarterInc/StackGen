@@ -15,7 +15,7 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.starter.ignite.generator.Configuration;
+
 import io.starter.ignite.util.SystemConstants;
 
 /**
@@ -39,7 +39,7 @@ public class ConnectionFactory {
 	private static String backupPassword = SystemConstants.dbPassword;
 
 	private static DataSource dsx = null;
-
+	static String LINE_FEED = "\r\n";
 	// Call the private constructor to initialize the
 	// DriverManager
 	@SuppressWarnings("unused")
@@ -47,10 +47,10 @@ public class ConnectionFactory {
 
 	public static String toConfigString() {
 		return "ConnectionFactory v." + SystemConstants.IGNITE_MAJOR_VERSION + "."
-				+ SystemConstants.IGNITE_MINOR_VERSION + Configuration.LINE_FEED + "Settings:" + Configuration.LINE_FEED
-				+ "=========" + Configuration.LINE_FEED + ConnectionFactory.driverName + Configuration.LINE_FEED
-				+ ConnectionFactory.sourceURL + Configuration.LINE_FEED + ConnectionFactory.dbName
-				+ Configuration.LINE_FEED + ConnectionFactory.userName;
+				+ SystemConstants.IGNITE_MINOR_VERSION + LINE_FEED + "Settings:" + LINE_FEED
+				+ "=========" + LINE_FEED + ConnectionFactory.driverName + LINE_FEED
+				+ ConnectionFactory.sourceURL + LINE_FEED + ConnectionFactory.dbName
+				+ LINE_FEED + ConnectionFactory.userName;
 	}
 
 	/**
@@ -170,25 +170,25 @@ public class ConnectionFactory {
 		p.setUsername(ConnectionFactory.userName);
 
 		p.setJmxEnabled(true);
-//		p.setTestWhileIdle(false);
-//		p.setTestOnBorrow(true);
+		p.setTestWhileIdle(false);
+		p.setTestOnBorrow(true);
 		p.setValidationQuery("SELECT 1");
-//		p.setTestOnReturn(false);
-//		p.setValidationInterval(30000);
+		p.setTestOnReturn(false);
+		p.setValidationInterval(30000);
 
-//		p.setTimeBetweenEvictionRunsMillis(5000);
+		p.setTimeBetweenEvictionRunsMillis(60000);
 
 		p.setMaxActive(100);
 		p.setInitialSize(10);
 
-//		p.setMaxWait(10000);
+		p.setMaxWait(10000);
 
-//		p.setLogAbandoned(false);
-//		p.setRemoveAbandoned(true);
-//		p.setRemoveAbandonedTimeout(600);
+		p.setLogAbandoned(true);
+		p.setRemoveAbandoned(true);
+		p.setRemoveAbandonedTimeout(600);
 
-//		p.setMinEvictableIdleTimeMillis(60000);
-//		p.setMinIdle(10);
+		p.setMinEvictableIdleTimeMillis(60000);
+		p.setMinIdle(10);
 
 		// crucial to avoid abandoned PooledConnection errors.
 		p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
@@ -199,7 +199,7 @@ public class ConnectionFactory {
 		((org.apache.tomcat.jdbc.pool.DataSource) dsx).setPoolProperties(p);
 
 		((org.apache.tomcat.jdbc.pool.DataSource) dsx).setFairQueue(true);
-		// dsx.setDataSource(dsx);
+
 		return dsx;
 	}
 
@@ -253,8 +253,8 @@ public class ConnectionFactory {
 
 		} catch (final SQLException e) {
 
-			ConnectionFactory.logger.info("ERROR: Unable to close Statement");
-			ConnectionFactory.logger.info(e.getMessage());
+			logger.info("ERROR: Unable to close Statement");
+			logger.error(e.getMessage());
 
 		} // end try-catch block
 

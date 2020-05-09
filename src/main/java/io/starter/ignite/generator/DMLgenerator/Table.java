@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.starter.ignite.generator.Configuration;
+import io.starter.ignite.generator.StackGenConfigurator;
 import io.starter.ignite.generator.DBGen;
 import io.starter.ignite.util.SystemConstants;
 
@@ -22,9 +22,26 @@ import io.starter.ignite.util.SystemConstants;
  * </pre>
  */
 
-public class Table implements Configuration {
+public class Table {
 
 	public static final Map<String, String> myMap;
+	
+	public static String LINE_FEED = "\r\n";
+	private DBGen dbg;
+	private StackGenConfigurator config;
+	
+	public Table(StackGenConfigurator cfg) {
+		this.config = cfg;
+		this.dbg = new DBGen(cfg);
+	}
+
+	public static String CREATE_TABLE = "CREATE TABLE";
+	public static String CREATE_TABLE_BEGIN_BLOCK = "(";
+	public static String CREATE_TABLE_END_BLOCK = ");";
+	public static String DROP_TABLE = "DROP TABLE";
+	public static String ALTER_TABLE = "ALTER TABLE";
+	public static String RENAME_TABLE_PREFIX = "BK_";
+	public static String TUPLE_TABLE_SUFFIX = "_idx";
 
 	static {
 		final Map<String, String> aMap = new HashMap<>();
@@ -49,21 +66,21 @@ public class Table implements Configuration {
 		aMap.put("Integer", "INTEGER ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 		aMap.put("int", "INTEGER ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 		aMap.put("String", "VARCHAR(${MAX_LENGTH}) ${NOT_NULL} ${CHAR_SET} ${DEFAULT} ${COMMENT}");
-		aMap.put("Text", "TEXT ${CHAR_SET} ${DEFAULT} ${COMMENT}");
+		aMap.put("Text", "LONGTEXT ${CHAR_SET} ${DEFAULT} ${COMMENT}");
 		aMap.put("Double", "DOUBLE ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 		aMap.put("Long", "BIGINT(" + precision + ") UNSIGNED ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 		aMap.put("Date", "DATE ${NOT_NULL} ${COMMENT}");
 		aMap.put("LocalDate", "DATE ${NOT_NULL} ${DEFAULT} ${COMMENT}");
 		aMap.put("OffsetDateTime", "TIMESTAMP ${NOT_NULL} ${DEFAULT} ${COMMENT}");
-		aMap.put("Integer.pkid", "'id' BIGINT(" + precision + ") SIGNED AUTO_INCREMENT," + Configuration.LINE_FEED
+		aMap.put("Integer.pkid", "'id' BIGINT(" + precision + ") SIGNED AUTO_INCREMENT," + StackGenConfigurator.LINE_FEED
 				+ "PRIMARY KEY (`id`), COMMENT 'Ignite-generated Integer.pkid'");
 		aMap.put("pkid", "PRIMARY KEY (`ID`), UNIQUE INDEX `ID_UNIQUE` (`ID` ASC));");
 		myMap = Collections.unmodifiableMap(aMap);
 	}
 
-	public static String generateTableDropDML(String tableName) {
-		tableName = Table.convertToDBSyntax(tableName);
-		return Configuration.DROP_TABLE + " " + tableName + Configuration.LINE_FEED;
+	public String generateTableDropDML(String tableName) {
+		tableName = convertToDBSyntax(tableName);
+		return DROP_TABLE + " " + tableName + LINE_FEED;
 	}
 
 	/**
@@ -72,18 +89,18 @@ public class Table implements Configuration {
 	 * @param tableName
 	 * @return
 	 */
-	public static String generateTableRenameDML(String tableName) {
-		tableName = Table.convertToDBSyntax(tableName);
-		String dml = Configuration.ALTER_TABLE + " " + tableName + Configuration.LINE_FEED;
-		dml += " RENAME TO " + Configuration.RENAME_TABLE_PREFIX + tableName + "_" + System.currentTimeMillis();
+	public String generateTableRenameDML(String tableName) {
+		tableName = convertToDBSyntax(tableName);
+		String dml = ALTER_TABLE + " " + tableName + LINE_FEED;
+		dml += " RENAME TO " + RENAME_TABLE_PREFIX + tableName + "_" + System.currentTimeMillis();
 		return dml;
 
 	}
 
-	public static String generateTableBeginningDML(String tableName) {
-		tableName = Table.convertToDBSyntax(tableName);
-		return Configuration.CREATE_TABLE + " " + SystemConstants.dbName + "." + tableName
-				+ Configuration.CREATE_TABLE_BEGIN_BLOCK + Configuration.LINE_FEED;
+	public String generateTableBeginningDML(String tableName) {
+		tableName = convertToDBSyntax(tableName);
+		return CREATE_TABLE + " " + SystemConstants.dbName + "." + tableName + CREATE_TABLE_BEGIN_BLOCK
+				+ LINE_FEED;
 	}
 
 	/**
@@ -92,12 +109,12 @@ public class Table implements Configuration {
 	 * @param colName
 	 * @return
 	 */
-	public static String convertToDBSyntax(String colName) {
-		colName = DBGen.decamelize(colName);
-		if (!colName.startsWith(Configuration.TABLE_NAME_PREFIX)) {
-			colName = Configuration.TABLE_NAME_PREFIX + colName;
+	public String convertToDBSyntax(String colName) {
+		colName = dbg.decamelize(colName);
+		if (!colName.startsWith(config.getTableNamePrefix())) {
+			colName = config.getTableNamePrefix() + colName;
 		}
-		if (Configuration.columnsUpperCase) {
+		if (config.columnsUpperCase) {
 			colName = colName.toUpperCase();
 		} else {
 			colName = colName.toLowerCase();
@@ -105,9 +122,9 @@ public class Table implements Configuration {
 		return colName.trim();
 	}
 
-	public static String convertToJavaSyntax(String colName) {
-		String rep = Configuration.TABLE_NAME_PREFIX;
-		if (Configuration.columnsUpperCase) {
+	public String convertToJavaSyntax(String colName) {
+		String rep = config.getTableNamePrefix();
+		if (config.columnsUpperCase) {
 			colName = colName.toUpperCase();
 			rep = rep.toUpperCase();
 		} else {

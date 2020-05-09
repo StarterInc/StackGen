@@ -6,7 +6,10 @@ import java.util.List;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 
-public interface Generator extends Configuration {
+public interface Generator {
+	
+	StackGenConfigurator getConfig();
+	
 	Object createSetter(Field f);
 
 	Object createAccessor(Field f);

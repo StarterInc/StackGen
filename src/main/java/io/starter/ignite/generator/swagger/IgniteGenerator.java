@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.annotations.VisibleForTesting;
 
-import io.starter.ignite.generator.Configuration;
+import io.starter.ignite.generator.StackGenConfigurator;
 import io.starter.ignite.generator.DBGen;
 import io.starter.ignite.generator.MyBatisJoin;
 import io.starter.ignite.generator.SwaggerGen;
@@ -43,12 +46,19 @@ import io.swagger.models.properties.StringProperty;
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
-public class IgniteGenerator extends DefaultGenerator implements Configuration {
+public class IgniteGenerator extends DefaultGenerator {
+
+	Logger logger = LoggerFactory.getLogger(IgniteGenerator.class);
 
 	// Starter Enhancements
 	private Boolean				generateStarterCRUDOps				= true;
 	private Boolean				generateStarterModelEnhancements	= true;
 	private List<SwaggerGen>	pluginSwaggers;
+
+	StackGenConfigurator cfg = null; 
+	public IgniteGenerator(StackGenConfigurator c) {
+		cfg = c;
+	}
 
 	IgniteGenerator plugins(List<SwaggerGen> pluginSwaggers) {
 		this.setPluginSwaggers(pluginSwaggers);
@@ -60,10 +70,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 	 * 
 	 */
 	public void preprocessSwagger() {
-		String port = (System.getProperty("hostPort") != null
-				? System.getProperty("hostPort")
-				: Configuration.defaultPort);
-		config.additionalProperties().put("serverPort", port);
+		config.additionalProperties().put("serverPort", cfg.defaultPort);
 	}
 
 	@Override
@@ -108,13 +115,14 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 
 		// HDD: add the model link builder here
 		StackModelRelationGenerator relationGenerator = new StackModelRelationGenerator();
-		List<MyBatisJoin> joins = relationGenerator.generate(swagger);
+		List<MyBatisJoin> joins = relationGenerator.generate(swagger, cfg);
 
 		// create the tables... MyBatis will allow us to modify the
 		// model later
 		try {
+			DBGen dbg = new DBGen(cfg);
 			if (joins.size() > 0)
-				DBGen.createIDXTables(joins);
+				dbg.createIDXTables(joins);
 		} catch (SQLException e) {
 			logger.error("Failed to create IDX tables.", e);
 		}
@@ -169,7 +177,7 @@ public class IgniteGenerator extends DefaultGenerator implements Configuration {
 				// this.swagger.getPaths().get(path.toLowerCase());
 
 				// IGNITE_GEN_REST_PATH_PREFIX
-				if (Configuration.checkReservedWord(k)) { // handle reserved
+				if (cfg.checkReservedWord(k)) { // handle reserved
 					Path ops = addCrudOps(k, m);
 					if (ops != null) {
 						this.swagger.getPaths().put(path + "/{param}", ops);

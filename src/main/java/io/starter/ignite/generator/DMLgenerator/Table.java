@@ -99,7 +99,7 @@ public class Table {
 
 	public String generateTableBeginningDML(String tableName) {
 		tableName = convertToDBSyntax(tableName);
-		return CREATE_TABLE + " " + SystemConstants.dbName + "." + tableName + CREATE_TABLE_BEGIN_BLOCK
+		return CREATE_TABLE + " " + config.getSchemaName() + "." + tableName + CREATE_TABLE_BEGIN_BLOCK
 				+ LINE_FEED;
 	}
 

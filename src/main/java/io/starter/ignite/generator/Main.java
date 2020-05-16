@@ -163,7 +163,7 @@ public class Main extends Gen implements CommandLineRunner {
 		logger.info("with: " + inputSpecFile + (args != null ? " and args: " + args.toString() : ""));
 
 		try {
-			config = getConfig();
+			// config = getConfig();
 			config.setInputSpec(inputSpecFile);
 			generateStack(config);
 		} catch (final Exception e) {
@@ -197,12 +197,7 @@ public class Main extends Gen implements CommandLineRunner {
 	 */
 	public void generateStack(StackGenConfigurator cfg) throws Exception {
 
-		this.config = cfg;
-
-		System.out.println(ASCIIArtPrinter.print());
-		System.out.println();
-
-		Main.logger.info("Starting Stack Generation");
+		preFlight(cfg);
 
 		// JavaGen initialized first as it handles compilations
 		JavaGen jg = new JavaGen(config);
@@ -258,6 +253,18 @@ public class Main extends Gen implements CommandLineRunner {
 
 	}
 
+	private void preFlight(StackGenConfigurator cfg) {
+		this.config = cfg;
+
+		System.out.println(ASCIIArtPrinter.print());
+		System.out.println();
+
+		if(System.getProperty("artifactId") != null) {
+			this.config.setArtifactId(System.getProperty("artifactId"));
+		}
+		Main.logger.info("Starting Stack Generation");
+	}
+
 	private void reCompileAll(JavaGen jg)
 			throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		try {
@@ -306,7 +313,7 @@ public class Main extends Gen implements CommandLineRunner {
 			
 			config.setInputSpec(generatedSchemaFileName);
 		}else {
-			throw new IgniteException("No Swagger/OpenAPI Schema found for:" + config.schemaName);
+			throw new IgniteException("No Swagger/OpenAPI Schema found for:" + config.getSchemaName());
 		}
 		logger.info("File Generation");
 		gfiles = new SwaggerGen(config).generate();

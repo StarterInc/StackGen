@@ -95,7 +95,7 @@ public class SwaggerGen extends Gen {
 
 		config = getConfig(config.getSpecLocation() + cfg.getString("schemaFile"));
 
-		logger.info("Configured StackGen Schema for:" + config.schemaName);
+		logger.info("Configured StackGen Schema for:" + config.getSchemaName());
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class SwaggerGen extends Gen {
 	public SwaggerGen(String spec) {
 		super();
 		config = getConfig(spec);
-		logger.info("StackGen Schema Initialized: " + config.schemaName);
+		logger.info("StackGen Schema Initialized: " + config.getSchemaName());
 	}
 
 	/**

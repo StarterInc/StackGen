@@ -27,6 +27,9 @@ public class MyBatisJoinTest {
 	@Before
 	public void setup() {
 
+		config.setSchemaName("stackgen");
+		config.setArtifactId("stackgen");
+		
 		// create mock
 		m1 = Mockito.mock(Model.class);
 

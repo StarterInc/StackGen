@@ -71,7 +71,7 @@ public class MyBatisGen extends Gen implements Generator {
 	 */
 	public String getMyBatisModelClassName(String apiClassName) {
 		final String apibn = MyBatisGen.getBaseJavaName(apiClassName);
-		return StringTool.getUpperCaseFirstLetter(config.schemaName) + apibn;
+		return StringTool.getUpperCaseFirstLetter(config.getSchemaName()) + apibn;
 	}
 
 	/**
@@ -95,17 +95,26 @@ public class MyBatisGen extends Gen implements Generator {
 		// iterate the config variables
 		try {
 
+			// set props from fields
 			String[] fx = StackGenConfigurator.getPropertyNames();
 			for (String f : fx) {
-				// and if they match a ${} pattern,
 				String fn = "${" + f + "}";
 				if (input.contains(fn)) {
-					// replace with config value
-					// logger.warn("REPLACED: " + input);
 					Object v = config.get(f);
 					input = input.replace(fn, v.toString());
 				}
 			}
+			
+			// set dynamic props
+			String[] mx = StackGenConfigurator.getMethodPropertyNames();
+			for (String m : mx) {
+				String mn = "${" + StringTool.getLowerCaseFirstLetter(m) + "}";
+				if (input.contains(mn)) {
+					Object v = config.callGet(m);
+					input = input.replace(mn, v.toString());
+				}
+			}
+			
 		} catch (Exception x) {
 			logger.error("replaceConfigVariables failed: " + x);
 		}
@@ -144,7 +153,7 @@ public class MyBatisGen extends Gen implements Generator {
 		final ProgressCallback cb = null;
 
 		((org.mybatis.generator.config.Context) cfx.getContexts().get(0)).getProperties().put("schemaName",
-				config.schemaName);
+				config.getSchemaName());
 		myBatisGenerator.generate(cb);
 		for (final String warning : warnings) {
 			MyBatisGen.logger.warn("WARNING: MyBatis Generation: " + warning);
@@ -182,7 +191,7 @@ public class MyBatisGen extends Gen implements Generator {
 		String packageName = null;
 		final int dotpos = className.lastIndexOf(".");
 		packageName = className.substring(0, dotpos);
-		packageName = "gen." + packageName;
+		// packageName = "gen." + packageName;
 		className = className.substring(dotpos + 1);
 
 		MyBatisGen.logger.info("Load MyBatis Generator Config XML template...");
@@ -224,7 +233,7 @@ public class MyBatisGen extends Gen implements Generator {
 	}
 
 	private String convertToMapperSyntax(String className) {
-		return config.getSqlMapsPath() + config.schemaName + className + "Mapper.xml";
+		return config.getSqlMapsPath() + config.getSchemaName() + className + "Mapper.xml";
 	}
 
 	private Document createMyBatisXMLGenConfigNodes(Document jdo, String className, File configFile)
@@ -240,7 +249,7 @@ public class MyBatisGen extends Gen implements Generator {
 		// dedupe
 		if (!alreadyAdded.contains(className)) {
 			alreadyAdded.add(className);
-			final Element el = new Element("table").setAttribute("schema", config.schemaName).setAttribute("tableName",
+			final Element el = new Element("table").setAttribute("schema", config.getSchemaName()).setAttribute("tableName",
 					table.convertToDBSyntax(className));
 
 			final Element el2 = new Element("generatedKey").setAttribute("column", "id").setAttribute("sqlStatement",

@@ -3,7 +3,7 @@ package io.starter.ignite.generator.DMLgenerator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-
+import org.junit.Before;
 import org.junit.Test;
 
 import io.starter.ignite.generator.StackGenConfigurator;
@@ -14,7 +14,15 @@ import io.starter.ignite.generator.DBGen;
  */
 public class UtilsTest {
 
-	Table table = new Table(new StackGenConfigurator());
+	StackGenConfigurator config = new StackGenConfigurator();
+	Table table = new Table(config);
+	
+	@Before
+	public void setup() {
+
+		config.setSchemaName("stackgen");
+		config.setArtifactId ("stackgen");
+	}
 	
 	@Test
 	public void expectedColNameFail() {

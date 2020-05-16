@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import org.springframework.util.ReflectionUtils;
 
 import io.starter.ignite.generator.swagger.StackGenCodegenConfigLoader;
 import io.starter.ignite.util.SystemConstants;
+import io.starter.toolkit.StringTool;
 import io.swagger.codegen.CliOption;
 import io.swagger.codegen.ClientOptInput;
 import io.swagger.codegen.ClientOpts;
@@ -44,17 +46,11 @@ public class StackGenConfigurator extends CodegenConfigurator {
 			? System.getProperty("adminServiceURL")
 			: "http://localhost:8099/");
 
-	public String dbUser= (System.getProperty("dbUser") != null
-			? System.getProperty("dbUser")
-			: "stackgen");
-	public String dbPassword  = (System.getProperty("dbPassword") != null
-			? System.getProperty("dbPassword")
+	public String dbUser = (System.getProperty("dbUser") != null ? System.getProperty("dbUser") : "stackgen");
+	public String dbPassword = (System.getProperty("dbPassword") != null ? System.getProperty("dbPassword")
 			: "password");
-	public String dbName = (System.getProperty("dbName") != null
-			? System.getProperty("dbName")
-			: "mystack");
-	public String dbUrl = (System.getProperty("dbUrl") != null
-			? System.getProperty("dbUrl")
+	public String dbName = (System.getProperty("dbName") != null ? System.getProperty("dbName") : "mystack");
+	public String dbUrl = (System.getProperty("dbUrl") != null ? System.getProperty("dbUrl")
 			: "jdbc:mysql://mydb.myco.com");
 
 	public String defaultHostname = (System.getProperty("defaultHostname") != null
@@ -86,16 +82,22 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	/**
 	 * set the value of allowed CORS request paths
 	 */
-	public String getCORSMapping() {return (System.getProperty("CORSMapping") != null ? System.getProperty("CORSMapping")
-			: "*/**");}
+	public String getCORSMapping() {
+		return (System.getProperty("CORSMapping") != null ? System.getProperty("CORSMapping") : "*/**");
+	}
 
-	public String getCORSOrigins() {return (System.getProperty("CORSMapping") != null ? System.getProperty("CORSOrigins")
-			: "localhost");}
+	public String getCORSOrigins() {
+		return (System.getProperty("CORSMapping") != null ? System.getProperty("CORSOrigins") : "localhost");
+	}
 
 	// TODO: these 2 are unused
-	public String getAdminUser() {return (System.getProperty("adminUser") != null ? System.getProperty("adminUser") : "admin");}
-	public String getAdminPassword() { return (System.getProperty("adminPassword") != null ? System.getProperty("adminPassword")
-			: "ch@ng3m3");}
+	public String getAdminUser() {
+		return (System.getProperty("adminUser") != null ? System.getProperty("adminUser") : "admin");
+	}
+
+	public String getAdminPassword() {
+		return (System.getProperty("adminPassword") != null ? System.getProperty("adminPassword") : "ch@ng3m3");
+	}
 
 	boolean skipJavaGen = (System.getProperty("skipJavaGen") != null
 			? Boolean.parseBoolean(System.getProperty("skipJavaGen"))
@@ -141,13 +143,26 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	public String swaggerLib = (System.getProperty("swaggerLib") != null ? System.getProperty("swaggerLib")
 			: "spring-boot");
 
-	public String artifactId = (System.getProperty("artifactId") != null ? System.getProperty("artifactId")
-			: "artifactid");
+//	private String artifactid = "artifactid";
+//	public String getArtifactId() { return artifactid) }
 
 	// DML/DB section
-	public String schemaName = (System.getProperty("schemaName") != null ? System.getProperty("schemaName")
-			: "schemaName");
-	public String getTableNamePrefix() { return schemaName + "$";}
+	private String schemaName = null;
+
+	public String getSchemaName() { 
+		if(schemaName != null) { 
+			return schemaName;
+		}
+		return System.getProperty("schemaName") != null ? System.getProperty("schemaName") : "schemaName";
+	}
+
+	public void setSchemaName(String sn) { 
+		this.schemaName = sn;
+	}
+
+	public String getTableNamePrefix() {
+		return getSchemaName() + "$";
+	}
 
 	// default is lowercase, this forces uppercase
 	public boolean columnsUpperCase = (System.getProperty("columnsUpperCase") != null
@@ -159,80 +174,126 @@ public class StackGenConfigurator extends CodegenConfigurator {
 			: false);
 
 	// end DML section
+	String javaGenFolderName = "/gen";
 
-	public String getJavaGenFolderName() {return (System.getProperty("javaGenFolderName") != null
-			? System.getProperty("javaGenFolderName")
-			: "/gen");}
+	public void setJavaGenFolderName(String gn) {
+		javaGenFolderName = gn;
+	}
 
-	public String getGenOutputFolder() {return (System.getProperty("genOutputFolder") != null
-			? System.getProperty("genOutputFolder")
-			: SystemConstants.rootFolder) + getJavaGenFolderName();}
+	public String getJavaGenFolderName() {
+		return (System.getProperty("javaGenFolderName") != null ? System.getProperty("javaGenFolderName")
+				: javaGenFolderName);
+	}
 
-	public String getJavaGenArchiveFolder() {return "/archive" + getJavaGenFolderName();}
+	public String getGenOutputFolder() {
+		return (System.getProperty("genOutputFolder") != null ? System.getProperty("genOutputFolder")
+				: SystemConstants.rootFolder) + getJavaGenFolderName();
+	}
 
-	public String getJavaGenArchivePath() { return (System.getProperty("javaGenArchivePath") != null
-			? System.getProperty("javaGenArchivePath")
-			: SystemConstants.rootFolder + getJavaGenArchiveFolder());}
+	public String getJavaGenArchiveFolder() {
+		return "/archive" + getJavaGenFolderName();
+	}
 
-	public String getSourceMain() {return (System.getProperty("SOURCE_MAIN") != null ? System.getProperty("SOURCE_MAIN")
-			: SystemConstants.rootFolder) + "/src/main";}
+	public String getJavaGenArchivePath() {
+		return (System.getProperty("javaGenArchivePath") != null ? System.getProperty("javaGenArchivePath")
+				: SystemConstants.rootFolder + getJavaGenArchiveFolder());
+	}
 
-	public String getSourceMainJava() {return getSourceMain() + "/java";}
-	
-	public String getSourceResources() {return (System.getProperty("sourceResources") != null
-			? System.getProperty("sourceResources")
-			: "/src/resources");}
+	public String getSourceMain() {
+		return (System.getProperty("SOURCE_MAIN") != null ? System.getProperty("SOURCE_MAIN")
+				: SystemConstants.rootFolder) + "/src/main";
+	}
+
+	public String getSourceMainJava() {
+		return getSourceMain() + "/java";
+	}
+
+	public String getSourceResources() {
+		return (System.getProperty("sourceResources") != null ? System.getProperty("sourceResources")
+				: "/src/resources");
+	}
 
 	// this is the source folder for any classes in the generator itself...
-	public String getJavaGenSourceFolder() {return getGenOutputFolder()  + "/src/main/java";}
-	
-	public String getJavaGenResourcesFolder() { return getGenOutputFolder()  + getSourceResources();}
-	
+	public String getJavaGenSourceFolder() {
+		return getGenOutputFolder() + "/src/main/java";
+	}
+
+	public String getJavaGenResourcesFolder() {
+		return getGenOutputFolder() + getSourceResources();
+	}
+
 	public File JAVA_GEN_SRC = new File(getJavaGenSourceFolder());
 
 	boolean DISABLE_DATA_FIELD_ASPECT = true;
 	boolean DISABLE_SECURE_FIELD_ASPECT = false;
 
 	// ## SwaggerGen OPEN API
-	public String getArtifactVersion() { return (System.getProperty("artifactVersion") != null
-			? System.getProperty("artifactVersion")
-			: "1.0.1-SNAPSHOT");}
+	public String getArtifactVersion() {
+		return (System.getProperty("artifactVersion") != null ? System.getProperty("artifactVersion")
+				: "1.0.1-SNAPSHOT");
+	}
 
 	public String ADD_GEN_CLASS_NAME = "Service";
 	public String LONG_DATE_FORMAT = "MMM/d/yyyy HH:mm:ss Z";
 	SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(LONG_DATE_FORMAT);
 
-	public String getOrgPackage() { return (System.getProperty("orgPackage") != null ? System.getProperty("orgPackage")
-			: "io.starter.");}
+	public String getOrgPackage() {
+		return (System.getProperty("orgPackage") != null ? System.getProperty("orgPackage") : "io.starter.");
+	}
 
-	public String getOrgFolder() { return (System.getProperty("orgFolder") != null ? System.getProperty("orgFolder")
-			: "io/starter/");}
+	public String getOrgFolder() {
+		return (System.getProperty("orgFolder") != null ? System.getProperty("orgFolder") : "io/starter/");
+	}
 
-	public String getSpecLocation() { return SystemConstants.rootFolder + getSourceResources() + "/openapi_specs/";}
+	public String getSpecLocation() {
+		return SystemConstants.rootFolder + getSourceResources() + "/openapi_specs/";
+	}
 
 	public String PLUGIN_SPEC_LOCATION = getSpecLocation() + "plugins/";
 
-	public String getIgniteModelPackage() { return getOrgPackage() + artifactId + ".model";}
+	public String getIgniteModelPackage() {
+		return getOrgPackage() + getArtifactId() + ".model";
+	}
 
-	public String getApiModelPackage() { return getOrgPackage() + artifactId + ".model";}
+	public String getApiModelPackage() {
+		return getOrgPackage() + getArtifactId() + ".model";
+	}
 
-	public String getApiPackage() { return getOrgPackage() + artifactId + ".api";}
+	public String getApiPackage() {
+		return getOrgPackage() + getArtifactId() + ".api";
+	}
 
-	public String getModelPackage() {return getOrgPackage() + artifactId + ".model";}
+	public String getModelPackage() {
+		return getOrgPackage() + getArtifactId() + ".model";
+	}
 
-	public String getModelDaoPackage() {return getModelPackage() + ".dao";}
+	public String getModelDaoPackage() {
+		return getModelPackage() + ".dao";
+	}
 
-	public String getInvokerPackage() { return getOrgPackage() + artifactId + ".invoker";}
+	public String getInvokerPackage() {
+		return getOrgPackage() + getArtifactId() + ".invoker";
+	}
 
-	public String getPackageDir() {return getOrgFolder() + artifactId;}
+	public String getPackageDir() {
+		return getOrgFolder() + getArtifactId();
+	}
 
-	public String getModelPackageDir() { return getPackageDir() + "/model/";}
+	public String getModelPackageDir() {
+		return getPackageDir() + "/model/";
+	}
 
-	public String getApiPackageDir() {return getPackageDir() + "/api/";}
+	public String getApiPackageDir() {
+		return getPackageDir() + "/api/";
+	}
 
-	public String getModelDaoPackageDir() { return getPackageDir() + "/model/dao/";}
+	public String getModelDaoPackageDir() {
+		return getPackageDir() + "/model/dao/";
+	}
 
-	public String getModelClasses() { return getJavaGenSourceFolder() + "/" + getModelPackageDir() ;}
+	public String getModelClasses() {
+		return getJavaGenSourceFolder() + "/" + getModelPackageDir();
+	}
 
 	// ## Mybatis
 	int DB_TIMEOUT = 10000;
@@ -241,21 +302,30 @@ public class StackGenConfigurator extends CodegenConfigurator {
 			? System.getProperty("TIMEZONE_OFFSET")
 			: "-08:00");
 
-	public String getSqlMapsPath() { return getOrgFolder() + artifactId.replace(".", "/") + "/model/dao/";}
+	public String getSqlMapsPath() {
+		return getOrgFolder() + getArtifactId().replace(".", "/") + "/model/dao/";
+	}
 
-	public String getMybatisGenConfigTemplate() { return SystemConstants.rootFolder + getSourceResources() 
-			+ "/templates/MyBatisGeneratorConfig.xml";}
+	public String getMybatisGenConfigTemplate() {
+		return SystemConstants.rootFolder + getSourceResources() + "/templates/MyBatisGeneratorConfig.xml";
+	}
 
-	public String getMybatisGenConfigOut() {return getGenOutputFolder()  + getSourceResources() + "/MyBatisGeneratorConfig.xml"; }
+	public String getMybatisGenConfigOut() {
+		return getGenOutputFolder() + getSourceResources() + "/MyBatisGeneratorConfig.xml";
+	}
 
-	public String getMybatisConfigTemplate() {return SystemConstants.rootFolder + getSourceResources()
-			+ "/templates/MyBatisConfig.xml";}
+	public String getMybatisConfigTemplate() {
+		return SystemConstants.rootFolder + getSourceResources() + "/templates/MyBatisConfig.xml";
+	}
 
-	public String getMybatisConfigOut() { return getGenOutputFolder()  + getJavaGenFolderName() + "/src/main/resources/MyBatisConfig.xml"; }
+	public String getMybatisConfigOut() {
+		return getGenOutputFolder() + getJavaGenFolderName() + "/src/main/resources/MyBatisConfig.xml";
+	}
 
 	public String MYBATIS_COL_ENUM_FLAG = "ENUM";
 
-	List<String> FOLDER_SKIP_LIST = new ArrayList<>(Arrays.asList(getJavaGenFolderName(), "org", "swagger", "node_modules"));
+	List<String> FOLDER_SKIP_LIST = new ArrayList<>(
+			Arrays.asList(getJavaGenFolderName(), "org", "swagger", "node_modules"));
 
 	public String SPRING_DELEGATE = "ApiDelegate";
 
@@ -353,6 +423,36 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		return strx;
 	}
 
+	public static String[] getMethodPropertyNames() {
+		Method[] mx = StackGenConfigurator.class.getDeclaredMethods();
+		List<String> pnx = new ArrayList<String>();
+		for (Method m : mx) {
+			if (m.getName().startsWith("get")) {
+				pnx.add(m.getName());
+			}
+		}
+		String[] strx = new String[pnx.size()];
+		for (int x = 0; x < strx.length; x++) {
+			if (pnx.get(x).length() > 3) {
+				strx[x] = pnx.get(x).substring(3);
+			} else {
+				strx[x] = "none";
+			}
+		}
+		return strx;
+	}
+
+	public Object callGet(String m) {
+		try {
+			String mn = "get" + StringTool.getUpperCaseFirstLetter(m);
+			Method fx = ReflectionUtils.findMethod(getClass(), mn);
+			return fx.invoke(this);
+		} catch (Exception x) {
+			System.out.println("No value for: " + m);
+			return null;
+		}
+	}
+
 	public Object get(String pname) throws Exception {
 		try {
 			Field fx = ReflectionUtils.findField(getClass(), pname);
@@ -409,7 +509,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		checkAndSetAdditionalProperty(this.getModelPackage(), CodegenConstants.MODEL_PACKAGE);
 		checkAndSetAdditionalProperty(this.getInvokerPackage(), CodegenConstants.INVOKER_PACKAGE);
 //         checkAndSetAdditionalProperty(this.GRO, CodegenConstants.GROUP_ID);
-		checkAndSetAdditionalProperty(this.artifactId, CodegenConstants.ARTIFACT_ID);
+		checkAndSetAdditionalProperty(this.getArtifactId(), CodegenConstants.ARTIFACT_ID);
 		checkAndSetAdditionalProperty(this.getArtifactVersion(), CodegenConstants.ARTIFACT_VERSION);
 		checkAndSetAdditionalProperty(this.templateDir, CodegenConstants.TEMPLATE_DIR);
 //        checkAndSetAdditionalProperty(modelNamePrefix, CodegenConstants.MODEL_NAME_PREFIX);
@@ -459,4 +559,5 @@ public class StackGenConfigurator extends CodegenConfigurator {
 			}
 		}
 	}
+
 }

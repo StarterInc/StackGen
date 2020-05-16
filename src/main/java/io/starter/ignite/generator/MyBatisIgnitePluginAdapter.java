@@ -105,7 +105,7 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 		
 		List<Method> methods = topLevelClass.getMethods();
 		
-		final String ccsn = "dao." + StringTool.getUpperCaseFirstLetter(schemaName );
+		final String ccsn = "dao." + StringTool.getUpperCaseFirstLetter( schemaName );
 		if (!cn.contains(ccsn)) {
 			throw new RuntimeException("Could Not Strip DAO Package Name from the MyBatis DAO delegate field name: " + cn  + " / " + ccsn);
 		}

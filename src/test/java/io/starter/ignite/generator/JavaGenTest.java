@@ -1,13 +1,23 @@
 package io.starter.ignite.generator;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import io.starter.stackgentest.model.User;
 
 public class JavaGenTest {
-	StackGenConfigurator cfg = new StackGenConfigurator();
+	
+	StackGenConfigurator config = new StackGenConfigurator();
+	
+	@Before
+	public void setup() {
+
+		config.setSchemaName("stackgen");
+		config.setArtifactId("stackgen");
+	}
+	
 	@Test
 	@Ignore(value="serializing weird")
 	public void getApiModelPropertyAnnotationFromField()
@@ -24,7 +34,7 @@ public class JavaGenTest {
 	public void stringReplaceMethodText() {
 
 		
-		JavaGen jg = new JavaGen(cfg);
+		JavaGen jg = new JavaGen(config);
 		
 		final String className = "User";
 		Assert.assertEquals("int rows = \n" + "	getSelectByMapper() \n" + "	.deleteByPrimaryKey((long)getId()); \n"

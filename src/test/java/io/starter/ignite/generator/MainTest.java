@@ -75,7 +75,7 @@ public class MainTest {
 	@Test
 	public void swaggerPluginMergeGenerate() {
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 10; i++) {
 
 			SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile), gx1 = new SwaggerGen("plugins/" + pluginSpecFile1),
 					gx2 = new SwaggerGen("plugins/" + pluginSpecFile2);
@@ -90,14 +90,11 @@ public class MainTest {
 
 			assertEquals("there should be 2 plugin swagger specs", 2, swaggerGen.pluginSwaggers.size());
 
-			System.err.println("WTF: " + swaggerGen.generator.getSwagger().getDefinitions().size());
+			 assertEquals("there should be 17 total swagger models", 17, swaggerGen.generator.getSwagger().getDefinitions().size());
 
-			// assertEquals("there should be 16 total swagger models", 17,
-			// swaggerGen.generator.getSwagger().getDefinitions().size());
+			Property px = swaggerGen.generator.getSwagger().getDefinitions().get("User").getProperties().get("userStatus");
 
-			Property px = swaggerGen.generator.getSwagger().getDefinitions().get("User").getProperties().get("id");
-
-			assertEquals("ya", 2, 2);
+			assertEquals("Check User.userStatus field", "User Status", px.getDescription());
 
 		}
 

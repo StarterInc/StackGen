@@ -333,8 +333,8 @@ public class JavaGen extends Gen implements Generator {
 	}
 
 	/**
-	 * create MyBatis load method final MODEL_DAO_PACKAGE.StarterUser ret = session
-	 * .selectOne("MODEL_DAO_PACKAGE.StarterUserMapper.selectByPrimaryKey",
+	 * create MyBatis load method final modelDaoPackage.StarterUser ret = session
+	 * .selectOne("modelDaoPackage.StarterUserMapper.selectByPrimaryKey",
 	 * getId());
 	 *
 	 * @param className

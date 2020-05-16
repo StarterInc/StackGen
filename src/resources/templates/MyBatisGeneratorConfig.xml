@@ -18,7 +18,7 @@
 
 		<!-- Model Class -->
 		<javaModelGenerator
-			targetPackage="${MODEL_DAO_PACKAGE}"
+			targetPackage="${modelDaoPackage}"
 			targetProject="${genOutputFolder}/src/main/java">
 			<property name="useActualColumnNames" value="true" />
 			<property name="enableSubPackages" value="false" />
@@ -32,7 +32,7 @@
 
 		<javaClientGenerator
 			type="io.starter.ignite.generator.MyBatisIgniteJavaMapperGenerator"
-			targetPackage="${MODEL_DAO_PACKAGE}"
+			targetPackage="${modelDaoPackage}"
 			targetProject="${genOutputFolder}/src/main/java">
 			<property name="useActualColumnNames" value="true" />
 		</javaClientGenerator>

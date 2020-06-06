@@ -103,25 +103,29 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 		String schemaName = context.getProperty("schemaName");
 		String cn = topLevelClass.getType().getFullyQualifiedName();
 		
-		List<Method> methods = topLevelClass.getMethods();
+		// List<Method> methods = topLevelClass.getMethods();
+		cn = replaceStrip(cn, schemaName);
 		
-		final String ccsn = "dao." + StringTool.getUpperCaseFirstLetter( schemaName );
-		if (!cn.contains(ccsn)) {
-			throw new RuntimeException("Could Not Strip DAO Package Name from the MyBatis DAO delegate field name: " + cn  + " / " + ccsn);
-		}
-		cn = cn.replace(ccsn, "");
-
-		if (cn.contains("..")) {
-			throw new IllegalStateException("Could not get getSuperClassName due to package collision: " + cn
-					+ ". Change value of schemaName: " + schemaName);
-		}
-
 		logger.trace("SuperClass Name MYBATIS member: " + cn);
 		return cn;
 	}
 
+	private String replaceStrip(String cn, String schemaName) {
+
+		final String ccsn = "dao." + schemaName ;
+		
+		String cnl = cn.toLowerCase();
+		String ccsnx = ccsn.toLowerCase();
+		
+		if (!cnl.contains(ccsnx)) {
+			throw new RuntimeException("Could Not Strip DAO Package Name from the MyBatis DAO delegate field name: " + cn  + " / " + ccsn);
+		}
+		
+		return ccsn;
+	}
+
 	@Override
-	public boolean modelGetterMethodGenerated(Method method, TopLevelClass topLevelClass,
+ 	public boolean modelGetterMethodGenerated(Method method, TopLevelClass topLevelClass,
 			IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable,
 			Plugin.ModelClassType modelClassType) {
 

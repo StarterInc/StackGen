@@ -10,11 +10,11 @@ import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import org.apache.tomcat.jdbc.pool.PoolExhaustedException;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import io.starter.ignite.util.SystemConstants;
 
@@ -47,10 +47,9 @@ public class ConnectionFactory {
 
 	public static String toConfigString() {
 		return "ConnectionFactory v." + SystemConstants.IGNITE_MAJOR_VERSION + "."
-				+ SystemConstants.IGNITE_MINOR_VERSION + LINE_FEED + "Settings:" + LINE_FEED
-				+ "=========" + LINE_FEED + ConnectionFactory.driverName + LINE_FEED
-				+ ConnectionFactory.sourceURL + LINE_FEED + ConnectionFactory.dbName
-				+ LINE_FEED + ConnectionFactory.userName;
+				+ SystemConstants.IGNITE_MINOR_VERSION + LINE_FEED + "Settings:" + LINE_FEED + "=========" + LINE_FEED
+				+ ConnectionFactory.driverName + LINE_FEED + ConnectionFactory.sourceURL + LINE_FEED
+				+ ConnectionFactory.dbName + LINE_FEED + ConnectionFactory.userName;
 	}
 
 	/**
@@ -82,19 +81,43 @@ public class ConnectionFactory {
 	 */
 	public static Connection getConnection() throws SQLException {
 		try {
-			
+
 			Connection cx = getDataSource().getConnection();
 			if (!cx.isValid(5000)) {
 				dsx = null;
-				cx = DriverManager.getConnection(ConnectionFactory.sourceURL + "/" + ConnectionFactory.dbName
-					+ "?" + "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
+				cx = DriverManager.getConnection(ConnectionFactory.sourceURL + "/" + ConnectionFactory.dbName + "?"
+						+ "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
 			}
 			return cx;
-		}catch(Exception x) {
+		} catch (Exception x) {
 			dsx = null;
 			dsx = getDataSource();
 			return dsx.getConnection();
 		}
+	}
+
+	static ComboPooledDataSource cpds;
+	public static DataSource getDataSource() {
+		
+		if(cpds != null) {
+			return cpds;
+		}
+		cpds = new ComboPooledDataSource();
+		
+		try {
+			cpds.setDriverClass(driverName); // loads the jdbc driver
+		} catch (Exception e) {
+
+		}
+		cpds.setJdbcUrl(sourceURL + "/" + dbName);
+		cpds.setUser(userName);
+		cpds.setPassword(password);
+
+		// the settings below are optional -- c3p0 can work with defaults
+		// cpds.setMinPoolSize(10);
+		cpds.setAcquireIncrement(5);
+		cpds.setMaxPoolSize(20);
+		return cpds;
 	}
 
 	/**
@@ -110,7 +133,7 @@ public class ConnectionFactory {
 	 *
 	 * @return
 	 */
-	public static DataSource getDataSource() {
+	public static DataSource getDataSourceOLD() {
 
 		if (dsx != null) {
 			return dsx;
@@ -169,26 +192,23 @@ public class ConnectionFactory {
 		p.setDriverClassName(driverName);
 		p.setUsername(ConnectionFactory.userName);
 
-		p.setJmxEnabled(true);
-		p.setTestWhileIdle(false);
-		p.setTestOnBorrow(true);
+		// p.setTestWhileIdle(false);
+		// p.setTestOnBorrow(true);
 		p.setValidationQuery("SELECT 1");
-		p.setTestOnReturn(false);
-		p.setValidationInterval(30000);
-
-		p.setTimeBetweenEvictionRunsMillis(60000);
-
-		p.setMaxActive(100);
-		p.setInitialSize(10);
-
-		p.setMaxWait(10000);
+		// p.setTestOnReturn(false);
+		// p.setValidationInterval(30000);
+		// p.setTimeBetweenEvictionRunsMillis(5000);
+		// p.setMaxActive(100);
+		// p.setInitialSize(10);
+		// p.setMaxWait(10000);
 
 		p.setLogAbandoned(true);
 		p.setRemoveAbandoned(true);
 		p.setRemoveAbandonedTimeout(600);
+		p.setJmxEnabled(true);
 
-		p.setMinEvictableIdleTimeMillis(60000);
-		p.setMinIdle(10);
+		// p.setMinEvictableIdleTimeMillis(60000);
+		// p.setMinIdle(10);
 
 		// crucial to avoid abandoned PooledConnection errors.
 		p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"

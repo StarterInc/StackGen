@@ -261,7 +261,7 @@ public class DBGen extends Gen implements Generator {
 		tableDML += Table.CREATE_TABLE_END_BLOCK;
 
 		if (conn == null) {
-			conn = ConnectionFactory.getDataSource().getConnection();
+			conn = ConnectionFactory.instance.getDataSource().getConnection();
 		}
 
 		// use database
@@ -330,7 +330,7 @@ public class DBGen extends Gen implements Generator {
 
 				// generate the table
 				if (conn == null) {
-					conn = ConnectionFactory.getDataSource().getConnection();
+					conn = ConnectionFactory.instance.getDataSource().getConnection();
 				}
 				final PreparedStatement psx = conn.prepareStatement(j.getDML());
 				try {
@@ -353,7 +353,7 @@ public class DBGen extends Gen implements Generator {
 			// rename the table
 			final String renameTableDML = table.generateTableRenameDML(className);
 			if (conn == null) {
-				conn = ConnectionFactory.getDataSource().getConnection();
+				conn = ConnectionFactory.instance.getDataSource().getConnection();
 			}
 			final PreparedStatement psx = conn.prepareStatement(renameTableDML);
 			try {

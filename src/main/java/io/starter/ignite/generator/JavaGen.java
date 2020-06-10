@@ -873,6 +873,8 @@ public class JavaGen extends Gen implements Generator {
 				JavaGen.logger.info("Successfully compiled interface: " + loadClassName);
 			}
 			return loadedClass;
+		} catch (final java.lang.NoClassDefFoundError nfe) {
+			logger.error("Problem with class names: "+ nfe.toString());
 		} catch (final InstantiationException nm) {
 			// normal for no-default constructors
 		} catch (final ClassNotFoundException e) {

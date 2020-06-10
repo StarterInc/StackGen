@@ -113,7 +113,7 @@ public class IgniteGenerator extends DefaultGenerator {
 		List<Object> allOperations = new ArrayList<Object>();
 		generateApis(files, allOperations, allModels);
 
-		// HDD: add the model link builder here
+		// TODO: add the model link builder here
 		StackModelRelationGenerator relationGenerator = new StackModelRelationGenerator();
 		List<MyBatisJoin> joins = relationGenerator.generate(swagger, cfg);
 

@@ -404,7 +404,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 				if (o != null)
 					cfgx.set(fx, o);
 			} catch (final Exception e) {
-
+				System.err.println("configure from json failed to set: "  + e);
 			}
 		}
 		return cfgx;
@@ -465,7 +465,11 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	private void set(String fn, Object object) throws Exception {
 		Field fx = ReflectionUtils.findField(getClass(), fn);
-		fx.set(this, object);
+		if(fx != null) {
+			fx.setAccessible(true);
+			fx.set(this, object);
+		}
+		
 	}
 
 	@Override

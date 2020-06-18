@@ -85,7 +85,7 @@ public class ConnectionFactory {
 	}
 
 	static ComboPooledDataSource cpds;
-	public DataSource getDataSource() {
+	public static DataSource getDataSource() {
 		
 		if(cpds != null) {
 			return cpds;

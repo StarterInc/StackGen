@@ -186,8 +186,10 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public String getGenOutputFolder() {
-		return (System.getProperty("genOutputFolder") != null ? System.getProperty("genOutputFolder")
-				: SystemConstants.rootFolder) + getJavaGenFolderName();
+		String outputDir = System.getProperty("genOutputFolder");
+		
+		return (outputDir != null ? outputDir
+				: SystemConstants.rootFolder + getJavaGenFolderName());
 	}
 
 	public String getJavaGenArchiveFolder() {
@@ -319,7 +321,9 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public String getMybatisConfigOut() {
-		return getGenOutputFolder() + getJavaGenFolderName() + "/src/main/resources/MyBatisConfig.xml";
+		///Users/johnmcmahon/workspace/automator/automator/admin-service/gen/4/4/StackGen//gen/4/4/StackGen//src/main/resources/MyBatisConfig.xml
+		
+		return getGenOutputFolder() + "src/main/resources/MyBatisConfig.xml";
 	}
 
 	public String MYBATIS_COL_ENUM_FLAG = "ENUM";

@@ -7,14 +7,14 @@
 	</parent>
 
 	<artifactId>stackgen</artifactId>
-  <version>0.9.14-SNAPSHOT</version>
+  <version>0.9.14</version>
 	<name>Starter StackGen</name>
 	<description>Starter StackGen CORE Service Generator</description>
 	<scm>
 		<connection>scm:git://github.com/StarterInc/StackGen.git</connection>
 		<developerConnection>scm:git://github.com/StarterInc/StackGen.git</developerConnection>
 		<url>https://github.com/StarterInc/StackGen</url>
-		<tag>stackgen-0.9.12</tag>
+		<tag>stackgen-0.9.14</tag>
 	</scm>
 
 	<dependencies>

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,7 @@ public class MainTest {
 	}
 	
 	@Test
-	// @Ignore(value = "should not be run as a unit test")
+	@Ignore(value = "should not be run as a unit test")
 	public void swaggerGenJSONConfigGenerate() {
 
 		JSONObject job = new JSONObject(inputJSON);
@@ -68,8 +69,6 @@ public class MainTest {
 
 		List<File> output = swaggerGen.generate();
 		// org.junit.Assert.assertEquals("there should be 16 output files", output.size(), 17);
-		
-		
 	}
 
 	@Test

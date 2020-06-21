@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import io.starter.ignite.generator.DBGen;
 import io.starter.ignite.generator.MyBatisJoin;
 import io.starter.ignite.generator.SwaggerGen;
 import io.swagger.codegen.ClientOptInput;
+import io.swagger.codegen.CodegenConfig;
 import io.swagger.codegen.DefaultGenerator;
 import io.swagger.codegen.Generator;
 import io.swagger.codegen.InlineModelResolver;
@@ -490,5 +492,30 @@ public class IgniteGenerator extends DefaultGenerator {
 
 		return this;
 	}
+    /**
+     * Get the template file path with template dir prepended, and use the
+     * library template if exists.
+     *
+     * @param config Codegen config
+     * @param templateFile Template file
+     * @return String Full template file path
+     */
+	@Override
+    public String getFullTemplateFile(CodegenConfig config, String templateFile) {
 
+        //check the supplied template library folder for the file
+        final String library = cfg.getLibrary();
+        final String templateDir = cfg.getTemplateDir();
+        if (StringUtils.isNotEmpty(library) && StringUtils.isNotEmpty(templateDir)) {
+            //look for the file in the library subfolder of the supplied template
+        	
+        	
+            final String libTemplateFile = templateDir + "/src/main/java/" + library + "/" + templateFile;  // buildLibraryFilePath(config.templateDir(), library, templateFile);
+            if (new File(libTemplateFile).exists()) {
+                return libTemplateFile;
+            }
+        }
+        // fallback to default handling
+		return super.getFullTemplateFile(config, templateFile);
+    }
 }

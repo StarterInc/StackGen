@@ -196,7 +196,7 @@ public class Main extends Gen implements CommandLineRunner {
 	 * @param inputSpecFile
 	 */
 	public void generateStack(StackGenConfigurator cfg) throws Exception {
-
+		logger.debug("Begin StackGen Back End Genertion...");
 		preFlight(cfg);
 
 		// JavaGen initialized first as it handles compilations
@@ -206,7 +206,7 @@ public class Main extends Gen implements CommandLineRunner {
 		if (config.overwriteMode) {
 			initOutputFolders();
 		}
-
+		logger.debug("Generating initial Model and API Classes...");
 		// generate swqgger api clients
 		if (!config.skipJavaGen) {
 
@@ -215,10 +215,11 @@ public class Main extends Gen implements CommandLineRunner {
 			reCompileAll(jg);
 
 		} else {
-			Main.logger.info("####### SWAGGER Generation: SKIPPED");
+			logger.debug("####### SWAGGER Generation: SKIPPED");
 		}
 
 		if (!config.skipDbGen) {
+			logger.debug("Generating Database Schemas for Model API...");
 			// generate corresponding DML
 			// statements to create a JDBC database
 			// execute DB creation, connect and test
@@ -227,29 +228,33 @@ public class Main extends Gen implements CommandLineRunner {
 
 		// generate MyBatis client classes XML configuration file
 		if (!config.skipMybatisGen) {
+			logger.debug("Generating MyBatis ORM Beans for Model API...");
 			new MyBatisGen(config).createMyBatisFromModelFolder();
 		}
 
+		logger.debug("Compiling all java classes...");
 		// compile the DataObject Classes
 		jg.compile(config.getModelDaoPackageDir());
 
-		// JavaGen.compile(config.PACKAGE_DIR);
-
+		logger.debug("Generating StackGen API beans...");
 		// delegates calls to/from api to the mybatis entity
 		jg.generateClassesFromModelFolder();
 
 		// final compile
+		logger.debug("Final compile of all java classes...");
 		jg.compile(config.getPackageDir());
 
 		// copy misc files into gen project
+		logger.debug("Copying static project files...");
 		copyStaticFiles(staticFiles);
 
 		// package the microservice for deployment
 		if (!config.skipMavenBuildGeneratedApp) {
+			logger.debug("Running Maven packager for deployment...");
 			MavenBuilder.build();
 		}
 
-		Main.logger.info("Backend Stack Generation Complete.");
+		logger.debug("StackGen Back End Generation Complete.");
 
 	}
 

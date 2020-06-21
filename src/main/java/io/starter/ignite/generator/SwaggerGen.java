@@ -128,8 +128,8 @@ public class SwaggerGen extends Gen {
 	 */
 	private StackGenConfigurator getConfig(String spec) {
 		setStaticConfiguration();
-		if (!spec.contains(config.getTemplateDir())) {
-			spec = config.getTemplateDir() + "/" + spec;
+		if (!spec.contains(config.getSpecLocation())) {
+			spec = config.getSpecLocation() + spec;
 		}
 		config.setInputSpec(spec);
 		return config;
@@ -181,7 +181,7 @@ public class SwaggerGen extends Gen {
 		config.setGitUserId(config.gitUserId);
 
 		// locations
-		config.setTemplateDir(getVal("SPEC_LOCATION", config.getSpecLocation()));
+		// Don't do this here... config.setTemplateDir(config.getOutputDir() + "/templates/" + config.getLibrary());
 
 		// server info
 		config.addDynamicProperty("serverHost", config.defaultHostname);

@@ -217,7 +217,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	// this is the source folder for any classes in the generator itself...
 	public String getJavaGenSourceFolder() {
-		return getGenOutputFolder() + "/src/main/java";
+		return getGenOutputFolder() + "src/main/java";
 	}
 
 	public String getJavaGenResourcesFolder() {
@@ -373,6 +373,13 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		return true;
 	}
 
+	@Override
+	public CodegenConfigurator setTemplateDir(String templateDir) {
+		this.templateDir = templateDir;
+		super.setTemplateDir(templateDir);
+		return this;
+	}
+	
 	/**
 	 * utility method for setting config values from a JSON object
 	 * 

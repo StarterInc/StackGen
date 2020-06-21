@@ -770,7 +770,7 @@ public class JavaGen extends Gen implements Generator {
 	void compile(String packageDir) throws IOException, ClassNotFoundException, InstantiationException, IgniteException,
 			IllegalAccessException {
 		// test
-		final String sourcepath = config.getJavaGenSourceFolder() + "/" + packageDir;
+		final String sourcepath = config.getJavaGenSourceFolder() + packageDir;
 
 		JavaGen.logger.info("JavaGen Compiling: " + sourcepath);
 

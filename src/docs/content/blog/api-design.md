@@ -3,7 +3,7 @@ title: "Designing StackGen Services with Swagger"
 cover: "images/mission_street.jpeg"
 author: "johnmcmahon"
 needsAuth: false
-url: /wth
+url: /api-design
 slug: "swagger-design"
 date: "2018-12-20"
 category: "StackGen"

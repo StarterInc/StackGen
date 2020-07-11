@@ -24,7 +24,7 @@
 }
 
 .sidenav-menu-slider .sidenav-menu {
-	width: 100%;
+	width: 80%;
 
 	@include media-breakpoint-up(lg) {
 		width: $sidebar-width;

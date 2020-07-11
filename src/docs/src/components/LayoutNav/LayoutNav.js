@@ -3,8 +3,6 @@ import React from 'react';
 import { Link, withPrefix } from 'gatsby';
 import classnames from 'classnames';
 
-import Login from '../Login';
-
 class LayoutNav extends React.Component {
     constructor() {
         super();
@@ -58,8 +56,8 @@ class LayoutNav extends React.Component {
             <nav ref="navElement" className={styles}>
                 <div className="container-fluid">
                     <Link to="/" className="navbar-brand">
-                        <img className="logo mr-2" src={withPrefix("/images/home/liferay_logo.svg")} alt="Liferay Logo" />
-                        <span className="title align-middle">{process.env.PROJECT_NAME}</span>
+                        <img className="logo mr-2" src={withPrefix("/images/stackgen-logo-2020.png")} alt="Liferay Logo" />
+                        
                     </Link>
 
                     {sidebarHamburguerIcon &&
@@ -83,9 +81,7 @@ class LayoutNav extends React.Component {
                         <li className="nav-item">
                             <Link className="nav-link ml-lg-3" to="/updates/">Updates</Link>
                         </li>
-                        <li className="nav-item">
-                            <Login />
-                        </li>
+                        
                         <li className="nav-item">
                             <a className="mx-3 mr-lg-0" href={process.env.GITHUB_REPO}  target="_blank" rel="noopener noreferrer">
                                 <img src={withPrefix("/images/home/GitHub-Mark-64px.svg")} alt="" />

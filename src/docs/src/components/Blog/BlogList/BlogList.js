@@ -42,7 +42,6 @@ export default (props) => (
                                 description
                                 author
                                 url
-                                banner
                             }
                         }
                     }

@@ -217,7 +217,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	// this is the source folder for any classes in the generator itself...
 	public String getJavaGenSourceFolder() {
-		return getGenOutputFolder() + "src/main/java";
+		return getGenOutputFolder() + "/src/main/java";
 	}
 
 	public String getJavaGenResourcesFolder() {
@@ -282,7 +282,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public String getModelPackageDir() {
-		return getPackageDir() + "/model/";
+		return getPackageDir() + "/model";
 	}
 
 	public String getApiPackageDir() {
@@ -323,7 +323,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	public String getMybatisConfigOut() {
 		///Users/johnmcmahon/workspace/automator/automator/admin-service/gen/4/4/StackGen//gen/4/4/StackGen//src/main/resources/MyBatisConfig.xml
 		
-		return getGenOutputFolder() + "src/main/resources/MyBatisConfig.xml";
+		return getGenOutputFolder() + "/src/main/resources/MyBatisConfig.xml";
 	}
 
 	public String MYBATIS_COL_ENUM_FLAG = "ENUM";

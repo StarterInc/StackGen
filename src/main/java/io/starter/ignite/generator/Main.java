@@ -47,7 +47,7 @@ import io.starter.ignite.util.ZipFileWriter;
 // @Order(Ordered.LOWEST_PRECEDENCE) // run before ReactGenerator
 public class Main extends Gen implements CommandLineRunner {
 
-	protected static final Logger logger = LoggerFactory.getLogger(Main.class);
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) throws Exception {
 		if (args == null) {
@@ -196,9 +196,9 @@ public class Main extends Gen implements CommandLineRunner {
 	 * @param inputSpecFile
 	 */
 	public void generateStack(StackGenConfigurator cfg) throws Exception {
-		logger.debug("Begin StackGen Back End Genertion...");
+		logger.debug("Begin StackGen Back End Generation...");
 		preFlight(cfg);
-
+		config = cfg;
 		// JavaGen initialized first as it handles compilations
 		JavaGen jg = new JavaGen(config);
 		
@@ -210,7 +210,7 @@ public class Main extends Gen implements CommandLineRunner {
 		// generate swqgger api clients
 		if (!config.skipJavaGen) {
 
-			generateSwagger(config);
+			generateSwagger(cfg);
 
 			reCompileAll(jg);
 
@@ -228,6 +228,7 @@ public class Main extends Gen implements CommandLineRunner {
 
 		// generate MyBatis client classes XML configuration file
 		if (!config.skipMybatisGen) {
+			reCompileAll(jg);
 			logger.debug("Generating MyBatis ORM Beans for Model API...");
 			new MyBatisGen(config).createMyBatisFromModelFolder();
 		}
@@ -264,9 +265,12 @@ public class Main extends Gen implements CommandLineRunner {
 		System.out.println(ASCIIArtPrinter.print());
 		System.out.println();
 
-		if(System.getProperty("artifactId") != null) {
-			this.config.setArtifactId(System.getProperty("artifactId"));
+		String artifactId = System.getProperty("artifactId");
+		if(artifactId != null) {
+			this.config.setArtifactId(artifactId);
+			logger.info("Generating: " + this.config.getArtifactId());
 		}
+		
 		Main.logger.info("Starting Stack Generation");
 	}
 
@@ -356,7 +360,7 @@ public class Main extends Gen implements CommandLineRunner {
 	private List<File> iteratePluginsGen(String inputSpecFile) {
 		final List<File> allGen = new ArrayList<>();
 		logger.warn("iterating plugins...");
-		final SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile);
+		final SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile, config);
 
 		// iterate the files in the plugins folder
 		final String[] fin = getPluginFiles();

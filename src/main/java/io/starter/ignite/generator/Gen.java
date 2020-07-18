@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.squareup.javapoet.MethodSpec;
 
@@ -30,16 +31,21 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class Gen {
 
-	protected static final Logger logger = LoggerFactory.getLogger(Gen.class);
+	private static final Logger logger = LoggerFactory.getLogger(Gen.class);
+	
 	
 	StackGenConfigurator config;
+	
 	public String LINE_FEED = "\r\n";
 	public StackGenConfigurator getConfig() {
+		if(config == null) {
+			config = new StackGenConfigurator();
+		}
 		return config;
 	}
 	
 	public Gen() {
-		config = new StackGenConfigurator();
+		 config = new StackGenConfigurator();
 	}
 	
 	public Gen(StackGenConfigurator cfg) {

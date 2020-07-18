@@ -27,7 +27,7 @@ import io.swagger.models.parameters.Parameter;
  */
 public class SwaggerGen extends Gen {
 
-	protected static final Logger logger = LoggerFactory.getLogger(SwaggerGen.class);
+	private static final Logger logger = LoggerFactory.getLogger(SwaggerGen.class);
 
 	IgniteGenerator generator = new IgniteGenerator(config);
 
@@ -108,6 +108,17 @@ public class SwaggerGen extends Gen {
 		config = getConfig(spec);
 		logger.info("StackGen Schema Initialized: " + config.getSchemaName());
 	}
+	
+	/**
+	 * Create and initialize a new SwaggerGen
+	 * 
+	 * @param inputSpec filename of spec (file in templateDirectory)
+	 */
+	public SwaggerGen(String spec, StackGenConfigurator cfg) {
+		super();
+		config = cfg;
+		logger.info("StackGen Schema Initialized: " + config.getSchemaName());
+	}
 
 	/**
 	 * Create and initialize a new SwaggerGen
@@ -151,7 +162,7 @@ public class SwaggerGen extends Gen {
 		// (ie: jersey2, resteasy, resttemplate)
 		config.setLibrary(getVal("swaggerLib", "spring-boot"));
 
-		// config.setReleaseNote(getVal("description"), description);
+		// config.setReleaseNote("SET RELEASE NOTES", config.getReleaseNote());
 
 		config.setOutputDir(getVal("genOutputFolder", config.getGenOutputFolder() ));
 

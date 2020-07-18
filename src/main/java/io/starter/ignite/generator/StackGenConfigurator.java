@@ -143,20 +143,28 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	public String swaggerLib = (System.getProperty("swaggerLib") != null ? System.getProperty("swaggerLib")
 			: "spring-boot");
 
-//	private String artifactid = "artifactid";
-//	public String getArtifactId() { return artifactid) }
+	private String artifactid = "artifactid";
+
+	public String getArtifactId() {
+		return artifactid;
+	}
+
+	public CodegenConfigurator setArtifactId(String a) {
+		artifactid = a;
+		return this;
+	}
 
 	// DML/DB section
 	private String schemaName = null;
 
-	public String getSchemaName() { 
-		if(schemaName != null) { 
+	public String getSchemaName() {
+		if (schemaName != null) {
 			return schemaName;
 		}
 		return System.getProperty("schemaName") != null ? System.getProperty("schemaName") : "schemaName";
 	}
 
-	public void setSchemaName(String sn) { 
+	public void setSchemaName(String sn) {
 		this.schemaName = sn;
 	}
 
@@ -187,9 +195,8 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	public String getGenOutputFolder() {
 		String outputDir = System.getProperty("genOutputFolder");
-		
-		return (outputDir != null ? outputDir
-				: SystemConstants.rootFolder + getJavaGenFolderName());
+
+		return (outputDir != null ? outputDir : SystemConstants.rootFolder + getJavaGenFolderName());
 	}
 
 	public String getJavaGenArchiveFolder() {
@@ -321,8 +328,8 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public String getMybatisConfigOut() {
-		///Users/johnmcmahon/workspace/automator/automator/admin-service/gen/4/4/StackGen//gen/4/4/StackGen//src/main/resources/MyBatisConfig.xml
-		
+		/// Users/johnmcmahon/workspace/automator/automator/admin-service/gen/4/4/StackGen//gen/4/4/StackGen//src/main/resources/MyBatisConfig.xml
+
 		return getGenOutputFolder() + "/src/main/resources/MyBatisConfig.xml";
 	}
 
@@ -379,7 +386,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		super.setTemplateDir(templateDir);
 		return this;
 	}
-	
+
 	/**
 	 * utility method for setting config values from a JSON object
 	 * 
@@ -415,7 +422,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 				if (o != null)
 					cfgx.set(fx, o);
 			} catch (final Exception e) {
-				System.err.println("configure from json failed to set: "  + e);
+				System.err.println("configure from json failed to set: " + e);
 			}
 		}
 		return cfgx;
@@ -476,11 +483,11 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	private void set(String fn, Object object) throws Exception {
 		Field fx = ReflectionUtils.findField(getClass(), fn);
-		if(fx != null) {
+		if (fx != null) {
 			fx.setAccessible(true);
 			fx.set(this, object);
 		}
-		
+
 	}
 
 	@Override

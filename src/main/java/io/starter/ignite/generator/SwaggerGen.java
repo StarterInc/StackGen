@@ -90,12 +90,11 @@ public class SwaggerGen extends Gen {
 	 * @param inputSpec JSONObject containing config data
 	 */
 	public SwaggerGen(JSONObject cfg) {
-		super();
-		this.configObj = cfg;
-
-		config = getConfig(config.getSpecLocation() + cfg.getString("schemaFile"));
-
-		logger.info("Configured StackGen Schema for:" + config.getSchemaName());
+		this(new File(  (StackGenConfigurator.getSpecLocation() != null ? StackGenConfigurator.getSpecLocation() : "") + 
+						( cfg.getString("schemaFile") != null 
+						? cfg.getString("schemaFile") 
+						: "")
+				 ));
 	}
 
 	/**
@@ -104,31 +103,30 @@ public class SwaggerGen extends Gen {
 	 * @param inputSpec filename of spec (file in templateDirectory)
 	 */
 	public SwaggerGen(String spec) {
-		super();
 		config = getConfig(spec);
-		logger.info("StackGen Schema Initialized: " + config.getSchemaName());
+		setStaticConfiguration();
 	}
 	
 	/**
-	 * Create and initialize a new SwaggerGen
-	 * 
-	 * @param inputSpec filename of spec (file in templateDirectory)
-	 */
-	public SwaggerGen(String spec, StackGenConfigurator cfg) {
-		super();
-		config = cfg;
-		logger.info("StackGen Schema Initialized: " + config.getSchemaName());
-	}
-
-	/**
-	 * Create and initialize a new SwaggerGen
+	 * Create and initialize a new SwaggerGen from a YAML or JSON spec file
 	 * 
 	 * @param inputSpec spe file in templateDirectory
 	 */
+
 	public SwaggerGen(File spec) {
 		super();
-		config = (StackGenConfigurator) StackGenConfigurator.fromFile(spec.getPath());
-		logger.info("Create Swagger Client Apis for:" + spec);
+		try {
+			//  YAML
+			config=getConfig(spec.getPath());
+		}catch(Exception e) {
+			// JSON
+			config = (StackGenConfigurator) StackGenConfigurator.fromFile(spec.getPath());
+		}
+		setStaticConfiguration();
+		if(config==null) {
+			throw new RuntimeException("SwaggerGen config cannot be null after init");
+		}
+		logger.info("Initializing StackGen Generation:" + config.getArtifactId() + " : " + config.getSchemaName());
 	}
 
 	/**
@@ -137,12 +135,15 @@ public class SwaggerGen extends Gen {
 	 * @param spec
 	 * @param configurator
 	 */
-	private StackGenConfigurator getConfig(String spec) {
-		setStaticConfiguration();
-		if (!spec.contains(config.getSpecLocation())) {
-			spec = config.getSpecLocation() + spec;
+	private StackGenConfigurator getConfig(String spec) {		
+		if (!spec.contains(StackGenConfigurator.getSpecLocation())) {
+			spec = StackGenConfigurator.getSpecLocation() + spec;
+		}
+		if(config == null) {
+			config = new StackGenConfigurator();
 		}
 		config.setInputSpec(spec);
+		setStaticConfiguration();
 		return config;
 	}
 

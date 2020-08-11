@@ -112,16 +112,15 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 
 	private String replaceStrip(String cn, String schemaName) {
 
-		final String ccsn = "dao." + schemaName ;
+		String ccsn = "dao." + StringTool.proper(schemaName) ;
+		String cx1 = cn.replace(ccsn, "");
 		
-		String cnl = cn.toLowerCase();
-		String ccsnx = ccsn.toLowerCase();
 		
-		if (!cnl.contains(ccsnx)) {
+		if (cx1.contains(ccsn)) {
 			throw new RuntimeException("Could Not Strip DAO Package Name from the MyBatis DAO delegate field name: " + cn  + " / " + ccsn);
 		}
-		
-		return ccsn;
+
+		return cx1;
 	}
 
 	@Override

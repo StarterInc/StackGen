@@ -69,9 +69,10 @@ public class MyBatisGen extends Gen implements Generator {
 	 * @param apiClassName
 	 * @return
 	 */
-	public String getMyBatisModelClassName(String apiClassName) {
-		final String apibn = MyBatisGen.getBaseJavaName(apiClassName);
-		return StringTool.getUpperCaseFirstLetter(config.getSchemaName()) + apibn;
+	public static String getMyBatisModelClassName(String apiClassName, StackGenConfigurator cfgx) {
+		 String apibn = MyBatisGen.getBaseJavaName(apiClassName);
+		 apibn = StringTool.proper(cfgx.getSchemaName()) + apibn;
+		 return apibn;
 	}
 
 	/**

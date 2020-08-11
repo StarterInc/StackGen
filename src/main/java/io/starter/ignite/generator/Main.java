@@ -192,7 +192,9 @@ public class Main extends Gen implements CommandLineRunner {
 
 	/**
 	 * Step by step process to create Stack from spec file
-	 *
+	 * 
+	 * sg0-dev/src/resources/MyBatisGeneratorConfig.xml' does not exist
+	 * 
 	 * @param inputSpecFile
 	 */
 	public void generateStack(StackGenConfigurator cfg) throws Exception {
@@ -228,14 +230,17 @@ public class Main extends Gen implements CommandLineRunner {
 
 		// generate MyBatis client classes XML configuration file
 		if (!config.skipMybatisGen) {
-			reCompileAll(jg);
+			// reCompileAll(jg);
+			jg.compile(config.getModelPackageDir());
 			logger.debug("Generating MyBatis ORM Beans for Model API...");
 			new MyBatisGen(config).createMyBatisFromModelFolder();
 		}
 
 		logger.debug("Compiling all java classes...");
 		// compile the DataObject Classes
-		jg.compile(config.getModelDaoPackageDir());
+		// reCompileAll(jg);
+		jg.compile(config.getModelDaoPackageDir() );
+		// jg.compile(config.getModelPackageDir());
 
 		logger.debug("Generating StackGen API beans...");
 		// delegates calls to/from api to the mybatis entity
@@ -285,9 +290,12 @@ public class Main extends Gen implements CommandLineRunner {
 		}
 
 		try {
-			jg.compile(config.getModelPackageDir() );
+			if(new File(config.getModelDaoPackageDir()).exists()) {
+				jg.compile(config.getModelDaoPackageDir() );
+			}
 		} catch (final Throwable e) {
 			// this one fails in regen mode sometimes. ignore
+			logger.error("RECOMPILE ALL FAILING on MODEL PACKAGE DIR: " + e.toString());
 		}
 	}
 
@@ -360,16 +368,18 @@ public class Main extends Gen implements CommandLineRunner {
 	private List<File> iteratePluginsGen(String inputSpecFile) {
 		final List<File> allGen = new ArrayList<>();
 		logger.warn("iterating plugins...");
-		final SwaggerGen swaggerGen = new SwaggerGen(inputSpecFile, config);
+		final SwaggerGen swaggerGen = new SwaggerGen(config);
 
 		// iterate the files in the plugins folder
 		final String[] fin = getPluginFiles();
-		for (final String fs : fin) {
-			final File f = new File(config.PLUGIN_SPEC_LOCATION + fs);
-			Main.logger.info("Generating Plugin: " + f.getName());
-			final SwaggerGen pluginSwag = new SwaggerGen(f.getAbsolutePath());
-			final List<File> fxs = pluginSwag.generate();
-			allGen.addAll(fxs);
+		if(fin != null) {
+			for (final String fs : fin) {
+				final File f = new File(config.PLUGIN_SPEC_LOCATION + fs);
+				Main.logger.info("Generating Plugin: " + f.getName());
+				final SwaggerGen pluginSwag = new SwaggerGen(f.getAbsolutePath());
+				final List<File> fxs = pluginSwag.generate();
+				allGen.addAll(fxs);
+			}
 		}
 		allGen.addAll(swaggerGen.generate());
 		Main.logger.info("####### SWAGGER Generated: " + allGen.size() + " Source Files");
@@ -399,7 +409,8 @@ public class Main extends Gen implements CommandLineRunner {
 	public String[] getPluginFiles() {
 		final File pluginDir = new File(config.PLUGIN_SPEC_LOCATION);
 		if (!pluginDir.exists()) {
-			throw new IllegalStateException("getPluginFiles Failure: no path here " + config.PLUGIN_SPEC_LOCATION);
+			logger.warn("getPluginFiles cannot load from file system. No path here " + config.PLUGIN_SPEC_LOCATION);
+			return null;
 		}
 		final String[] pluginFiles = pluginDir.list((dir, name) -> {
 			if (name.toLowerCase().endsWith(".json")) {

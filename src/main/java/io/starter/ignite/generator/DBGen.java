@@ -38,7 +38,6 @@ public class DBGen extends Gen implements Generator {
 
 	public DBGen(StackGenConfigurator cfg) {
 		super(cfg);
-		// TODO Auto-generated constructor stub
 	}
 
 	protected static final Logger logger = LoggerFactory.getLogger(DBGen.class);
@@ -273,7 +272,7 @@ public class DBGen extends Gen implements Generator {
 		// log the DML for troubleshooting
 		if (config.debug) {
 			Charset ch = CharsetUtil.UTF_8;
-			FileUtils.write(new File("IgniteDML.sql"), tableDML, ch);
+			FileUtils.write(new File(className + "-DML.sql"), tableDML, ch);
 		}
 
 		try {
@@ -311,6 +310,9 @@ public class DBGen extends Gen implements Generator {
 	 * @param className
 	 */
 	private void migrateData(String className) {
+
+		//"SELECT IN"
+		
 		// TODO Auto-generated method stub
 		logger.info("TODO: migrate table data from old to new");
 	}

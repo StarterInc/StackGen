@@ -3,7 +3,7 @@ info:
   build-url: "http://travis-ci.org/@env.TRAVIS_REPO_SLUG@/builds/@env.TRxAVIS_BUILD_ID@"
 
 logging:
-  file: "logs/boot-admin-client-servlet.log"
+  file: "logs/boot-stackgen-core.log"
 
 management:
   endpoints:
@@ -16,7 +16,7 @@ management:
 
 spring:
   application:
-    name: Starter StackGen Service Engine
+    name: Starter StackGen Core
   boot:
     admin:
       client:
@@ -60,6 +60,14 @@ spring:
 ---
 spring:
   profiles: secure
+  datasource:
+    driver-class-name: ${dbDriver}
+    url: ${dbUrl}
+    username: ${dbUser}
+    password: ${dbPassword}
+    hikari:
+      leak-detection-threshold: 60000
+      max-lifetime: 120000
   security:
     user:
       name: "user"

@@ -161,7 +161,9 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		if (schemaName != null) {
 			return schemaName;
 		}
-		return System.getProperty("schemaName") != null ? System.getProperty("schemaName") : "schemaName";
+		schemaName = System.getProperty("schemaName") != null ? System.getProperty("schemaName") : "schemaName";
+		schemaName.toLowerCase();
+		return schemaName;
 	}
 
 	public void setSchemaName(String sn) {
@@ -217,7 +219,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		return getSourceMain() + "/java";
 	}
 
-	public String getSourceResources() {
+	public static String getSourceResources() {
 		return (System.getProperty("sourceResources") != null ? System.getProperty("sourceResources")
 				: "/src/resources");
 	}
@@ -254,7 +256,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		return (System.getProperty("orgFolder") != null ? System.getProperty("orgFolder") : "io/starter/");
 	}
 
-	public String getSpecLocation() {
+	public static String getSpecLocation() {
 		return SystemConstants.rootFolder + getSourceResources() + "/openapi_specs/";
 	}
 

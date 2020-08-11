@@ -1,11 +1,15 @@
 package {{basePackage}};
 
+import java.sql.Connection;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Bean;
 
+import io.starter.ignite.security.dao.ConnectionFactory;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
@@ -23,6 +27,21 @@ public class Swagger2SpringBoot implements CommandLineRunner {
     public static void main(String[] args) throws Exception {
         new SpringApplication(Swagger2SpringBoot.class).run(args);
     } 
+
+	/**
+	 * provide single connection pool instance management
+	 * 
+	 */
+	@Bean
+	public Connection getConnection() {
+		try {
+			return ConnectionFactory.getConnection();
+		} catch (java.sql.SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
     class ExitException extends RuntimeException implements ExitCodeGenerator {
         private static final long serialVersionUID = 1L;

@@ -34,7 +34,7 @@ public class Gen {
 	private static final Logger logger = LoggerFactory.getLogger(Gen.class);
 	
 	
-	StackGenConfigurator config;
+	static StackGenConfigurator config  = new StackGenConfigurator();
 	
 	public String LINE_FEED = "\r\n";
 	public StackGenConfigurator getConfig() {
@@ -45,7 +45,7 @@ public class Gen {
 	}
 	
 	public Gen() {
-		 config = new StackGenConfigurator();
+		 // config = new StackGenConfigurator();
 	}
 	
 	public Gen(StackGenConfigurator cfg) {

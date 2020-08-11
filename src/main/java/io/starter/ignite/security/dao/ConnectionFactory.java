@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import io.starter.ignite.util.SystemConstants;
 
 /**
@@ -68,7 +71,7 @@ public class ConnectionFactory {
 	 * @return Connection
 	 * @throws SQLException
 	 */
-	public static Connection getConnection() throws SQLException {
+	public static Connection getConnectionTomcat() throws SQLException {
 		try {
 
 			Connection cx = instance.getDataSource().getConnection();
@@ -84,6 +87,33 @@ public class ConnectionFactory {
 		return null;
 	}
 
+	
+	private static HikariConfig config = new HikariConfig();
+    private static HikariDataSource ds;
+ 
+    static {
+        config.setJdbcUrl( sourceURL + "/" + dbName );
+        config.setUsername( userName );
+        config.setPassword( password );
+        
+        //config.addDataSourceProperty( "cachePrepStmts" , "true" );
+        //config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+        //config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+       
+        // config.setLeakDetectionThreshold(720000);
+        config.setConnectionTimeout(10000);
+        config.setValidationTimeout(5000);
+        config.setIdleTimeout(30000);
+        config.setAutoCommit(true);
+        config.setMinimumIdle(10);
+        
+        ds = new HikariDataSource( config );
+    }
+ 
+    public static Connection getConnection() throws SQLException {
+        return ds.getConnection();
+    }
+	
 	static ComboPooledDataSource cpds;
 	public static DataSource getDataSource() {
 		

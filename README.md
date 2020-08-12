@@ -1,7 +1,4 @@
-
-![StackGen Logo](https://docs.stackgen.io/logos/StackGenLogo-2019.png)
-
-# Starter StackGen Code Generator
+# Starter StackGen[tm] Code Generator
 
 ![StackGen CI](https://github.com/StarterInc/StackGen/workflows/StackGen%20CI/badge.svg?branch=master)
 

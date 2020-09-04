@@ -92,12 +92,7 @@ public class SecureFieldAspect {
 		}
 
 		if (secureField.getType().equals(String.class)) {
-			if (encryptedObject.toString().endsWith("=")) {
-				return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
-			} else {
-				return encryptedObject;
-			}
-
+			return SecureEncrypter.decrypt(String.valueOf(encryptedObject));
 		} else {
 			SecureFieldAspect.logger.warn("SecureFieldAspect only currently supports decrypting Text values: " + pjp);
 			return pjp.proceed();

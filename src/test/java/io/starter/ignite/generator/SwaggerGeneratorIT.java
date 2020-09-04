@@ -62,7 +62,7 @@ public class SwaggerGeneratorIT {
 		assertNotNull(swaggerGen.generate());
 	}
 
-	@Test(expected = IgniteException.class)
+	@Test(expected = java.lang.IllegalStateException.class)
 	public void testAppGen() throws Exception {
 		Main.main(null);
 	}

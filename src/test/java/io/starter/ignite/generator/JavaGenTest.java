@@ -37,20 +37,35 @@ public class JavaGenTest {
 		JavaGen jg = new JavaGen(config);
 		
 		final String className = "User";
-		Assert.assertEquals("int rows = \n" + "	getSelectByMapper() \n" + "	.deleteByPrimaryKey((long)getId()); \n"
-				+ "	return rows", jg.deleteMethodText(className));
+		Assert.assertEquals(
+				"int rows = \n" + 
+				"	getSelectByMapper() \n" + 
+				"	.deleteByPrimaryKey((long)getId()); \n" + 
+				"if(connection !=null)try{connection.close();}catch(java.sql.SQLException e) {;}\n" + 
+				"	return rows", jg.deleteMethodText(className));
 
-		Assert.assertEquals("	getSelectByMapper() \n" + "	.insertSelective(this.UserDelegate ); \n" + "	return getId()",
+		Assert.assertEquals("	getSelectByMapper() \n" + "	.insertSelective(this.UserDelegate ); \n" + "if(connection !=null)try{connection.close();}catch(java.sql.SQLException e) {;}\n" + 
+				"	return getId()",
 				jg.insertMethodText(className));
 
 		Assert.assertEquals("	// similar to old updateByExampleSelective method\n"
 				+ "		int rows =  getSelectByMapper().update(c ->\n"
 				+ "		io.starter.stackgen.model.dao.StackgenUserMapper.updateSelectiveColumns(this.UserDelegate , c)\n"
 				+ "		.where(io.starter.stackgen.model.dao.StackgenUserDynamicSqlSupport.id,  isEqualTo(getId())));\n"
+				+ "		if(connection !=null)try{connection.close();}catch(java.sql.SQLException e) {;}\n" 
 				+ "		return rows", jg.updateMethodText(className));
 
 		Assert.assertEquals(
-				"this.UserDelegate = getSelectByMapper().selectByPrimaryKey(getId()).get();\n" + "		return this",
+				" java.util.Optional<?> ret = getSelectByMapper().selectByPrimaryKey(getId());\n" + 
+				"	  if(ret.isEmpty()) {\n" + 
+				"		  return null;\n" + 
+				"	  }\n" + 
+				"this.UserDelegate = (StackgenUser) ret.get();\n" + 
+				"if(connection !=null)\n" + 
+				"try{\n" + 
+				"connection.close();\n"
+				+ "}catch(java.sql.SQLException e) {;}\n" 
+				+ "		return this",
 				jg.loadMethodText(className));
 
 	}

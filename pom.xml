@@ -13,7 +13,7 @@
 		<connection>scm:git://github.com/StarterInc/StackGen.git</connection>
 		<developerConnection>scm:git://github.com/StarterInc/StackGen.git</developerConnection>
 		<url>https://github.com/StarterInc/StackGen</url>
-		<tag>stackgen-0.9.12</tag>
+		<tag>stackgen-${version}</tag>
 	</scm>
 
 	<dependencies>

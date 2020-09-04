@@ -1,22 +1,28 @@
-# {{classname}}
+---
+name: "{{classname}} Model"
+menu: "StackGen Core Model Docs"
+cover: "images/mission_street.jpeg"
+author: "{{developerName}} : {{developerEmail}}"
+needsAuth: false
+---
 
-## Properties
+# {{classname}}{{#description}}
+{{description}}{{/description}}
+
+## Object Properties
 
 Name         | Type          | Description   | Notes
 ------------ | ------------- | ------------- | -------------
-
 {{#vars}}**{{name}}** | {{#isEnum}}[**{{datatypeWithEnum}}**](#{{datatypeWithEnum}}){{/isEnum}}{{^isEnum}}{{#isPrimitiveType}}**{{datatype}}**{{/isPrimitiveType}}{{^isPrimitiveType}}[**{{datatype}}**]({{complexType}}.md){{/isPrimitiveType}}{{/isEnum}} | {{description}} | {{^required}} [optional]{{/required}}{{#readOnly}} [readonly]{{/readOnly}}
 {{/vars}}
 
-{{#vars}}{{#isEnum}}
+<h1>Check out the StackGen React Component Docs</h1>
 
-<a name="{{{datatypeWithEnum}}}"></a>
+{{#vars}}{{#isEnum}}
 
 ## Enum: {{datatypeWithEnum}}
 
 Name | Value
 ---- | -----{{#allowableValues}}{{#enumVars}}
-
 {{name}} | {{value}}{{/enumVars}}{{/allowableValues}}
-
 {{/isEnum}}{{/vars}}

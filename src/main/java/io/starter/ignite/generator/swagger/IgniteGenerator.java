@@ -27,6 +27,7 @@ import io.swagger.codegen.InlineModelResolver;
 import io.swagger.codegen.ignore.CodegenIgnoreProcessor;
 import io.swagger.models.ArrayModel;
 import io.swagger.models.ComposedModel;
+import io.swagger.models.ExternalDocs;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.Operation;
@@ -100,10 +101,6 @@ public class IgniteGenerator extends DefaultGenerator {
 		InlineModelResolver inlineModelResolver = new InlineModelResolver();
 		inlineModelResolver.flatten(swagger);
 
-		// TODO: GET CLIENT OPTS, WRAP THE SpringCodeGen
-		// WRAP codeGenConfig
-		// opts.getConfig();
-
 		// the generated source code files are returned
 		List<File> files = new ArrayList<File>();
 
@@ -159,6 +156,8 @@ public class IgniteGenerator extends DefaultGenerator {
 	 */
 	@VisibleForTesting
 	public void enhanceSwagger() {
+		
+		this.swagger.setBasePath("v1");
 		Set<String> keys = this.swagger.getDefinitions().keySet();
 		Map<String, Path> priorPaths = this.swagger.getPaths();
 		this.swagger.setPaths(new HashMap<String, Path>());
@@ -169,25 +168,30 @@ public class IgniteGenerator extends DefaultGenerator {
 			addIgniteFields(m);
 
 			if (generateStarterCRUDOps) { // optionally add the REST apis
-
 				// TODO: see if using the dynamic version is useful
 				// String path = this.swagger.getBasePath() + "/" + k;
-
 				String path = k;
 
 				// Path existing =
 				// this.swagger.getPaths().get(path.toLowerCase());
 
 				// IGNITE_GEN_REST_PATH_PREFIX
-				if (cfg.checkReservedWord(k)) { // handle reserved
+				if (StackGenConfigurator.checkReservedWord(k)) { // handle reserved
+					
 					Path ops = addCrudOps(k, m);
 					if (ops != null) {
-						this.swagger.getPaths().put(path + "/{param}", ops);
+						this.swagger.getPaths().put( path + "/{id}", ops);
 					}
+					
+					Path opsp = addPost(k, m);
+					if(opsp != null) {
+						this.swagger.getPaths().put( path, opsp);
+					}
+					
 					Path opsl = addListOp(k, m);
 					if (opsl != null) {
 						this.swagger.getPaths()
-								.put(path + "/list/{searchparam}", opsl);
+								.put( path + "/list/{searchparam}", opsl);
 					}
 				}
 			}
@@ -197,8 +201,8 @@ public class IgniteGenerator extends DefaultGenerator {
 			 for (String f : priorPaths.keySet()) {
 				
 				 // TODO: define handling of existing paths 
-				 // Path px = priorPaths.get(f);
-				 // this.swagger.getPaths().put(f, px);
+				 //Path px = priorPaths.get(f);
+				 //this.swagger.getPaths().put(f, px);
 				 logger.warn("Path: " + f);
 			 }
 		}
@@ -212,6 +216,7 @@ public class IgniteGenerator extends DefaultGenerator {
 		p.type("string");
 		p.setDefaultValue("0");
 		// p.setPattern("string");
+		
 		p.setName("searchparam"); // k + "Example");
 		p.setAccess("public");
 		p.setDescription("Search example: JSON");
@@ -230,9 +235,9 @@ public class IgniteGenerator extends DefaultGenerator {
 		r.setDescription("Results fetched OK");
 
 		BodyParameter up = new BodyParameter();
-		up.setName("param");
+		up.setName("id");
 		up.setAccess("public");
-		up.setDescription("Updated JSON data");
+		up.setDescription("JSON payload (updated or new data)");
 		up.setRequired(true);
 		up.setSchema(m);
 		return up;
@@ -241,15 +246,15 @@ public class IgniteGenerator extends DefaultGenerator {
 	/**
 	 * @return
 	 */
-	private PathParameter getIdPathParameter() {
+	private PathParameter getIdPathParameter(String typeDesc) {
 		PathParameter p = new PathParameter();
 		p.type("integer");
-		p.setMinimum(new BigDecimal(0));
+		// p.setMinimum(new BigDecimal(0));
 
 		// p.setName(k + "ID");
-		p.setName("param");
+		p.setName("id");
 		p.setAccess("public");
-		p.setDescription("Retrieve a single result by ID");
+		p.setDescription(typeDesc + " a single result by ID");
 		p.setRequired(true);
 
 		return p;
@@ -265,14 +270,13 @@ public class IgniteGenerator extends DefaultGenerator {
 
 	private Operation createCRUDOp(String opName, String opType, String opDesc, Parameter p) {
 		Operation anOp = new Operation();
-		anOp.setDescription("Starter StackGen Auto Generated " + opName + ":"
+		anOp.setDescription("StackGen Generated API " + opName + ":"
 				+ opType);
 		anOp.setSummary(opDesc);
-		// insert of alternate tag
-		// anOp.addTag("insert-tag");
-
+		anOp.setExternalDocs(new ExternalDocs("Documentation for " + opName, "https:/docs.stackgen.io/api/" + opName ));
+		
 		// 'name' causes dupe method generation
-		anOp.addTag(opType);
+		 anOp.addTag(opType + "-" + opName);
 
 		anOp.operationId(opType);
 		anOp.addParameter(p);
@@ -281,16 +285,11 @@ public class IgniteGenerator extends DefaultGenerator {
 		return anOp;
 	}
 
-	/**
-	 * Adds Starter StackGen required API CRUD REST endpoints.
-	 * 
-	 * @param m
-	 * @return 
-	 */
-	private Path addCrudOps(String k, Model model) {
+	
+	private Path addPost(String k, Model model) {
 		Path ops = new Path();
 
-		// Insert
+		// POST
 		Response r = new Response();
 		BodyParameter up = getBodyPathParameter(k, r);
 		Operation insertOp = createCRUDOp(k, "insert", "Insert a new " + k
@@ -303,24 +302,36 @@ public class IgniteGenerator extends DefaultGenerator {
 		r.addHeader("Content-Type", s);
 		insertOp.response(200, r);
 		ops.setPost(insertOp);
+		return ops;
+	}
+	
+	/**
+	 * Adds Starter StackGen required API CRUD REST endpoints.
+	 * 
+	 * @param m
+	 * @return 
+	 */
+	private Path addCrudOps(String k, Model model) {
+		Path ops = new Path();
+		Response r = new Response();
+		BodyParameter up = getBodyPathParameter(k, r);
 
-		// Update
-		r = new Response();
-		Operation updateOp = createCRUDOp(k, "update", "Update an existing " + k , getIdPathParameter());
+		// PUT
+		Operation updateOp = createCRUDOp(k, "update", "Update an existing " + k , getIdPathParameter("Update"));
 		up = getBodyPathParameter(k, r);
 		updateOp.addParameter(up);
 		updateOp.response(200, r);
 		ops.setPut(updateOp);
 
-		// Delete
+		// DELETE
 		Operation deleteOp = createCRUDOp(k, "delete", "Delete an existing " + k
-				+ " from the system", getIdPathParameter());
+				+ " from the system", getIdPathParameter("Delete"));
 		updateOp.response(200, r);
 		ops.setDelete(deleteOp);
 
-		// Load
+		// GET
 		Operation loadOp = createCRUDOp(k, "load", "Load an existing " + k
-				+ " from the system", getIdPathParameter());
+				+ " from the system", getIdPathParameter("Load"));
 		ComposedModel mxt = new ComposedModel();
 		// mxt.setReference(k);
 		mxt.setReference("#/definitions/" + k);
@@ -343,7 +354,7 @@ public class IgniteGenerator extends DefaultGenerator {
 		// List createa a new list path
 		Operation listOp = new Operation();
 		listOp.setDescription("Starter StackGen Auto Generated Listing");
-		listOp.setSummary("Fetch a set of " + k + "s from the system");
+		listOp.setSummary("Retreive a list of " + k + "s from the service");
 		// listOp.addTag("list-tag"); // causes dupe method gen
 		listOp.operationId("list");
 
@@ -481,7 +492,7 @@ public class IgniteGenerator extends DefaultGenerator {
 			if (ignoreFile.exists() && ignoreFile.canRead()) {
 				this.ignoreProcessor = new CodegenIgnoreProcessor(ignoreFile);
 			} else {
-				LOGGER.warn("Ignore file specified at {} is not valid. This will fall back to an existing ignore file if present in the output directory.", ignoreFileLocation);
+				logger.warn("Ignore file specified at {} is not valid. This will fall back to an existing ignore file if present in the output directory.", ignoreFileLocation);
 			}
 		}
 

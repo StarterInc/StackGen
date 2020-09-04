@@ -73,6 +73,8 @@ public class SecureFieldTest {
 		// should always return crypted
 		Assert.assertNotEquals("No 2 Passwords should encrypt the same", u2.getPassword(), u.getPassword());
 	}
+	
+
 
 	@Test
 	public void testPasswordCrypt()

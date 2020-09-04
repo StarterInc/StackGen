@@ -194,19 +194,53 @@ definitions:
         default: false
     xml:
       name: "Account"
+  
   Order:
     type: "object"
+    required:
+      - customerId
     properties:
       id:
         type: "integer"
         format: "int64"
-      tradeId:
+      customerId:
+        type: "integer"
+        format: "int64"
+        description: "Customer User ID"
+      notes:
+        type: "string"
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "placed"
+        - "approved"
+        - "delivered"
+      complete:
+        type: "boolean"
+        default: false
+    xml:
+      name: "Order"
+    
+  OrderDetail:
+    type: "object"
+    required:
+      - orderId
+      - itemId
+      - quantity
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      orderId:
         type: "integer"
         format: "int64"
       quantity:
         type: "integer"
         format: "int32"
-      executionDate:
+      itemId:
+        type: "string"
+      itemId:
         type: "string"
         format: "date-time"
       status:
@@ -219,8 +253,12 @@ definitions:
       complete:
         type: "boolean"
         default: false
+      shipDate:
+        type: "string"
+        format: "date-time"  
     xml:
-      name: "Order"
+      name: "OrderDetail"      
+      
   Content:
     type: object
     required:

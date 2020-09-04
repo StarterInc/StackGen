@@ -24,6 +24,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface DataField {
+	
+	// TODO: implement     @Cacheable(value = ORGANIZATION_DETAILS_CACHE, key = "#organization.uuid")
 
 	public String value() default "";
 

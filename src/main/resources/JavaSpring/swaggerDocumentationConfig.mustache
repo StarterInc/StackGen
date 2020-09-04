@@ -63,7 +63,7 @@ public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
 
 		configuration.setAllowedOrigins(Arrays.asList(CORSOrigins));
 		configuration.setAllowedMethods(Arrays
-				.asList("GET", "POST", "INSERT", "DELETE", "HEAD", "OPTIONS"));
+				.asList("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"));
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration(CORSMapping, configuration);
 		return source;

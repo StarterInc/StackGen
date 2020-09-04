@@ -63,7 +63,7 @@ import java.util.concurrent.{{^jdk8}}Callable{{/jdk8}}{{#jdk8}}CompletableFuture
  */
 {{>generatedAnnotation}}
 @EnableWebMvc
-public interface {{classname}}Delegate {
+public interface {{classname}}Delegate extends java.io.Serializable {
 {{#jdk8}}
 
     Logger log = LoggerFactory.getLogger({{classname}}Delegate.class);
@@ -124,6 +124,9 @@ public interface {{classname}}Delegate {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				}
 			} catch (java.lang.reflect.InvocationTargetException e) {
+				if(e.getTargetException() instanceof IgniteException) {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
 				log.error("Reflection Failure running method {{classname}}.{{operationId}}: "
 						+ e + ":" + e.getTargetException().toString());
 				return new ResponseEntity<>(HttpStatus.  INTERNAL_SERVER_ERROR);

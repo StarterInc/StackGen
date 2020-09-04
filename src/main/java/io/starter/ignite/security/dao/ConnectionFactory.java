@@ -77,8 +77,11 @@ public class ConnectionFactory {
 			Connection cx = instance.getDataSource().getConnection();
 			if (!cx.isValid(5000)) {
 				dsx = null;
-				cx = DriverManager.getConnection(ConnectionFactory.sourceURL + "/" + ConnectionFactory.dbName + "?"
-						+ "user=" + ConnectionFactory.userName + "&password=" + ConnectionFactory.password);
+				cx = DriverManager.getConnection(
+						ConnectionFactory.sourceURL 
+						+ "/" + ConnectionFactory.dbName + "?"
+						+ "user=" + ConnectionFactory.userName 
+						+ "&password=" + ConnectionFactory.password);
 			}
 			return cx;
 		} catch (Exception x) {
@@ -96,17 +99,25 @@ public class ConnectionFactory {
         config.setUsername( userName );
         config.setPassword( password );
         
-        //config.addDataSourceProperty( "cachePrepStmts" , "true" );
-        //config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
-        //config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+        config.addDataSourceProperty( "cachePrepStmts" , "true" );
+        config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+        config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
        
-        // config.setLeakDetectionThreshold(720000);
+        // @see:  
+        // config.setAutoCommit(false);
+        // config.addDataSourceProperty("rewriteBatchedStatements", "true");
+        
+       /* config.setLeakDetectionThreshold(1440000);
         config.setConnectionTimeout(10000);
         config.setValidationTimeout(5000);
         config.setIdleTimeout(30000);
         config.setAutoCommit(true);
-        config.setMinimumIdle(10);
+        config.setMinimumIdle(10);*/
         
+        config.setMinimumIdle(5);
+        config.setConnectionTimeout(20 * 000);
+        config.setIdleTimeout(1 * 30 * 1000);
+        config.setMaxLifetime(1 * 60 * 1000);
         ds = new HikariDataSource( config );
     }
  

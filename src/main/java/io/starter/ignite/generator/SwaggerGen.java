@@ -170,6 +170,7 @@ public class SwaggerGen extends Gen {
 		config.setApiPackage(getVal("API_PACKAGE", config.getApiPackage()));
 		config.setModelPackage(getVal("API_MODEL_PACKAGE", config.getApiModelPackage()));
 		config.setInvokerPackage(getVal("INVOKER_PACKAGE", config.getInvokerPackage()));
+
 		String gid = config.getOrgPackage().substring(0, config.getOrgPackage().length() - 1);
 		config.setGroupId(gid);
 
@@ -204,6 +205,7 @@ public class SwaggerGen extends Gen {
 		config.addDynamicProperty("developerEmail", config.developerEmail);
 		config.addDynamicProperty("developerOrganization", config.developerOrganization);
 		config.addDynamicProperty("developerOrganizationUrl", config.developerOrganizationUrl);
+		config.addDynamicProperty("infoUrl", config.developerOrganizationUrl + "/info");
 
 		// SPRING properties
 		config.addAdditionalProperty("java8", "true");

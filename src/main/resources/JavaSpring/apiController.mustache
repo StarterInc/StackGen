@@ -1,5 +1,6 @@
 package {{package}};
 
+import io.starter.ignite.util.IgniteUtils;
 {{^jdk8}}
 {{#imports}}import {{import}};
 {{/imports}}
@@ -7,6 +8,7 @@ package {{package}};
 {{^isDelegate}}
 {{/isDelegate}}
 {{^jdk8}}
+import org.apache.commons.lang.SerializationUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import io.swagger.annotations.*;
@@ -86,13 +88,15 @@ public class {{classname}}Controller implements {{classname}} {
     public {{classname}}Controller({{classname}}Delegate delegate) {
         this.delegate = delegate;
     }
-    {{#jdk8}}
 
     @JsonIgnore
     @Override
     public {{classname}}Delegate getDelegate() {
-        return delegate;
+       	return ({{classname}}Delegate) IgniteUtils.cloneObject(delegate);
     }
+
+    {{#jdk8}}
+    
     {{/jdk8}}
 {{/isDelegate}}
 {{^isDelegate}}

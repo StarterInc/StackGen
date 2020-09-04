@@ -1,6 +1,21 @@
+---
+name: "{{artifactDescription}} : {{classname}}"
+menu: "StackGen Core API Docs"
+cover: "images/mission_street.jpeg"
+author: "{{developerName}} : {{developerEmail}}"
+needsAuth: false
+date: "2000-01-01"
+category: "{{artifactId}}"
+tags:
+    - {{basePackage}}
+    - docs
+---
+
+{{{generatorVersion}}}
+
 # {{classname}}{{#description}}
 {{description}}{{/description}}
-
+## {{artifactId}}
 All URIs are relative to *{{basePath}}*
 
 Method | HTTP request | Description
@@ -20,28 +35,33 @@ Method | HTTP request | Description
 
 ### Example
 ```java
-// Import classes:{{#hasAuthMethods}}
-//import {{{invokerPackage}}}.ApiClient;{{/hasAuthMethods}}
-//import {{{invokerPackage}}}.ApiException;{{#hasAuthMethods}}
-//import {{{invokerPackage}}}.Configuration;
-//import {{{invokerPackage}}}.auth.*;{{/hasAuthMethods}}
-//import {{{package}}}.{{{classname}}};
+Import classes:{{#hasAuthMethods}}
+import {{{invokerPackage}}}.ApiClient;{{/hasAuthMethods}}
+import {{{invokerPackage}}}.ApiException;{{#hasAuthMethods}}
+import {{{invokerPackage}}}.Configuration;
+import {{{invokerPackage}}}.auth.*;{{/hasAuthMethods}}
+import {{{package}}}.{{{classname}}};
 
 {{#hasAuthMethods}}
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 {{#authMethods}}{{#isBasic}}
+
 // Configure HTTP basic authorization: {{{name}}}
 HttpBasicAuth {{{name}}} = (HttpBasicAuth) defaultClient.getAuthentication("{{{name}}}");
 {{{name}}}.setUsername("YOUR USERNAME");
 {{{name}}}.setPassword("YOUR PASSWORD");{{/isBasic}}{{#isApiKey}}
+
 // Configure API key authorization: {{{name}}}
 ApiKeyAuth {{{name}}} = (ApiKeyAuth) defaultClient.getAuthentication("{{{name}}}");
 {{{name}}}.setApiKey("YOUR API KEY");
+
 // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
 //{{{name}}}.setApiKeyPrefix("Token");{{/isApiKey}}{{#isOAuth}}
+
 // Configure OAuth2 access token for authorization: {{{name}}}
 OAuth {{{name}}} = (OAuth) defaultClient.getAuthentication("{{{name}}}");
 {{{name}}}.setAccessToken("YOUR ACCESS TOKEN");{{/isOAuth}}
+
 {{/authMethods}}
 {{/hasAuthMethods}}
 
@@ -49,6 +69,7 @@ OAuth {{{name}}} = (OAuth) defaultClient.getAuthentication("{{{name}}}");
 {{#allParams}}
 {{{dataType}}} {{{paramName}}} = {{{example}}}; // {{{dataType}}} | {{{description}}}
 {{/allParams}}
+
 try {
     {{#returnType}}{{{returnType}}} result = {{/returnType}}apiInstance.{{{operationId}}}({{#allParams}}{{{paramName}}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{#returnType}}
     System.out.println(result);{{/returnType}}

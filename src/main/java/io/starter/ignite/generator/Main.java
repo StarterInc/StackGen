@@ -245,7 +245,8 @@ public class Main extends Gen implements CommandLineRunner {
 		logger.debug("Generating StackGen API beans...");
 		// delegates calls to/from api to the mybatis entity
 		jg.generateClassesFromModelFolder();
-
+		jg.compile(config.getModelPackageDir());
+		
 		// final compile
 		logger.debug("Final compile of all java classes...");
 		jg.compile(config.getPackageDir());
@@ -308,7 +309,7 @@ public class Main extends Gen implements CommandLineRunner {
 		if (inputSpecFile != null && !inputSpecFile.isEmpty()) {
 			// append the input spec path if we aren't able to use default
 			if (!new File(inputSpecFile).exists()) {
-				inputSpecFile = config.getSpecLocation() + inputSpecFile;
+				inputSpecFile = StackGenConfigurator.getSpecLocation() + inputSpecFile;
 				config.setInputSpec(inputSpecFile);
 			}
 			

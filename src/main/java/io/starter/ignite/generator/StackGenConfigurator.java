@@ -29,12 +29,13 @@ import io.swagger.codegen.auth.AuthParser;
 import io.swagger.codegen.config.CodegenConfigurator;
 import io.swagger.models.Swagger;
 import io.swagger.models.auth.AuthorizationValue;
+import io.swagger.parser.SwaggerException;
 import io.swagger.parser.SwaggerParser;
 
 /**
  * portable sg configs
  * 
- * @author johnmcmahon
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
 public class StackGenConfigurator extends CodegenConfigurator {
@@ -143,16 +144,6 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	public String swaggerLib = (System.getProperty("swaggerLib") != null ? System.getProperty("swaggerLib")
 			: "spring-boot");
 
-	private String artifactid = "artifactid";
-
-	public String getArtifactId() {
-		return artifactid;
-	}
-
-	public CodegenConfigurator setArtifactId(String a) {
-		artifactid = a;
-		return this;
-	}
 
 	// DML/DB section
 	private String schemaName = null;
@@ -221,7 +212,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	public static String getSourceResources() {
 		return (System.getProperty("sourceResources") != null ? System.getProperty("sourceResources")
-				: "/src/resources");
+				: "src/resources");
 	}
 
 	// this is the source folder for any classes in the generator itself...
@@ -257,7 +248,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public static String getSpecLocation() {
-		return SystemConstants.rootFolder + getSourceResources() + "/openapi_specs/";
+		return SystemConstants.rootFolder + "/" + getSourceResources() + "/openapi_specs/";
 	}
 
 	public String PLUGIN_SPEC_LOCATION = getSpecLocation() + "plugins/";
@@ -318,20 +309,18 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public String getMybatisGenConfigTemplate() {
-		return SystemConstants.rootFolder + getSourceResources() + "/templates/MyBatisGeneratorConfig.xml";
+		return SystemConstants.rootFolder + "/" + getSourceResources() + "/templates/MyBatisGeneratorConfig.xml";
 	}
 
 	public String getMybatisGenConfigOut() {
-		return getGenOutputFolder() + getSourceResources() + "/MyBatisGeneratorConfig.xml";
+		return getGenOutputFolder() + "/" + getSourceResources() + "/MyBatisGeneratorConfig.xml";
 	}
 
 	public String getMybatisConfigTemplate() {
-		return SystemConstants.rootFolder + getSourceResources() + "/templates/MyBatisConfig.xml";
+		return SystemConstants.rootFolder + "/" + getSourceResources() + "/templates/MyBatisConfig.xml";
 	}
 
 	public String getMybatisConfigOut() {
-		/// Users/johnmcmahon/workspace/automator/automator/admin-service/gen/4/4/StackGen//gen/4/4/StackGen//src/main/resources/MyBatisConfig.xml
-
 		return getGenOutputFolder() + "/src/main/resources/MyBatisConfig.xml";
 	}
 
@@ -514,8 +503,6 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	@Override
 	public ClientOptInput toClientOptInput() {
 
-		// ClientOptInput clx = super.toClientOptInput();
-
 		CodegenConfig generator = StackGenCodegenConfigLoader.forName(getLang());
 
 		generator.setInputSpec(getInputSpec());
@@ -532,18 +519,18 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		checkAndSetAdditionalProperty(this.getApiPackage(), CodegenConstants.API_PACKAGE);
 		checkAndSetAdditionalProperty(this.getModelPackage(), CodegenConstants.MODEL_PACKAGE);
 		checkAndSetAdditionalProperty(this.getInvokerPackage(), CodegenConstants.INVOKER_PACKAGE);
-//         checkAndSetAdditionalProperty(this.GRO, CodegenConstants.GROUP_ID);
+        checkAndSetAdditionalProperty(this.getGroupId(), CodegenConstants.GROUP_ID);
 		checkAndSetAdditionalProperty(this.getArtifactId(), CodegenConstants.ARTIFACT_ID);
 		checkAndSetAdditionalProperty(this.getArtifactVersion(), CodegenConstants.ARTIFACT_VERSION);
 		checkAndSetAdditionalProperty(this.templateDir, CodegenConstants.TEMPLATE_DIR);
-//        checkAndSetAdditionalProperty(modelNamePrefix, CodegenConstants.MODEL_NAME_PREFIX);
-//        checkAndSetAdditionalProperty(modelNameSuffix, CodegenConstants.MODEL_NAME_SUFFIX);
+        checkAndSetAdditionalProperty(this.getModelNamePrefix(), CodegenConstants.MODEL_NAME_PREFIX);
+        checkAndSetAdditionalProperty(this.getModelNameSuffix(), CodegenConstants.MODEL_NAME_SUFFIX);
 		checkAndSetAdditionalProperty(gitUserId, CodegenConstants.GIT_USER_ID);
 		checkAndSetAdditionalProperty(gitRepoId, CodegenConstants.GIT_REPO_ID);
 		checkAndSetAdditionalProperty(this.releaseNote, CodegenConstants.RELEASE_NOTE);
-		// checkAndSetAdditionalProperty(this.httpUserAgent,
-		// CodegenConstants.HTTP_USER_AGENT);
 
+		// debugParser
+		
 		handleDynamicProperties(generator);
 
 		if (isNotEmpty(this.swaggerLib)) {
@@ -557,10 +544,13 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		final List<AuthorizationValue> authorizationValues = AuthParser.parse(auth);
 
 		Swagger swagger = new SwaggerParser().read(getInputSpec(), authorizationValues, true);
-
-		input.opts(new ClientOpts()).swagger(swagger);
-
-		return input;
+		if(swagger != null) {
+			input.opts(new ClientOpts()).swagger(swagger);
+	
+			return input;
+		}else {
+			throw new SwaggerException("Could not parse: " + this.getInputSpec());
+		}
 	}
 
 	private void checkAndSetAdditionalProperty(String property, String propertyKey) {

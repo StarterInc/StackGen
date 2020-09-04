@@ -330,6 +330,8 @@ public class Gen {
 	public static DataField getDataFieldAnnotation(Field f) throws NoSuchMethodException, SecurityException {
 		// get the annotation
 		final DataField anno = f.getDeclaredAnnotation(DataField.class);
+		
+		// TODO:     @Cacheable(value = ORGANIZATION_DETAILS_CACHE, key = "#organization.uuid")
 		return anno;
 	}
 

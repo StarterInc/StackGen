@@ -1,5 +1,6 @@
 package io.starter.ignite.generator.swagger.languages;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.regex.Matcher;
@@ -28,7 +29,6 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 
 	protected static final Logger logger = LoggerFactory.getLogger(StackGenSpringCodegen.class);
 
-
 	public StackGenSpringCodegen() {
 		super();
 	}
@@ -43,6 +43,16 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		return "Generates a Java SpringBoot StackGen Service.";
 	}
 
+    @Override
+    public String apiDocFileFolder() {
+        return (outputFolder + "/" + apiDocPath).replace('/', File.separatorChar);
+    }
+
+    @Override
+    public String modelDocFileFolder() {
+        return (outputFolder + "/" + modelDocPath).replace('/', File.separatorChar);
+    }
+    
 	@Override
 	public void processOpts() {
 		super.processOpts();
@@ -51,9 +61,13 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		// modelDocTemplateFiles.remove("model_doc.mustache");
 		// apiDocTemplateFiles.remove("api_doc.mustache");
 
+		apiTemplateFiles.put("ApiClient.mustache", ".java");
+		// apiTestTemplateFiles.put("api_test.mustache", ".java");
+        modelDocTemplateFiles.put("model_doc.mustache", ".md");
+        apiDocTemplateFiles.put("api_doc.mustache", ".md");
+
 		// TODO: add tests
 		// modelTestTemplateFiles.put("modelTest.mustache", "Test.java");
-		
 		
 		// add lambda for mustache templates
 		additionalProperties.put("lambdaEscapeDoubleQuote", new Mustache.Lambda() {

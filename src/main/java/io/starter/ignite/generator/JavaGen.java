@@ -246,11 +246,27 @@ public class JavaGen extends Gen implements Generator {
 	}
 
 	/**
+	 * create toString method
+	 */
+	public MethodSpec createToString(String className) {
+		final String l = JavaGen.getBaseJavaName(className);
+		final String methodText = "return " + l + "Delegate.toString()";		
+		try {
+			return MethodSpec.methodBuilder("toString")
+					.addJavadoc("Starter StackGen 'JavaGen' Generated Method: " + config.DATE_FORMAT.format(new Date()))
+					.addAnnotation(getOverrideSpec())
+					.returns(ClassName.get("java.lang", "String"))
+					.addModifiers(Modifier.PUBLIC).addStatement(methodText).build();
+		} catch (final Exception e) {
+			JavaGen.logger.error("ERROR creating toString method for: " + className + " " + e.toString());
+		}
+		return null;
+	}
+	
+	/**
 	 * create setDelegate method
 	 */
 	public MethodSpec createSetDelegate(String className) {
-
-		JavaGen.getBaseJavaName(className);
 
 		final String methodText = setDelegateText(className); // bname + "Delegate = (" + className + ")bx";
 		try {
@@ -435,11 +451,14 @@ public class JavaGen extends Gen implements Generator {
 
 	public String loadMethodText(String className) {
 		final String l = JavaGen.getBaseJavaName(className);
-		final String m = getMyBatisSQLMapsName(className);
-
+		final String m = getMyBatisJavaName(className);
 		return String.format(
-				"this.%1$sDelegate = getSelectByMapper().selectByPrimaryKey(getId()).get();\n" 
-				+ "if(connection !=null)try{connection.close();}catch(java.sql.SQLException e) {;}\n" 
+				" java.util.Optional<?> ret = getSelectByMapper().selectByPrimaryKey(getId());\n" + 
+				"	  if(ret.isEmpty()) {\n" + 
+				"		  return null;\n" + 
+				"	  }\n"
+				+ "this.%1$sDelegate = (%2$s) ret.get();\n"
+				+ "if(connection !=null)\ntry{\nconnection.close();\n}catch(java.sql.SQLException e) {;}\n" 
 				+ "		return this", l, m);
 	}
 
@@ -480,7 +499,7 @@ public class JavaGen extends Gen implements Generator {
 
 		return String.format(
 				"	final java.util.List<%2$s> rows =\n" + "		getSelectByMapper()\n" + "		.select(\n"
-						+ "			c -> c\n" + "		);\n" + "	\n" + "	// wrap in our AccountService class\n"
+						+ "			c -> c\n" + "		);\n" + "	\n" + "	// wrap in our %1$sService class\n"
 						+ "	java.util.List ret = new java.util.ArrayList();\n" + "	for (%2$s u : rows) {\n"
 						+ "		%1$sService ux = new %1$sService();\n" + "		ux.setDelegate(u);\n"
 						+ "		u = null; // mark for gc\n" + "		ret.add(ux);\n" + "	}\n" 
@@ -495,12 +514,15 @@ public class JavaGen extends Gen implements Generator {
 		final String l = JavaGen.getBaseJavaName(className);
 		final String m = getMyBatisSQLMapsName(className);
 
-		return String.format("%1$sService us = new %1$sService();\n" + "		Optional<%2$s> ux = \n"
-				+ "				us.getSelectByMapper() // we expose the full power of the MyBatis Dynamic SQL mapper\n"
+		return String.format("%1$sService us = new %1$sService();\n" 
+				+ "		java.util.Optional<%2$s> ux = \n"
+				+ "			us.getSelectByMapper() // we expose the full power of the MyBatis Dynamic SQL mapper\n"
 				+ "				.selectOne(c -> c.where(%2$sDynamicSqlSupport." + l
 				+ ", // use %2$sDynamicSqlSupport for all the col names\n"
-				+ "		 isEqualTo(loginRequest.getUsername())));\n" + "		us.setDelegate(ux.get().delegate);\n"
-				+ "		\n" + "		SpringUser tx = new SpringUser(us)", l, m);
+				+ "		 isEqualTo(loginRequest.getUsername())));\n" 
+				+ "		us.setDelegate(ux.get().delegate);\n"
+				+ "		\n" 
+				+ "		SpringUser tx = new SpringUser(us)", l, m);
 
 	}
 
@@ -533,8 +555,15 @@ public class JavaGen extends Gen implements Generator {
 		return autoWired;
 	}
 
-	AnnotationSpec JSONIgnored;
-
+	AnnotationSpec OverrideSpec;
+	private AnnotationSpec getOverrideSpec() {
+		if (OverrideSpec == null) {
+			OverrideSpec = AnnotationSpec.builder(java.lang.Override.class).build();
+		}
+		return OverrideSpec;
+	}
+	
+	AnnotationSpec JSONIgnored;	
 	private AnnotationSpec getJSONIgnoreSpec() {
 		if (JSONIgnored == null) {
 			JSONIgnored = AnnotationSpec.builder(com.fasterxml.jackson.annotation.JsonIgnore.class).build();
@@ -616,6 +645,7 @@ public class JavaGen extends Gen implements Generator {
 			methodList.add(createGetObjectMapper(className));
 			methodList.add(createGetAcceptHeader(className));
 			methodList.add(createSetDelegate(className));
+			methodList.add(createToString(className));
 			methodList.add(createGetDelegate(className));
 			methodList.add(createList(className));
 			methodList.add(createLoad(className));

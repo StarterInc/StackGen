@@ -18,7 +18,9 @@
 		<url>https://github.com/StarterInc/StackGen</url>
 		<tag>stackgen-${version}</tag>
 	</scm>
-
+	<properties>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -9,6 +9,7 @@
 	</parent>
 
 	<artifactId>stackgen</artifactId>
+	<version>0.9.18-SNAPSHOT</version>
 	<name>Starter StackGen</name>
 	<description>Starter StackGen CORE Service Generator</description>
 	<scm>

@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.starter</groupId>
-		<version>0.9.15</version>
+		<version>0.9.17</version>
 		<artifactId>stackgen-parent</artifactId>
 	</parent>
 
 	<artifactId>stackgen</artifactId>
-	<version>0.9.16-SNAPSHOT</version>
+	<version>0.9.17-SNAPSHOT</version>
 	<name>Starter StackGen</name>
 	<description>Starter StackGen CORE Service Generator</description>
 	<scm>
@@ -25,24 +25,5 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<source>8</source>
-					<failOnError>false</failOnError>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+	
 </project>

@@ -98,6 +98,7 @@ public class ConnectionFactory {
         config.setJdbcUrl( sourceURL + "/" + dbName );
         config.setUsername( userName );
         config.setPassword( password );
+        config.setDriverClassName(driverName);
         
         config.addDataSourceProperty( "cachePrepStmts" , "true" );
         config.addDataSourceProperty( "prepStmtCacheSize" , "250" );

@@ -43,105 +43,105 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	private static final long serialVersionUID = 23423423423L;
 
 	public static String LINE_FEED = "\r\n";
-	public String adminServiceURL = (System.getProperty("adminServiceURL") != null
-			? System.getProperty("adminServiceURL")
+	public String adminServiceURL = (SystemConstants.getValue("adminServiceURL") != null
+			? SystemConstants.getValue("adminServiceURL")
 			: "http://localhost:8099/");
 
-	public String dbUser = (System.getProperty("dbUser") != null ? System.getProperty("dbUser") : "stackgen");
-	public String dbPassword = (System.getProperty("dbPassword") != null ? System.getProperty("dbPassword")
+	public String dbUser = (SystemConstants.getValue("dbUser") != null ? SystemConstants.getValue("dbUser") : "stackgen");
+	public String dbPassword = (SystemConstants.getValue("dbPassword") != null ? SystemConstants.getValue("dbPassword")
 			: "password");
-	public String dbName = (System.getProperty("dbName") != null ? System.getProperty("dbName") : "mystack");
-	public String dbUrl = (System.getProperty("dbUrl") != null ? System.getProperty("dbUrl")
+	public String dbName = (SystemConstants.getValue("dbName") != null ? SystemConstants.getValue("dbName") : "mystack");
+	public String dbUrl = (SystemConstants.getValue("dbUrl") != null ? SystemConstants.getValue("dbUrl")
 			: "jdbc:mysql://mydb.myco.com");
 
-	public String defaultHostname = (System.getProperty("defaultHostname") != null
-			? System.getProperty("defaultHostname")
+	public String defaultHostname = (SystemConstants.getValue("defaultHostname") != null
+			? SystemConstants.getValue("defaultHostname")
 			: "localhost");
 
-	public String defaultPort = (System.getProperty("defaultPort") != null ? System.getProperty("defaultPort")
+	public String defaultPort = (SystemConstants.getValue("defaultPort") != null ? SystemConstants.getValue("defaultPort")
 			: "8100");
 
-	public String gitRepoId = (System.getProperty("gitRepoId") != null ? System.getProperty("gitRepoId") : "StackGen");
+	public String gitRepoId = (SystemConstants.getValue("gitRepoId") != null ? SystemConstants.getValue("gitRepoId") : "StackGen");
 
-	public String gitUserId = (System.getProperty("gitUserId") != null ? System.getProperty("gitUserId")
+	public String gitUserId = (SystemConstants.getValue("gitUserId") != null ? SystemConstants.getValue("gitUserId")
 			: "spaceghost69");
 
-	public String developerOrganizationUrl = (System.getProperty("developerOrganizationUrl") != null
-			? System.getProperty("developerOrganizationUrl")
+	public String developerOrganizationUrl = (SystemConstants.getValue("developerOrganizationUrl") != null
+			? SystemConstants.getValue("developerOrganizationUrl")
 			: "http://starter.io");
 
-	public String developerName = (System.getProperty("developerName") != null ? System.getProperty("developerName")
+	public String developerName = (SystemConstants.getValue("developerName") != null ? SystemConstants.getValue("developerName")
 			: "Stack Dev");
 
-	public String developerEmail = (System.getProperty("developerEmail") != null ? System.getProperty("developerEmail")
+	public String developerEmail = (SystemConstants.getValue("developerEmail") != null ? SystemConstants.getValue("developerEmail")
 			: "info@stackgen.io");
 
-	public String developerOrganization = (System.getProperty("developerOrganization") != null
-			? System.getProperty("developerOrganization")
+	public String developerOrganization = (SystemConstants.getValue("developerOrganization") != null
+			? SystemConstants.getValue("developerOrganization")
 			: "Starter Inc.");
 
 	/**
 	 * set the value of allowed CORS request paths
 	 */
 	public String getCORSMapping() {
-		return (System.getProperty("CORSMapping") != null ? System.getProperty("CORSMapping") : "*/**");
+		return (SystemConstants.getValue("CORSMapping") != null ? SystemConstants.getValue("CORSMapping") : "*/**");
 	}
 
 	public String getCORSOrigins() {
-		return (System.getProperty("CORSMapping") != null ? System.getProperty("CORSOrigins") : "localhost");
+		return (SystemConstants.getValue("CORSMapping") != null ? SystemConstants.getValue("CORSOrigins") : "localhost");
 	}
 
 	// TODO: these 2 are unused
 	public String getAdminUser() {
-		return (System.getProperty("adminUser") != null ? System.getProperty("adminUser") : "admin");
+		return (SystemConstants.getValue("adminUser") != null ? SystemConstants.getValue("adminUser") : "admin");
 	}
 
 	public String getAdminPassword() {
-		return (System.getProperty("adminPassword") != null ? System.getProperty("adminPassword") : "ch@ng3m3");
+		return (SystemConstants.getValue("adminPassword") != null ? SystemConstants.getValue("adminPassword") : "ch@ng3m3");
 	}
 
-	boolean skipJavaGen = (System.getProperty("skipJavaGen") != null
-			? Boolean.parseBoolean(System.getProperty("skipJavaGen"))
+	boolean skipJavaGen = (SystemConstants.getValue("skipJavaGen") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("skipJavaGen"))
 			: false);
 
-	boolean skipDbGen = (System.getProperty("skipDbGen") != null ? Boolean.parseBoolean(System.getProperty("skipDbGen"))
+	boolean skipDbGen = (SystemConstants.getValue("skipDbGen") != null ? Boolean.parseBoolean(SystemConstants.getValue("skipDbGen"))
 			: false);
 
-	boolean skipReactGen = (System.getProperty("skipReactGen") != null
-			? Boolean.parseBoolean(System.getProperty("skipReactGen"))
+	boolean skipReactGen = (SystemConstants.getValue("skipReactGen") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("skipReactGen"))
 			: false);
 
-	boolean skipMybatisGen = (System.getProperty("skipMybatisGen") != null
-			? Boolean.parseBoolean(System.getProperty("skipMybatisGen"))
+	boolean skipMybatisGen = (SystemConstants.getValue("skipMybatisGen") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("skipMybatisGen"))
 			: false);
 
-	boolean skipMavenBuildGeneratedApp = (System.getProperty("skipMavenBuildGeneratedApp") != null
-			? Boolean.parseBoolean(System.getProperty("skipMavenBuildGeneratedApp"))
+	boolean skipMavenBuildGeneratedApp = (SystemConstants.getValue("skipMavenBuildGeneratedApp") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("skipMavenBuildGeneratedApp"))
 			: true);
 
-	boolean overwriteMode = (System.getProperty("overwriteMode") != null
-			? Boolean.parseBoolean(System.getProperty("overwriteMode"))
+	boolean overwriteMode = (SystemConstants.getValue("overwriteMode") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("overwriteMode"))
 			: true);
 
-	boolean iteratePluginGen = (System.getProperty("iteratePluginGen") != null
-			? Boolean.parseBoolean(System.getProperty("iteratePluginGen"))
+	boolean iteratePluginGen = (SystemConstants.getValue("iteratePluginGen") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("iteratePluginGen"))
 			: true);
 
-	boolean mergePluginGen = (System.getProperty("mergePluginGen") != null
-			? Boolean.parseBoolean(System.getProperty("mergePluginGen"))
+	boolean mergePluginGen = (SystemConstants.getValue("mergePluginGen") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("mergePluginGen"))
 			: false);
 
-	boolean verbose = (System.getProperty("verbose") != null ? Boolean.parseBoolean(System.getProperty("verbose"))
+	boolean verbose = (SystemConstants.getValue("verbose") != null ? Boolean.parseBoolean(SystemConstants.getValue("verbose"))
 			: false);
 
-	boolean debug = (System.getProperty("debug") != null ? Boolean.parseBoolean(System.getProperty("debug")) : false);
+	boolean debug = (SystemConstants.getValue("debug") != null ? Boolean.parseBoolean(SystemConstants.getValue("debug")) : false);
 
 	// spring, java, resteasy
-	public String swaggerLang = (System.getProperty("swaggerLang") != null ? System.getProperty("swaggerLang")
+	public String swaggerLang = (SystemConstants.getValue("swaggerLang") != null ? SystemConstants.getValue("swaggerLang")
 			: "stackgen-java-spring");
 
 	// spring-boot ,jersey2
-	public String swaggerLib = (System.getProperty("swaggerLib") != null ? System.getProperty("swaggerLib")
+	public String swaggerLib = (SystemConstants.getValue("swaggerLib") != null ? SystemConstants.getValue("swaggerLib")
 			: "spring-boot");
 
 
@@ -152,7 +152,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		if (schemaName != null) {
 			return schemaName;
 		}
-		schemaName = System.getProperty("schemaName") != null ? System.getProperty("schemaName") : "schemaName";
+		schemaName = SystemConstants.getValue("schemaName") != null ? SystemConstants.getValue("schemaName") : "schemaName";
 		schemaName.toLowerCase();
 		return schemaName;
 	}
@@ -166,12 +166,12 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	// default is lowercase, this forces uppercase
-	public boolean columnsUpperCase = (System.getProperty("columnsUpperCase") != null
-			? Boolean.parseBoolean(System.getProperty("columnsUpperCase"))
+	public boolean columnsUpperCase = (SystemConstants.getValue("columnsUpperCase") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("columnsUpperCase"))
 			: false);
 
-	boolean dbGenDropTable = (System.getProperty("dbGenDropTable") != null
-			? Boolean.parseBoolean(System.getProperty("dbGenDropTable"))
+	boolean dbGenDropTable = (SystemConstants.getValue("dbGenDropTable") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("dbGenDropTable"))
 			: false);
 
 	// end DML section
@@ -182,12 +182,12 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public String getJavaGenFolderName() {
-		return (System.getProperty("javaGenFolderName") != null ? System.getProperty("javaGenFolderName")
+		return (SystemConstants.getValue("javaGenFolderName") != null ? SystemConstants.getValue("javaGenFolderName")
 				: javaGenFolderName);
 	}
 
 	public String getGenOutputFolder() {
-		String outputDir = System.getProperty("genOutputFolder");
+		String outputDir = SystemConstants.getValue("genOutputFolder");
 
 		return (outputDir != null ? outputDir : SystemConstants.rootFolder + getJavaGenFolderName());
 	}
@@ -197,12 +197,12 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public String getJavaGenArchivePath() {
-		return (System.getProperty("javaGenArchivePath") != null ? System.getProperty("javaGenArchivePath")
+		return (SystemConstants.getValue("javaGenArchivePath") != null ? SystemConstants.getValue("javaGenArchivePath")
 				: SystemConstants.rootFolder + getJavaGenArchiveFolder());
 	}
 
 	public String getSourceMain() {
-		return (System.getProperty("SOURCE_MAIN") != null ? System.getProperty("SOURCE_MAIN")
+		return (SystemConstants.getValue("SOURCE_MAIN") != null ? SystemConstants.getValue("SOURCE_MAIN")
 				: SystemConstants.rootFolder) + "/src/main";
 	}
 
@@ -211,7 +211,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public static String getSourceResources() {
-		return (System.getProperty("sourceResources") != null ? System.getProperty("sourceResources")
+		return (SystemConstants.getValue("sourceResources") != null ? SystemConstants.getValue("sourceResources")
 				: "src/resources");
 	}
 
@@ -231,7 +231,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	// ## SwaggerGen OPEN API
 	public String getArtifactVersion() {
-		return (System.getProperty("artifactVersion") != null ? System.getProperty("artifactVersion")
+		return (SystemConstants.getValue("artifactVersion") != null ? SystemConstants.getValue("artifactVersion")
 				: "1.0.1-SNAPSHOT");
 	}
 
@@ -240,11 +240,11 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(LONG_DATE_FORMAT);
 
 	public String getOrgPackage() {
-		return (System.getProperty("orgPackage") != null ? System.getProperty("orgPackage") : "io.starter.");
+		return (SystemConstants.getValue("orgPackage") != null ? SystemConstants.getValue("orgPackage") : "io.starter.");
 	}
 
 	public String getOrgFolder() {
-		return (System.getProperty("orgFolder") != null ? System.getProperty("orgFolder") : "io/starter/");
+		return (SystemConstants.getValue("orgFolder") != null ? SystemConstants.getValue("orgFolder") : "io/starter/");
 	}
 
 	public static String getSpecLocation() {
@@ -300,8 +300,8 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	// ## Mybatis
 	int DB_TIMEOUT = 10000;
 
-	public String TIMEZONE_OFFSET = (System.getProperty("TIMEZONE_OFFSET") != null
-			? System.getProperty("TIMEZONE_OFFSET")
+	public String TIMEZONE_OFFSET = (SystemConstants.getValue("TIMEZONE_OFFSET") != null
+			? SystemConstants.getValue("TIMEZONE_OFFSET")
 			: "-08:00");
 
 	public String getSqlMapsPath() {

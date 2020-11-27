@@ -27,11 +27,11 @@ public class ConnectionFactory {
 	protected static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 
 	// Connect to the data storage
-	private static String driverName = SystemConstants.dbDriver;
+	private static String dbDriver = SystemConstants.dbDriver;
 	private static String dbName = SystemConstants.dbName;
-	private static String sourceURL = SystemConstants.dbUrl;
-	private static String userName = SystemConstants.dbUser;
-	private static String password = SystemConstants.dbPassword;
+	private static String dbUrl = SystemConstants.dbUrl;
+	private static String dbUser = SystemConstants.dbUser;
+	private static String dbPassword = SystemConstants.dbPassword;
 
 	private static DataSource dsx = null;
 	static String LINE_FEED = "\r\n";
@@ -42,8 +42,8 @@ public class ConnectionFactory {
 	public static String toConfigString() {
 		return "ConnectionFactory v." + SystemConstants.IGNITE_MAJOR_VERSION + "."
 				+ SystemConstants.IGNITE_MINOR_VERSION + LINE_FEED + "Settings:" + LINE_FEED + "=========" + LINE_FEED
-				+ ConnectionFactory.driverName + LINE_FEED + ConnectionFactory.sourceURL + LINE_FEED
-				+ ConnectionFactory.dbName + LINE_FEED + ConnectionFactory.userName;
+				+ ConnectionFactory.dbDriver + LINE_FEED + ConnectionFactory.dbUrl + LINE_FEED
+				+ ConnectionFactory.dbName + LINE_FEED + ConnectionFactory.dbUser;
 	}
 
 	/**
@@ -54,13 +54,13 @@ public class ConnectionFactory {
 	 * by loading the driver for the database
 	 */
 	private ConnectionFactory() {
-		ConnectionFactory.logger.info("Initializing:" + ConnectionFactory.driverName);
+		ConnectionFactory.logger.info("Initializing:" + ConnectionFactory.dbDriver);
 		try {
-			Class.forName(ConnectionFactory.driverName);
-			ConnectionFactory.logger.info("Got JDBC class " + ConnectionFactory.driverName + " OK!");
+			Class.forName(ConnectionFactory.dbDriver);
+			ConnectionFactory.logger.info("Loaded JDBC Driver class " + ConnectionFactory.dbDriver + " OK!");
 		} catch (final ClassNotFoundException e) {
 
-			ConnectionFactory.logger.error("Exception loading driver class: " + e.toString());
+			ConnectionFactory.logger.error("Exception loading Driver class: " + e.toString());
 		}
 	}
 
@@ -78,10 +78,10 @@ public class ConnectionFactory {
 			if (!cx.isValid(5000)) {
 				dsx = null;
 				cx = DriverManager.getConnection(
-						ConnectionFactory.sourceURL 
+						ConnectionFactory.dbUrl 
 						+ "/" + ConnectionFactory.dbName + "?"
-						+ "user=" + ConnectionFactory.userName 
-						+ "&password=" + ConnectionFactory.password);
+						+ "user=" + ConnectionFactory.dbUser 
+						+ "&dbPassword=" + ConnectionFactory.dbPassword);
 			}
 			return cx;
 		} catch (Exception x) {
@@ -90,43 +90,36 @@ public class ConnectionFactory {
 		return null;
 	}
 
-	
+	/*
+	 * is Hikari even still used?
 	private static HikariConfig config = new HikariConfig();
     private static HikariDataSource ds;
  
     static {
-        config.setJdbcUrl( sourceURL + "/" + dbName );
-        config.setUsername( userName );
-        config.setPassword( password );
-        config.setDriverClassName(driverName);
+    	
+        config.setJdbcUrl( dbUrl );
+        config.setSchema( dbName );
+        config.setUsername( dbUser);
+        config.setPassword( dbPassword );
+        config.setDriverClassName( dbDriver );
         
         config.addDataSourceProperty( "cachePrepStmts" , "true" );
         config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
         config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
        
-        // @see:  
-        // config.setAutoCommit(false);
-        // config.addDataSourceProperty("rewriteBatchedStatements", "true");
-        
-       /* config.setLeakDetectionThreshold(1440000);
-        config.setConnectionTimeout(10000);
-        config.setValidationTimeout(5000);
-        config.setIdleTimeout(30000);
-        config.setAutoCommit(true);
-        config.setMinimumIdle(10);*/
-        
         config.setMinimumIdle(5);
         config.setConnectionTimeout(20 * 000);
         config.setIdleTimeout(1 * 30 * 1000);
         config.setMaxLifetime(1 * 60 * 1000);
         ds = new HikariDataSource( config );
     }
- 
+ 	*/
     public static Connection getConnection() throws SQLException {
-        return ds.getConnection();
+        return cpds.getConnection();
     }
 	
 	static ComboPooledDataSource cpds;
+	
 	public static DataSource getDataSource() {
 		
 		if(cpds != null) {
@@ -136,13 +129,13 @@ public class ConnectionFactory {
 		cpds = new ComboPooledDataSource();
 		
 		try {
-			cpds.setDriverClass(driverName); // loads the jdbc driver
+			cpds.setDriverClass(dbDriver); // loads the jdbc driver
 		} catch (Exception e) {
-			System.err.println("Could not set Driver Class: " + driverName);
+			System.err.println("Could not set Driver Class: " + dbDriver);
 		}
-		cpds.setJdbcUrl(sourceURL + "/" + dbName);
-		cpds.setUser(userName);
-		cpds.setPassword(password);
+		cpds.setJdbcUrl(dbUrl + "/" + dbName);
+		cpds.setUser(dbUser);
+		cpds.setPassword(dbPassword);
 
 		// the settings below are optional -- c3p0 can work with defaults
 		// cpds.setMinPoolSize(10);

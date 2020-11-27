@@ -2,35 +2,44 @@ package io.starter.ignite.util;
 
 public interface SystemConstants {
 
+	public static String getValue(String v) {
+		String ret = null;
+		ret = System.getProperty(v);
+		if(ret != null) {
+			return ret;
+		}
+		return System.getenv(v);
+	}
+	
 	int IGNITE_MAJOR_VERSION = 1;
 	int IGNITE_MINOR_VERSION = 1;
 
-	String rootFolder = System.getProperty("rootFolder") != null ? System.getProperty("rootFolder")
-			: System.getProperty("user.dir");
+	String rootFolder = getValue("rootFolder") != null ? getValue("rootFolder")
+			: getValue("user.dir");
 
-	String dbDriver = System.getProperty("dbDriver") != null ? System.getProperty("dbDriver")
+	String dbDriver = getValue("dbDriver") != null ? getValue("dbDriver")
 			: "com.mysql.cj.jdbc.Driver";
-	String dbName = System.getProperty("dbName") != null ? System.getProperty("dbName") : "NONE";
-	String dbUrl = System.getProperty("dbUrl") != null ? System.getProperty("dbUrl") : "NONE";
-	String dbUser = System.getProperty("dbUser") != null ? System.getProperty("dbUser") : "NONE";
-	String dbPassword = System.getProperty("dbPassword") != null ? System.getProperty("dbPassword") : "NONE";
-	String S3_STARTER_MEDIA_BUCKET = System.getProperty("S3_MEDIA_BUCKET") != null
-			? System.getProperty("S3_STARTER_MEDIA_BUCKET")
+	String dbName = getValue("dbName") != null ? getValue("dbName") : "NONE";
+	String dbUrl = getValue("dbUrl") != null ? getValue("dbUrl") : "NONE";
+	String dbUser = getValue("dbUser") != null ? getValue("dbUser") : "NONE";
+	String dbPassword = getValue("dbPassword") != null ? getValue("dbPassword") : "NONE";
+	String S3_STARTER_MEDIA_BUCKET = getValue("S3_MEDIA_BUCKET") != null
+			? getValue("S3_STARTER_MEDIA_BUCKET")
 			: null;
-	String S3_STARTER_SYSTEM_BUCKET = System.getProperty("S3_STARTER_SYSTEM_BUCKET") != null
-			? System.getProperty("S3_STARTER_SYSTEM_BUCKET")
+	String S3_STARTER_SYSTEM_BUCKET = getValue("S3_STARTER_SYSTEM_BUCKET") != null
+			? getValue("S3_STARTER_SYSTEM_BUCKET")
 			: null;
-	String S3_STARTER_SERVICE = System.getProperty("S3_STARTER_SERVICE") != null
-			? System.getProperty("S3_STARTER_SERVICE")
+	String S3_STARTER_SERVICE = getValue("S3_STARTER_SERVICE") != null
+			? getValue("S3_STARTER_SERVICE")
 			: null;
-	String awsAccessKey = System.getProperty("awsAccessKey") != null ? System.getProperty("awsAccessKey") : null;
-	String awsSecretKey = System.getProperty("awsSecretKey") != null ? System.getProperty("awsSecretKey") : null;
+	String awsAccessKey = getValue("awsAccessKey") != null ? getValue("awsAccessKey") : null;
+	String awsSecretKey = getValue("awsSecretKey") != null ? getValue("awsSecretKey") : null;
 
 	String JNDI_DB_LOOKUP_STRING = "jndi/ignite";
 
 	// mixc encryption
 	String SECURE_KEY_PROPERTY = "starterIgniteSecureKey";
-	String SECRET_KEY = System.getProperty(SECURE_KEY_PROPERTY);
+	String SECRET_KEY = getValue(SECURE_KEY_PROPERTY);
 
 	String CIPHER_NAME = "AES/CBC/PKCS5PADDING";
 	String S3_STARTER_MEDIA_FOLDER = null;

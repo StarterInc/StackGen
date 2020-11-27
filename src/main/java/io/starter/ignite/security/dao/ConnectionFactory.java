@@ -115,7 +115,7 @@ public class ConnectionFactory {
     }
  	*/
     public static Connection getConnection() throws SQLException {
-        return cpds.getConnection();
+        return getDataSource().getConnection();
     }
 	
 	static ComboPooledDataSource cpds;

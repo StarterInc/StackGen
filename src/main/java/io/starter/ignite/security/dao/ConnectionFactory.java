@@ -5,15 +5,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
 import io.starter.ignite.util.SystemConstants;
 
 /**
@@ -22,7 +20,7 @@ import io.starter.ignite.util.SystemConstants;
  *
  * @version 1.5
  */
-public class ConnectionFactory {
+public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourceFactory{
 
 	protected static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 
@@ -47,13 +45,10 @@ public class ConnectionFactory {
 	}
 
 	/**
-	 * Private default constructor 
-	 * 
-	 * No outside objects can create an object of this
-	 * class This constructor initializes the DriverManager 
+	 * This constructor initializes the DriverManager 
 	 * by loading the driver for the database
 	 */
-	private ConnectionFactory() {
+	public ConnectionFactory() {
 		ConnectionFactory.logger.info("Initializing:" + ConnectionFactory.dbDriver);
 		try {
 			Class.forName(ConnectionFactory.dbDriver);
@@ -65,7 +60,9 @@ public class ConnectionFactory {
 	}
 
 	/**
-	 * Get and return a Connection object that can be used to connect to the data
+	 * Get and return a Connection object that 
+	 * can be used to connect to the data
+	 * 
 	 * storage
 	 *
 	 * @return Connection
@@ -90,37 +87,15 @@ public class ConnectionFactory {
 		return null;
 	}
 
-	/*
-	 * is Hikari even still used?
-	private static HikariConfig config = new HikariConfig();
-    private static HikariDataSource ds;
- 
-    static {
-    	
-        config.setJdbcUrl( dbUrl );
-        config.setSchema( dbName );
-        config.setUsername( dbUser);
-        config.setPassword( dbPassword );
-        config.setDriverClassName( dbDriver );
-        
-        config.addDataSourceProperty( "cachePrepStmts" , "true" );
-        config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
-        config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
-       
-        config.setMinimumIdle(5);
-        config.setConnectionTimeout(20 * 000);
-        config.setIdleTimeout(1 * 30 * 1000);
-        config.setMaxLifetime(1 * 60 * 1000);
-        ds = new HikariDataSource( config );
-    }
- 	*/
     public static Connection getConnection() throws SQLException {
-        return getDataSource().getConnection();
+    	
+        return getDataSourceInternal().getConnection();
     }
 	
 	static ComboPooledDataSource cpds;
+
 	
-	public static DataSource getDataSource() {
+	public static DataSource getDataSourceInternal() {
 		
 		if(cpds != null) {
 			return cpds;
@@ -140,6 +115,9 @@ public class ConnectionFactory {
 		// the settings below are optional -- c3p0 can work with defaults
 		// cpds.setMinPoolSize(10);
 		cpds.setAcquireIncrement(5);
+		cpds.setMaxIdleTime(1800);
+		cpds.setIdleConnectionTestPeriod(300);
+		cpds.setTestConnectionOnCheckout(true);
 		cpds.setMaxPoolSize(100);
 		return cpds;
 	}
@@ -205,4 +183,26 @@ public class ConnectionFactory {
 		dsx = dataSource;
 	}
 
-} // end class ConnectionFactory
+	@Override
+	public void setProperties(Properties props) {
+		if(props.get("driver")!=null) {
+			dbDriver = (String) props.get("driver");
+		}
+		if(props.get("url")!=null) {
+			dbUrl = (String) props.get("url");
+		}
+		if(props.get("username")!=null) {
+			dbDriver = (String) props.get("username");
+		}
+		if(props.get("password")!=null) {
+			dbPassword = (String) props.get("password");
+		}
+	}
+
+	@Override
+	public DataSource getDataSource() {
+		return ConnectionFactory.getDataSourceInternal();
+	}
+
+
+}

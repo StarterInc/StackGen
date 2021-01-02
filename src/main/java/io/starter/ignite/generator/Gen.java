@@ -180,6 +180,7 @@ public class Gen {
 
 		// convert dots to slashes (package names)
 		path = path.replace(".", "/");
+		path = path.replace("//", "/"); // fix paths
 		final File modelDir = new File(path);
 
 		if (!modelDir.exists()) {

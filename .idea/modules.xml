@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/StackGen.iml" filepath="$PROJECT_DIR$/StackGen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/stackgen.iml" filepath="$PROJECT_DIR$/stackgen.iml" />
     </modules>
   </component>
 </project>

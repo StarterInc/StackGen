@@ -6,15 +6,14 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,7 +210,7 @@ public class DBGen extends Gen implements Generator {
 		return dml;
 	}
 
-	static Connection conn = null;
+	public static Connection conn = null;
 
 	@Override
 	/**
@@ -234,6 +233,7 @@ public class DBGen extends Gen implements Generator {
 		final Iterator<?> cols = fieldList.iterator();
 		boolean isEmpty = true;
 		String extraColumnDML = "";
+
 		while (cols.hasNext()) {
 			isEmpty = false;
 			final Object o = cols.next();
@@ -270,7 +270,7 @@ public class DBGen extends Gen implements Generator {
 		final List<String> triedList = new ArrayList<>();
 
 		// log the DML for troubleshooting
-		if (config.debug) {
+		if (true){ // config.debug) {
 			Charset ch = CharsetUtil.UTF_8;
 			FileUtils.write(new File(className + "-DML.sql"), tableDML, ch);
 		}
@@ -285,12 +285,23 @@ public class DBGen extends Gen implements Generator {
 				logger.info("Table for: " + className + " already exists.");
 				if (!triedList.contains(className) && config.dbGenDropTable) {
 
+
 					if (renameTable(className, triedList)) {
 
 						// try again
 						generate("." + className, fieldList, getters, setters);
+						String newTableName = Table.RENAME_TABLE_PREFIX + table.convertToDBSyntax(className);
+						String tableName = table.convertToDBSyntax(className) ;
 
-						migrateData(className);
+						// RENAME_TABLE_PREFIX
+						try {
+							String migrateSQL = migrateDataSQL(tableName, newTableName);
+							logger.info("Executed migration SQL: " + migrateSQL);
+							final PreparedStatement ps3 = conn.prepareStatement(migrateSQL);
+							ps3.execute();
+						}catch (Exception s){
+							logger.error("Could not migrate data to new table. Data retained in [ " + tableName + " ] " + s);
+						}
 					}
 
 				} else {
@@ -308,13 +319,76 @@ public class DBGen extends Gen implements Generator {
 	 * TODO: implement data migration
 	 *
 	 * @param className
+	 * @param tableName
+	 * @return
 	 */
-	private void migrateData(String className) {
+	public String migrateDataSQL(String tableName, String newTableName) throws SQLException {
 
-		//"SELECT IN"
-		
-		// TODO Auto-generated method stub
-		logger.info("TODO: migrate table data from old to new");
+		if(conn == null){
+			conn = ConnectionFactory.instance.getConnection();
+		}
+
+		String checkSQL1 = "" +
+				"SELECT * FROM " + newTableName + " WHERE 0 > 1";
+		final PreparedStatement ps = conn.prepareStatement(checkSQL1);
+		final List<String> newColList = new ArrayList<>();
+		ps.executeQuery();
+
+		ResultSet rs = ps.getResultSet();
+		ResultSetMetaData srm = rs.getMetaData();
+		int colct = srm.getColumnCount();
+
+		for (int t = 0; t< colct ; t++) {
+			String newCol = ps.getResultSet().getMetaData().getColumnName(t + 1);
+			newColList.add(newCol);
+		}
+
+		/*
+			we need to match source columns (the new columns) against the previous columns
+		 */
+		String checkSQL2 = "" +
+				"SELECT * FROM " + tableName + " WHERE 0 > 1";
+
+		final PreparedStatement ps2 = conn.prepareStatement(checkSQL2);
+		ps2.executeQuery();
+
+		List<Object> colList = new ArrayList<>();
+
+		colct = ps2.getResultSet().getMetaData().getColumnCount();
+		for (int t = 0; t< colct ; t++){
+			String matchingCol = ps2.getResultSet().getMetaData().getColumnName(t+1);
+			if(newColList.contains(matchingCol)) {
+				// TODO: check data types... for now we just trust they match
+				colList.add(matchingCol);
+			}
+		}
+		// ps.close();
+
+		String migrateSql = "INSERT INTO `" + newTableName;
+		migrateSql += "`(";
+		for(Object col: colList){
+			migrateSql += "`" + String.valueOf(col) + "`";
+			if(colList.indexOf(col) +1 < colList.size()){
+				migrateSql += ",";
+				// migrateSql += config.LINE_FEED;
+			}
+
+		}
+
+		migrateSql += ")";
+		migrateSql += " SELECT ";
+		for(Object col: colList){
+			migrateSql += "`" + String.valueOf(col) + "`";
+			if(colList.indexOf(col) +1 < colList.size()){
+				migrateSql += ",";
+				// migrateSql += config.LINE_FEED;
+			}
+
+		}
+
+		migrateSql += " FROM `" + tableName + "`";
+
+		return migrateSql;
 	}
 
 	/**

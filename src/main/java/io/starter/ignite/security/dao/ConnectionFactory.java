@@ -31,7 +31,6 @@ public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourc
 	private static String dbUser = SystemConstants.dbUser;
 	private static String dbPassword = SystemConstants.dbPassword;
 
-	private static DataSource dsx = null;
 	static String LINE_FEED = "\r\n";
 
 	@SuppressWarnings("unused")
@@ -59,37 +58,9 @@ public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourc
 		}
 	}
 
-	/**
-	 * Get and return a Connection object that 
-	 * can be used to connect to the data
-	 * 
-	 * storage
-	 *
-	 * @return Connection
-	 * @throws SQLException
-	 */
-	public static Connection getConnectionTomcat() throws SQLException {
-		try {
-
-			Connection cx = instance.getDataSource().getConnection();
-			if (!cx.isValid(5000)) {
-				dsx = null;
-				cx = DriverManager.getConnection(
-						ConnectionFactory.dbUrl 
-						+ "/" + ConnectionFactory.dbName + "?"
-						+ "user=" + ConnectionFactory.dbUser 
-						+ "&dbPassword=" + ConnectionFactory.dbPassword);
-			}
-			return cx;
-		} catch (Exception x) {
-			dsx = null;
-		}
-		return null;
-	}
-
+	
     public static Connection getConnection() throws SQLException {
-    	
-        return getDataSourceInternal().getConnection();
+    	return ConnectionFactory.instance.getDataSource().getConnection();
     }
 	
 	static ComboPooledDataSource cpds;
@@ -178,10 +149,6 @@ public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourc
 		} // end try-catch block
 
 	} // end method close
-
-	public void setDataSource(DataSource dataSource) {
-		dsx = dataSource;
-	}
 
 	@Override
 	public void setProperties(Properties props) {

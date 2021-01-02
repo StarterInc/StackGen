@@ -3,11 +3,17 @@ package io.starter.ignite.generator.DMLgenerator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import com.mysql.cj.protocol.Resultset;
 import org.junit.Before;
 import org.junit.Test;
 
 import io.starter.ignite.generator.StackGenConfigurator;
 import io.starter.ignite.generator.DBGen;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+
+import java.sql.*;
+import java.util.Arrays;
 
 /**
  * test the utils
@@ -16,14 +22,45 @@ public class UtilsTest {
 
 	StackGenConfigurator config = new StackGenConfigurator();
 	Table table = new Table(config);
-	
-	@Before
-	public void setup() {
+	DBGen dbgen = new DBGen(config);
 
+	Connection cx = null;
+
+	@Before
+	public void setup() throws SQLException {
 		config.setSchemaName("stackgen");
 		config.setArtifactId ("stackgen");
+		PreparedStatement psx = Mockito.mock(PreparedStatement.class);
+		ResultSet rsx = Mockito.mock(java.sql.ResultSet.class);
+
+		ResultSetMetaData rsxm = Mockito.mock(ResultSetMetaData.class);
+		cx = Mockito.mock(java.sql.Connection.class);
+
+		Mockito.when(cx.prepareStatement(Mockito.any())).thenReturn(psx);
+		Mockito.when(psx.getResultSet()).thenReturn(rsx);
+
+		Mockito.when(psx.executeQuery()).thenReturn(rsx);
+
+		Mockito.when(rsx.getMetaData()).thenReturn(rsxm);
+
+		Mockito.when(rsxm.getColumnCount()).thenReturn(3);
+		Mockito.when(rsxm.getColumnName(1)).thenReturn("id");
+		Mockito.when(rsxm.getColumnName(2)).thenReturn("first_name");
+		Mockito.when(rsxm.getColumnName(3)).thenReturn("last_name");
 	}
-	
+
+	@Test
+	public void createMigrateDataSQL() throws Exception {
+
+		String tableName = Table.RENAME_TABLE_PREFIX + "stackgen$_user";
+		String targetTableName = "stackgen$_user";
+
+		DBGen dbgen = new DBGen(config);
+		dbgen.conn = cx;
+		String result = dbgen.migrateDataSQL(tableName, targetTableName);
+		assertEquals( "INSERT INTO `stackgen$_user`(`id`,`first_name`,`last_name`) SELECT `id`,`first_name`,`last_name` FROM `BK_stackgen$_user`", result);
+	}
+
 	@Test
 	public void expectedColNameFail() {
 		String[] colNames = { "rds_password" };
@@ -113,5 +150,4 @@ public class UtilsTest {
 		String t1 = DBGen.camelize(colName1);
 		assertEquals(t, "rdsPassword"); // lost case
 	}
-
 }

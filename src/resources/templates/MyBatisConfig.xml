@@ -1,17 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE configuration
-PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
 <configuration>
-	<!-- disable local cache -->
-	<setting name="localCacheScope" value="STATEMENT" />
-
+	<settings>
+		<!-- <setting name="localCacheScope" value="STATEMENT" /> -->
+		<setting name="cacheEnabled" value="true" />
+	</settings>
 	<environments default="production">
-
 		<!-- production JDBC data source TODO: make Driver Configurable TODO: update 
 			mysql driver to ${dbDriver} -->
 		<environment id="production">
-			<transactionManager type="JDBC" />
-			<dataSource type="POOLED">
+			<transactionManager type="MANAGED">
+				<property name="closeConnection" value="false" />
+			</transactionManager>
+			<dataSource
+				type="io.starter.ignite.security.dao.ConnectionFactory">
 				<property name="driver" value="${dbDriver}" />
 				<property name="url"
 					value="${dbUrl}/${dbName}?autoReconnect=true" />
@@ -22,8 +25,11 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 
 		<!-- non-prod JDBC data source same for now -->
 		<environment id="staging">
-			<transactionManager type="JDBC" />
-			<dataSource type="POOLED">
+			<transactionManager type="MANAGED">
+				<property name="closeConnection" value="false" />
+			</transactionManager>
+			<dataSource
+				type="io.starter.ignite.security.dao.ConnectionFactory">
 				<property name="driver" value="${dbDriver}" />
 				<property name="url"
 					value="${dbUrl}/${dbName}?autoReconnect=true" />
@@ -31,7 +37,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 				<property name="password" value="${dbPassword}" />
 			</dataSource>
 		</environment>
-
 		<!-- production JNDI data source FIX THIS!! -->
 		<environment id="productionJNDI">
 			<transactionManager type="JDBC" />
@@ -40,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 				<property name="data_source" value="jdbc/${dbName}" />
 			</dataSource>
 		</environment>
-
 	</environments>
 	<mappers />
 </configuration>
+

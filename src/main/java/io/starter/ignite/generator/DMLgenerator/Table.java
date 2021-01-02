@@ -6,7 +6,6 @@ import java.util.Map;
 
 import io.starter.ignite.generator.StackGenConfigurator;
 import io.starter.ignite.generator.DBGen;
-import io.starter.ignite.util.SystemConstants;
 
 /**
  * Defines Table DML
@@ -89,10 +88,10 @@ public class Table {
 	 * @param tableName
 	 * @return
 	 */
-	public String generateTableRenameDML(String tableName) {
+	public String  generateTableRenameDML(String tableName) {
 		tableName = convertToDBSyntax(tableName);
 		String dml = ALTER_TABLE + " " + tableName + LINE_FEED;
-		dml += " RENAME TO " + RENAME_TABLE_PREFIX + tableName + "_" + System.currentTimeMillis();
+		dml += " RENAME TO " + RENAME_TABLE_PREFIX + tableName;
 		return dml;
 
 	}

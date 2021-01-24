@@ -1,4 +1,4 @@
-# Starter StackGen[tm] Code Generator
+# Starter StackGen&trade; Code Generator
 
 ![StackGen CI](https://github.com/StarterInc/StackGen/workflows/StackGen%20CI/badge.svg?branch=master)
 

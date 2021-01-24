@@ -26,6 +26,8 @@ build
 
 /src/docs/public/
 /src/docs/node_modules/
+/.idea/
+/archive/
 
 .cache
 

@@ -39,44 +39,6 @@ configurator.setLang(SWAGGER_LANG);
 configurator.setLibrary(SWAGGER_LIB);
 ```
 
-#### Step 0: Download and Install StackGen Dev Prerequisites
-
-- Java8+ JDK Installed
-
-- Apache Maven Installed
-
-INSTALL Maven (for building latest and running Spring boot)
-
-Linux:
-```
-sudo apt-get Maven
-```
-
-- Install git
-
-Linux:
-```
-sudo apt-get git
-```
-- Clone StackGen github project
-
-Linus/OSX:
-```
-git clone https://github.com/StarterInc/StackGen.git
-```
-
-- Install Node and NPM
-
-OSX (Homebrew install prerequisite):
-```
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install node
-```
-
-> NOTE: Currently StackGen is configured for generation of MySQL database schemas.
-
-**Roadmap** Support for PostgreSQL, Oracle, and noSQL databases TBD
-
 #### Development Best Practices
 
 - Fork the StackGen project and leverage github with Conventional Commits  [Conventional Commits](https://conventionalcommits.org/)

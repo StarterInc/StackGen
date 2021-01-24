@@ -27,7 +27,7 @@ public class JavaGenTest {
 
 		final Object o = Gen.getApiModelPropertyAnnotation(uc.getField("governmentId"));
 		Assert.assertEquals(o.toString(),
-				"@io.swagger.annotations.ApiModelProperty(dataField=\"\", secureField=false, access=\"\", notes=\"\", hidden=false, maxValue=1.7976931348623157E308, dataType=\"\", minLength=10, readOnly=false, accessMode=AUTO, required=false, example=1112233334, reference=\"\", extensions=[@io.swagger.annotations.Extension(name=\"\", properties=[@io.swagger.annotations.ExtensionProperty(name=\"\", value=\"\")])], minValue=4.9E-324, allowableValues=\"\", allowEmptyValue=false, name=\"\", position=0, value=\"a 10 digit government ID (encrypted)\", maxLength=10)");
+				"@io.starter.ignite.generator.annotations.StackgenModelProperty(dataField=\"\", secureField=false, access=\"\", notes=\"\", hidden=false, maxValue=1.7976931348623157E308, dataType=\"\", minLength=10, readOnly=false, accessMode=AUTO, required=false, example=1112233334, reference=\"\", extensions=[@io.swagger.annotations.Extension(name=\"\", properties=[@io.swagger.annotations.ExtensionProperty(name=\"\", value=\"\")])], minValue=4.9E-324, allowableValues=\"\", allowEmptyValue=false, name=\"\", position=0, value=\"a 10 digit government ID (encrypted)\", maxLength=10)");
 	}
 
 	@Test

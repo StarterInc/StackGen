@@ -153,8 +153,6 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		}
 
 		if (!BooleanUtils.toBoolean(model.isEnum)) {
-			// needed by all pojos, but not enums
-			model.imports.add("ApiModelProperty");
 			model.imports.add("ApiModel");
 		}
 

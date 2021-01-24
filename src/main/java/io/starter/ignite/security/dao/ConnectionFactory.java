@@ -159,10 +159,13 @@ public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourc
 			dbUrl = (String) props.get("url");
 		}
 		if(props.get("username")!=null) {
-			dbDriver = (String) props.get("username");
+			dbUser = (String) props.get("username");
 		}
 		if(props.get("password")!=null) {
 			dbPassword = (String) props.get("password");
+		}
+		if(props.get("auto")!=null) {
+			dbDriver = (String) props.get("driver");
 		}
 	}
 

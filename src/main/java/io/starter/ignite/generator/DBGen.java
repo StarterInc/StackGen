@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ import io.starter.ignite.model.DataField;
 import io.starter.ignite.security.dao.ConnectionFactory;
 import io.starter.ignite.security.securefield.SecureField;
 import io.starter.ignite.util.SystemConstants;
-import io.swagger.annotations.ApiModelProperty;
+import io.starter.ignite.generator.annotations.StackgenModelProperty;
 
 /**
  * responsible for generating DB DML and creating RDB
@@ -164,7 +163,7 @@ public class DBGen extends Gen implements Generator {
 			logger.warn("Problem getting DataField Annotation on: " + f.getName() + " " + e.toString());
 			e.printStackTrace();
 		}
-		ApiModelProperty anno = null;
+		StackgenModelProperty anno = null;
 		try {
 			anno = Gen.getApiModelPropertyAnnotation(f);
 		} catch (final NoSuchMethodException nsme) {
@@ -316,7 +315,7 @@ public class DBGen extends Gen implements Generator {
 	}
 
 	/**
-	 * TODO: implement data migration
+	 * Migrate data from old table to new
 	 *
 	 * @param className
 	 * @param tableName

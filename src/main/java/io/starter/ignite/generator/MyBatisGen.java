@@ -1,6 +1,5 @@
 package io.starter.ignite.generator;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +8,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.mybatis.generator.api.MyBatisGenerator;
-import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
@@ -65,9 +64,6 @@ public class MyBatisGen extends Gen implements Generator {
 	/**
 	 * feed it an api class and it will attempt to sanitize and map to MyBatis
 	 * artifact name
-	 *
-	 * @param apiClassName
-	 * @return
 	 */
 	public static String getMyBatisModelClassName(String apiClassName, StackGenConfigurator cfgx) {
 		 String apibn = MyBatisGen.getBaseJavaName(apiClassName);
@@ -78,8 +74,6 @@ public class MyBatisGen extends Gen implements Generator {
 	/**
 	 * strips the package if any
 	 *
-	 * @param n
-	 * @return
 	 */
 	static String getBaseJavaName(String n) {
 		if (n.length() <= 0) {
@@ -134,28 +128,26 @@ public class MyBatisGen extends Gen implements Generator {
 		// we need to change some values in this template
 		List<String> cfg = FileUtils.readLines(configFile, "utf-8");
 		OutputStream sourceStream = new ByteArrayOutputStream();
-		cfg.stream().map(s -> replaceConfigVariables(s)).forEach(s -> {
+		cfg.stream().map(this::replaceConfigVariables).forEach(s -> {
 			try {
 				sourceStream.write(s.getBytes());
 			} catch (IOException e) {
 				//
 			}
 		});
-		InputStream targetStream = IOUtils.toInputStream(sourceStream.toString());
+		InputStream targetStream = IOUtils.toInputStream(sourceStream.toString(), Charset.defaultCharset());
 
-		// InputStream targetStream = new ByteArrayInputStreasourceStream.r);
 		final ConfigurationParser cp = new ConfigurationParser(warnings);
 		final org.mybatis.generator.config.Configuration cfx = cp.parseConfiguration(targetStream);
 
 		final DefaultShellCallback callback = new DefaultShellCallback(overwrite);
 
 		final MyBatisGenerator myBatisGenerator = new MyBatisGenerator(cfx, callback, warnings);
-
-		final ProgressCallback cb = null;
-
-		((org.mybatis.generator.config.Context) cfx.getContexts().get(0)).getProperties().put("schemaName",
+		cfx.getContexts().get(0).getProperties().put("schemaName",
 				config.getSchemaName());
-		myBatisGenerator.generate(cb);
+		// final ProgressCallback cb = null;
+		myBatisGenerator.generate(null);
+
 		for (final String warning : warnings) {
 			MyBatisGen.logger.warn("WARNING: MyBatis Generation: " + warning);
 		}
@@ -189,10 +181,7 @@ public class MyBatisGen extends Gen implements Generator {
 		// <generatedKey column="id" sqlStatement="JDBC" />
 		// </table>
 
-		String packageName = null;
 		final int dotpos = className.lastIndexOf(".");
-		packageName = className.substring(0, dotpos);
-		// packageName = "gen." + packageName;
 		className = className.substring(dotpos + 1);
 
 		MyBatisGen.logger.info("Load MyBatis Generator Config XML template...");
@@ -204,13 +193,13 @@ public class MyBatisGen extends Gen implements Generator {
 
 		MyBatisGen.logger.info("Load MyBatis Persistence Config XML template...");
 		final File configFile = new File(config.getMybatisConfigTemplate());
-		jdx = createMyBatisXMLConfigNodes(jdx, className, configFile);
+		jdx = createMyBatisXMLConfigNodes(jdx, configFile);
 		DOMEditor.write(jdx, config.getMybatisConfigOut()); // for runtime
 	}
 
 	// mappers>
 	// <mapper resource="io/starter/sqlmaps/AclMapper.xml" />
-	private Document createMyBatisXMLConfigNodes(Document jdo, String className, File configFile)
+	private Document createMyBatisXMLConfigNodes(Document jdo, File configFile)
 			throws JDOMException, IOException {
 
 		MyBatisGen.logger.info("Parse MyBatis Template: " + configFile.getAbsolutePath());
@@ -219,11 +208,8 @@ public class MyBatisGen extends Gen implements Generator {
 			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
 		}
 
-		final Element el = new Element("mapper").setAttribute("resource", convertToMapperSyntax(className));
-
-		final Element rootElement = jdo.getRootElement();
-		final List<Element> listEmpElement = rootElement.getChildren();
-
+		// final Element rootElement = jdo.getRootElement();
+		//	final List<Element> listEmpElement = rootElement.getChildren();
 		// loop through to add every sqlf mapping element
 		// for (Element empElement : listEmpElement) {
 		// if (empElement.getName().equals("mappers"))
@@ -231,10 +217,6 @@ public class MyBatisGen extends Gen implements Generator {
 		//
 		// }
 		return jdo;
-	}
-
-	private String convertToMapperSyntax(String className) {
-		return config.getSqlMapsPath() + config.getSchemaName() + className + "Mapper.xml";
 	}
 
 	private Document createMyBatisXMLGenConfigNodes(Document jdo, String className, File configFile)
@@ -288,7 +270,7 @@ public class MyBatisGen extends Gen implements Generator {
 
 		for (final File mf : modelFiles) {
 			final String mna = mf.getName();
-			if (mna.indexOf(".") < 0) {
+			if (!mna.contains(".")) {
 				MyBatisGen.logger.warn("Cannot Generate MyBatis from Model file: " + mna);
 			} else {
 				String cn = mna.substring(0, mna.indexOf("."));

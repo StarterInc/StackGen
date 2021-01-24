@@ -3,6 +3,7 @@ package io.starter.ignite.generator;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -925,7 +926,7 @@ public class JavaGen extends Gen implements Generator {
 			final Class<?> loadedClass = classLoader.loadClass(loadClassName);
 			// Create a new instance...
 			if (!loadedClass.isInterface()) {
-				loadedClass.newInstance();
+				loadedClass.getDeclaredConstructor().newInstance();
 				JavaGen.logger.trace("Successfully compiled class: " + loadClassName); // obj.toString());
 			} else {
 				JavaGen.logger.info("Successfully compiled interface: " + loadClassName);
@@ -937,6 +938,9 @@ public class JavaGen extends Gen implements Generator {
 			// normal for no-default constructors
 		} catch (final ClassNotFoundException e) {
 			// normal
+		} catch (Exception e) {
+			logger.error("Unexpected problem loading class: " + e.toString() + " : " + loadClassName);
+			e.printStackTrace();
 		}
 		return null;
 	}

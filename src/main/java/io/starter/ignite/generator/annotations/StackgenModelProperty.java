@@ -1,26 +1,7 @@
-/**
- * Copyright 2016 SmartBear Software
- * <p>
- * Licensed under the Apache License, Version 2.0 (the
- * "License");
- * you may not use this file except in compliance with the
- * License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in
- * writing, software
- * distributed under the License is distributed on an "AS
- * IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied.
- * See the License for the specific language governing
- * permissions and
- * limitations under the License.
- */
+package io.starter.ignite.generator.annotations;
 
-package io.swagger.annotations;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -32,7 +13,7 @@ import java.lang.annotation.Target;
  */
 @Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ApiModelProperty {
+public @interface StackgenModelProperty {
 
 	/**
 	 * the minimum size of the data
@@ -151,7 +132,8 @@ public @interface ApiModelProperty {
 	 *
 	 * @since 1.5.19
 	 */
-	AccessMode accessMode() default AccessMode.AUTO;
+	StackgenModelProperty.AccessMode accessMode() default StackgenModelProperty.AccessMode.AUTO;
+
 
 	/**
 	 * Specifies a reference to the corresponding type definition, overrides any other metadata specified
@@ -169,10 +151,12 @@ public @interface ApiModelProperty {
 	/**
 	 * @return an optional array of extensions
 	 */
-	Extension[] extensions() default @Extension(
-			properties = @ExtensionProperty(name = "", value = ""));
+	Extension[] extensions() default @Extension(properties = @ExtensionProperty(name = "", value = ""));
 
 	enum AccessMode {
-		AUTO, READ_ONLY, READ_WRITE;
+		AUTO,
+		READ_ONLY,
+		READ_WRITE;
 	}
 }
+

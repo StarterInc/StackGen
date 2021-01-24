@@ -77,7 +77,13 @@ public class SecureEncrypter implements SystemConstants {
 					"SecureEncrypter Initialization Failure: "
 							+ SECURE_KEY_PROPERTY + " property is not set.");
 		}
-		secretKey = getKeyFromBytes(SECRET_KEY.getBytes());
+		try {
+			secretKey = getKeyFromBytes(SECRET_KEY.getBytes());
+		}catch(Exception e){
+			throw new RuntimeException(
+					"SecureEncrypter Initialization Failure: "
+							+ SECURE_KEY_PROPERTY + " key is invalid:" + e.toString());
+		}
 		cipher = Cipher.getInstance(CIPHER_NAME);
 		randomSecureRandom = SecureRandom.getInstance("SHA1PRNG");
 	}
@@ -101,6 +107,9 @@ public class SecureEncrypter implements SystemConstants {
 	 * @throws Exception
 	 */
 	public synchronized static String encrypt(String cleartext) throws Exception {
+		if(cleartext == null){
+			return null;
+		}
 		if (keyGenerator == null) {
 			init();
 		}

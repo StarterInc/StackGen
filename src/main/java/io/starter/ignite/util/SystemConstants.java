@@ -3,12 +3,11 @@ package io.starter.ignite.util;
 public interface SystemConstants {
 
 	public static String getValue(String v) {
-		String ret = null;
-		ret = System.getProperty(v);
+		String ret = System.getenv(v); //
 		if(ret != null) {
 			return ret;
 		}
-		return System.getenv(v);
+		return System.getProperty(v);
 	}
 	
 	int IGNITE_MAJOR_VERSION = 1;

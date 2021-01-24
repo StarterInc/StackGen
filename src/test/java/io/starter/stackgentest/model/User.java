@@ -8,10 +8,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import io.starter.ignite.generator.annotations.StackgenModelProperty;
 import io.starter.ignite.model.DataModelObject;
 import io.starter.ignite.security.securefield.SecureField;
-import io.swagger.annotations.ApiModelProperty;
+
+
 
 /**
  * User
@@ -87,7 +88,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return id
 	 **/
 
-	@ApiModelProperty(value = "Primary Key for Object (generated)")
+	@StackgenModelProperty(value = "Primary Key for Object (generated)")
 	public Long getId() {
 		return id;
 	}
@@ -107,7 +108,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return fingerprint
 	 **/
 
-	@ApiModelProperty(example = "DK$DFSJaraDD", value = "")
+	@StackgenModelProperty(example = "DK$DFSJaraDD", value = "")
 	public String getFingerprint() {
 		return fingerprint;
 	}
@@ -127,7 +128,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return firstName
 	 **/
 
-	@ApiModelProperty(example = "Karena", value = "first name of person (encrypted)")
+	@StackgenModelProperty(example = "Karena", value = "first name of person (encrypted)")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -147,7 +148,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return lastName
 	 **/
 
-	@ApiModelProperty(example = "Jones", value = "last name of person (encrypted)")
+	@StackgenModelProperty(example = "Jones", value = "last name of person (encrypted)")
 	public String getLastName() {
 		return lastName;
 	}
@@ -168,7 +169,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 **/
 
 	@Size(min = 10, max = 10)
-	@ApiModelProperty(example = "1112233334", minLength = 10, maxLength = 10, value = "a 10 digit government ID (encrypted)")
+	@StackgenModelProperty(example = "1112233334", minLength = 10, maxLength = 10, value = "a 10 digit government ID (encrypted)")
 	public String getGovernmentId() {
 		return governmentId;
 	}
@@ -188,7 +189,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return userName
 	 **/
 
-	@ApiModelProperty(example = "Sparky", value = "")
+	@StackgenModelProperty(example = "Sparky", value = "")
 	public String getUserName() {
 		return userName;
 	}
@@ -210,13 +211,13 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	@NotNull
 
 	@Size(min = 10)
-	@ApiModelProperty(example = "HardToGuess1980", minLength = 10, required = true, value = "")
+	@StackgenModelProperty(example = "HardToGuess1980", minLength = 10, required = true, value = "")
 	public String getPassword() {
 		return password;
 	}
 
 	@Size(min = 10)
-	@ApiModelProperty(example = "HardToGuess1980", minLength = 10, required = true, value = "")
+	@StackgenModelProperty(example = "HardToGuess1980", minLength = 10, required = true, value = "")
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -232,7 +233,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return homePage
 	 **/
 
-	@ApiModelProperty(example = "https://www.acme-corp.com", value = "")
+	@StackgenModelProperty(example = "https://www.acme-corp.com", value = "")
 	public String getHomePage() {
 		return homePage;
 	}
@@ -253,7 +254,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 **/
 	@NotNull
 
-	@ApiModelProperty(example = "wiley.coyote@acme-corp.com", required = true, value = "the main email address for the user  (encrypted)")
+	@StackgenModelProperty(example = "wiley.coyote@acme-corp.com", required = true, value = "the main email address for the user  (encrypted)")
 	public String getEmail() {
 		return email;
 	}
@@ -273,7 +274,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return social
 	 **/
 
-	@ApiModelProperty(example = "https://twitter.com/StackGen", value = "")
+	@StackgenModelProperty(example = "https://twitter.com/StackGen", value = "")
 	public String getSocial() {
 		return social;
 	}
@@ -293,7 +294,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return keyVersion
 	 **/
 
-	@ApiModelProperty(value = "The version of the SecureField key used to crypt this row (generated)")
+	@StackgenModelProperty(value = "The version of the SecureField key used to crypt this row (generated)")
 	public Long getKeyVersion() {
 		return keyVersion;
 	}
@@ -313,7 +314,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return keySpec
 	 **/
 
-	@ApiModelProperty(example = "{keyOwner:111, keySource:'session | system'}", value = "The spec of the SecureField key used to crypt this row (generated)")
+	@StackgenModelProperty(example = "{keyOwner:111, keySource:'session | system'}", value = "The spec of the SecureField key used to crypt this row (generated)")
 	public String getKeySpec() {
 		return keySpec;
 	}
@@ -333,7 +334,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 	 * @return ownerId
 	 **/
 
-	@ApiModelProperty(value = "The ID of the user that owns this data (generated)")
+	@StackgenModelProperty(value = "The ID of the user that owns this data (generated)")
 	public Long getOwnerId() {
 		return ownerId;
 	}
@@ -355,7 +356,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 
 	@Valid
 
-	@ApiModelProperty(value = "The created date for this record/object (generated)")
+	@StackgenModelProperty(value = "The created date for this record/object (generated)")
 	public OffsetDateTime getCreatedDate() {
 		return createdDate;
 	}
@@ -377,7 +378,7 @@ public class User implements io.starter.ignite.model.DataModelObject {
 
 	@Valid
 
-	@ApiModelProperty(value = "The last-modified date for this record/object (generated)")
+	@StackgenModelProperty(value = "The last-modified date for this record/object (generated)")
 	public OffsetDateTime getModifiedDate() {
 		return modifiedDate;
 	}

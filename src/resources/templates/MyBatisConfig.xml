@@ -5,21 +5,23 @@
 	<settings>
 		<!-- <setting name="localCacheScope" value="STATEMENT" /> -->
 		<setting name="cacheEnabled" value="true" />
+		<setting name="aggressiveLazyLoading" value="true" />
 	</settings>
 	<environments default="production">
-		<!-- production JDBC data source TODO: make Driver Configurable TODO: update 
+		<!-- production JDBC data source TODO: make Driver Configurable TODO: update
 			mysql driver to ${dbDriver} -->
 		<environment id="production">
 			<transactionManager type="MANAGED">
 				<property name="closeConnection" value="false" />
 			</transactionManager>
 			<dataSource
-				type="io.starter.ignite.security.dao.ConnectionFactory">
+					type="io.starter.ignite.security.dao.ConnectionFactory">
 				<property name="driver" value="${dbDriver}" />
 				<property name="url"
-					value="${dbUrl}/${dbName}?autoReconnect=true" />
+						  value="${dbUrl}" />
 				<property name="username" value="${dbUser}" />
 				<property name="password" value="${dbPassword}" />
+				<property name="autoReconnect" value="true" />
 			</dataSource>
 		</environment>
 
@@ -29,12 +31,13 @@
 				<property name="closeConnection" value="false" />
 			</transactionManager>
 			<dataSource
-				type="io.starter.ignite.security.dao.ConnectionFactory">
+					type="io.starter.ignite.security.dao.ConnectionFactory">
 				<property name="driver" value="${dbDriver}" />
 				<property name="url"
-					value="${dbUrl}/${dbName}?autoReconnect=true" />
+						  value="${dbUrl}" />
 				<property name="username" value="${dbUser}" />
 				<property name="password" value="${dbPassword}" />
+				<property name="autoReconnect" value="true" />
 			</dataSource>
 		</environment>
 		<!-- production JNDI data source FIX THIS!! -->
@@ -48,4 +51,3 @@
 	</environments>
 	<mappers />
 </configuration>
-

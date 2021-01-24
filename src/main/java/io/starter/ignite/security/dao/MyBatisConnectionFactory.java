@@ -3,6 +3,8 @@ package io.starter.ignite.security.dao;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -45,15 +47,23 @@ public class MyBatisConnectionFactory {
 
 		final String resource = MyBatisConnectionFactory.MYBATIS_CONFIG_FILE;
 		InputStream inputStream = Resources.getResourceAsStream(resource);
+
+		// merge props from ENV
+		Properties props = System.getProperties();
+		Map env = System.getenv();
+		for(Object name : env.keySet()){
+			props.put(name, env.get(name));
+		}
+
 		if (MyBatisConnectionFactory.sqlSessionFactory == null) {
 			MyBatisConnectionFactory.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream,
-					MyBatisConnectionFactory.DATABASE_CHOICE, System.getProperties());
+					MyBatisConnectionFactory.DATABASE_CHOICE, props);
 		}
 		inputStream.close();
 		inputStream = Resources.getResourceAsStream(resource);
 		if (MyBatisConnectionFactory.wp_SqlSessionFactory == null) {
 			MyBatisConnectionFactory.wp_SqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream,
-					"wordpress", System.getProperties());
+					"wordpress", props);
 		}
 		inputStream.close();
 	}

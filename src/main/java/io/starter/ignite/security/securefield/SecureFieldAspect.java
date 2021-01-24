@@ -134,6 +134,11 @@ public class SecureFieldAspect {
 
 		SecureFieldAspect.logger.trace("Set Secure Field for: " + pjp.toLongString());
 		final String clearTextValue = String.valueOf(pjp.getArgs()[0]);
+
+		if(clearTextValue == null){
+			return null; // skip null initializers
+		}
+
 		final SecureField sf = secureField.getAnnotation(SecureField.class);
 
 		if (sf == null) {

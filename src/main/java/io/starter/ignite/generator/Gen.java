@@ -16,14 +16,13 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.squareup.javapoet.MethodSpec;
 
 import io.starter.ignite.model.DataField;
 import io.starter.ignite.security.securefield.SecureField;
 import io.starter.toolkit.StringTool;
-import io.swagger.annotations.ApiModelProperty;
+import io.starter.ignite.generator.annotations.StackgenModelProperty;
 
 /**
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
@@ -342,12 +341,12 @@ public class Gen {
 		return anno;
 	}
 
-	public static ApiModelProperty getApiModelPropertyAnnotation(Field f)
+	public static StackgenModelProperty getApiModelPropertyAnnotation(Field f)
 			throws NoSuchMethodException, SecurityException {
 		final String methodName = "get" + StringTool.getUpperCaseFirstLetter(f.getName());
 		final Method getter = f.getDeclaringClass().getMethod(methodName);
 		// get the annotation
-		final ApiModelProperty anno = getter.getDeclaredAnnotation(ApiModelProperty.class);
+		final StackgenModelProperty anno = getter.getDeclaredAnnotation(StackgenModelProperty.class);
 		return anno;
 	}
 

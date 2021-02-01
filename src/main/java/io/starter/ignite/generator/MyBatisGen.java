@@ -67,7 +67,8 @@ public class MyBatisGen extends Gen implements Generator {
 	 */
 	public static String getMyBatisModelClassName(String apiClassName, StackGenConfigurator cfgx) {
 		 String apibn = MyBatisGen.getBaseJavaName(apiClassName);
-		 apibn = StringTool.proper(cfgx.getSchemaName()) + apibn;
+		 apibn = DBGen.upperCaseFirstLetter(DBGen.camelize(cfgx.getSchemaName())) + apibn;
+		 
 		 return apibn;
 	}
 
@@ -232,7 +233,8 @@ public class MyBatisGen extends Gen implements Generator {
 		// dedupe
 		if (!alreadyAdded.contains(className)) {
 			alreadyAdded.add(className);
-			final Element el = new Element("table").setAttribute("schema", config.getSchemaName()).setAttribute("tableName",
+			final Element el = new Element("table").setAttribute("schema", 
+					config.getSchemaName()).setAttribute("tableName",
 					table.convertToDBSyntax(className));
 
 			final Element el2 = new Element("generatedKey").setAttribute("column", "id").setAttribute("sqlStatement",

@@ -188,7 +188,9 @@ public class JavaGen extends Gen implements Generator {
 	 * @return
 	 */
 	public MethodSpec createGetObjectMapper(String className) {
-		final String methodText = "objectMapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY);"
+		final String methodText = 
+				"        objectMapper.enable(com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);"
+				+ "\n" + "objectMapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY);"
 				+ "\n" + "return objectMapper";
 		try {
 
@@ -437,9 +439,7 @@ public class JavaGen extends Gen implements Generator {
 				"			}\n" + 
 				"		}\n" + 
 				"		try{\n"
-				+ "			if (connection == null || connection.isClosed()) {\n" + 
-				"				connection = io.starter.ignite.security.dao.ConnectionFactory.getConnection();\n" + 
-				"			}\n" + 
+				+ "			connection = io.starter.ignite.security.dao.ConnectionFactory.getConnection();\n" + 
 				"			mybatisSession = sqlSessionFactory.openSession(connection);\n" + "\n" + 
 				"			return mybatisSession.getMapper(%1$sMapper.class);\n" + 
 				"		} catch (java.sql.SQLException e) {\n" + 
@@ -455,7 +455,7 @@ public class JavaGen extends Gen implements Generator {
 		final String m = getMyBatisJavaName(className);
 		return String.format(
 				" java.util.Optional<?> ret = getSelectByMapper().selectByPrimaryKey(getId());\n" + 
-				"	  if(ret.isEmpty()) {\n" + 
+				"	  if(!ret.isPresent()) {\n" + 
 				"		  return null;\n" + 
 				"	  }\n"
 				+ "this.%1$sDelegate = (%2$s) ret.get();\n"

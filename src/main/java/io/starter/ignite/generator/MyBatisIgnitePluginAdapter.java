@@ -36,7 +36,6 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 	
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		String schemaName = context.getProperty("schemaName");
 		// we are replacing the super type but still need the original import
 		topLevelClass.addImportedType(topLevelClass.getType());
 
@@ -106,13 +105,13 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 		// List<Method> methods = topLevelClass.getMethods();
 		cn = replaceStrip(cn, schemaName);
 		
-		logger.trace("SuperClass Name MYBATIS member: " + cn);
+		logger.info("SuperClass Name MYBATIS member: " + cn);
 		return cn;
 	}
 
 	private String replaceStrip(String cn, String schemaName) {
 
-		String ccsn = "dao." + StringTool.proper(schemaName) ;
+		String ccsn = "dao." + DBGen.upperCaseFirstLetter(DBGen.camelize(schemaName));
 		String cx1 = cn.replace(ccsn, "");
 		
 		

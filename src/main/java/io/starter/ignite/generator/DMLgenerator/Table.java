@@ -88,12 +88,21 @@ public class Table {
 	 * @param tableName
 	 * @return
 	 */
-	public String  generateTableRenameDML(String tableName) {
+	public String  generateTableRenameDML(String tableName, 
+			boolean renameBackup) {
 		tableName = convertToDBSyntax(tableName);
+		
+		if (renameBackup) {
+			tableName = RENAME_TABLE_PREFIX + tableName;
+		}
+		
 		String dml = ALTER_TABLE + " " + tableName + LINE_FEED;
 		dml += " RENAME TO " + RENAME_TABLE_PREFIX + tableName;
+		
+		if (renameBackup) {
+			dml += "_" + System.currentTimeMillis();
+		}
 		return dml;
-
 	}
 
 	public String generateTableBeginningDML(String tableName) {

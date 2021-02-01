@@ -6,7 +6,9 @@ package io.starter.ignite.generator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -335,19 +337,53 @@ public class Gen {
 		return anno;
 	}
 
-	public static SecureField getSecureFieldAnnotation(Field f) throws NoSuchMethodException, SecurityException {
+	public static Annotation getSecureFieldAnnotation(Field f) throws NoSuchMethodException, SecurityException {
 		// get the annotation
-		final SecureField anno = f.getDeclaredAnnotation(SecureField.class);
-		return anno;
+		for (Annotation annotation : f.getDeclaredAnnotations()) {
+		    String cnx = annotation.toString();
+		    if(cnx.startsWith("@io.starter.ignite.security.securefield.SecureField")) {
+		    	return f.getDeclaredAnnotation(annotation.annotationType());
+		    }
+		}
+		return null;
+		
+		
 	}
 
-	public static StackgenModelProperty getApiModelPropertyAnnotation(Field f)
-			throws NoSuchMethodException, SecurityException {
+	/* Available Annotation Values:
+	 *  name: createdDate
+	 value: The created date for this record/object (generated column)
+	 position: 0
+	 access: 
+	 reference: 
+	 accessMode: AUTO
+	 maxLength: 256
+	 readOnly: false
+	 extensions: [Lio.swagger.v3.oas.annotations.extensions.Extension;@2a86e389
+	 hidden: false
+	 example: 
+	 minLength: 0
+	 allowEmptyValue: false
+	 secureField: false
+	 dataField: 
+	 allowableValues: 
+	 minValue: 4.9E-324
+	 notes: 
+	 required: false
+	 maxValue: 1.7976931348623157E308
+	 dataType: 
+	 */
+	public static Annotation getApiModelPropertyAnnotation(Field f)
+			throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		final String methodName = "get" + StringTool.getUpperCaseFirstLetter(f.getName());
-		final Method getter = f.getDeclaringClass().getMethod(methodName);
-		// get the annotation
-		final StackgenModelProperty anno = getter.getDeclaredAnnotation(StackgenModelProperty.class);
-		return anno;
+		final Method getter = f.getDeclaringClass().getDeclaredMethod(methodName);
+		for (Annotation annotation : getter.getDeclaredAnnotations()) {
+		    String cnx = annotation.toString();
+		    if(cnx.startsWith("@io.starter.ignite.generator.annotations.StackgenModelProperty")) {
+		    	return getter.getDeclaredAnnotation(annotation.annotationType());
+		    }
+		}
+		return null;
 	}
 
 }

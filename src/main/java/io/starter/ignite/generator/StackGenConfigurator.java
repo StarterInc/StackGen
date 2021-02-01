@@ -47,6 +47,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 			? SystemConstants.getValue("adminServiceURL")
 			: "http://localhost:8099/");
 
+	public String dbDriver = (SystemConstants.getValue("dbDriver") != null ? SystemConstants.getValue("dbDriver") : "com.mysql.cj.jdbc.Driver");
 	public String dbUser = (SystemConstants.getValue("dbUser") != null ? SystemConstants.getValue("dbUser") : "stackgen");
 	public String dbPassword = (SystemConstants.getValue("dbPassword") != null ? SystemConstants.getValue("dbPassword")
 			: "password");
@@ -149,11 +150,9 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	private String schemaName = null;
 
 	public String getSchemaName() {
-		if (schemaName != null) {
-			return schemaName;
-		}
 		schemaName = SystemConstants.getValue("schemaName") != null ? SystemConstants.getValue("schemaName") : "schemaName";
-		schemaName.toLowerCase();
+		schemaName = schemaName.replace("-","_");
+		schemaName = schemaName.toLowerCase();
 		return schemaName;
 	}
 

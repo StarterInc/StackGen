@@ -15,7 +15,8 @@ public interface SystemConstants {
 
 	String rootFolder = getValue("rootFolder") != null ? getValue("rootFolder")
 			: getValue("user.dir");
-
+	String schemaName = getValue("schemaName") != null ? getValue("schemaName")
+			: "stackgen";
 	String dbDriver = getValue("dbDriver") != null ? getValue("dbDriver")
 			: "com.mysql.cj.jdbc.Driver";
 	String dbName = getValue("dbName") != null ? getValue("dbName") : "NONE";

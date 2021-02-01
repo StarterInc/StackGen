@@ -62,6 +62,27 @@ public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourc
     public static Connection getConnection() throws SQLException {
     	return ConnectionFactory.instance.getDataSource().getConnection();
     }
+    
+    public static Connection getConnection(
+    		String driver, 
+    		String url, 
+    		String name,
+    		String username,
+    		String password) throws SQLException {
+		cpds = new ComboPooledDataSource();
+		
+		try {
+			cpds.setDriverClass(driver); // loads the jdbc driver
+		} catch (Exception e) {
+			System.err.println("Could not set Driver Class: " + driver);
+		}
+		cpds.setJdbcUrl(url + "/" + name);
+		cpds.setUser(username);
+		cpds.setPassword(password);
+    	return cpds.getConnection();
+    }
+    
+    
 	
 	static ComboPooledDataSource cpds;
 

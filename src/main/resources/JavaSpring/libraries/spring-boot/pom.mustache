@@ -52,7 +52,7 @@
     </parent>
     
     <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
+        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         {{^interfaceOnly}}
         
         <plugins>
@@ -120,7 +120,8 @@
                         <configuration>
                             <sources>
                                 <source>
-                                src/main/java</source>
+                                ${project.basedir}/src/main/java
+                                </source>
                             </sources>
                         </configuration>
                     </execution>
@@ -133,7 +134,8 @@
                         <configuration>
                             <sources>
                                 <source>
-                                src/test/java</source>
+                                ${project.basedir}/src/test/java
+                                </source>
                             </sources>
                         </configuration>
                     </execution>
@@ -220,7 +222,7 @@
 					<target>1.8</target>
 					<sources>
 						<source>
-							<basedir>src/main/java</basedir>
+							<basedir>${project.basedir}/src/main/java</basedir>
 							<includes>
 								<include>**/*.java</include>
 							</includes>

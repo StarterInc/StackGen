@@ -1,5 +1,7 @@
 package io.starter.ignite.generator;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -21,7 +23,7 @@ public class JavaGenTest {
 	@Test
 	@Ignore(value="serializing weird")
 	public void getApiModelPropertyAnnotationFromField()
-			throws NoSuchMethodException, SecurityException, NoSuchFieldException {
+			throws NoSuchMethodException, SecurityException, NoSuchFieldException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		final Class<? extends User> uc = io.starter.stackgentest.model.User.class;
 

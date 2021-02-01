@@ -2,7 +2,10 @@ package io.starter.ignite.generator;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
@@ -11,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -39,11 +43,11 @@ public class DBGen extends Gen implements Generator {
 	}
 
 	protected static final Logger logger = LoggerFactory.getLogger(DBGen.class);
-	
+
 	public void init() throws SQLException, IOException {
 		logger.info("Generating DB...");
 		logger.info("Create DB Connection...");
-		conn = ConnectionFactory.instance.getConnection();
+		conn = this.getConnection();
 		logger.info((conn.isValid(config.DB_TIMEOUT) ? "OK!" : "FAILED!"));
 	}
 
@@ -101,8 +105,8 @@ public class DBGen extends Gen implements Generator {
 
 		if (colTypeName.contains("Enum")) {
 			dml = Table.myMap.get("Enum");
-			final String tname = DBGen.camelize(f.getDeclaringClass().getName());
-			dml = dml.replace("${MY_TABLE}", tname);
+			// final String tname = DBGen.camelize(f.getDeclaringClass().getName());
+			dml = dml.replace("${MY_TABLE}", f.getDeclaringClass().getName());
 		}
 		if ((dml == null) && f.getType().isPrimitive()) {
 			dml = Table.myMap.get("String");
@@ -136,16 +140,25 @@ public class DBGen extends Gen implements Generator {
 		// ${CHAR_SET} ${DEFAULT}
 		final String defaultval = "";
 		final String charset = ""; // "'utf8'";
-		//int minleng = 0;
-		////double minVal = 0d;
-		//double maxVal = Double.MAX_VALUE;
+		// int minleng = 0;
+		//// double minVal = 0d;
+		// double maxVal = Double.MAX_VALUE;
 		boolean isSecure = false;
 		boolean isDataField = false;
 
-		SecureField sanno = null;
+		Annotation sanno = null;
 		try {
 			sanno = Gen.getSecureFieldAnnotation(f);
-			isSecure = (sanno != null) && sanno.enabled();
+			
+			if (sanno != null) {
+				Class<? extends Annotation> type = sanno.annotationType();
+
+				try {
+					isSecure = (Boolean) type.getDeclaredMethod("enabled").invoke(sanno, (Object[]) null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		} catch (final NoSuchMethodException nsme) {
 			// normal, no SecureField
 		} catch (final SecurityException e) {
@@ -153,42 +166,54 @@ public class DBGen extends Gen implements Generator {
 			e.printStackTrace();
 		}
 
-		DataField danno = null;
+		Annotation danno = null;
 		try {
 			danno = Gen.getDataFieldAnnotation(f);
 			isDataField = danno != null; // danno.annotationType();
+			
 		} catch (final NoSuchMethodException nsme) {
 			// normal, no SecureField
 		} catch (final SecurityException e) {
 			logger.warn("Problem getting DataField Annotation on: " + f.getName() + " " + e.toString());
 			e.printStackTrace();
 		}
-		StackgenModelProperty anno = null;
+		
+		Annotation anno = null;
 		try {
 			anno = Gen.getApiModelPropertyAnnotation(f);
+			if (anno != null) {
+				Class<? extends Annotation> type = anno.annotationType();
+
+				try {
+					// notes = (String) type.getDeclaredMethod("notes").invoke(anno, (Object[]) null);
+					notes = (String) type.getDeclaredMethod("value").invoke(anno, (Object[]) null);
+					nullable = !(Boolean) type.getDeclaredMethod("required").invoke(anno, (Object[]) null);
+					leng = (int) type.getDeclaredMethod("maxLength").invoke(anno, (Object[]) null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
 		} catch (final NoSuchMethodException nsme) {
 			// normal, no getter
-		} catch (final SecurityException e) {
-			logger.warn("Problem getting Annotation on: " + f.getName() + " " + e.toString());
+		} catch (final Exception e) {
+			logger.error("Problem getting ApiModelProperty Annotation on: " + f.getName() + " " + e.toString());
 			e.printStackTrace();
 		}
 
-		if (anno != null) {
-			notes = (anno.notes().equals("") ? notes : anno.notes());
-			nullable = !anno.required();
-			leng = anno.maxLength();
-			// TODO: implement other configs
-		//	minleng = anno.minLength();
-		//	minVal = anno.minValue();
-		//	maxVal = anno.maxValue();
-		}
 
+		
 		if (config.debug && !notes.isEmpty()) {
 			logger.info("Field notes: " + notes);
 		}
-		dml = dml.replace("${COMMENT}", notes);
+		if(notes.equals("")) {
+			dml = dml.replace("${COMMENT}", "");
+		} else {
+			dml = dml.replace("${COMMENT}", "COMMENT \"" + notes + "\"");
+		}
 
-		logger.trace("Creating column for field: " + f.getName() + " charset: " + charset + " defaultVal: " + defaultval + " nullable: " + nullable);
+		logger.trace("Creating column for field: " + f.getName() + " charset: " + charset + " defaultVal: " + defaultval
+				+ " nullable: " + nullable);
 		dml = dml.replace("${NOT_NULL}", (nullable ? "" : "NOT NULL"));
 		dml = dml.replace("${CHAR_SET}", charset);
 		dml = dml.replace("${DEFAULT}", defaultval);
@@ -223,22 +248,28 @@ public class DBGen extends Gen implements Generator {
 		if ((dotpos < 0) || (dotpos >= className.length())) {
 			return;
 		}
-		// packageName = className.substring(0, dotpos);
-		// packageName = "gen." + packageName;
 		className = className.substring(dotpos + 1);
 
+		// check if we even need to apply DML
+		//try {
+			//if (noTableChangesRequired(className, fieldList, table)) {
+			//	return;
+			//}
+		//}catch(Exception e) {
+		//	; // normal
+		//}
 		// collect the COLUMNs and add to Table then generate
 		String tableDML = table.generateTableBeginningDML(className);
-		final Iterator<?> cols = fieldList.iterator();
+		final Iterator<?> fields = fieldList.iterator();
 		boolean isEmpty = true;
 		String extraColumnDML = "";
 
-		while (cols.hasNext()) {
+		while (fields.hasNext()) {
 			isEmpty = false;
-			final Object o = cols.next();
-			tableDML += "	" + o.toString();
+			final Object fld = fields.next();
+			tableDML += "	" + fld.toString();
 			// add the PK for auto-increment ID
-			String colName = o.toString();
+			String colName = fld.toString();
 			colName = colName.substring(0, colName.indexOf(" "));
 			if (colName.equalsIgnoreCase("id")) {
 				extraColumnDML += config.LINE_FEED + Table.myMap.get("pkid");
@@ -258,48 +289,57 @@ public class DBGen extends Gen implements Generator {
 
 		tableDML += Table.CREATE_TABLE_END_BLOCK;
 
-		if (conn == null) {
-			conn = ConnectionFactory.instance.getDataSource().getConnection();
-		}
+		
+		conn = this.getConnection(); 
 
 		// use database
-		conn.setSchema(SystemConstants.dbName);
+		conn.setSchema(config.dbName);
 
-		final PreparedStatement ps = conn.prepareStatement(tableDML);
 		final List<String> triedList = new ArrayList<>();
 
 		// log the DML for troubleshooting
-		if (true){ // config.debug) {
-			Charset ch = CharsetUtil.UTF_8;
-			FileUtils.write(new File(className + "-DML.sql"), tableDML, ch);
+		try {
+			File fx = new File(config.getGenOutputFolder() + "/dml");
+			if (!fx.exists()) {
+				fx.mkdirs();
+			}
+			FileUtils.write(new File(fx.getPath() + "/" + className + "-DML.sql"), tableDML, CharsetUtil.UTF_8);
+		} catch (Exception e) {
+			logger.warn("Could not save DML: ", e);
 		}
-
+		final PreparedStatement ps = conn.prepareStatement(tableDML);
+		
 		try {
 			ps.execute();
 			ps.close();
-			logger.info("SUCCESS: creating table for: " + className);
+			logger.info("SUCCESS: creating new table for: " + className);
 
 		} catch (final Exception e) {
 			if (e.toString().contains("already exists") && config.dbGenDropTable) {
 				logger.info("Table for: " + className + " already exists.");
 				if (!triedList.contains(className) && config.dbGenDropTable) {
 
+					if (renameTable(className, triedList, false)) {
 
-					if (renameTable(className, triedList)) {
+						ps.execute();
+						ps.close();
+						logger.info("SUCCESS: updating table for: " + className);
 
 						// try again
-						generate("." + className, fieldList, getters, setters);
+						// generate("." + className, fieldList, getters, setters);
 						String newTableName = Table.RENAME_TABLE_PREFIX + table.convertToDBSyntax(className);
-						String tableName = table.convertToDBSyntax(className) ;
+						String tableName = table.convertToDBSyntax(className);
 
 						// RENAME_TABLE_PREFIX
 						try {
 							String migrateSQL = migrateDataSQL(tableName, newTableName);
-							logger.info("Executed migration SQL: " + migrateSQL);
 							final PreparedStatement ps3 = conn.prepareStatement(migrateSQL);
 							ps3.execute();
-						}catch (Exception s){
-							logger.error("Could not migrate data to new table. Data retained in [ " + tableName + " ] " + s);
+							logger.info("Executed migration SQL: " + migrateSQL);
+							
+						} catch (Exception s) {
+							logger.error(
+									"Could not migrate data to new table. Data retained in [ " + tableName + " ] " + s);
 						}
 					}
 
@@ -307,11 +347,73 @@ public class DBGen extends Gen implements Generator {
 					logger.warn("Skipping Retry of Table Creation for: " + className);
 				}
 			} else {
-				logger
-						.error("Failed to execute DML for: " + className + " -- " + ConnectionFactory.toConfigString()
-								+ config.LINE_FEED + e.getMessage() + config.LINE_FEED + tableDML);
+				logger.error("Failed to execute DML for: " + className + " -- " + ConnectionFactory.toConfigString()
+						+ StackGenConfigurator.LINE_FEED + e.getMessage() + config.LINE_FEED + tableDML);
 			}
 		}
+	}
+
+	private boolean noTableChangesRequired(String className, List<Object> fieldList, Table table) throws SQLException {
+		String tableName = table.convertToDBSyntax(className);	
+		conn = this.getConnection();
+	
+		List<Object> checkList = fieldList.stream()
+				.map(e -> (e.toString().contains("COMMENT") ? e.toString().substring(0, e.toString().indexOf("COMMENT"))
+						: e.toString()).trim())
+				.collect(Collectors.toList());
+
+		String checkSQL1 = "" + "SELECT * FROM " + tableName + " WHERE 0 > 1";
+		final PreparedStatement ps = conn.prepareStatement(checkSQL1);
+		ps.executeQuery();
+		ResultSet rs = ps.getResultSet();
+		ResultSetMetaData srm = rs.getMetaData();
+		int colct = srm.getColumnCount();
+
+		boolean foundChange = false;
+		for (int t = 1; t <= colct; t++) {
+			String newColName = ps.getResultSet().getMetaData().getColumnName(t);
+			int newColType = ps.getResultSet().getMetaData().getColumnType(t);
+			int colPrecision = ps.getResultSet().getMetaData().getPrecision(t);
+			int colScale = ps.getResultSet().getMetaData().getScale(t);
+			String colClass = ps.getResultSet().getMetaData().getColumnClassName(t);
+			int nullable = ps.getResultSet().getMetaData().isNullable(t);
+
+			// TODO: handle precision
+			// TODO: write out liquibase changelog
+
+			String colCheck = newColName;
+
+			if (colCheck.equals("id") || colCheck.equals("created_date") || colCheck.equals("modified_date")
+					|| colCheck.equals("owner_id") || colCheck.equals("key_spec") || colCheck.equals("key_version")) {
+				// assume unchanged
+			} else {
+
+				if (colClass.equals("java.math.BigInteger")) {
+					colCheck += " BIGINT(10) UNSIGNED";
+				} else if (colClass.equals("java.lang.String")) {
+					colCheck += " VARCHAR(" + colPrecision + ")";
+				} else if (colClass.equals("java.lang.Double")) {
+					colCheck += " DOUBLE";
+				} else if (colClass.equals("java.lang.Boolean")) {
+					colCheck += " TINYINT(1)";
+				} else if (colClass.equals("java.lang.Integer")) {
+					colCheck += " INTEGER";
+				} else if (colClass.equals("java.sql.Timestamp")) {
+					colCheck += " TIMESTAMP";
+				}
+				
+				if(nullable == ResultSetMetaData.columnNoNulls) { // not nullable
+					colCheck += " NOT NULL";
+				}
+				
+				if (!checkList.contains(colCheck)) {
+					foundChange = true;
+					logger.info("Found DB Schema Change: " + colCheck);
+				}
+			}
+		}
+
+		return foundChange;
 	}
 
 	/**
@@ -322,71 +424,57 @@ public class DBGen extends Gen implements Generator {
 	 * @return
 	 */
 	public String migrateDataSQL(String tableName, String newTableName) throws SQLException {
-
-		if(conn == null){
-			conn = ConnectionFactory.instance.getConnection();
-		}
-
-		String checkSQL1 = "" +
-				"SELECT * FROM " + newTableName + " WHERE 0 > 1";
-		final PreparedStatement ps = conn.prepareStatement(checkSQL1);
-		final List<String> newColList = new ArrayList<>();
+		
+		conn = this.getConnection();
+	
+		String checkSQL1 = "" + "SELECT * FROM " + newTableName + " WHERE 0 > 1";
+		final PreparedStatement ps = conn.prepareStatement(checkSQL1);		
 		ps.executeQuery();
-
 		ResultSet rs = ps.getResultSet();
 		ResultSetMetaData srm = rs.getMetaData();
+		
 		int colct = srm.getColumnCount();
-
-		for (int t = 0; t< colct ; t++) {
-			String newCol = ps.getResultSet().getMetaData().getColumnName(t + 1);
+		final List<String> newColList = new ArrayList<>();
+		for (int t = 1; t <= colct; t++) {
+			String newCol = ps.getResultSet().getMetaData().getColumnName(t);
 			newColList.add(newCol);
 		}
 
 		/*
-			we need to match source columns (the new columns) against the previous columns
+		 * we need to match source columns (the new columns) against the previous
+		 * columns
 		 */
-		String checkSQL2 = "" +
-				"SELECT * FROM " + tableName + " WHERE 0 > 1";
-
+		String checkSQL2 = "" + "SELECT * FROM " + tableName + " WHERE 0 > 1";
 		final PreparedStatement ps2 = conn.prepareStatement(checkSQL2);
 		ps2.executeQuery();
-
 		List<Object> colList = new ArrayList<>();
-
 		colct = ps2.getResultSet().getMetaData().getColumnCount();
-		for (int t = 0; t< colct ; t++){
-			String matchingCol = ps2.getResultSet().getMetaData().getColumnName(t+1);
-			if(newColList.contains(matchingCol)) {
+		for (int t = 1; t <= colct; t++) {
+			String matchingCol = ps2.getResultSet().getMetaData().getColumnName(t);
+			if (newColList.contains(matchingCol)) {
 				// TODO: check data types... for now we just trust they match
 				colList.add(matchingCol);
 			}
 		}
-		// ps.close();
-
-		String migrateSql = "INSERT INTO `" + newTableName;
+		String migrateSql = "INSERT INTO `" + tableName;
 		migrateSql += "`(";
-		for(Object col: colList){
+		for (Object col : colList) {
 			migrateSql += "`" + String.valueOf(col) + "`";
-			if(colList.indexOf(col) +1 < colList.size()){
+			if (colList.indexOf(col) + 1 < colList.size()) {
 				migrateSql += ",";
 				// migrateSql += config.LINE_FEED;
 			}
-
 		}
-
 		migrateSql += ")";
 		migrateSql += " SELECT ";
-		for(Object col: colList){
+		for (Object col : colList) {
 			migrateSql += "`" + String.valueOf(col) + "`";
-			if(colList.indexOf(col) +1 < colList.size()){
+			if (colList.indexOf(col) + 1 < colList.size()) {
 				migrateSql += ",";
 				// migrateSql += config.LINE_FEED;
 			}
-
 		}
-
-		migrateSql += " FROM `" + tableName + "`";
-
+		migrateSql += " FROM `" + newTableName + "`";
 		return migrateSql;
 	}
 
@@ -404,9 +492,8 @@ public class DBGen extends Gen implements Generator {
 				logger.info("Creating IDX TABLE: " + tableName);
 
 				// generate the table
-				if (conn == null) {
-					conn = ConnectionFactory.instance.getDataSource().getConnection();
-				}
+				conn = this.getConnection();
+			
 				final PreparedStatement psx = conn.prepareStatement(j.getDML());
 				try {
 					psx.execute();
@@ -420,20 +507,26 @@ public class DBGen extends Gen implements Generator {
 		return true;
 	}
 
-	private boolean renameTable(String className, List<String> triedList) throws SQLException {
+	private boolean renameTable(String className, List<String> triedList, boolean addTimestamp) throws SQLException {
 		Table table = new Table(config);
 		if (!config.skipDbGen) {
 			logger.info("RENAMING TABLE: " + className);
 			triedList.add(className);
 			// rename the table
-			final String renameTableDML = table.generateTableRenameDML(className);
-			if (conn == null) {
-				conn = ConnectionFactory.instance.getDataSource().getConnection();
-			}
+			final String renameTableDML = table.generateTableRenameDML(className, addTimestamp);
+			conn = this.getConnection();
+			
 			final PreparedStatement psx = conn.prepareStatement(renameTableDML);
 			try {
 				psx.execute();
 				psx.close();
+			} catch (final SQLException e) {
+				if(e.toString().contains("already exists")) {
+					// first, move the old BK table out of the way 
+					renameTable(className, triedList, true);
+					// now retry the original rename
+					renameTable(className, triedList, false);
+				}
 			} catch (final Exception ex) {
 				logger.error("Failed to drop table with DML: " + renameTableDML + "  : " + ex.toString());
 				return false;
@@ -454,8 +547,8 @@ public class DBGen extends Gen implements Generator {
 	 */
 	void createDatabaseTablesFromModelFolder() throws Exception {
 		logger.info("Iterate Swagger Entities and create Tables...");
-		final File[] modelFiles = Gen
-				.getJavaFiles(config.getJavaGenSourceFolder() + "/" + config.getModelPackageDir() , false);
+		final File[] modelFiles = Gen.getJavaFiles(config.getJavaGenSourceFolder() + "/" + config.getModelPackageDir(),
+				false);
 		final DBGen gen = new DBGen(getConfig());
 		// classes, this should point to the top of the package
 		// structure!
@@ -521,8 +614,10 @@ public class DBGen extends Gen implements Generator {
 		if (in == null) {
 			return null;
 		}
+		
 		final StringBuilder sb = new StringBuilder();
 		boolean capitalizeNext = false;
+		
 		for (final char c : in.toCharArray()) {
 			if (c == '_') {
 				capitalizeNext = true;
@@ -538,6 +633,19 @@ public class DBGen extends Gen implements Generator {
 		return sb.toString();
 	}
 
+	private Connection getConnection() throws SQLException {
+		if (conn == null) {
+			conn = ConnectionFactory.getConnection(
+					config.dbDriver,
+					config.dbUrl,
+					config.dbName,
+					config.dbUser,
+					config.dbPassword
+				);
+		}
+		return conn;
+	}
+	
 	public static String upperCaseFirstLetter(String thismember) {
 		String upcase = thismember.substring(0, 1);
 		upcase = upcase.toUpperCase();

@@ -59,7 +59,7 @@ public class JavaGenTest {
 
 		Assert.assertEquals(
 				" java.util.Optional<?> ret = getSelectByMapper().selectByPrimaryKey(getId());\n" + 
-				"	  if(ret.isEmpty()) {\n" + 
+				"	  if(!ret.isPresent()) {\n" + 
 				"		  return null;\n" + 
 				"	  }\n" + 
 				"this.UserDelegate = (StackgenUser) ret.get();\n" + 

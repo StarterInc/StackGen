@@ -150,6 +150,9 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	private String schemaName = null;
 
 	public String getSchemaName() {
+		if(schemaName != null) {
+			return schemaName;
+		}
 		schemaName = SystemConstants.getValue("schemaName") != null ? SystemConstants.getValue("schemaName") : "schemaName";
 		schemaName = schemaName.replace("-","_");
 		schemaName = schemaName.toLowerCase();

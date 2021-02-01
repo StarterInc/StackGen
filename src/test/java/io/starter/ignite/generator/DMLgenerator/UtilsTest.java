@@ -57,7 +57,7 @@ public class UtilsTest {
 
 		DBGen dbgen = new DBGen(config);
 		dbgen.conn = cx;
-		String result = dbgen.migrateDataSQL(tableName, targetTableName);
+		String result = dbgen.migrateDataSQL(tableName , targetTableName);
 		assertEquals( "INSERT INTO `stackgen$_user`(`id`,`first_name`,`last_name`) SELECT `id`,`first_name`,`last_name` FROM `BK_stackgen$_user`", result);
 	}
 

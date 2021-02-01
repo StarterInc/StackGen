@@ -327,8 +327,8 @@ public class DBGen extends Gen implements Generator {
 
 						// try again
 						// generate("." + className, fieldList, getters, setters);
-						String newTableName = Table.RENAME_TABLE_PREFIX + table.convertToDBSyntax(className);
-						String tableName = table.convertToDBSyntax(className);
+						String tableName = Table.RENAME_TABLE_PREFIX + table.convertToDBSyntax(className);
+						String newTableName = table.convertToDBSyntax(className);
 
 						// RENAME_TABLE_PREFIX
 						try {
@@ -456,7 +456,7 @@ public class DBGen extends Gen implements Generator {
 				colList.add(matchingCol);
 			}
 		}
-		String migrateSql = "INSERT INTO `" + tableName;
+		String migrateSql = "INSERT INTO `" + newTableName;
 		migrateSql += "`(";
 		for (Object col : colList) {
 			migrateSql += "`" + String.valueOf(col) + "`";
@@ -474,7 +474,7 @@ public class DBGen extends Gen implements Generator {
 				// migrateSql += config.LINE_FEED;
 			}
 		}
-		migrateSql += " FROM `" + newTableName + "`";
+		migrateSql += " FROM `" + tableName + "`";
 		return migrateSql;
 	}
 

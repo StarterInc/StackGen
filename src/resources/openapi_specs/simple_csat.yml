@@ -14,23 +14,6 @@ info:
     name: AGPL 3.0
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://starter.io/tos/
-servers:
-  url: https://{username}.starter.io:{port}/{basePath}
-  description: The production HappyPath CSAT API server
-  variables:
-    username:
-      # note! no enum here means it is an open value
-      default: demo
-      description: this value is assigned by the service provider
-    port:
-      enum:
-        - '8443'
-        - '443'
-      default: '8443'
-    basePath:
-      # open meaning there is the opportunity to use 
-      # special base paths as assigned by the provider, default is `v1`
-      default: v1
 # tags are used for organizing operations
 tags:
 - name: admins
@@ -62,6 +45,7 @@ definitions:
         maximum: 10
     xml:
       name: "Csat"              
+paths:
 externalDocs:
   description: "Find out more about"
   url: "https://"

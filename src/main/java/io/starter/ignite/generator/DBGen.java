@@ -271,13 +271,14 @@ public class DBGen extends Gen implements Generator {
         className = className.substring(dotpos + 1);
 
         // check if we even need to apply DML
-        //try {
-        //if (noTableChangesRequired(className, fieldList, table)) {
-        //	return;
-        //}
-        //}catch(Exception e) {
-        //	; // normal
-        //}
+        try {
+        	if (noTableChangesRequired(className, fieldList, table)) {
+        		return;
+        	}
+        }catch(Exception e) {
+        	logger.warn("Problem checking if table changes required: " + e);; // normal
+        }
+        
         // collect the COLUMNs and add to Table then generate
         String tableDML = table.generateTableBeginningDML(className);
         final Iterator<?> fields = fieldList.iterator();
@@ -318,15 +319,8 @@ public class DBGen extends Gen implements Generator {
         final List<String> triedList = new ArrayList<>();
 
         // log the DML for troubleshooting
-        try {
-            File fx = new File(config.getGenOutputFolder() + "/dml");
-            if (!fx.exists()) {
-                fx.mkdirs();
-            }
-            FileUtils.write(new File(fx.getPath() + "/" + className + "-DML.sql"), tableDML, CharsetUtil.UTF_8);
-        } catch (Exception e) {
-            logger.warn("Could not save DML: ", e);
-        }
+        writeChangeLog(tableDML, className);
+
         final PreparedStatement ps = conn.prepareStatement(tableDML);
 
         try {
@@ -353,6 +347,7 @@ public class DBGen extends Gen implements Generator {
                         // RENAME_TABLE_PREFIX
                         try {
                             String migrateSQL = migrateDataSQL(tableName, newTableName);
+                            writeChangeLog(migrateSQL, className + "-insert");
                             final PreparedStatement ps3 = conn.prepareStatement(migrateSQL);
                             ps3.execute();
                             logger.info("Executed migration SQL: " + migrateSQL);
@@ -373,6 +368,18 @@ public class DBGen extends Gen implements Generator {
         }
     }
 
+    private void writeChangeLog(String tableDML, String className) {
+        try {
+            File fx = new File(config.getGenOutputFolder() + "/dml");
+            if (!fx.exists()) {
+                fx.mkdirs();
+            }
+            FileUtils.write(new File(fx.getPath() + "/" + className + "-DML.sql"), tableDML, CharsetUtil.UTF_8);
+        } catch (Exception e) {
+            logger.warn("Could not save DML: ", e);
+        }
+    }
+
     private boolean noTableChangesRequired(String className, List<Object> fieldList, Table table) throws SQLException {
         String tableName = table.convertToDBSyntax(className);
         conn = this.getConnection();
@@ -389,7 +396,7 @@ public class DBGen extends Gen implements Generator {
         ResultSetMetaData srm = rs.getMetaData();
         int colct = srm.getColumnCount();
 
-        boolean foundChange = false;
+        boolean changesRequired = false;
         for (int t = 1; t <= colct; t++) {
             String newColName = ps.getResultSet().getMetaData().getColumnName(t);
             int newColType = ps.getResultSet().getMetaData().getColumnType(t);
@@ -411,7 +418,13 @@ public class DBGen extends Gen implements Generator {
                 if (colClass.equals("java.math.BigInteger")) {
                     colCheck += " BIGINT(10) UNSIGNED";
                 } else if (colClass.equals("java.lang.String")) {
-                    colCheck += " VARCHAR(" + colPrecision + ")";
+                    
+                	if(colPrecision > 1280) {
+                		colCheck += " LONGTEXT";
+                	} else {
+                		colCheck += " VARCHAR(" + colPrecision + ")";
+                	}
+                    
                 } else if (colClass.equals("java.lang.Double")) {
                     colCheck += " DOUBLE";
                 } else if (colClass.equals("java.lang.Boolean")) {
@@ -427,13 +440,13 @@ public class DBGen extends Gen implements Generator {
                 }
 
                 if (!checkList.contains(colCheck)) {
-                    foundChange = true;
+                	changesRequired = true;
                     logger.info("Found DB Schema Change: " + colCheck);
                 }
             }
         }
 
-        return foundChange;
+        return !changesRequired;
     }
 
     /**

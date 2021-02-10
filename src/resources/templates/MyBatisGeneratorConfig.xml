@@ -37,8 +37,10 @@
 			<property name="useActualColumnNames" value="true" />
 		</javaClientGenerator>
 
+		<!-- StackGen Tables -->
 		<table schema="${artifactId}" tableName="PLACEHOLDER_NODE"
 			modelType="hierarchical" />
+		
 	</context>
 
 </generatorConfiguration>

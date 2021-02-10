@@ -237,8 +237,10 @@ public class MyBatisGen extends Gen implements Generator {
 					config.getSchemaName()).setAttribute("tableName",
 					table.convertToDBSyntax(className));
 
-			final Element el2 = new Element("generatedKey").setAttribute("column", "id").setAttribute("sqlStatement",
-					"JDBC");
+			final Element el2 = new Element("generatedKey")
+					.setAttribute("column", "id")
+					.setAttribute("sqlStatement","JDBC")
+					.setAttribute("identity", "true");
 			el.addContent(el2);
 
 			final Element rootElement = jdo.getRootElement();

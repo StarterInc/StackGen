@@ -36,6 +36,25 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 	
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		// bypass custom handling for non-StackGen tables
+		String schemaName = context.getProperty("schemaName");
+		if(!introspectedTable.getFullyQualifiedTable().getFullyQualifiedTableNameAtRuntime().startsWith(schemaName)) {
+
+			// 
+			final Method tojson = new Method("toJSON");
+			tojson.addAnnotation("@Override");
+			tojson.addBodyLine("return \"{}\";");
+
+			final FullyQualifiedJavaType returnType = new FullyQualifiedJavaType("java.lang.String");
+			final JavaVisibility visibility = JavaVisibility.PUBLIC;
+			tojson.setVisibility(visibility);
+			tojson.setReturnType(returnType);
+			topLevelClass.addMethod(tojson);
+			
+			return super.modelBaseRecordClassGenerated(topLevelClass,introspectedTable);
+		}
+		
+		
 		// we are replacing the super type but still need the original import
 		topLevelClass.addImportedType(topLevelClass.getType());
 
@@ -126,7 +145,12 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
  	public boolean modelGetterMethodGenerated(Method method, TopLevelClass topLevelClass,
 			IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable,
 			Plugin.ModelClassType modelClassType) {
-
+		// bypass custom handling for non-StackGen tables
+		String schemaName = context.getProperty("schemaName");
+		if(!introspectedTable.getFullyQualifiedTable().getFullyQualifiedTableNameAtRuntime().startsWith(schemaName)) {
+			return super.modelGetterMethodGenerated(method, topLevelClass,introspectedColumn, introspectedTable, modelClassType);
+		}
+		
 		final List<String> ln = method.getBodyLines();
 		for (String l : ln) {
 			method.getBodyLines().remove(l);
@@ -143,7 +167,12 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 	public boolean modelSetterMethodGenerated(Method method, TopLevelClass topLevelClass,
 			IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable,
 			Plugin.ModelClassType modelClassType) {
-
+		// bypass custom handling for non-StackGen tables
+		String schemaName = context.getProperty("schemaName");
+		if(!introspectedTable.getFullyQualifiedTable().getFullyQualifiedTableNameAtRuntime().startsWith(schemaName)) {
+			return super.modelSetterMethodGenerated(method, topLevelClass,introspectedColumn, introspectedTable, modelClassType);
+		}
+		
 		final List<String> ln = method.getBodyLines();
 
 		final List<String> it = ln.subList(0, ln.size());
@@ -161,7 +190,12 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 	@Override
 	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
 			IntrospectedTable introspectedTable, ModelClassType modelClassType) {
-
+		// bypass custom handling for non-StackGen tables
+		String schemaName = context.getProperty("schemaName");
+		if(!introspectedTable.getFullyQualifiedTable().getFullyQualifiedTableNameAtRuntime().startsWith(schemaName)) {
+			return super.modelFieldGenerated(field, topLevelClass,introspectedColumn, introspectedTable, modelClassType);
+		}
+		
 		logger.trace("MyBatisIgnitePluginAdapter Generating: " + field + " name:"
 				+ field.getName() + LINE_FEED + " class:" + field.getType().getShortName());
 

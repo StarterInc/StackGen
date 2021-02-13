@@ -189,10 +189,13 @@ public class SwaggerGen extends Gen {
 		config.addAdditionalProperty("CORSMapping", config.getCORSMapping());
 		config.addAdditionalProperty("CORSOrigins", config.getCORSOrigins());
 
+		// SG library version
+		config.addAdditionalProperty("StackGenVersion", config.getStackGenVersion());
+
 		// github
 		config.setGitRepoId(config.gitRepoId);
 		config.setGitUserId(config.gitUserId);
-
+		
 		// locations
 		// Don't do this here... config.setTemplateDir(config.getOutputDir() + "/templates/" + config.getLibrary());
 

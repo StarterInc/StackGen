@@ -6,7 +6,7 @@ package io.starter.ignite.model;
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
-public interface DataModelObject {
-	public DataModelObject getDelegate();
+public interface DataModelObject extends java.io.Serializable  {
+	public Object getDelegate();
 	public String toJSON();
 }

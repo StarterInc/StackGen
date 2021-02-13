@@ -21,6 +21,7 @@ import org.json.*;
 {{#jdk8}}
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -107,8 +108,7 @@ public interface {{classname}}Delegate extends java.io.Serializable {
      *
      * @see {{classname}}#{{operationId}}
      */
-    @Secured("ROLE_ADMIN")
-	@PostFilter("hasPermission(filterObject, '{{operationId}}')")
+	{{#lambdaAddSecurityAnnotations}}{{operationId}}{{/lambdaAddSecurityAnnotations}}
     {{#jdk8}}default {{/jdk8}}{{#responseWrapper}}{{.}}<{{/responseWrapper}}ResponseEntity<{{>returnTypes}}>{{#responseWrapper}}>{{/responseWrapper}} {{operationId}}({{#allParams}}{{^isFile}} {{>optionalDataType}} {{/isFile}}{{#isFile}}MultipartFile{{/isFile}} {{paramName}}{{#hasMore}},
         {{/hasMore}}{{/allParams}}){{^jdk8}};{{/jdk8}}{{#jdk8}} {
         if(getObjectMapper() != null && getAcceptHeader() != null) {    
@@ -122,7 +122,7 @@ public interface {{classname}}Delegate extends java.io.Serializable {
 						(ResponseEntity<{{>returnTypes}}>) getResponse((List<?>) ret){{#async}}){{/async}};
 					} else {
 						return {{#async}}CompletableFuture.completedFuture({{/async}}
-						(ResponseEntity<{{>returnTypes}}>) getResponse(getDelegate()){{#async}}){{/async}};
+						(ResponseEntity<{{>returnTypes}}>) getResponse(this){{#async}}){{/async}};
 					}
 				} else {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -233,7 +233,7 @@ public interface {{classname}}Delegate extends java.io.Serializable {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	default ResponseEntity<?> getResponse(Object ret) throws JsonParseException, JsonMappingException, IOException {
+	default ResponseEntity<?> getResponse(Object ret) {
 		if (ret instanceof Integer) {
 			if ((Integer) ret > 0)
 				return new ResponseEntity<>(HttpStatus.OK);
@@ -245,8 +245,7 @@ public interface {{classname}}Delegate extends java.io.Serializable {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		// returns single result
-		JSONObject job = new JSONObject(ret);
-		return new ResponseEntity<>(getObjectMapper().readValue(job.toString(), {{baseName}}.class), HttpStatus.OK);
+		return new ResponseEntity<Object>(ret, HttpStatus.OK);
 	}
 }
 

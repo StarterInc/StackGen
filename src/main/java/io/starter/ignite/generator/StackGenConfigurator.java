@@ -231,6 +231,11 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	boolean DISABLE_DATA_FIELD_ASPECT = true;
 	boolean DISABLE_SECURE_FIELD_ASPECT = false;
 
+	public String getStackGenVersion() {
+		return (SystemConstants.getValue("StackGenVersion") != null ? SystemConstants.getValue("StackGenVersion")
+				: "0.9.25-SNAPSHOT");
+	}
+
 	// ## SwaggerGen OPEN API
 	public String getArtifactVersion() {
 		return (SystemConstants.getValue("artifactVersion") != null ? SystemConstants.getValue("artifactVersion")

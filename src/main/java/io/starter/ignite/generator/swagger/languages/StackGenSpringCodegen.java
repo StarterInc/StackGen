@@ -69,7 +69,31 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		// TODO: add tests
 		// modelTestTemplateFiles.put("modelTest.mustache", "Test.java");
 		
-		// add lambda for mustache templates
+        // add lambda for mustache templates
+ 		additionalProperties.put("lambdaAddSecurityAnnotations", new Mustache.Lambda() {
+ 			@Override
+ 			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
+ 				String checkOp = fragment.execute();
+ 				switch(checkOp) {
+ 					case "update":
+						writer.write("@PreAuthorize(\"hasPermission(#id2, 'update')\")");
+						break;
+ 					case "delete":
+ 						writer.write("@PreAuthorize(\"hasPermission(filterObject, 'delete')\")");
+ 						break;						
+ 					case "load":
+ 						writer.write("@PostFilter(\"hasPermission(filterObject, 'load')\")");
+ 						break;
+ 					case "list":
+ 						writer.write("@PostFilter(\"hasPermission(filterObject, 'list')\")");
+ 						break;
+ 					case "insert":
+ 						writer.write("@PreAuthorize(\"hasPermission(filterObject, 'insert')\")");
+ 						break;
+ 						
+ 				}
+ 			}
+ 		});
 		additionalProperties.put("lambdaEscapeDoubleQuote", new Mustache.Lambda() {
 			@Override
 			public void execute(Template.Fragment fragment, Writer writer) throws IOException {

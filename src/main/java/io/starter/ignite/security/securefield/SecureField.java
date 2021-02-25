@@ -36,6 +36,10 @@ public @interface SecureField {
 
 	Type type() default Type.SYMMETRIC;
 
+	// encrypt only capability - decryption methods
+	// are no generated (you must decrypt manually)
+	boolean canDecrypt() default true;
+	
 	// whether to bypass security
 	public boolean enabled() default true;
 

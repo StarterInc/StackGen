@@ -3,6 +3,11 @@
  */
 package io.starter.ignite.generator;
 
+import com.squareup.javapoet.MethodSpec;
+import io.starter.toolkit.StringTool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
@@ -10,21 +15,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.squareup.javapoet.MethodSpec;
-
-import io.starter.ignite.model.DataField;
-import io.starter.ignite.security.securefield.SecureField;
-import io.starter.toolkit.StringTool;
-import io.starter.ignite.generator.annotations.StackgenModelProperty;
+import java.util.*;
 
 /**
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
@@ -98,7 +89,7 @@ public class Gen {
 		results.put(className, ob);
 
 		final java.lang.reflect.Field[] fields = ob.getDeclaredFields();
-		final List<Object> fieldList = new ArrayList<Object>();
+		final List<Object> fieldList = new ArrayList();
 		final List<MethodSpec> getters = new ArrayList<MethodSpec>();
 		final List<MethodSpec> setters = new ArrayList<MethodSpec>();
 
@@ -329,14 +320,6 @@ public class Gen {
 		return fields.toArray();
 	}
 
-	public static DataField getDataFieldAnnotation(Field f) throws NoSuchMethodException, SecurityException {
-		// get the annotation
-		final DataField anno = f.getDeclaredAnnotation(DataField.class);
-		
-		// TODO:     @Cacheable(value = ORGANIZATION_DETAILS_CACHE, key = "#organization.uuid")
-		return anno;
-	}
-
 	public static Annotation getSecureFieldAnnotation(Field f) throws NoSuchMethodException, SecurityException {
 		// get the annotation
 		for (Annotation annotation : f.getDeclaredAnnotations()) {
@@ -346,8 +329,6 @@ public class Gen {
 		    }
 		}
 		return null;
-		
-		
 	}
 
 	/* Available Annotation Values:

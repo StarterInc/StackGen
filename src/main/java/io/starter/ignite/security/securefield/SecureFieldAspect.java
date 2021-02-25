@@ -32,8 +32,10 @@ public class SecureFieldAspect {
 
 	@Bean
 	private PasswordEncoder encoder(int strength) {
-		if ((strength < 0) || (strength > 31)) {
-			strength = 15;
+		if (strength < 5) {
+			strength = 5;
+		} else if (strength > 31) {
+			strength = 31;
 		}
 		return new BCryptPasswordEncoder(strength);
 	}

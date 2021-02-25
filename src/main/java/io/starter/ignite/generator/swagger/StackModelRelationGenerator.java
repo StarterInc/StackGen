@@ -58,15 +58,13 @@ public class StackModelRelationGenerator {
 
 		List<MyBatisJoin> refs = new ArrayList<MyBatisJoin>();
 
-		if (true) // TODO: enable!
-			return refs;
-
 		// for each model, iterate the props
 		// if it is an ARRAY value,
 		Map<String, Model> models = swagger.getDefinitions();
 		fixTitles(models);
-
-		for (Model mdx : models.values()) {
+		List<Model> safeIterate = new ArrayList<Model>();
+		safeIterate.addAll(models.values());
+		for (Model mdx : safeIterate) {
 			Map<String, Property> props = mdx.getProperties();
 
 			fixNames(props);
@@ -108,7 +106,7 @@ public class StackModelRelationGenerator {
 						if (rpm.getTitle() == null) {
 							rpm.setTitle(sr1);
 						}
-						MyBatisJoin j = new MyBatisJoin(field, mdx, rpm, config);
+						MyBatisJoin j = new MyBatisJoin(swagger, field, mdx, rpm, config);
 						// creates the *Ref XML to inject into the Main Object
 						// Mapping
 						refs.add(j);

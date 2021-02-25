@@ -3,6 +3,7 @@ package io.starter.ignite.generator.swagger.languages;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -21,7 +22,9 @@ import io.swagger.codegen.languages.features.OptionalFeatures;
 
 /**
  * customized Spring CodeGen for StackGen
- * 
+ *
+ *
+ *
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
@@ -74,12 +77,15 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
  			@Override
  			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
  				String checkOp = fragment.execute();
+ 				
+ 				String targetClassname = StackGenSpringCodegen.this.modelPackage() + "." + ((io.swagger.codegen.CodegenOperation)fragment.context()).baseName + "Service";
+ 				
  				switch(checkOp) {
  					case "update":
 						writer.write("@PreAuthorize(\"hasPermission(#id2, 'update')\")");
 						break;
  					case "delete":
- 						writer.write("@PreAuthorize(\"hasPermission(filterObject, 'delete')\")");
+ 						writer.write("@PreAuthorize(\"hasPermission(#id, '"+targetClassname+"', 'delete')\")");
  						break;						
  					case "load":
  						writer.write("@PostFilter(\"hasPermission(filterObject, 'load')\")");
@@ -87,9 +93,9 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
  					case "list":
  						writer.write("@PostFilter(\"hasPermission(filterObject, 'list')\")");
  						break;
- 					case "insert":
- 						writer.write("@PreAuthorize(\"hasPermission(filterObject, 'insert')\")");
- 						break;
+ 					// case "insert":
+ 						// writer.write("@PreAuthorize(\"hasPermission(filterObject, 'insert')\")");
+ 						// break;
  						
  				}
  			}
@@ -136,20 +142,26 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		if (property.vendorExtensions.containsKey("x-starter-dataField")) {
 			Object o = property.vendorExtensions.get("x-starter-dataField");
 			if (o != null) {
-				// property.isDataField = true;
 				// "pass on" the settings for processing (ie: aspects)
-				String vx = "@io.starter.ignite.model.DataField(\"{{vx}}\")";
-				vx = vx.replace("{{vx}}", o.toString());
-
+				String vx = "@io.starter.ignite.model.DataField({{vx}})";
+				String st = "";
+				
 				// handle hidden datafields
 				String strx = o.toString().toLowerCase();
-				strx.replaceAll(" ", "");
-
-				if (strx.contains("hidden=true")) {
-					// property.isHidden = true;
-					vx += "\n";
-					vx += "  @JsonIgnore";
+				if(strx.indexOf(",") == -1) {
+					st = extractEnumConfig(st, strx.trim());
+				}else {					
+					StringTokenizer tokr = new StringTokenizer(strx, ",");
+					while(tokr.hasMoreTokens()){
+						String param = tokr.nextToken();
+						param.trim();
+						st = extractEnumConfig(st, param);
+						if(tokr.hasMoreTokens()) {
+							st += ",";
+						}
+					}
 				}
+				vx = vx.replace("{{vx}}", st);
 				property.vendorExtensions.put("dataAnnotation", vx);
 				logger.info("Found Starter DataField Vendor Extension" + vx);
 			}
@@ -197,6 +209,24 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 				model.imports.add("JsonCreator");
 			}
 		}
+	}
+
+	private String extractEnumConfig(String st, String param) {
+		StringTokenizer tx = new StringTokenizer(param, "=");
+		String nm = tx.nextToken();
+		String vxt = tx.nextToken();
+		
+		// if we cannot parse as boolean or number, wrap string in quotes
+		try{
+			Double dx = Double.parseDouble(vxt);
+		}catch(Exception t) {
+			if(!vxt.equalsIgnoreCase("true") 
+					&& !vxt.equalsIgnoreCase("false")) {
+				vxt = "\"" + vxt + "\"";	
+			}
+		}
+		st += nm + "=" + vxt;
+		return st;
 	}
 
 

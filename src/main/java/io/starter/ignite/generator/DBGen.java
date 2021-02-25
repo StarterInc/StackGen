@@ -3,7 +3,9 @@ package io.starter.ignite.generator;
 import com.squareup.javapoet.MethodSpec;
 import io.netty.util.CharsetUtil;
 import io.starter.ignite.generator.DMLgenerator.Table;
+import io.starter.ignite.model.DataField;
 import io.starter.ignite.security.dao.ConnectionFactory;
+import io.starter.ignite.util.IgniteUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,8 @@ public class DBGen extends Gen implements Generator {
     protected static final Logger logger = LoggerFactory.getLogger(DBGen.class);
     public static Connection conn = null;
 
+    private List<String> indexList = new ArrayList();
+    
     public DBGen(StackGenConfigurator cfg) {
         super(cfg);
     }
@@ -108,15 +112,13 @@ public class DBGen extends Gen implements Generator {
 
         final String colName = decamelize(f.getName());
         final Class<?> colType = f.getType();
-
+        
         String colTypeName = colType.getName();
         final int pos = colTypeName.lastIndexOf(".") + 1;
         if (pos > 0) {
             colTypeName = colTypeName.substring(pos);
         }
         colTypeName = colTypeName.replace(";", "");
-
-        // get the annotation
 
         // handle special built-in columns
         if (colName.equalsIgnoreCase("ID")) {
@@ -189,18 +191,6 @@ public class DBGen extends Gen implements Generator {
             e.printStackTrace();
         }
 
-        Annotation danno = null;
-        try {
-            danno = Gen.getDataFieldAnnotation(f);
-            isDataField = danno != null; // danno.annotationType();
-
-        } catch (final NoSuchMethodException nsme) {
-            // normal, no SecureField
-        } catch (final SecurityException e) {
-            logger.warn("Problem getting DataField Annotation on: " + f.getName() + " " + e.toString());
-            e.printStackTrace();
-        }
-
         Annotation anno;
         try {
             anno = Gen.getApiModelPropertyAnnotation(f);
@@ -221,7 +211,6 @@ public class DBGen extends Gen implements Generator {
             // normal, no getter
         } catch (final Exception e) {
             logger.error("Problem getting ApiModelProperty Annotation on: " + f.getName() + " " + e.toString());
-            e.printStackTrace();
         }
 
 
@@ -259,7 +248,6 @@ public class DBGen extends Gen implements Generator {
     /**
      * generate DB table from classfile
      */
-    @Override
     public synchronized void generate(String className, List<Object> fieldList, List<MethodSpec> getters,
                                       List<MethodSpec> setters) throws Exception {
         // String packageName = null;
@@ -276,19 +264,34 @@ public class DBGen extends Gen implements Generator {
         		return;
         	}
         }catch(Exception e) {
-        	logger.warn("Problem checking if table changes required: " + e);; // normal
+            if(!e.toString().contains("doesn't exist")) {
+                logger.warn("Problem checking if table changes required: " + e);
+            }
         }
         
         // collect the COLUMNs and add to Table then generate
         String tableDML = table.generateTableBeginningDML(className);
-        final Iterator<?> fields = fieldList.iterator();
+
         boolean isEmpty = true;
         String extraColumnDML = "";
 
-        while (fields.hasNext()) {
+        for (Object fld : fieldList) {
             isEmpty = false;
-            final Object fld = fields.next();
             tableDML += "	" + fld.toString();
+            
+            try {
+    			Boolean unique = (Boolean)IgniteUtils.getAnnotatedValue((Field)fld, "unique", DataField.class);
+    			if(unique!=null && unique) {
+    				// add the unique constraing
+    				if(unique) {
+    					String idxTxt = Table.myMap.get("UNIQUE_INDEX_TEMPLATE");
+    					indexList.add(idxTxt.replace("${MY_COL}",decamelize(((Field)fld).getName())));
+    				}
+    			}
+    		} catch (Exception  e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
             // add the PK for auto-increment ID
             String colName = fld.toString();
             colName = colName.substring(0, colName.indexOf(" "));
@@ -307,7 +310,7 @@ public class DBGen extends Gen implements Generator {
         } else {
             return;
         }
-
+        
         tableDML += Table.CREATE_TABLE_END_BLOCK;
 
 
@@ -530,7 +533,6 @@ public class DBGen extends Gen implements Generator {
                     psx.close();
                 } catch (final Exception ex) {
                     logger.error("Failed to createIDXTable table with DML: " + ex.toString());
-                    return false;
                 }
             }
         }
@@ -608,7 +610,7 @@ public class DBGen extends Gen implements Generator {
      * <p>
      * ie: take upperCamelCase and turn into upper_camel_case
      */
-    public String decamelize(String name) {
+    public static String decamelize(String name) {
         if (name.equals(name.toLowerCase()) || name.equals(name.toUpperCase())) { // case insensitive
             return name;
         }

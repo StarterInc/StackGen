@@ -3,6 +3,10 @@ package {{apiPackage}};
 {{>generatedAnnotation}}
 public class NotFoundException extends ApiException {
     private int code;
+
+    // default constructor for init by generator ClassLoader
+    public NotFoundException () {}
+
     public NotFoundException (int code, String msg) {
         super(code, msg);
         this.code = code;

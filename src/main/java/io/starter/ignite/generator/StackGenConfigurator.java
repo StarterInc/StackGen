@@ -108,6 +108,10 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	boolean skipDbGen = (SystemConstants.getValue("skipDbGen") != null ? Boolean.parseBoolean(SystemConstants.getValue("skipDbGen"))
 			: false);
 
+	boolean skipBackendGen = (SystemConstants.getValue("skipBackendGen") != null
+			? Boolean.parseBoolean(SystemConstants.getValue("skipBackendGen"))
+			: false);
+
 	boolean skipReactGen = (SystemConstants.getValue("skipReactGen") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("skipReactGen"))
 			: false);
@@ -259,6 +263,14 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public String PLUGIN_SPEC_LOCATION = getSpecLocation() + "plugins/";
+
+	public String getArtifactId() {
+		if(super.getArtifactId() != null)
+			return super.getArtifactId();
+		
+		super.setArtifactId(SystemConstants.getValue("artifactId"));
+		return super.getArtifactId();
+	}
 
 	public String getIgniteModelPackage() {
 		return getOrgPackage() + getArtifactId() + ".model";

@@ -330,7 +330,8 @@ public class JavaGen extends Gen implements Generator {
 		try {
 
 			final ClassName cx = ClassName.get("java.util", "List");
-			return MethodSpec.methodBuilder("list").addAnnotation(getPostFilterSpec())
+			return MethodSpec.methodBuilder("list")
+					// .addAnnotation(getPostFilterSpec())
 					.addJavadoc(config.GENERATED_TEXT_BLOCK + " Method: " + config.DATE_FORMAT.format(new Date()))
 					// .addParameter(String.class, "searchParam")
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText).returns(cx).build();
@@ -349,7 +350,8 @@ public class JavaGen extends Gen implements Generator {
 	public MethodSpec createInsert(String className) {
 		final String methodText = insertMethodText(className);
 		try {
-			return MethodSpec.methodBuilder("insert").addAnnotation(getPreAuthorizeSpec(className))
+			return MethodSpec.methodBuilder("insert")
+					// .addAnnotation(getPreAuthorizeSpec(className))
 					.addJavadoc(config.GENERATED_TEXT_BLOCK + " Method: " + config.DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText).returns(TypeName.LONG).build();
 		} catch (final Exception e) {
@@ -369,7 +371,8 @@ public class JavaGen extends Gen implements Generator {
 		final String methodText = loadMethodText(className);
 		try {
 			final ClassName cx = ClassName.get(config.getIgniteModelPackage(), getJavaServiceName(className));
-			return MethodSpec.methodBuilder("load").addAnnotation(getPostFilterSpec())
+			return MethodSpec.methodBuilder("load")
+					// .addAnnotation(getPostFilterSpec())
 					.addJavadoc(config.GENERATED_TEXT_BLOCK + " Method: " + config.DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText).returns(cx).build();
 		} catch (final Exception e) {
@@ -389,7 +392,8 @@ public class JavaGen extends Gen implements Generator {
 		try {
 			return MethodSpec.methodBuilder("delete")
 					.addJavadoc(config.GENERATED_TEXT_BLOCK + " Method: " + config.DATE_FORMAT.format(new Date()))
-					.addAnnotation(getPreAuthorizeSpec(className)).addModifiers(Modifier.PUBLIC)
+					// .addAnnotation(getPreAuthorizeSpec(className))
+					.addModifiers(Modifier.PUBLIC)
 					.addStatement(methodText).returns(TypeName.INT).build();
 		} catch (final Exception e) {
 			JavaGen.logger.error("ERROR creating delete method for: " + className + " " + e.toString());
@@ -406,7 +410,8 @@ public class JavaGen extends Gen implements Generator {
 	public MethodSpec createUpdate(String className) {
 		final String methodText = updateMethodText(className);
 		try {
-			return MethodSpec.methodBuilder("update").addAnnotation(getPreAuthorizeSpec(className))
+			return MethodSpec.methodBuilder("update")
+					// .addAnnotation(getPreAuthorizeSpec(className))
 					.addJavadoc(config.GENERATED_TEXT_BLOCK + " Method: " + config.DATE_FORMAT.format(new Date()))
 					.addModifiers(Modifier.PUBLIC).addStatement(methodText).returns(TypeName.INT).build();
 		} catch (final Exception e) {
@@ -527,6 +532,8 @@ public class JavaGen extends Gen implements Generator {
 
 	}
 
+	/* TODO: leave this option for the future -- currently we apply security to api.Delegates 
+	 * 
 	AnnotationSpec preAuthorize = null;
 
 	private AnnotationSpec getPreAuthorizeSpec(String obn) {
@@ -546,9 +553,9 @@ public class JavaGen extends Gen implements Generator {
 		}
 		return postFilter;
 	}
-
+	 */
+	
 	AnnotationSpec autoWired = null;
-
 	private AnnotationSpec getAutoWiredSpec() {
 		if (autoWired == null) {
 			autoWired = AnnotationSpec.builder(org.springframework.beans.factory.annotation.Autowired.class).build();
@@ -672,7 +679,7 @@ public class JavaGen extends Gen implements Generator {
 		} catch (final Exception x) {
 			// delegateInterfaceClass = null;
 			classLoader.close();
-			throw new IgniteException("FATAL: Could not load the delegate class: " + delegateInterfaceType);
+			throw new IgniteException("FATAL: Could not load the delegate class: " + delegateInterfaceType + " : " + x.toString());
 		}
 
 		// instantiate the delegate class
@@ -735,7 +742,9 @@ public class JavaGen extends Gen implements Generator {
 		} catch (MalformedURLException | InstantiationException | IllegalAccessException e) {
 			throw new IgniteException("FAILED TO LINK MyBatis Model");
 		}
-		return FieldSpec.builder(cx, "selectByMapper").addAnnotation(getJSONIgnoreSpec()).addModifiers(Modifier.PRIVATE)
+		return FieldSpec.builder(cx, "selectByMapper")
+				.addAnnotation(getJSONIgnoreSpec())
+				.addModifiers(Modifier.PRIVATE)
 				.build();
 	}
 

@@ -54,6 +54,9 @@ public class Table {
 				+ "  `${MY_TABLE}_id` int(11) DEFAULT -1,\n" + "  `${REF_TABLE}_id` int(11) DEFAULT -1,\n"
 				+ "  PRIMARY KEY (`id`),\n" + "  UNIQUE KEY `StackGenUQIDX` (`${MY_TABLE}_id`,`${REF_TABLE}_id`))");
 
+		aMap.put("UNIQUE_INDEX_TEMPLATE", ",\n"
+				+ "  UNIQUE KEY `${MY_COL}_UNIQUE` (`${MY_COL}`)");
+		
 		aMap.put("Timestamp.createdDate",
 				" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Auto create record create date - do not update'");
 		aMap.put("Timestamp.modifiedDate",
@@ -118,7 +121,7 @@ public class Table {
 	 * @return
 	 */
 	public String convertToDBSyntax(String colName) {
-		colName = dbg.decamelize(colName);
+		colName = DBGen.decamelize(colName);
 		if (!colName.startsWith(config.getTableNamePrefix())) {
 			colName = config.getTableNamePrefix() + colName;
 		}

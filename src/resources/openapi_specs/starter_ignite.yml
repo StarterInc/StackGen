@@ -1,0 +1,1035 @@
+swagger: '2.0'
+
+info:
+  description: Starter StackGen API
+  version: 1.0.4
+  title: Starter StackGen API
+  # put the contact info for your development or API team
+  contact:
+    email: info@StackGen.io
+  license:
+    name: AGPL 3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+  termsOfService: http://stackgen.io/tos/
+
+servers:
+  url: https://{username}.stackgen.io:{port}/{basePath}
+  description: The production API server
+  variables:
+    username:
+      default: demo
+      description: this value is assigned by the service provider
+    port:
+      enum:
+        - '8100'
+      default: '8100'
+    basePath:
+      # open meaning there is the opportunity to use special base paths as assigned by the provider, default is `v2`
+      default: v2      
+
+# tags are used for organizing operations
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: users
+  description: Operations available to regular users
+
+schemes:
+- https
+
+paths:
+  /upload:
+    requestBody:
+    content:
+      image/png:
+        schema:
+          type: string
+          format: binary
+  /login:
+    get:
+      tags:
+      - "user"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "login"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "query"
+        description: "The user name for login"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "The password for login in clear text"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        400:
+          description: "Invalid username/password supplied"
+  /signup:
+    get:
+      tags:
+      - "user"
+      summary: "Signup a new user"
+      description: ""
+      operationId: "signup"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"          
+  /logout:
+    get:
+      tags:
+      - "user"
+      summary: "Logs out current logged in user session"
+      description: ""
+      operationId: "logoutUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"
+          
+          
+securityDefinitions:
+  automator_auth:
+    type: oauth2
+    authorizationUrl: "https://{username}.stackgen.io:{port}/oauth"
+    flow: "implicit"
+    scopes:
+      write:items: "modify owned items"
+      read:items: "read owned items"
+  
+  api_key:
+    type: "oauth2"
+    flow: "implicit"
+    authorizationUrl: https://auth.stackgen.io
+  
+
+definitions:
+
+
+  Csat:
+    type: object
+    required:
+    - contentId
+    properties:
+      userId:
+        type: "integer"
+        format: "int64"    
+      contentId:
+        type: "integer"
+        format: "int64"
+      comments:
+        type: string
+        example: Your real feelings
+        maxLength: 1000000
+      contentUrl:
+        type: string
+        description: The URL of the resource being rated
+        example: http://someco.com/somepage.html?someparam=somevalue
+        maxLength: 256        
+      rating:
+        type:  "integer"
+        format: "int64"
+        minimum: 0
+        maximum: 10
+    xml:
+      name: "Csat"   
+
+  Account:
+    type: "object"
+    properties:
+      balance:
+        type: "number"
+        format: "double"
+        description: "Account balance point in time"
+        x-starter-dataField: component=AccountBalance
+      institutionName:
+        type: "string"
+      accountNumber:
+        type: "string"
+        x-starter-secureField: true
+      routingNumber:
+        type: "string"    
+      status:
+        type: "string"
+        description: "Account Status"
+        enum:
+        - "ready"
+        - "closed"
+        - "executed"
+      verified:
+        type: boolean
+        default: false
+    xml:
+      name: "Account"
+      
+  LedgerEntry:
+    type: "object"
+    properties:
+      accountId:
+        type: "integer"
+        format: "int64"
+      orderId:
+        type: "integer"
+        format: "int64"
+      entryValue:
+        type: "number"
+        format: "double"
+      institutionName:
+        type: "string"
+        x-starter-secureField: true
+      description:
+        type: "string"
+      accountBalance:
+        type: "number"
+        format: "double"    
+      status:
+        type: "string"
+        description: "Transaction Status"
+        enum:
+        - "ready"
+        - "closed"
+        - "executed"
+      transactionType:
+        type: "string"
+        description: "Transaction Type"
+        enum:
+        - "debit"
+        - "credit"
+        - "deposit"        
+        - "void"
+        - "refund"
+      verified:
+        type: boolean
+        default: false
+    xml:
+      name: "LedgerEntry"
+      
+  Order:
+    type: "object"
+    required:
+      - customerId
+    properties:
+      customerId:
+        type: "integer"
+        format: "int64"
+        description: "Customer User ID"
+      notes:
+        type: "string"
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "placed"
+        - "approved"
+        - "delivered"
+      totalAmount:
+        type: "number"
+        format: "double"  
+      complete:
+        type: "boolean"
+        default: false
+    xml:
+      name: "Order"
+    
+  OrderDetail:
+    type: "object"
+    required:
+      - orderId
+      - itemId
+      - quantity
+    properties:
+      orderId:
+        type: "integer"
+        format: "int64"
+      quantity:
+        type: "integer"
+        format: "int32"
+      itemId:
+        type: "integer"
+        format: "int32"
+      itemDescription:
+        type: "string"
+        maxLength: 6400 
+      itemAmount:
+        type: "number"
+        format: "double"                
+      totalAmount:
+        type: "number"
+        format: "double"        
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "placed"
+        - "approved"
+        - "executed"
+      complete:
+        type: "boolean"
+        default: false
+      shipDate:
+        type: "string"
+        format: "date-time"  
+    xml:
+      name: "OrderDetail"
+      
+  Content:
+    type: object
+    required:
+    - name
+    properties:
+      name:
+        type: string
+        example: My Sad 2020 Summer Vacation
+      description:
+        type: string
+        example: short description
+        maxLength: 6400           
+      data:
+        type: string
+        example: full content data
+        maxLength: 100000   
+      contentType:
+        type: string
+        example: blog, news, etc.
+        enum:
+        - "blog"
+        - "community"
+        - "tips"
+        - "apidoc"
+        - "doc"
+        - "ticket"
+        - "social"        
+        - "tweet"        
+        - "email"
+        - "faq"
+        - "news"
+        - "share"
+      authorId:
+        type: "integer"
+        format: "int64"
+      releaseDate:
+        type:  string
+        format: "date-time"
+      organizationId:
+        type: "integer"
+        format: "int64"
+      headerImageUrl:
+        description: URL for content header image
+        type: string
+        format: url
+        example: https://img.com/mypic.png      
+    xml:
+      name: "Content"    
+      
+  Organization:
+    required:
+    - name
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: string
+        example: ACME Corp Inc.
+      homePage:
+        type: string
+        format: url
+        example:  https://www.acme-corp.com
+      phone:
+        type: string
+        example: 415-867-5309
+      addressId:
+        type: "integer"
+        format: "int64"
+    xml:
+      name: "Organization"       
+        
+  Address:
+    type: object
+    required:
+    - name
+    - street1
+    - city
+    - state
+    - zip
+    properties:
+      name:
+        type: string
+        example: Henry Johnson
+        description: "full name of addressee"
+      street1:
+        type: string
+        example: 123 Daydream Blvd.
+        description: "street address line 1"
+      street2:
+        type:  string
+        example: Apt. 7
+        description: "street address line 2"
+      city:
+        type: string
+        example: San Francisco       
+        description: "full name of city"
+      state:
+        type:  string
+        maxLength: 2
+        minLength: 2      
+        description: "2 character state code (upper case)"
+      zip:
+        type: string
+        example: 94210
+        minLength: 5   
+        maxLength: 5
+        description: "5 digit zip code"
+    xml:
+      name: "Address"        
+        
+  User:
+    required:
+    - username
+    - password
+    - email
+    properties:
+      firstName:
+        description: first name of person (encrypted)
+        type: string
+        example: Karena
+        x-starter-secureField: true
+        x-starter-dataField: fieldGroup=personalDetails
+      lastName:
+        description: last name of person (encrypted)
+        type: string
+        example: Jones
+        x-starter-secureField: true
+        x-starter-dataField: fieldGroup=personalDetails
+      userName:      
+        description: Your account Username
+        minLength: 2
+        maxLength: 25
+        type: string
+        example: Sparky
+        x-starter-dataField: unique=true
+        x-starter-dataField: fieldGroup=personalDetails
+      password:
+        description: Your account Password
+        type: string
+        example: HardToGuess1980
+        minLength: 8
+        maxLength: 25
+        x-starter-dataField: hidden=true, unique=true, advanced=true, component=io.stackgen.Password
+        x-starter-secureField: true, Type=HASHED, strength=5
+      fingerprint:
+        description: Encrypted identity (Facial Recognition, Fingerprint Scanner, etc.)
+        type: string
+        example: DK$DFSJaraDD
+        readOnly: true
+        x-starter-dataField: advanced=true
+      governmentId:
+        description: SSN or a 10 digit government ID (encrypted)
+        type: string
+        example: 1112233334
+        maxLength: 30
+        minLength: 10
+        pattern: '^\d{3}-\d{2}-\d{4}$'
+        x-starter-secureField: true
+        x-starter-dataField: advanced=true
+      homePage:
+        descripton: The web page for the Account
+        type: string
+        format: url
+        example: https://www.acme-corp.com
+      email:
+        description: The main email address for the user (encrypted)
+        type: string
+        format: email
+        example: wiley.coyote@acme-corp.com
+        x-starter-secureField: true
+      social:
+        description: The username for your primary social account (if any)
+        type: string
+        format: url
+        example: https://twitter.com/StackGen
+      bio:
+        description: More in-depth information about you and your account
+        type: string
+        format: url
+        example: https://twitter.com/StackGen
+      avatar_url:
+        description: URL for user avatar image
+        type: string
+        format: url
+        example: https://img.com/mypic.png
+      organizationId:
+        type: "integer"
+        format: "int64"
+      addressId:
+        type: "integer"
+        format: "int64"
+   # Spring Security User fields
+
+   # isCredentialsNonExpired
+      credentialNonExpired:
+        description: Spring Security User field whether the user's login credentials have expired
+        type: boolean
+        default: true
+        x-starter-dataField: advanced=true, fieldGroup=accountStatus
+   # isAccountEnabled
+      accountEnabled:
+        description: Spring Security User field whether the user account is enabled
+        type: boolean
+        default: true
+        x-starter-dataField: advanced=true, fieldGroup=accountStatus
+   # isAccountNonLocked
+      accountNonLocked:
+        description: Spring Security User field whether the user account is locked
+        type: boolean
+        default: true
+        x-starter-dataField: advanced=true, fieldGroup=accountStatus
+   # isAccountNonExpired
+      accountNonExpired:
+        description: Spring Security User field whether the user account has expired
+        type: boolean
+        default: false      
+        x-starter-dataField: advanced=true, fieldGroup=accountStatus
+   # getAuthorities
+   # TODO: x-starter-dataField: hidden=true
+      authorities:
+         description: Spring Security User representation of the granted authority (or <code>null</code> if the granted authority cannot be expressed as a <code>String</code> with sufficient precision).
+         type: array
+         items:
+           type: string
+         x-starter-dataField: advanced=true, fieldGroup=accountStatus
+   # photoId:
+   #   description: uploaded photo id
+   #   type: string
+   #   format: binary # causes issue with 
+    xml:
+      name: "User"
+      
+  Role:
+    required:
+    - name
+    properties:
+      name:
+        description: Name of the Role
+        type: string
+        example: Karena
+      type:
+        type: string
+        example: executive
+        minLength: 2
+    xml:
+      name: "Role"     
+       
+  Privilege:
+    required:
+    - name
+    properties:
+      name:
+        description: Name of the System Privilege
+        type: string
+        example: Read Access to Content
+      type:
+        description: Name of the System Privilege
+        type: "string"
+        description: "Privilege Type"
+        enum:
+        - "insert"
+        - "read"
+        - "write"
+        - "delete"
+        - "execute"
+        - "all"
+    xml:
+      name: "Privilege"
+      
+  WorkFlows:
+    required:
+    - description
+    - json
+    properties:
+      fingerprint:
+        type: string
+        example: DK$DFSJaraDD
+      sourceType:
+        type: string
+        example: user
+      sourceOwner:
+        type: string
+        example: userId:d290f1ee-6c54-4b01-90e6-d701748f0851
+      json:
+        type: string
+        example: Sparkyt
+        description: this value is the JSON content of the WorkFlow definition
+      xml:
+        type: string
+        example: Sparkyt
+    xml:
+      name: "Workflows"
+      
+  ContactMethod:        
+    type: object
+    required:
+    - name
+    - ticker
+    properties:
+      messageTypeDescription:
+        type: string
+        example: twitter handle
+      messageType:
+        type: string
+        example: email
+        enum:
+        - "github"        
+        - "email"
+        - "twitter"
+        - "mobile"
+        - "sms"
+        - "facebook"
+      status:
+        type: "string"
+        description: "Contact Method Status"
+        enum:
+        - "new"
+        - "validated"
+        - "closed"
+        - "DNC"
+        - "ADMIN"
+      complete:
+        type: boolean
+        default: false
+    xml:
+      name: "ContactMethod"
+
+  DataSource:
+    type: "object"
+    required:
+      - url
+      - username
+      - password
+      - driver
+      - schemaName
+    properties:
+      url:
+        type: "string"
+        maxLength: 1024 
+      username:
+        type: "string"
+        maxLength: 1024 
+      password:
+        type: "string"
+        maxLength: 1024 
+      driver:
+        type: "string"
+        maxLength: 1024 
+      schemaName:
+        type: "string"
+        maxLength: 1024        
+      
+      status:
+        type: "string"
+        description: "Last known connection status"
+        enum:
+        - "good"
+        - "url-not-found"
+        - "bad-credentials"
+        - "driver-not-found"
+      
+      type:
+        type: "string"
+        description: "Connection type (ie: DB / Text / API)"
+        enum:
+        - "database"
+        - "text"
+        - "api"
+        - "other"
+        
+      canConnect:
+        type: "boolean"
+        default: false
+      lastConnectedDate:
+        type: "string"
+        format: "date-time"  
+    xml:
+      name: "DataSource"
+      
+  IntegrationAccount:        
+    type: object
+    required:
+    - accountId
+    - accountUsername
+    - accountPassword
+    properties:
+      accountId:
+        type: "integer"
+        format: "int64"      
+      accountUsername:
+        type: string
+        example: TechnoCharms
+        description: the username of the 3rd party account
+        x-starter-secureField: true      
+      accountPassword:
+        type: string
+        example: E49232SSDFDF
+        description: the password for the 3rd party account
+        x-starter-secureField: true
+      accountDescription:
+        type: string
+        example: Marketing Twitter Account
+        description: description of the 3rd party account
+      accountType:
+        type: string
+        example: email
+        enum:
+        - "github"        
+        - "email"
+        - "twitter"
+        - "mobile"
+        - "sms"
+        - "facebook"
+      status:
+        type: "string"
+        description: "Account Status"
+        enum:
+        - "new"
+        - "validated"
+        - "closed"
+      disabled:
+        type: boolean
+        default: false
+    xml:
+      name: "IntegrationAccount"
+      
+  AuditLog:
+    required:
+    - sourceType
+    - json
+    properties:
+      fingerprint:
+        type: string
+        example: DK$DFSJaraDD
+        x-starter-dataField: hidden=true
+      sourceType:
+        type: string
+        example: user
+        hidden: true
+      sourceOwner:
+        type: string
+        example: userId:1000
+      json:
+        type: string
+        example: Sparkyt
+        maxLength: 100000
+      ipAddress:
+        type: string
+        example: 111.222.333.444
+        maxLength: 15
+    xml:
+      name: "AuditLog"
+            
+  Data:
+    required:
+    - sourceType
+    - json
+    properties:
+      fingerprint:
+        type: string
+        example: D234234ER
+      type:
+        type: string
+        example: user
+      json:
+        type: string
+        example: Sparkyt
+        maxLength: 100000    
+    xml:
+      name: "Data"
+      
+  Category:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+    xml:
+      name: "Category"
+      
+  Tag:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+    xml:
+      name: "Tag"
+
+# Special Object for tracking and instantiating OpenAPI Schema instances
+
+  Stack:
+    description: "StackGen Design Spec"
+    type: "object"
+    required:
+    - "name"
+    properties:
+      category:
+        # $ref: "#/definitions/Category" TODO
+        type: "string"
+        description: "Stack category"
+        enum:
+        - "Full Stack"
+        - "Front End"
+        - "API"
+        - "Data Library"
+        - "Infrastructure"
+        - "Documentation"
+      name:
+        type: "string"
+        example: "My New Stack"
+        description: "Name of the service API displayed in the UI"
+      
+      artifactId:
+        type: "string"
+        example: "stackgenpro"
+        maxLength: 256 
+        description: "Name of the output build file(s) ie: mvn ArtifactID"
+      
+      applicationId:
+        type: "integer"
+        format: "int64"
+        description: "Id of the Application that this Stack belongs to, if any"      
+            
+      adminServerHost:
+        type: "string"
+        example: "www.mycompany.com"
+        maxLength: 256
+        description: "host (FQDN) name of to connect to the admin server -- do not include 'http(s):' or slashes"
+        x-starter-dataField: fieldGroup=stackgen-admin-config, advanced=true
+        
+      adminServerPort:
+        type: "string"
+        example: "8009"
+        maxLength: 256 
+        description: "port of to connect to the admin server"        
+        x-starter-dataField: fieldGroup=stackgen-admin-config, advanced=true
+        
+      hostName:
+        type: "string"
+        example: "localhost"
+        maxLength: 256 
+        description: "host of this service (FQDN) -- do not include 'http(s):' or slashes"          
+        x-starter-dataField: fieldGroup=stackgen-service-config, advanced=true
+        
+      hostPort:
+        type: "string"
+        example: "8099"
+        maxLength: 5 
+        description: "port of this service"
+        x-starter-dataField: fieldGroup=stackgen-service-config, advanced=true
+
+      orgName:
+        type: "string"
+        example: "Starter Inc."
+        maxLength: 256 
+        description: "the name of the organization owner of the service used in classpath"
+        x-starter-dataField: fieldGroup=stackgen-github-creds, advanced=true
+        
+      gitUser:
+        type: string
+        example: StarterInc
+        maxLength: 256
+        description: "The name of the git USER or ORG to push generated stack code"
+        x-starter-dataField: fieldGroup=stackgen-github-creds, advanced=true
+        
+      gitRepo:
+        type: string
+        example: MyStackGenApp
+        maxLength: 256
+        description: "The repository where the output Project will be pushed after generation"
+        x-starter-dataField: fieldGroup=stackgen-github-creds, advanced=true     
+
+      skipSwaggerGen:
+        type: boolean
+        description: "Whether to skip Swagger API build during Generation"
+        default: false
+        x-starter-dataField: fieldGroup=stackgen-gen-config, advanced=true     
+      skipJavaGen:
+        type: boolean
+        description: "Whether to skip Java Services and DAO build during Generation"
+        default: false        
+        x-starter-dataField: fieldGroup=stackgen-gen-config, advanced=true
+      skipDBGen:
+        type: boolean
+        description: "Whether to skip Database Modification during Generation"
+        default: false        
+        x-starter-dataField: fieldGroup=stackgen-gen-config, advanced=true
+      skipReactGen:
+        type: boolean 
+        description: "Whether to skip React Front End during Generation"
+        default: false        
+        x-starter-dataField: fieldGroup=stackgen-gen-config, advanced=true
+      
+      dbGenDropTable:
+        type: boolean
+        description: "Will rename and any conflicting pre-existing tables during generation"
+        default: true        
+        x-starter-dataField: fieldGroup=stackgen-gen-config, advanced=true         
+      
+      starterIgniteSecureKey:
+        type: "string"
+        example: "=W34sdcwdsfwC34="
+        maxLength: 256 
+        description: "Secure key used to encrypt the data in the new platform"                     
+
+      dbUrl:
+        type: "string"
+        example: "jdbc:mysql//db.myco.com"
+        maxLength: 256 
+        description: "database url for the system"   
+        x-starter-dataField: fieldGroup=stackgen-db-config       
+      dbName:
+        type: "string"
+        example: "StackGenApp1"
+        maxLength: 256 
+        description: "db name (schema name) for the system NOTE: must exist prior to initialization"
+        x-starter-dataField: fieldGroup=stackgen-db-config          
+      dbUser:
+        type: "string"
+        example: "igniteuser"
+        maxLength: 256 
+        description: "database user for the system"
+        x-starter-dataField: fieldGroup=stackgen-db-config    
+      dbPassword:
+        type: "string"
+        example: "hard2Gu3ss"
+        maxLength: 256 
+        description: "database password for the system" 
+        x-starter-dataField: fieldGroup=stackgen-db-config
+      schemaName:
+        type: "string"
+        example: "starter"
+        maxLength: 256 
+        description: "Name of the DB Schema to connect to  NOTE: must exist prior to initialization"
+        x-starter-dataField: fieldGroup=stackgen-db-config
+            
+      language:
+        type: "string"
+        description: "Backend Stack Service Language"
+        enum:
+        - "stackgen-java-spring"
+        - "stackgen-kotlin-spring"
+      
+      templateRepo:
+        type: "string"
+        description: "Stack template repo"
+        enum:
+        - "java-spring-mybatis-react-redux"
+        - "kotlin-spring-mybatis-react-redux"
+        - "kotlin-spring-jpa-react-redux"
+        - "kotlin-spring-jpa-vue-mobx"
+        
+      schemaData:
+        type: string
+        example: Sparkyt
+        maxLength: 1000000
+        description: "YAML Swagger/OpenAPI Schema"      
+      
+      schemaFileName:
+        type: "string"
+        example: "ignite_commerce.yml"
+        maxLength: 256 
+        description: "File name containing Schema definition" 
+                    
+      status:
+        type: "string"
+        description: "Current Stack status"
+        enum:
+        - "available"
+        - "syntax-error"
+        - "compilation-error"
+        - "runtime-error"
+        - "locked"
+    xml:
+      name: "Stack"
+      
+  Application:
+    description: "Composed Application"
+    type: "object"
+    required:
+    - "name"
+    properties:
+      category:
+        $ref: "#/definitions/Category"
+      name:
+        type: "string"
+        example: "Wand Fitness Tracker"
+        description: "Name of the Application"
+      description:
+        type: "string"
+        example: "The fitness tracker is used to enter and display user health data."
+        description: "Detailed description of the Application"
+      endpoint:
+        type: "string"
+        example: "https://some.app.server/v1"
+        description: "The URL of the Application endpoint, if any"
+              
+  Item:
+    description: "Products or Services"
+    type: "object"
+    required:
+    - "name"
+    - "photoUrls"
+    properties:
+      category:
+        $ref: "#/definitions/Category"
+      name:
+        type: "string"
+        example: "doggie"
+        description: "name of the item displayed in the store"
+      photoUrls:
+        type: "array"
+        xml:
+          name: "photoUrl"
+          wrapped: true
+        items:
+          type: "string"
+      tags:
+        type: "array"
+        xml:
+          name: "tag"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Tag"
+      status:
+        type: "string"
+        description: "item status in the store"
+        enum:
+        - "available"
+        - "pending"
+        - "sold"
+    xml:
+      name: "Item"
+      
+externalDocs:
+  description: "Learn more about Starter StackGen"
+  url: "https://docs.stackgen.io/"    

@@ -99,6 +99,11 @@ public @interface StackgenModelProperty {
 	String dataType() default "";
 
 	/**
+	 * Specifies if the underlying value should be unique in database
+	 */
+	boolean uniqueValues() default false;
+
+	/**
 	 * Specifies if the parameter is required or not.
 	 */
 	boolean required() default false;

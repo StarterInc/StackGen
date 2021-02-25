@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.starter.ignite.generator.annotations.StackgenModelProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import io.starter.ignite.generator.StackGenConfigurator;
 import io.starter.ignite.generator.DBGen;
+import io.starter.ignite.generator.IgniteException;
 import io.starter.ignite.generator.MyBatisJoin;
 import io.starter.ignite.generator.SwaggerGen;
 import io.swagger.codegen.ClientOptInput;
@@ -89,6 +91,10 @@ public class IgniteGenerator extends DefaultGenerator {
 		configureGeneratorProperties();
 		configureSwaggerInfo();
 
+		// TODO: add the model link builder here
+		StackModelRelationGenerator relationGenerator = new StackModelRelationGenerator();
+		List<MyBatisJoin> joins = relationGenerator.generate(swagger, cfg);
+
 		// add Starter StackGen code
 		if (generateStarterModelEnhancements) {
 			enhanceSwagger();
@@ -96,6 +102,7 @@ public class IgniteGenerator extends DefaultGenerator {
 
 		// some static settings
 		preprocessSwagger();
+
 
 		// resolve inline models
 		InlineModelResolver inlineModelResolver = new InlineModelResolver();
@@ -112,15 +119,11 @@ public class IgniteGenerator extends DefaultGenerator {
 		List<Object> allOperations = new ArrayList<Object>();
 		generateApis(files, allOperations, allModels);
 
-		// TODO: add the model link builder here
-		StackModelRelationGenerator relationGenerator = new StackModelRelationGenerator();
-		List<MyBatisJoin> joins = relationGenerator.generate(swagger, cfg);
-
 		// create the tables... MyBatis will allow us to modify the
 		// model later
 		try {
 			DBGen dbg = new DBGen(cfg);
-			if (joins.size() > 0)
+			if (joins != null && joins.size() > 0)
 				dbg.createIDXTables(joins);
 		} catch (SQLException e) {
 			logger.error("Failed to create IDX tables.", e);
@@ -158,7 +161,12 @@ public class IgniteGenerator extends DefaultGenerator {
 	public void enhanceSwagger() {
 		
 		this.swagger.setBasePath("v1");
-		Set<String> keys = this.swagger.getDefinitions().keySet();
+		Set<String> keys;
+		try {
+			keys = this.swagger.getDefinitions().keySet();
+		}catch(NullPointerException e) {
+			throw new IgniteException("Schema: " + this.swagger.toString() + " malformed definitions section");
+		}
 		Map<String, Path> priorPaths = this.swagger.getPaths();
 		this.swagger.setPaths(new HashMap<String, Path>());
 		for (String k : keys) {
@@ -263,8 +271,8 @@ public class IgniteGenerator extends DefaultGenerator {
 	private void addSecurity(String k, Operation loadOp) {
 		List<String> value;
 		value = new ArrayList<String>();
-		value.add("read: items"); // + k);
-		value.add("write: items"); // " + k);
+		value.add("read: " + k);
+		value.add("write: " + k);
 		loadOp.addSecurity("automator_auth", value);
 	}
 
@@ -368,10 +376,10 @@ public class IgniteGenerator extends DefaultGenerator {
 
 		listOp.addResponse("200", r);
 
+		// causes attempt to transform lists into strings
 		// ArrayModel mx = new ArrayModel();
 		// mx.setReference(k);
-		// StringProperty p = new StringProperty("#/definitions/" +
-		// k);
+		// StringProperty p = new StringProperty("#/definitions/" + k);
 		// mx.setItems(p);
 		// r.setResponseSchema(mx);
 
@@ -381,12 +389,12 @@ public class IgniteGenerator extends DefaultGenerator {
 		// security
 		// [{automator_auth=[write:Account, read:Account]}]
 		List<String> value = new ArrayList<String>();
-		value.add("read: items"); // + k);
+		value.add("read: " + k); // + k);
+		value.add("write: " + k); // + k);
 		listOp.addSecurity("automator_auth", value);
 
 		// vendorExtensions
-		// {x-contentType=application/json,
-		// x-accepts=application/json, x-tags=[{tag=account}]}
+		// {x-contentType=application/json, x-accepts=application/json, x-tags=[{tag=account}]}
 		
 		listOp.getVendorExtensions().put("x-contentType", "application/json");
 		listOp.getVendorExtensions().put("x-accepts", "application/json");
@@ -408,13 +416,25 @@ public class IgniteGenerator extends DefaultGenerator {
 	private void addIgniteFields(Model mx) {
 
 		ModelImpl m = (ModelImpl) mx;
-
-		// keyVersion
 		Map<PropertyBuilder.PropertyId, Object> args = new HashMap<PropertyBuilder.PropertyId, Object>();
+		// id -- all objects must have id as primary key
+		args = new HashMap<PropertyBuilder.PropertyId, Object>();
+		args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
+		args.put(PropertyBuilder.PropertyId.TITLE, "Id");
+		args.put(PropertyBuilder.PropertyId.ALLOW_EMPTY_VALUE, false);
+		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated column)");
+		Property value = PropertyBuilder.build("integer", "int64", args);
+		value.setPosition(0);
+		value.setName("id");
+		value.setRequired(true);
+		value.setAccess(StackgenModelProperty.AccessMode.READ_ONLY.name());
+		m.addProperty("id", value);
+		
+		// keyVersion
 		args.put(PropertyBuilder.PropertyId.TITLE, "Securefield Key Version");
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The version of the SecureField key used to crypt this row (generated column)");
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "1.0");
-		Property value = PropertyBuilder.build("integer", "int64", args);
+		value = PropertyBuilder.build("integer", "int64", args);
 		m.addProperty("keyVersion", value);
 
 		// keySpec
@@ -450,14 +470,6 @@ public class IgniteGenerator extends DefaultGenerator {
 		value = PropertyBuilder.build("string", "date-time", args);
 		m.addProperty("modifiedDate", value);
 
-		// id -- all objects must have id as primary key
-		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
-		args.put(PropertyBuilder.PropertyId.TITLE, "Id");
-		args.put(PropertyBuilder.PropertyId.ALLOW_EMPTY_VALUE, false);
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated column)");
-		value = PropertyBuilder.build("integer", "int64", args);
-		m.addProperty("id", value);
 	}
 
 	/**

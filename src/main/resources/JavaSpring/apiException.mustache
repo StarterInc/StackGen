@@ -3,6 +3,10 @@ package {{apiPackage}};
 {{>generatedAnnotation}}
 public class ApiException extends Exception{
     private int code;
+
+    // default constructor for init by generator ClassLoader
+    public ApiException () {}
+
     public ApiException (int code, String msg) {
         super(msg);
         this.code = code;

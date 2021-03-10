@@ -119,16 +119,6 @@ public class IgniteGenerator extends DefaultGenerator {
 		List<Object> allOperations = new ArrayList<Object>();
 		generateApis(files, allOperations, allModels);
 
-		// create the tables... MyBatis will allow us to modify the
-		// model later
-		try {
-			DBGen dbg = new DBGen(cfg);
-			if (joins != null && joins.size() > 0)
-				dbg.createIDXTables(joins);
-		} catch (SQLException e) {
-			logger.error("Failed to create IDX tables.", e);
-		}
-
 		// supporting files
 		Map<String, Object> bundle = buildSupportFileBundle(allOperations, allModels);
 		generateSupportingFiles(files, bundle);
@@ -424,9 +414,8 @@ public class IgniteGenerator extends DefaultGenerator {
 		args.put(PropertyBuilder.PropertyId.ALLOW_EMPTY_VALUE, false);
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated column)");
 		Property value = PropertyBuilder.build("integer", "int64", args);
-		value.setPosition(0);
+		value.setPosition(1);
 		value.setName("id");
-		value.setRequired(true);
 		value.setAccess(StackgenModelProperty.AccessMode.READ_ONLY.name());
 		m.addProperty("id", value);
 		

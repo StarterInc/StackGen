@@ -227,11 +227,8 @@ public interface {{classname}}Delegate extends java.io.Serializable {
 	/**
 	 * handle a single result
 	 * 
-	 * @param ret
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
+	 * @param Object - response body
+	 * @return ResponseEntity - return type to client
 	 */
 	default ResponseEntity<?> getResponse(Object ret) {
 		if (ret instanceof Integer) {
@@ -244,8 +241,14 @@ public interface {{classname}}Delegate extends java.io.Serializable {
 				return new ResponseEntity<>(HttpStatus.OK);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		// returns single result
-		return new ResponseEntity<Object>(ret, HttpStatus.OK);
+        // returns single result
+        try{
+            Method getDelegate = ret.getClass().getDeclaredMethod("getDelegate");
+            Object rex = getDelegate.invoke(ret);
+            return new ResponseEntity<Object>(rex, HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<Object>(ret, HttpStatus.OK);
+        }
 	}
 }
 

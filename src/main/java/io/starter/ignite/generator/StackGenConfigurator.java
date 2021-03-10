@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,16 @@ import io.swagger.parser.SwaggerParser;
 public class StackGenConfigurator extends CodegenConfigurator {
 
 	private static final long serialVersionUID = 23423423423L;
+
+	public Connection getGeneratorConnection() {
+		return generatorConnection;
+	}
+
+	public void setGeneratorConnection(Connection generatorConnection) {
+		this.generatorConnection = generatorConnection;
+	}
+
+	Connection generatorConnection = null;
 
 	public static String LINE_FEED = "\r\n";
 	public String adminServiceURL = (SystemConstants.getValue("adminServiceURL") != null
@@ -101,45 +112,45 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		return (SystemConstants.getValue("adminPassword") != null ? SystemConstants.getValue("adminPassword") : "ch@ng3m3");
 	}
 
-	boolean skipJavaGen = (SystemConstants.getValue("skipJavaGen") != null
+	public boolean skipJavaGen = (SystemConstants.getValue("skipJavaGen") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("skipJavaGen"))
 			: false);
 
-	boolean skipDbGen = (SystemConstants.getValue("skipDbGen") != null ? Boolean.parseBoolean(SystemConstants.getValue("skipDbGen"))
+	public boolean skipDbGen = (SystemConstants.getValue("skipDbGen") != null ? Boolean.parseBoolean(SystemConstants.getValue("skipDbGen"))
 			: false);
 
-	boolean skipBackendGen = (SystemConstants.getValue("skipBackendGen") != null
+	public boolean skipBackendGen = (SystemConstants.getValue("skipBackendGen") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("skipBackendGen"))
 			: false);
 
-	boolean skipReactGen = (SystemConstants.getValue("skipReactGen") != null
+	public boolean skipReactGen = (SystemConstants.getValue("skipReactGen") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("skipReactGen"))
 			: false);
 
-	boolean skipMybatisGen = (SystemConstants.getValue("skipMybatisGen") != null
+	public boolean skipMybatisGen = (SystemConstants.getValue("skipMybatisGen") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("skipMybatisGen"))
 			: false);
 
-	boolean skipMavenBuildGeneratedApp = (SystemConstants.getValue("skipMavenBuildGeneratedApp") != null
+	public boolean skipMavenBuildGeneratedApp = (SystemConstants.getValue("skipMavenBuildGeneratedApp") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("skipMavenBuildGeneratedApp"))
 			: true);
 
-	boolean overwriteMode = (SystemConstants.getValue("overwriteMode") != null
+	public boolean overwriteMode = (SystemConstants.getValue("overwriteMode") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("overwriteMode"))
 			: true);
 
-	boolean iteratePluginGen = (SystemConstants.getValue("iteratePluginGen") != null
+	public boolean iteratePluginGen = (SystemConstants.getValue("iteratePluginGen") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("iteratePluginGen"))
 			: true);
 
-	boolean mergePluginGen = (SystemConstants.getValue("mergePluginGen") != null
+	public boolean mergePluginGen = (SystemConstants.getValue("mergePluginGen") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("mergePluginGen"))
 			: false);
 
-	boolean verbose = (SystemConstants.getValue("verbose") != null ? Boolean.parseBoolean(SystemConstants.getValue("verbose"))
+	public boolean verbose = (SystemConstants.getValue("verbose") != null ? Boolean.parseBoolean(SystemConstants.getValue("verbose"))
 			: false);
 
-	boolean debug = (SystemConstants.getValue("debug") != null ? Boolean.parseBoolean(SystemConstants.getValue("debug")) : false);
+	public boolean debug = (SystemConstants.getValue("debug") != null ? Boolean.parseBoolean(SystemConstants.getValue("debug")) : false);
 
 	// spring, java, resteasy
 	public String swaggerLang = (SystemConstants.getValue("swaggerLang") != null ? SystemConstants.getValue("swaggerLang")
@@ -176,11 +187,18 @@ public class StackGenConfigurator extends CodegenConfigurator {
 			? Boolean.parseBoolean(SystemConstants.getValue("columnsUpperCase"))
 			: false);
 
-	boolean dbGenDropTable = (SystemConstants.getValue("dbGenDropTable") != null
+	public boolean dbGenDropTable = (SystemConstants.getValue("dbGenDropTable") != null
 			? Boolean.parseBoolean(SystemConstants.getValue("dbGenDropTable"))
 			: false);
 
 	// end DML section
+
+
+	@Override
+	public CodegenConfigurator setModelPackage(String modelPackage) {
+		return super.setModelPackage(modelPackage);
+	}
+
 	String javaGenFolderName = "/gen";
 
 	public void setJavaGenFolderName(String gn) {
@@ -232,8 +250,8 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	public File JAVA_GEN_SRC = new File(getJavaGenSourceFolder());
 
-	boolean DISABLE_DATA_FIELD_ASPECT = true;
-	boolean DISABLE_SECURE_FIELD_ASPECT = false;
+	public boolean DISABLE_DATA_FIELD_ASPECT = true;
+	public boolean DISABLE_SECURE_FIELD_ASPECT = false;
 
 	public String getStackGenVersion() {
 		return (SystemConstants.getValue("StackGenVersion") != null ? SystemConstants.getValue("StackGenVersion")
@@ -317,7 +335,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	// ## Mybatis
-	int DB_TIMEOUT = 10000;
+	public int DB_TIMEOUT = 10000;
 
 	public String TIMEZONE_OFFSET = (SystemConstants.getValue("TIMEZONE_OFFSET") != null
 			? SystemConstants.getValue("TIMEZONE_OFFSET")
@@ -345,7 +363,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	public String MYBATIS_COL_ENUM_FLAG = "ENUM";
 
-	List<String> FOLDER_SKIP_LIST = new ArrayList<>(
+	public List<String> FOLDER_SKIP_LIST = new ArrayList<>(
 			Arrays.asList(getJavaGenFolderName(), "org", "swagger", "node_modules"));
 
 	public String SPRING_DELEGATE = "ApiDelegate";
@@ -355,12 +373,12 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	public String IGNITE_GEN_REST_PATH_PREFIX = "data/";
 
-	int DB_ENCRYPTED_COLUMN_MULTIPLIER = 5;
+	public int DB_ENCRYPTED_COLUMN_MULTIPLIER = 3;
 
 	public String language = "en"; // language
 	public String country = "US"; // country
 
-	static String[] RESERVED_WORD_LIST = { "ApiResponse" };
+	public static String[] RESERVED_WORD_LIST = { "ApiResponse" };
 
 	public String GENERATED_TEXT_BLOCK = "Starter StackGen 'JavaGen' Generated";
 
@@ -405,7 +423,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	static StackGenConfigurator configureFromJSON(final JSONObject config)
+	public static StackGenConfigurator configureFromJSON(final JSONObject config)
 			throws IllegalArgumentException, IllegalAccessException {
 		return configureFromJSON(config, null);
 
@@ -417,7 +435,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	static StackGenConfigurator configureFromJSON(final JSONObject config, StackGenConfigurator cfgx)
+	public static StackGenConfigurator configureFromJSON(final JSONObject config, StackGenConfigurator cfgx)
 			throws IllegalArgumentException, IllegalAccessException {
 		final String[] names = JSONObject.getNames(config);
 
@@ -491,7 +509,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		}
 	}
 
-	private void set(String fn, Object object) throws Exception {
+	public void set(String fn, Object object) throws Exception {
 		Field fx = ReflectionUtils.findField(getClass(), fn);
 		if (fx != null) {
 			fx.setAccessible(true);

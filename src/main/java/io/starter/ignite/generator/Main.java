@@ -127,7 +127,7 @@ public class Main extends Gen implements CommandLineRunner {
 
 
 	@Override
-	public void run(String... args) throws IllegalArgumentException, IllegalAccessException, NoSuchAlgorithmException {
+	public void run(String... args) throws Exception {
 		String inputSpecFile = null;
 
 		for (final String argument : args) {
@@ -206,7 +206,7 @@ public class Main extends Gen implements CommandLineRunner {
 		
 		// Clear out the gen and
 		if (config.overwriteMode) {
-			initOutputFolders();
+			initOutputFolders(config);
 		}
 		logger.debug("Generating initial Model and API Classes...");
 		// generate swqgger api clients
@@ -432,14 +432,14 @@ public class Main extends Gen implements CommandLineRunner {
 		return pluginFiles;
 	}
 
-	private void initOutputFolders() throws IOException {
-		File genDir = new File(config.getGenOutputFolder() );
-		logger.info("Initializing output folder: " + config.getGenOutputFolder()  + " exists: " + genDir.exists());
+	public static void initOutputFolders(StackGenConfigurator cfg) throws IOException {
+		File genDir = new File(cfg.getGenOutputFolder() );
+		logger.info("Initializing output folder: " + cfg.getGenOutputFolder()  + " exists: " + genDir.exists());
 		final String marker = System.currentTimeMillis() + ".zip";
 		if (genDir.exists()) {
 
 			
-			final String fx = config.getJavaGenArchivePath() + "/" + marker;
+			final String fx = cfg.getJavaGenArchivePath() + "/" + marker;
 			
 			
 			final File toF = new File(fx);
@@ -456,19 +456,19 @@ public class Main extends Gen implements CommandLineRunner {
 				zfw.zip(genDir, fx);
 			} catch (final Exception e) {
 				throw new IgniteException(
-						"Could not zip: " + config.getGenOutputFolder()  + " to: " + fx + "\n" + e.getLocalizedMessage());
+						"Could not zip: " + cfg.getGenOutputFolder()  + " to: " + fx + "\n" + e.getLocalizedMessage());
 			}
-			Properties sysp = System.getProperties();
-			final File ft = new File(sysp.getProperty("java.io.tmpdir") + "/deletedStackGenProjecct-" + marker);
-			if (!genDir.renameTo(ft)) {
-				throw new IgniteException("Could not delete: " + config.getGenOutputFolder() );
-			}
+			// Properties sysp = System.getProperties();
+			//final File ft = new File(sysp.getProperty("java.io.tmpdir") + "/deletedStackGenProjecct-" + marker);
+			//if (!genDir.renameTo(ft)) {
+			//	throw new IgniteException("Could not delete: " + cfg.getGenOutputFolder() );
+			//}
 
-			genDir = new File(config.getGenOutputFolder() );
+			genDir = new File(cfg.getGenOutputFolder() );
 			genDir.mkdirs();
 		}
 
-		final boolean outputDir = new File(config.getGenOutputFolder()  + "/src/").mkdirs();
+		final boolean outputDir = new File(cfg.getGenOutputFolder()  + "/src/").mkdirs();
 		if (!outputDir) {
 			Main.logger.error("Could not init: " + outputDir + ". Exiting.");
 		}

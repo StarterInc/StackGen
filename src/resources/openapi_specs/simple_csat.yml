@@ -26,7 +26,7 @@ definitions:
   Csat:
     type: object
     required:
-    - contentId
+    - rating
     properties:
       userId:
         type: "integer"
@@ -44,7 +44,175 @@ definitions:
         minimum: 0
         maximum: 10
     xml:
-      name: "Csat"              
+      name: "Csat"
+
+  User:
+    required:
+      - username
+      - password
+      - email
+    properties:
+      firstName:
+        description: first name of person (encrypted)
+        type: string
+        example: Karena
+        x-starter-secureField: true
+        x-starter-dataField: fieldGroup=personalDetails
+      lastName:
+        description: last name of person (encrypted)
+        type: string
+        example: Jones
+        x-starter-secureField: true
+        x-starter-dataField: fieldGroup=personalDetails
+      userName:
+        description: Your account Username
+        minLength: 2
+        maxLength: 25
+        type: string
+        example: Sparky
+        readOnly: true
+        x-starter-dataField: unique=true
+        x-starter-dataField: fieldGroup=personalDetails
+      password:
+        description: Your account Password
+        type: string
+        example: HardToGuess1980
+        minLength: 8
+        maxLength: 25
+        x-starter-dataField: hidden=true, unique=true, advanced=true, component=io.stackgen.Password
+        x-starter-secureField: true, Type=HASHED, strength=5
+      fingerprint:
+        description: Encrypted identity (Facial Recognition, Fingerprint Scanner, etc.)
+        type: string
+        example: DK$DFSJaraDD
+        readOnly: true
+        x-starter-dataField: advanced=true
+      governmentId:
+        description: SSN or a 10 digit government ID (encrypted)
+        type: string
+        example: 1112233334
+        maxLength: 30
+        minLength: 10
+        pattern: '^\d{3}-\d{2}-\d{4}$'
+        x-starter-secureField: true
+        x-starter-dataField: advanced=true
+      homePage:
+        descripton: The web page for the Account
+        type: string
+        format: url
+        example: https://www.acme-corp.com
+      email:
+        description: The main email address for the user (encrypted)
+        type: string
+        format: email
+        example: wiley.coyote@acme-corp.com
+        x-starter-secureField: true
+      social:
+        description: The username for your primary social account (if any)
+        type: string
+        format: url
+        example: https://twitter.com/StackGen
+      bio:
+        description: More in-depth information about you and your account
+        type: string
+        format: url
+        example: https://twitter.com/StackGen
+      avatar_url:
+        description: URL for user avatar image
+        type: string
+        format: url
+        example: https://img.com/mypic.png
+      organizationId:
+        type: "integer"
+        format: "int64"
+      addressId:
+        type: "integer"
+        format: "int64"
+      # Spring Security User fields
+
+      # isCredentialsNonExpired
+      credentialNonExpired:
+        description: Spring Security User field whether the user's login credentials have expired
+        type: boolean
+        default: true
+        x-starter-dataField: advanced=true, fieldGroup=accountStatus
+      # isAccountEnabled
+      accountEnabled:
+        description: Spring Security User field whether the user account is enabled
+        type: boolean
+        default: true
+        x-starter-dataField: advanced=true, fieldGroup=accountStatus
+      # isAccountNonLocked
+      accountNonLocked:
+        description: Spring Security User field whether the user account is locked
+        type: boolean
+        default: true
+        x-starter-dataField: advanced=true, fieldGroup=accountStatus
+      # isAccountNonExpired
+      accountNonExpired:
+        description: Spring Security User field whether the user account has expired
+        type: boolean
+        default: false
+        x-starter-dataField: advanced=true, fieldGroup=accountStatus
+
+      roles:
+        type: "array"
+        xml:
+          name: "role"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Role"
+
+      authorities:
+        description: Spring Security User representation of the granted authority (or <code>null</code> if the granted authority cannot be expressed as a <code>String</code> with sufficient precision).
+        type: array
+        items:
+          type: string
+        x-starter-dataField: advanced=true, fieldGroup=accountStatus
+    # photoId:
+    #   description: uploaded photo id
+    #   type: string
+    #   format: binary # causes issue with
+    xml:
+      name: "User"
+
+  Role:
+    required:
+      - name
+    properties:
+      name:
+        description: Name of the Role
+        type: string
+        example: Karena
+      type:
+        type: string
+        example: executive
+        minLength: 2
+    xml:
+      name: "Role"
+
+  Privilege:
+    required:
+      - name
+    properties:
+      name:
+        description: Name of the System Privilege
+        type: string
+        example: Read Access to Content
+      type:
+        description: Name of the System Privilege
+        type: "string"
+        description: "Privilege Type"
+        enum:
+          - "insert"
+          - "read"
+          - "write"
+          - "delete"
+          - "execute"
+          - "all"
+    xml:
+      name: "Privilege"
+
 paths:
 externalDocs:
   description: "Find out more about"

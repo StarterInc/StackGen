@@ -179,22 +179,22 @@ public class MyBatisJoin {
 				"int64",
 				sargs
 		);
-		sourceTable.setName(mt);
+		sourceTable.setName(mt.toLowerCase());
 		sourceTable.setDescription("The id in the " + myTable + " table which owns the " + joinTable + " entry.");
 		sourceTable.setAllowEmptyValue(false);
 		sourceTable.setRequired(true);
-		props.put(mt, sourceTable);
+		props.put(mt.toLowerCase(), sourceTable);
 
 		Property joinTable = PropertyBuilder.build(
 				"integer",
 				"int64",
 				sargs
 		);
-		joinTable.setName(jt);
+		joinTable.setName(jt.toLowerCase());
 		joinTable.setDescription("The id in the " + joinTable + " table which is related to the " + myTable + " entry.");
 		joinTable.setAllowEmptyValue(false);
 		joinTable.setRequired(true);
-		props.put(jt, joinTable);
+		props.put(jt.toLowerCase(), joinTable);
 
 		logger.info("Created Model for Swagger Join : " + sourceTable + ":"
 				+ joinTable);

@@ -1,9 +1,12 @@
 package io.starter.ignite.generator.swagger;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.StringProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +56,7 @@ public class StackModelRelationGenerator {
 			.getLogger(StackModelRelationGenerator.class);
 
 	public List<MyBatisJoin> generate(Swagger swagger, StackGenConfigurator config) {
-		logger.warn("DISABLED: Generating Stack Model Relationships for : "
+		logger.warn("Generating Stack Model Relationships for : "
 				+ swagger.getInfo().getDescription());
 
 		List<MyBatisJoin> refs = new ArrayList<MyBatisJoin>();
@@ -87,35 +90,50 @@ public class StackModelRelationGenerator {
 				if (pt.equals("integer")
 						&& prop.getName().toLowerCase().endsWith("_id")) {
 
+					logger.info("PROP: " + pt);
 					// TODO: handle the one-to-many ID issue
 					// MyBatisJoin j = new MyBatisJoin(field, tables);
-
+				} else if (pt.equals("array")) {
+					logger.info("PROP: " + pt);
+					createIdx(swagger, config, refs, models, mdx, (ArrayProperty) prop, field);
 				} else if (pt.equals("ref")) {
-					RefProperty rp = (RefProperty) prop;
-
-					String sr = rp.getSimpleRef();
-					String sr1 = rp.get$ref();
-					if (sr1 != null)
-						sr1 = sr1.substring(sr1.lastIndexOf("/") + 1, sr1
-								.length());
-
-					Model rpm = models.get(sr);
-					// create IDX table for array types
-					// like shared multiple resources GROUPS or ROLES
-					if (rpm != null) {
-						if (rpm.getTitle() == null) {
-							rpm.setTitle(sr1);
-						}
-						MyBatisJoin j = new MyBatisJoin(swagger, field, mdx, rpm, config);
-						// creates the *Ref XML to inject into the Main Object
-						// Mapping
-						refs.add(j);
-					}
+					createRef(swagger, config, refs, models, mdx, (RefProperty) prop, field);
 				}
 			}
 		}
 		logger.info("Done Generating Stack Model Relationships.");
 		return refs;
+
+	}
+
+	private void createRef(Swagger swagger, StackGenConfigurator config, List<MyBatisJoin> refs, Map<String, Model> models, Model mdx, RefProperty rp, String field) {
+
+	}
+
+	private void createIdx(Swagger swagger, StackGenConfigurator config, List<MyBatisJoin> refs, Map<String, Model> models, Model mdx, ArrayProperty arr, String field) {
+		if(arr.getItems() instanceof  RefProperty){
+			RefProperty rp = (RefProperty)arr.getItems();
+			String sr = rp.getSimpleRef();
+			String sr1 = rp.get$ref();
+			if (sr1 != null)
+				sr1 = sr1.substring(sr1.lastIndexOf("/") + 1, sr1
+						.length());
+
+			Model rpm = models.get(sr);
+			// create IDX table for array types
+			// like shared multiple resources GROUPS or ROLES
+			if (rpm != null) {
+				if (rpm.getTitle() == null) {
+					rpm.setTitle(sr1);
+				}
+				MyBatisJoin j = new MyBatisJoin(swagger, field, mdx, rpm, config);
+				// creates the *Ref XML to inject into the Main Object
+				// Mapping
+				refs.add(j);
+			}
+		}else if(arr.getItems() instanceof StringProperty){
+
+		}
 
 	}
 

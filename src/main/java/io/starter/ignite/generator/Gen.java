@@ -26,8 +26,11 @@ public class Gen {
 	private static final Logger logger = LoggerFactory.getLogger(Gen.class);
 	
 	
-	static StackGenConfigurator config  = new StackGenConfigurator();
-	
+	StackGenConfigurator config  = new StackGenConfigurator();
+	public void setConfig(StackGenConfigurator conf){
+		this.config = conf;
+	}
+
 	public String LINE_FEED = "\r\n";
 	public StackGenConfigurator getConfig() {
 		if(config == null) {
@@ -124,10 +127,7 @@ public class Gen {
 				}
 			}
 		}
-
-		//
 		impl.generate(packageName + "." + className, fieldList, getters, setters);
-
 		return results;
 	}
 

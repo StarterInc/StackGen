@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
+import io.starter.toolkit.StringTool;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,18 +61,16 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 	public void processOpts() {
 		super.processOpts();
 
-		// TODO: add doc templates
-		// modelDocTemplateFiles.remove("model_doc.mustache");
-		// apiDocTemplateFiles.remove("api_doc.mustache");
-
+		// add doc templates
 		apiTemplateFiles.put("ApiClient.mustache", ".java");
-		// apiTestTemplateFiles.put("api_test.mustache", ".java");
         modelDocTemplateFiles.put("model_doc.mustache", ".md");
         apiDocTemplateFiles.put("api_doc.mustache", ".md");
 
-		// TODO: add tests
+		// TODO: add model test
 		// modelTestTemplateFiles.put("modelTest.mustache", "Test.java");
-		
+
+		apiTestTemplateFiles.put("apiTest.mustache", ".java");
+
         // add lambda for mustache templates
  		additionalProperties.put("lambdaAddSecurityAnnotations", new Mustache.Lambda() {
  			@Override
@@ -104,6 +103,24 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 			@Override
 			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
 				writer.write(fragment.execute().replaceAll("\"", Matcher.quoteReplacement("\\\"")));
+			}
+		});
+		additionalProperties.put("lambdaStripAPIPackage", new Mustache.Lambda() {
+			@Override
+			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
+				writer.write(fragment.execute().replace(".api", ""));
+			}
+		});
+		additionalProperties.put("lambdaStripAPI", new Mustache.Lambda() {
+			@Override
+			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
+				writer.write(fragment.execute().replace("Api", ""));
+			}
+		});
+		additionalProperties.put("lambdaLowerCaseFirstLetter", new Mustache.Lambda() {
+			@Override
+			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
+				writer.write(StringTool.getLowerCaseFirstLetter(fragment.execute()));
 			}
 		});
 		additionalProperties.put("lambdaRemoveLineBreak", new Mustache.Lambda() {
@@ -147,7 +164,7 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 				String st = "";
 				
 				// handle hidden datafields
-				String strx = o.toString().toLowerCase();
+				String strx = o.toString(); // .toLowerCase();
 				if(strx.indexOf(",") == -1) {
 					st = extractEnumConfig(st, strx.trim());
 				}else {					
@@ -212,20 +229,24 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 	}
 
 	private String extractEnumConfig(String st, String param) {
-		StringTokenizer tx = new StringTokenizer(param, "=");
-		String nm = tx.nextToken();
-		String vxt = tx.nextToken();
-		
-		// if we cannot parse as boolean or number, wrap string in quotes
-		try{
-			Double dx = Double.parseDouble(vxt);
-		}catch(Exception t) {
-			if(!vxt.equalsIgnoreCase("true") 
-					&& !vxt.equalsIgnoreCase("false")) {
-				vxt = "\"" + vxt + "\"";	
+		try {
+			StringTokenizer tx = new StringTokenizer(param, "=");
+			String nm = tx.nextToken();
+			String vxt = tx.nextToken();
+
+			// if we cannot parse as boolean or number, wrap string in quotes
+			try {
+				Double dx = Double.parseDouble(vxt);
+			} catch (Exception t) {
+				if (!vxt.equalsIgnoreCase("true")
+						&& !vxt.equalsIgnoreCase("false")) {
+					vxt = "\"" + vxt + "\"";
+				}
 			}
+			st += nm + "=" + vxt;
+		}catch(Exception e){
+			logger.warn("Could not get value from StackGen extension: " + param + " : " + e.toString());
 		}
-		st += nm + "=" + vxt;
 		return st;
 	}
 

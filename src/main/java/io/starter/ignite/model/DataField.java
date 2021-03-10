@@ -34,7 +34,7 @@ public @interface DataField {
 	
 	public boolean advanced() default false;
 	
-	public String fieldgroup() default "";
+	public String fieldGroup() default "";
 	
 	public String component() default "";
 	

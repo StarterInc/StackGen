@@ -506,11 +506,9 @@ public class JavaGen extends Gen implements Generator {
 		return String.format(
 				"	final java.util.List<%2$s> rows =\n" + "		getSelectByMapper()\n" + "		.select(\n"
 						+ "			c -> c\n" + "		);\n" + "	\n" + "	// wrap in our %1$sService class\n"
-						+ "	java.util.List ret = new java.util.ArrayList();\n" + "	for (%2$s u : rows) {\n"
-						+ "		%1$sService ux = new %1$sService();\n" + "		ux.setDelegate(u);\n"
-						+ "		u = null; // mark for gc\n" + "		ret.add(ux);\n" + "	}\n" 
+						+ "	java.util.List ret = new java.util.ArrayList();\n"
 						+ "if(connection !=null)try{connection.close();}catch(java.sql.SQLException e) {;}\n" 
-						+ "\n" + "	return ret",
+						+ "\n" + "	return rows",
 				l, m);
 
 	}
@@ -690,9 +688,8 @@ public class JavaGen extends Gen implements Generator {
 
 		className = className.substring(dotpos + 1);
 		className += config.ADD_GEN_CLASS_NAME;
-
 		AnnotationSpec delegateAnnotation = AnnotationSpec.builder(org.springframework.stereotype.Service.class)
-				.addMember("value", "$S", getJavaVariableName(className)).build();
+				.addMember("value", "\""+StringTool.getLowerCaseFirstLetter(className)+"\"").build();
 
 		// handle edge case bug where reserved name collides with
 		// our naming convention based code here

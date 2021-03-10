@@ -166,7 +166,7 @@ public class DBGen extends Gen implements Generator {
         final String defaultval = "";
         final String charset = ""; // "'utf8'";
         // int minleng = 0;
-        //// double minVal = 0d;
+        //// double minVal = 0d;a
         // double maxVal = Double.MAX_VALUE;
         boolean isSecure = false;
         boolean isDataField = false;
@@ -229,9 +229,11 @@ public class DBGen extends Gen implements Generator {
         dml = dml.replace("${CHAR_SET}", charset);
         dml = dml.replace("${DEFAULT}", defaultval);
 
-        // TODO: implement a smarter way to handle crypto expansion
+        // TODO: implement more dynamic crypto expansion
         if (isSecure) {
             leng *= config.DB_ENCRYPTED_COLUMN_MULTIPLIER;
+            if(leng < 50)
+                leng=50;
         }
 
         // Column length too big for column 'NAME' (max = 65535);
@@ -288,6 +290,8 @@ public class DBGen extends Gen implements Generator {
     					indexList.add(idxTxt.replace("${MY_COL}",decamelize(((Field)fld).getName())));
     				}
     			}
+            } catch (ClassCastException  x) {
+                ; // normal
     		} catch (Exception  e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
@@ -313,11 +317,10 @@ public class DBGen extends Gen implements Generator {
         
         tableDML += Table.CREATE_TABLE_END_BLOCK;
 
-
-        conn = this.getConnection();
+        conn = DriverManager.getConnection(config.dbUrl + "/" + config.dbName, config.dbUser, config.dbPassword);
 
         // use database
-        conn.setSchema(config.dbName);
+        // conn.setSchema(config.dbName);
 
         final List<String> triedList = new ArrayList<>();
 
@@ -385,7 +388,7 @@ public class DBGen extends Gen implements Generator {
 
     private boolean noTableChangesRequired(String className, List<Object> fieldList, Table table) throws SQLException {
         String tableName = table.convertToDBSyntax(className);
-        conn = this.getConnection();
+        // conn = this.getConnection();
 
         List<Object> checkList = fieldList.stream()
                 .map(e -> (e.toString().contains("COMMENT") ? e.toString().substring(0, e.toString().indexOf("COMMENT"))
@@ -393,7 +396,7 @@ public class DBGen extends Gen implements Generator {
                 .collect(Collectors.toList());
 
         String checkSQL1 = "" + "SELECT * FROM " + tableName + " WHERE 0 > 1";
-        final PreparedStatement ps = conn.prepareStatement(checkSQL1);
+        final PreparedStatement ps = config.getGeneratorConnection().prepareStatement(checkSQL1);
         ps.executeQuery();
         ResultSet rs = ps.getResultSet();
         ResultSetMetaData srm = rs.getMetaData();
@@ -511,34 +514,6 @@ public class DBGen extends Gen implements Generator {
         return migrateSql;
     }
 
-    /**
-     * apply the generated DML to create the necessary IDX tables
-     *
-     * @param tl
-     * @return
-     * @throws SQLException
-     */
-    public boolean createIDXTables(List<MyBatisJoin> tl) throws SQLException {
-        if (!config.skipDbGen) {
-            for (final MyBatisJoin j : tl) {
-                final String tableName = j.myTable;
-                logger.info("Creating IDX TABLE: " + tableName);
-
-                // generate the table
-                conn = this.getConnection();
-
-                final PreparedStatement psx = conn.prepareStatement(j.getDML());
-                try {
-                    psx.execute();
-                    psx.close();
-                } catch (final Exception ex) {
-                    logger.error("Failed to createIDXTable table with DML: " + ex.toString());
-                }
-            }
-        }
-        return true;
-    }
-
     private boolean renameTable(String className, List<String> triedList, boolean addTimestamp) throws SQLException {
         Table table = new Table(config);
         if (!config.skipDbGen) {
@@ -627,12 +602,7 @@ public class DBGen extends Gen implements Generator {
             }
         }
         String ret = sb.toString();
-        if (config.columnsUpperCase) {
-            ret = ret.toUpperCase();
-        } else {
-            ret = ret.toLowerCase();
-        }
-        return ret;
+        return ret.toLowerCase();
     }
 
     private Connection getConnection() throws SQLException {

@@ -19,6 +19,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class MyBatisGen extends Gen implements Generator {
 	 * strips the package if any
 	 *
 	 */
-	static String getBaseJavaName(String n) {
+	public static String getBaseJavaName(String n) {
 		if (n.length() <= 0) {
 			return n;
 		}
@@ -146,11 +147,44 @@ public class MyBatisGen extends Gen implements Generator {
 		final MyBatisGenerator myBatisGenerator = new MyBatisGenerator(cfx, callback, warnings);
 		cfx.getContexts().get(0).getProperties().put("schemaName",
 				config.getSchemaName());
-		// final ProgressCallback cb = null;
-		myBatisGenerator.generate(null);
+
+		myBatisGenerator.generate(new Progress());
 
 		for (final String warning : warnings) {
 			MyBatisGen.logger.warn("WARNING: MyBatis Generation: " + warning);
+		}
+	}
+
+	class Progress implements ProgressCallback{
+
+		@Override
+		public void introspectionStarted(int totalTasks) {
+			logger.info("Introspecting...");
+		}
+
+		@Override
+		public void generationStarted(int totalTasks) {
+			logger.info("Generating MyBatis Model Started with: " + totalTasks + " total tasks.");
+		}
+
+		@Override
+		public void saveStarted(int totalTasks) {
+			logger.info("Save Started with "+totalTasks+" total tasks.");
+		}
+
+		@Override
+		public void startTask(String taskName) {
+			logger.info("Start task: " + taskName);
+		}
+
+		@Override
+		public void done() {
+			logger.info("Generating MyBatis Model Done.");
+		}
+
+		@Override
+		public void checkCancel() throws InterruptedException {
+
 		}
 	}
 

@@ -28,12 +28,12 @@ public @interface StackgenModelProperty {
 	/**
 	 * the minimum value of the data
 	 */
-	double minValue() default Double.MIN_VALUE;
+	double minimum() default Double.MIN_VALUE;
 
 	/**
 	 * the maximum value of the data
 	 */
-	double maxValue() default Double.MAX_VALUE;
+	double maximum() default Double.MAX_VALUE;
 
 	/**
 	 * whether to encrypt the field with @SecureField

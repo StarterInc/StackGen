@@ -260,6 +260,8 @@ public class DBGen extends Gen implements Generator {
         }
         className = className.substring(dotpos + 1);
 
+        conn = DriverManager.getConnection(config.dbUrl + "/" + config.dbName, config.dbUser, config.dbPassword);
+        config.setGeneratorConnection(conn);
         // check if we even need to apply DML
         try {
         	if (noTableChangesRequired(className, fieldList, table)) {
@@ -293,8 +295,7 @@ public class DBGen extends Gen implements Generator {
             } catch (ClassCastException  x) {
                 ; // normal
     		} catch (Exception  e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
+    			logger.error("Failed checking unique annotation: " + e.toString());
     		}
             // add the PK for auto-increment ID
             String colName = fld.toString();
@@ -316,11 +317,6 @@ public class DBGen extends Gen implements Generator {
         }
         
         tableDML += Table.CREATE_TABLE_END_BLOCK;
-
-        conn = DriverManager.getConnection(config.dbUrl + "/" + config.dbName, config.dbUser, config.dbPassword);
-
-        // use database
-        // conn.setSchema(config.dbName);
 
         final List<String> triedList = new ArrayList<>();
 

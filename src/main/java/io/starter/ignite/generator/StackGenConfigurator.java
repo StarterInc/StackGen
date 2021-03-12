@@ -364,7 +364,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	public String MYBATIS_COL_ENUM_FLAG = "ENUM";
 
 	public List<String> FOLDER_SKIP_LIST = new ArrayList<>(
-			Arrays.asList(getJavaGenFolderName(), "org", "swagger", "node_modules"));
+			Arrays.asList(getJavaGenFolderName(), "org", "swagger", "node_modules", ".DS_Store"));
 
 	public String SPRING_DELEGATE = "ApiDelegate";
 
@@ -542,6 +542,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 		CodegenConfig generator = StackGenCodegenConfigLoader.forName(getLang());
 
+		generator.getCommonTemplateDir();
 		generator.setInputSpec(getInputSpec());
 		generator.setOutputDir(getOutputDir());
 		generator.setSkipOverwrite(isSkipOverwrite());

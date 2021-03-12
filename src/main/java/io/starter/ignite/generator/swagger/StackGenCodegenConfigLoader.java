@@ -13,11 +13,18 @@ public class StackGenCodegenConfigLoader extends CodegenConfigLoader{
      */
     public static CodegenConfig forName(String name) {
     	CodegenConfig ret = null;
+
+    	try{
+    	   ret = CodegenConfigLoader.forName(name);
+        }catch(Exception e){;}
+
     	 // else try to load directly
-        try {
-            ret = (CodegenConfig) Class.forName("io.starter.ignite.generator.swagger.languages.StackGenSpringCodegen").newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Can't load config class with name ".concat(name) , e);
+        if(ret == null) {
+            try {
+                ret = (CodegenConfig) Class.forName("io.starter.ignite.generator.swagger.languages.StackGenSpringCodegen").getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException("Can't load config class with name ".concat(name), e);
+            }
         }
         return ret;
     }

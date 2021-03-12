@@ -2,6 +2,18 @@ package io.starter.ignite.util;
 
 public interface SystemConstants {
 
+	public static String getValueOrDefault(String v, String defaultVal) {
+		String ret = System.getProperty(v); //
+		if(ret != null) {
+			return ret;
+		}
+		ret = System.getenv(v);
+		if(ret != null) {
+			return ret;
+		}
+		return defaultVal;
+	}
+
 	public static String getValue(String v) {
 		String ret = System.getProperty(v); //
 		if(ret != null) {

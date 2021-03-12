@@ -59,8 +59,11 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
     
 	@Override
 	public void processOpts() {
-		super.processOpts();
 
+		// fix template dir to match our SG template project paths
+		super.templateDir = super.templateDir + "/src/main/" + super.library;
+
+		super.processOpts();
 		// add doc templates
 		apiTemplateFiles.put("ApiClient.mustache", ".java");
         modelDocTemplateFiles.put("model_doc.mustache", ".md");

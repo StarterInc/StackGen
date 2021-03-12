@@ -437,11 +437,7 @@ public class Main extends Gen implements CommandLineRunner {
 		logger.info("Initializing output folder: " + cfg.getGenOutputFolder()  + " exists: " + genDir.exists());
 		final String marker = System.currentTimeMillis() + ".zip";
 		if (genDir.exists()) {
-
-			
 			final String fx = cfg.getJavaGenArchivePath() + "/" + marker;
-			
-			
 			final File toF = new File(fx);
 			if (!toF.exists()) {
 				toF.mkdirs();
@@ -450,7 +446,6 @@ public class Main extends Gen implements CommandLineRunner {
 					throw new IgniteException("Could not create zip file: " + fx);
 				}
 			}
-
 			final ZipFileWriter zfw = new ZipFileWriter();
 			try {
 				zfw.zip(genDir, fx);
@@ -458,12 +453,10 @@ public class Main extends Gen implements CommandLineRunner {
 				throw new IgniteException(
 						"Could not zip: " + cfg.getGenOutputFolder()  + " to: " + fx + "\n" + e.getLocalizedMessage());
 			}
-			// Properties sysp = System.getProperties();
-			//final File ft = new File(sysp.getProperty("java.io.tmpdir") + "/deletedStackGenProjecct-" + marker);
-			//if (!genDir.renameTo(ft)) {
-			//	throw new IgniteException("Could not delete: " + cfg.getGenOutputFolder() );
-			//}
-
+			final File ft = new File(System.getProperty("java.io.tmpdir") + "/deletedStackGenProjecct-" + marker);
+			if (!genDir.renameTo(ft)) {
+				throw new IgniteException("Could not delete: " + cfg.getGenOutputFolder() );
+			}
 			genDir = new File(cfg.getGenOutputFolder() );
 			genDir.mkdirs();
 		}

@@ -56,7 +56,7 @@ public class StackModelRelationGenerator {
 			.getLogger(StackModelRelationGenerator.class);
 
 	public List<MyBatisJoin> generate(Swagger swagger, StackGenConfigurator config) {
-		logger.warn("Generating Stack Model Relationships for : "
+		logger.info("Generating Stack Model Relationships for : "
 				+ swagger.getInfo().getDescription());
 
 		List<MyBatisJoin> refs = new ArrayList<MyBatisJoin>();
@@ -90,11 +90,11 @@ public class StackModelRelationGenerator {
 				if (pt.equals("integer")
 						&& prop.getName().toLowerCase().endsWith("_id")) {
 
-					logger.info("PROP: " + pt);
+					logger.info("Found PROP: " + pt);
 					// TODO: handle the one-to-many ID issue
 					// MyBatisJoin j = new MyBatisJoin(field, tables);
 				} else if (pt.equals("array")) {
-					logger.info("PROP: " + pt);
+					logger.info("Found PROP: " + pt);
 					createIdx(swagger, config, refs, models, mdx, (ArrayProperty) prop, field);
 				} else if (pt.equals("ref")) {
 					createRef(swagger, config, refs, models, mdx, (RefProperty) prop, field);

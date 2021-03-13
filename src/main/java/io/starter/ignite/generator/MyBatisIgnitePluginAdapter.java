@@ -206,11 +206,9 @@ public class MyBatisIgnitePluginAdapter extends PluginAdapter {
 
 	@Override
 	public boolean validate(List<String> warnings) {
-		logger.info("MyBatis Warnings: ");
 		for (final String w : warnings) {
 			logger.warn(w);
 		}
-		logger.warn("End MyBatis Warnings");
 		return true;
 	}
 }

@@ -136,9 +136,9 @@ public class SwaggerGen extends Gen {
 	 * @param configurator
 	 */
 	private StackGenConfigurator getConfig(String spec) {		
-		if(spec.startsWith("/var/")){
+		if(spec.startsWith("/var/") || spec.startsWith("/tmp/")){
 			; // allow temp files
-		}else if (!spec.contains(StackGenConfigurator.getSpecLocation())) {
+		} else if (!spec.contains(StackGenConfigurator.getSpecLocation())) {
 			spec = StackGenConfigurator.getSpecLocation() + spec;
 		}
 		if(config == null) {

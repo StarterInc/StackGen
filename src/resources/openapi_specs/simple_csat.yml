@@ -77,6 +77,7 @@ definitions:
         description: Your account Password
         type: string
         example: HardToGuess1980
+        format: password
         minLength: 8
         maxLength: 25
         x-starter-dataField: hidden=true, unique=true, advanced=true, component=io.stackgen.Password
@@ -105,20 +106,22 @@ definitions:
         description: The main email address for the user (encrypted)
         type: string
         format: email
+        uniqueItems: true
         example: wiley.coyote@acme-corp.com
         x-starter-secureField: true
+        x-starter-dataField: unique=true
       social:
-        description: The username for your primary social account (if any)
+        description: The URL to your primary social account (if any)
         type: string
         format: url
         example: https://twitter.com/StackGen
       bio:
-        description: More in-depth information about you and your account
+        description: The URL to ore in-depth information about you and your account
         type: string
         format: url
         example: https://twitter.com/StackGen
       avatar_url:
-        description: URL for user avatar image
+        description: The URL for user avatar image
         type: string
         format: url
         example: https://img.com/mypic.png

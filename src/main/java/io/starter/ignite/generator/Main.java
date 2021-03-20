@@ -268,8 +268,10 @@ public class Main extends Gen implements CommandLineRunner {
 	private void preFlight(StackGenConfigurator cfg) {
 		this.config = cfg;
 
-		System.out.println(ASCIIArtPrinter.print());
-		System.out.println();
+		// System.out.println(ASCIIArtPrinter.print());
+		// System.out.println();
+
+		logger.info(ASCIIArtPrinter.print());
 
 		String artifactId = System.getProperty("artifactId");
 		if(artifactId != null) {
@@ -307,6 +309,7 @@ public class Main extends Gen implements CommandLineRunner {
 
 		// handle file-based Schemas
 		if (inputSpecFile != null && !inputSpecFile.isEmpty()) {
+
 			// append the input spec path if we aren't able to use default
 			if (!new File(inputSpecFile).exists()) {
 				inputSpecFile = StackGenConfigurator.getSpecLocation() + inputSpecFile;
@@ -433,11 +436,16 @@ public class Main extends Gen implements CommandLineRunner {
 	}
 
 	public static void initOutputFolders(StackGenConfigurator cfg) throws IOException {
-		File genDir = new File(cfg.getGenOutputFolder() );
-		logger.info("Initializing output folder: " + cfg.getGenOutputFolder()  + " exists: " + genDir.exists());
+		File genDir = new File(cfg.getGenOutputFolder());
+		logger.info("Initializing output folder: " + cfg.getGenOutputFolder() + " exists: " + genDir.exists());
+		archiveAndInitFolder(genDir, cfg.getJavaGenArchivePath() );
+	}
+
+	public static boolean archiveAndInitFolder(File genDir, String archivePath) throws IOException {
 		final String marker = System.currentTimeMillis() + ".zip";
+		File newGenDir = null;
 		if (genDir.exists()) {
-			final String fx = cfg.getJavaGenArchivePath() + "/" + marker;
+			final String fx = archivePath + "/" + marker;
 			final File toF = new File(fx);
 			if (!toF.exists()) {
 				toF.mkdirs();
@@ -451,19 +459,26 @@ public class Main extends Gen implements CommandLineRunner {
 				zfw.zip(genDir, fx);
 			} catch (final Exception e) {
 				throw new IgniteException(
-						"Could not zip: " + cfg.getGenOutputFolder()  + " to: " + fx + "\n" + e.getLocalizedMessage());
+						"Could not zip: " + genDir.getPath()  + " to: " + fx + "\n" + e.getLocalizedMessage());
 			}
-			final File ft = new File(System.getProperty("java.io.tmpdir") + "/deletedStackGenProjecct-" + marker);
+			final File ft = new File(System.getProperty("java.io.tmpdir") + "/archived-" + marker);
+			newGenDir = new File(genDir.getPath() );
 			if (!genDir.renameTo(ft)) {
-				throw new IgniteException("Could not delete: " + cfg.getGenOutputFolder() );
+				FileUtil.deleteContents(genDir);
+				genDir.delete();
+				// throw new IgniteException("Could not rename: " + cfg.getGenOutputFolder() + " to: " + ft.getPath());
 			}
-			genDir = new File(cfg.getGenOutputFolder() );
-			genDir.mkdirs();
+			//
+			newGenDir.mkdirs();
 		}
-
-		final boolean outputDir = new File(cfg.getGenOutputFolder()  + "/src/").mkdirs();
+		if(newGenDir == null)
+			return false;
+		final boolean outputDir = new File(newGenDir.getPath()  + "/src/").mkdirs();
 		if (!outputDir) {
-			Main.logger.error("Could not init: " + outputDir + ". Exiting.");
+			Main.logger.error("Could not make directory: " + newGenDir.getPath() );
+			return false;
+		}else{
+			return true;
 		}
 	}
 

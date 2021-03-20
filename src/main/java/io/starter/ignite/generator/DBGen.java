@@ -128,7 +128,20 @@ public class DBGen extends Gen implements Generator {
         } else if (colName.equalsIgnoreCase("MODIFIED_DATE")) {
             colTypeName = "Timestamp.modifiedDate";
         }
-
+        try {
+            Boolean unique = (Boolean)IgniteUtils.getAnnotatedValue((Field)f, "unique", DataField.class);
+            if(unique!=null && unique) {
+                // add the unique constraing
+                if(unique) {
+                    String idxTxt = Table.myMap.get("UNIQUE_INDEX_TEMPLATE");
+                    indexList.add(idxTxt.replace("${MY_COL}",colName));
+                }
+            }
+        } catch (ClassCastException  x) {
+            ; // normal
+        } catch (Exception  e) {
+            logger.error("Failed checking unique annotation: " + e.toString());
+        }
         String dml = Table.myMap.get(colTypeName);
 
         if (colTypeName.contains("Enum")) {
@@ -253,6 +266,7 @@ public class DBGen extends Gen implements Generator {
     public synchronized void generate(String className, List<Object> fieldList, List<MethodSpec> getters,
                                       List<MethodSpec> setters) throws Exception {
         // String packageName = null;
+
         Table table = new Table(config);
         final int dotpos = className.lastIndexOf(".");
         if ((dotpos < 0) || (dotpos >= className.length())) {
@@ -264,7 +278,8 @@ public class DBGen extends Gen implements Generator {
         config.setGeneratorConnection(conn);
         // check if we even need to apply DML
         try {
-        	if (noTableChangesRequired(className, fieldList, table)) {
+            logger.warn("TEMPORARILY UPDATING ALL TABLES");
+        	if (false){ // noTableChangesRequired(className, fieldList, table)) {
         		return;
         	}
         }catch(Exception e) {
@@ -275,28 +290,18 @@ public class DBGen extends Gen implements Generator {
         
         // collect the COLUMNs and add to Table then generate
         String tableDML = table.generateTableBeginningDML(className);
-
         boolean isEmpty = true;
         String extraColumnDML = "";
+
+        // reorder the ID field to be first column per convention
+        Object idxCol = fieldList.get(fieldList.size()-2);
+        fieldList.remove(idxCol);
+        fieldList.add(0, idxCol);
 
         for (Object fld : fieldList) {
             isEmpty = false;
             tableDML += "	" + fld.toString();
             
-            try {
-    			Boolean unique = (Boolean)IgniteUtils.getAnnotatedValue((Field)fld, "unique", DataField.class);
-    			if(unique!=null && unique) {
-    				// add the unique constraing
-    				if(unique) {
-    					String idxTxt = Table.myMap.get("UNIQUE_INDEX_TEMPLATE");
-    					indexList.add(idxTxt.replace("${MY_COL}",decamelize(((Field)fld).getName())));
-    				}
-    			}
-            } catch (ClassCastException  x) {
-                ; // normal
-    		} catch (Exception  e) {
-    			logger.error("Failed checking unique annotation: " + e.toString());
-    		}
             // add the PK for auto-increment ID
             String colName = fld.toString();
             colName = colName.substring(0, colName.indexOf(" "));
@@ -315,7 +320,13 @@ public class DBGen extends Gen implements Generator {
         } else {
             return;
         }
-        
+
+        // handle unique indexes
+        for(Object o: indexList){
+            tableDML += o.toString();
+        }
+        indexList.clear();
+
         tableDML += Table.CREATE_TABLE_END_BLOCK;
 
         final List<String> triedList = new ArrayList<>();

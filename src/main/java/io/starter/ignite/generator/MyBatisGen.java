@@ -151,7 +151,7 @@ public class MyBatisGen extends Gen implements Generator {
 		myBatisGenerator.generate(new Progress());
 
 		for (final String warning : warnings) {
-			MyBatisGen.logger.warn("WARNING: MyBatis Generation: " + warning);
+			MyBatisGen.logger.warn("MyBatis Generation: " + warning);
 		}
 	}
 
@@ -159,27 +159,27 @@ public class MyBatisGen extends Gen implements Generator {
 
 		@Override
 		public void introspectionStarted(int totalTasks) {
-			logger.info("Introspecting...");
+			logger.trace("Introspecting...");
 		}
 
 		@Override
 		public void generationStarted(int totalTasks) {
-			logger.info("Generating MyBatis Model Started with: " + totalTasks + " total tasks.");
+			logger.debug("Generating MyBatis Model Started with: " + totalTasks + " total tasks.");
 		}
 
 		@Override
 		public void saveStarted(int totalTasks) {
-			logger.info("Save Started with "+totalTasks+" total tasks.");
+			logger.trace("Save Started with "+totalTasks+" total tasks.");
 		}
 
 		@Override
 		public void startTask(String taskName) {
-			logger.info("Start task: " + taskName);
+			logger.trace("Start task: " + taskName);
 		}
 
 		@Override
 		public void done() {
-			logger.info("Generating MyBatis Model Done.");
+			logger.debug("Generating MyBatis Model Done.");
 		}
 
 		@Override

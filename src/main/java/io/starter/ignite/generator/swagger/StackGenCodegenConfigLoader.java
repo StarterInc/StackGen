@@ -26,6 +26,6 @@ public class StackGenCodegenConfigLoader extends CodegenConfigLoader{
                 throw new RuntimeException("Can't load config class with name ".concat(name), e);
             }
         }
-        return ret;
+        return ret;     
     }
 }

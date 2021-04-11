@@ -195,7 +195,7 @@ public class IgniteGenerator extends DefaultGenerator {
 			}
 		}
 		if (priorPaths != null) {
-			logger.warn("FOUND existing endpoint paths. NOT Generating endpoints for: ");
+			logger.warn("Found existing endpoint paths in Schema. NOT Generating endpoints for: ");
 			 for (String f : priorPaths.keySet()) {
 				
 				 // TODO: define handling of existing paths 
@@ -520,13 +520,16 @@ public class IgniteGenerator extends DefaultGenerator {
         final String templateDir = cfg.getTemplateDir();
         if (StringUtils.isNotEmpty(library) && StringUtils.isNotEmpty(templateDir)) {
             //look for the file in the library subfolder of the supplied template
-        	
-        	
-            final String libTemplateFile = templateDir + "/src/main/java/" + library + "/" + templateFile;  // buildLibraryFilePath(config.templateDir(), library, templateFile);
+			final String libTemplateFile = templateDir + "/libraries/" + library + "/" + templateFile;  // buildLibraryFilePath(config.templateDir(), library, templateFile);
             if (new File(libTemplateFile).exists()) {
                 return libTemplateFile;
             }
         }
+		//check the supplied template main folder for the file
+		final String template = templateDir + File.separator + templateFile;
+		if (new File(template).exists()) {
+			return template;
+		}
         // fallback to default handling
 		return super.getFullTemplateFile(config, templateFile);
     }

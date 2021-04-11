@@ -9,8 +9,9 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.bouncycastle.util.Arrays;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,8 +96,7 @@ public class SecureEncrypter implements SystemConstants {
 	 * @return
 	 */
 	private static String secureHash(String e) {
-		Sha256Hash sha256Hash = new Sha256Hash(e);
-		return sha256Hash.toHex();
+		return DigestUtils.sha256Hex(e);
 	}
 
 	/**

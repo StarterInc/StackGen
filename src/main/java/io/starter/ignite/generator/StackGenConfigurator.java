@@ -35,7 +35,7 @@ import io.swagger.parser.SwaggerParser;
 
 /**
  * portable sg configs
- * 
+ *
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
@@ -285,7 +285,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	public String getArtifactId() {
 		if(super.getArtifactId() != null)
 			return super.getArtifactId();
-		
+
 		super.setArtifactId(SystemConstants.getValue("artifactId"));
 		return super.getArtifactId();
 	}
@@ -388,8 +388,6 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	private String releaseNote;
 
-	private String templateDir;
-
 	private String auth;
 
 	// public String rootFolder;
@@ -408,16 +406,9 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		return true;
 	}
 
-	@Override
-	public CodegenConfigurator setTemplateDir(String templateDir) {
-		this.templateDir = templateDir;
-		super.setTemplateDir(templateDir);
-		return this;
-	}
-
 	/**
 	 * utility method for setting config values from a JSON object
-	 * 
+	 *
 	 * @param config2
 	 *
 	 * @throws IllegalAccessException
@@ -541,7 +532,9 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	public ClientOptInput toClientOptInput() {
 
 		CodegenConfig generator = StackGenCodegenConfigLoader.forName(getLang());
-
+		if(getTemplateDir() ==  null) {
+			setTemplateDir(SystemConstants.getValueOrDefault("templateDir", "java-spring" ));
+		}
 		generator.getCommonTemplateDir();
 		generator.setInputSpec(getInputSpec());
 		generator.setOutputDir(getOutputDir());
@@ -560,7 +553,6 @@ public class StackGenConfigurator extends CodegenConfigurator {
         checkAndSetAdditionalProperty(this.getGroupId(), CodegenConstants.GROUP_ID);
 		checkAndSetAdditionalProperty(this.getArtifactId(), CodegenConstants.ARTIFACT_ID);
 		checkAndSetAdditionalProperty(this.getArtifactVersion(), CodegenConstants.ARTIFACT_VERSION);
-		checkAndSetAdditionalProperty(this.templateDir, CodegenConstants.TEMPLATE_DIR);
         checkAndSetAdditionalProperty(this.getModelNamePrefix(), CodegenConstants.MODEL_NAME_PREFIX);
         checkAndSetAdditionalProperty(this.getModelNameSuffix(), CodegenConstants.MODEL_NAME_SUFFIX);
 		checkAndSetAdditionalProperty(gitUserId, CodegenConstants.GIT_USER_ID);
@@ -568,7 +560,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		checkAndSetAdditionalProperty(this.releaseNote, CodegenConstants.RELEASE_NOTE);
 
 		// debugParser
-		
+
 		handleDynamicProperties(generator);
 
 		if (isNotEmpty(this.swaggerLib)) {
@@ -584,7 +576,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 		Swagger swagger = new SwaggerParser().read(getInputSpec(), authorizationValues, true);
 		if(swagger != null) {
 			input.opts(new ClientOpts()).swagger(swagger);
-	
+
 			return input;
 		}else {
 			throw new SwaggerException("Could not parse: " + this.getInputSpec());

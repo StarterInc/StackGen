@@ -27,7 +27,7 @@ public class DataFieldAspect {
 
 	private static final boolean DISABLE_DATA_FIELD_ASPECT = true;
 
-	@Around(FIELD_GET)
+	// @Around(FIELD_GET)
 	public Object getDataField(ProceedingJoinPoint pjp) throws Throwable {
 
 		if (DISABLE_DATA_FIELD_ASPECT) {
@@ -54,7 +54,7 @@ public class DataFieldAspect {
 		return DataPersister.read(String.valueOf(persistedObject));
 	}
 
-	@Around(FIELD_SET)
+	// @Around(FIELD_SET)
 	public Object setDataField(ProceedingJoinPoint pjp) throws Throwable {
 
 		if (DISABLE_DATA_FIELD_ASPECT) {

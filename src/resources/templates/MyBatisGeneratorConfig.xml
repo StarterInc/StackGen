@@ -39,7 +39,7 @@
 		</javaClientGenerator>
 
 		<!-- StackGen Tables -->
-		<table schema="${artifactId}" tableName="PLACEHOLDER_NODE"
+		<table schema="${dbName}" tableName="PLACEHOLDER_NODE"
 			modelType="hierarchical" />
 		
 	</context>

@@ -15,7 +15,8 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -29,7 +30,8 @@ import java.util.Optional;
 {{>generatedAnnotation}}
 
 @Configuration
-@PropertySources({ @PropertySource("classpath:application.properties") })
+@Order(Ordered.LOWEST_PRECEDENCE)
+// @PropertySources({ @PropertySource("classpath:application.properties") })
 public class SwaggerDocumentationConfig extends WebSecurityConfigurerAdapter {
 
 	private final String			adminContextPath	= "";

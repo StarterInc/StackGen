@@ -22,8 +22,8 @@ public interface SystemConstants {
 		return  System.getenv(v);
 	}
 	
-	int IGNITE_MAJOR_VERSION = 1;
-	int IGNITE_MINOR_VERSION = 1;
+	int IGNITE_MAJOR_VERSION = 0;
+	float IGNITE_MINOR_VERSION = 9.31f;
 
 	String rootFolder = getValue("rootFolder") != null ? getValue("rootFolder")
 			: getValue("user.dir");

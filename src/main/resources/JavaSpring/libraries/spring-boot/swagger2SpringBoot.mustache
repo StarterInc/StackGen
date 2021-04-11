@@ -8,14 +8,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Bean;
-
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import io.starter.ignite.security.dao.ConnectionFactory;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
 @ComponentScan(basePackages = { "{{basePackage}}", "{{apiPackage}}" , "{{modelPackage}}", "{{configPackage}}"})
-public class Swagger2SpringBoot implements CommandLineRunner {
+public class Swagger2SpringBoot  extends SpringBootServletInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {

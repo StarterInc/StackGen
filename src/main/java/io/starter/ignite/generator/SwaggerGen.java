@@ -126,7 +126,7 @@ public class SwaggerGen extends Gen {
 		if(config==null) {
 			throw new RuntimeException("SwaggerGen config cannot be null after init");
 		}
-		logger.info("Initializing StackGen Generation:" + config.getArtifactId() + " : " + config.getSchemaName());
+		logger.debug("Initializing Generator for: [ " + config.getArtifactId() + ".v" + config.getArtifactVersion() + " ]");
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class SwaggerGen extends Gen {
 	 * 
 	 * @see addSwagger(SwaggerGen x)
 	 */
-	ClientOptInput mergePluginSwaggers() {
+	public ClientOptInput mergePluginSwaggers() {
 		try {
 			final ClientOptInput clientOptInput = config.toClientOptInput();
 

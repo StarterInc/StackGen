@@ -43,7 +43,8 @@ public class DBGen extends Gen implements Generator {
      * given a Class, iterate the heriarchy and create a set of DB tables
      *
      */
-    public static void createTableFromClass(Class<?> c, DBGen gen) throws Exception {
+    public void createTableFromClass(Class<?> c, DBGen gen) throws Exception {
+        indexList.clear();
         final Map<String, Object> classesToGenerate = gen.processClasses(c, null, gen);
         if (classesToGenerate == null) {
             throw new RuntimeException("DBGen did not generate any classes.");
@@ -278,8 +279,8 @@ public class DBGen extends Gen implements Generator {
         config.setGeneratorConnection(conn);
         // check if we even need to apply DML
         try {
-            logger.warn("TEMPORARILY UPDATING ALL TABLES");
-        	if (false){ // noTableChangesRequired(className, fieldList, table)) {
+        	if (noTableChangesRequired(className, fieldList, table)) {
+                logger.info("No Changes to: " + className + " table made.");
         		return;
         	}
         }catch(Exception e) {
@@ -294,7 +295,7 @@ public class DBGen extends Gen implements Generator {
         String extraColumnDML = "";
 
         // reorder the ID field to be first column per convention
-        Object idxCol = fieldList.get(fieldList.size()-2);
+        Object idxCol = fieldList.get(fieldList.size()-6);
         fieldList.remove(idxCol);
         fieldList.add(0, idxCol);
 
@@ -578,7 +579,7 @@ public class DBGen extends Gen implements Generator {
                 // TODO: fails in web runner
                 final Class<?> loadedClass = classLoader.loadClass(cn);
 
-                DBGen.createTableFromClass(loadedClass, gen);
+                gen.createTableFromClass(loadedClass, gen);
             } catch (final Exception e) {
                 logger.error("Could not create Table for: " + mf.getName() + " :" + e.toString());
             }

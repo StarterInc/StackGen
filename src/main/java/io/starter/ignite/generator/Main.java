@@ -248,7 +248,7 @@ public class Main extends Gen implements CommandLineRunner {
 		jg.compile(config.getModelPackageDir());
 		
 		// final compile
-		logger.debug("Final compile of all java classes...");
+		logger.debug("Final compile of all classes...");
 		jg.compile(config.getPackageDir());
 
 		// copy misc files into gen project
@@ -261,17 +261,14 @@ public class Main extends Gen implements CommandLineRunner {
 			MavenBuilder.build();
 		}
 
-		logger.debug("StackGen Back End Generation Complete.");
+		logger.debug("StackGen BackEnd Generation Complete.");
 
 	}
 
 	private void preFlight(StackGenConfigurator cfg) {
 		this.config = cfg;
 
-		// System.out.println(ASCIIArtPrinter.print());
-		// System.out.println();
-
-		logger.info(ASCIIArtPrinter.print());
+		logger.debug(ASCIIArtPrinter.print());
 
 		String artifactId = System.getProperty("artifactId");
 		if(artifactId != null) {

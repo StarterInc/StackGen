@@ -24,12 +24,16 @@ public class ASCIIArtPrinter {
 		System.out.print(ASCIIArtPrinter.print());
 	}
 
-	public static String print() {
+	public static String print(){
+		return printLines(lines);
+	}
+
+	public static String printLines(String[] lin) {
 		StringBuffer ret = new StringBuffer();
 
 		ret.append(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
 		
-		for(String ln : lines) {
+		for(String ln : lin) {
 			ret.append("\r\n");
 			ret.append(ln);
 		}

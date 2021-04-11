@@ -21,6 +21,13 @@ public @interface StackgenModelProperty {
 	int minLength() default 0;
 
 	/**
+	 * the format to apply to the presentation
+	 * or conformance of the data (ie: "json" or "password")
+	 *
+	 */
+	String format() default "";
+
+	/**
 	 * the maximum size of the data
 	 */
 	int maxLength() default 256;

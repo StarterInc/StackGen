@@ -32,14 +32,14 @@ public class IgniteUtils {
 			for (java.lang.reflect.Field field : delegate.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 				try {
-					if(!field.getName().equals("delegate")) {
+					if(!field.getName().equals("delegate") && field.get(delegate) != null) {
 						field.set(clone, field.get(delegate));
 					}
 				} catch (Exception e) {
 					; // ok
 				}
 			}
-			return clone;
+			return delegate;
 		} catch (Exception e) {
 			return null;
 		}

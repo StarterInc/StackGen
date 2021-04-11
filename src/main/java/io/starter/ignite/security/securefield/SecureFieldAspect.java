@@ -71,6 +71,8 @@ public class SecureFieldAspect {
 		// do not decrypt nulls
 		if (encryptedObject == null) {
 			return null;
+		} else if(encryptedObject.toString().equals("")) {
+			return pjp.proceed(pjp.getArgs());
 		}
 
 		final SecureField sf = secureField.getAnnotation(SecureField.class);
@@ -161,10 +163,10 @@ public class SecureFieldAspect {
 				if (SecureFieldAspect.BCRYPT_PATTERN.matcher(clearTextValue).matches()) {
 					// clearTextValue is an encoded bcrypt value -- do not double encrypt.
 					if (!clearTextValue.equals(currentStringValue)) {
-						SecureFieldAspect.logger.error("WRITE FAILURE: value for: " + secureField.getName()
-								+ " not changed on: " + targetObject.getClass().getName()
-								+ ". Are you setting a BCrypt value on a " + SecureField.Type.SYMMETRIC
-								+ " SecureField. Cannot overwrite BCrypt value with probably BCrypt value.");
+						SecureFieldAspect.logger.error("Skipping Encryption: value for: " + secureField.getName()
+								+ " will not be changed for: " + targetObject.getClass().getName()
+								+ ". Attempting to set a BCrypt value on a " + SecureField.Type.SYMMETRIC
+								+ " SecureField which is already BCrypted. Only write cleartext to this field. Cannot overwrite BCrypt value with probably BCrypt value.");
 					}
 				} else {
 					// handle one-way secure hash encryption
@@ -183,7 +185,7 @@ public class SecureFieldAspect {
 			} else {
 				secureField.setAccessible(access);
 				SecureFieldAspect.logger
-						.warn("SecureFieldAspect only currently supports encrypting Text values: " + pjp);
+						.warn("SecureFieldAspect encryption of " + secureField.getType() + " fields is NOT supported. SecureFieldAspect currently supports encrypting STRING values: " + pjp);
 				return pjp.proceed();
 			}
 

@@ -1,6 +1,7 @@
 # Starter StackGen&trade; Code Generator
 
 ![StackGen CI](https://github.com/StarterInc/StackGen/workflows/StackGen%20CI/badge.svg?branch=master)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FStarterInc%2FStackGen.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FStarterInc%2FStackGen?ref=badge_shield)
 
 ## Generate Apps and Stacks from OpenAPI/Swagger spec files -- CodeGen for Developers
 
@@ -190,3 +191,7 @@ through a RESTful api/service or both, depending upon your application architect
 #### Resources
 
 The benefits of declaring your Object and API definitions in a human-readable text file format, and regenerating as much code as possible when changes are made, is even more compelling as application complexity increases.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FStarterInc%2FStackGen.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FStarterInc%2FStackGen?ref=badge_large)

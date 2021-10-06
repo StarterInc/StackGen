@@ -110,7 +110,7 @@ public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourc
 		cpds.setMaxIdleTime(1800);
 		cpds.setIdleConnectionTestPeriod(300);
 		cpds.setTestConnectionOnCheckout(true);
-		cpds.setMaxPoolSize(100);
+		cpds.setMaxPoolSize(30);
 		return cpds;
 	}
 

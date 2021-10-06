@@ -1,7 +1,7 @@
 package io.starter.ignite.generator.swagger;
 
-import io.swagger.codegen.CodegenConfig;
-import io.swagger.codegen.CodegenConfigLoader;
+import io.swagger.codegen.v3.CodegenConfig;
+import io.swagger.codegen.v3.CodegenConfigLoader;
 
 public class StackGenCodegenConfigLoader extends CodegenConfigLoader{
     /**

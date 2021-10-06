@@ -3,13 +3,10 @@ package io.starter.ignite.generator.swagger;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import io.starter.ignite.generator.annotations.StackgenModelProperty;
+import io.swagger.models.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,22 +18,13 @@ import io.starter.ignite.generator.DBGen;
 import io.starter.ignite.generator.IgniteException;
 import io.starter.ignite.generator.MyBatisJoin;
 import io.starter.ignite.generator.SwaggerGen;
-import io.swagger.codegen.ClientOptInput;
-import io.swagger.codegen.CodegenConfig;
-import io.swagger.codegen.DefaultGenerator;
-import io.swagger.codegen.Generator;
-import io.swagger.codegen.InlineModelResolver;
-import io.swagger.codegen.ignore.CodegenIgnoreProcessor;
-import io.swagger.models.ArrayModel;
-import io.swagger.models.ComposedModel;
-import io.swagger.models.ExternalDocs;
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.Operation;
-import io.swagger.models.Path;
-import io.swagger.models.RefModel;
-import io.swagger.models.Response;
-import io.swagger.models.Swagger;
+
+import io.swagger.codegen.v3.ClientOptInput;
+import io.swagger.codegen.v3.CodegenConfig;
+import io.swagger.codegen.v3.DefaultGenerator;
+import io.swagger.codegen.v3.Generator;
+import io.swagger.codegen.v3.ignore.CodegenIgnoreProcessor;
+
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
@@ -150,13 +138,16 @@ public class IgniteGenerator extends DefaultGenerator {
 	@VisibleForTesting
 	public void enhanceSwagger() {
 		
-		this.swagger.setBasePath("v1");
+		// this.swagger.setBasePath("v1");
 		Set<String> keys;
 		try {
 			keys = this.swagger.getDefinitions().keySet();
 		}catch(NullPointerException e) {
 			throw new IgniteException("Schema: " + this.swagger.toString() + " malformed definitions section");
 		}
+
+		fixReservedWords(this.swagger.getDefinitions());
+
 		Map<String, Path> priorPaths = this.swagger.getPaths();
 		this.swagger.setPaths(new HashMap<String, Path>());
 		for (String k : keys) {
@@ -170,8 +161,7 @@ public class IgniteGenerator extends DefaultGenerator {
 				// String path = this.swagger.getBasePath() + "/" + k;
 				String path = k;
 
-				// Path existing =
-				// this.swagger.getPaths().get(path.toLowerCase());
+				Path existing = this.swagger.getPaths().get(path.toLowerCase());
 
 				// IGNITE_GEN_REST_PATH_PREFIX
 				if (StackGenConfigurator.checkReservedWord(k)) { // handle reserved
@@ -197,13 +187,42 @@ public class IgniteGenerator extends DefaultGenerator {
 		if (priorPaths != null) {
 			logger.warn("Found existing endpoint paths in Schema. NOT Generating endpoints for: ");
 			 for (String f : priorPaths.keySet()) {
-				
-				 // TODO: define handling of existing paths 
-				 //Path px = priorPaths.get(f);
-				 //this.swagger.getPaths().put(f, px);
+				// TODO: fix handling of existing paths
+				 // Path px = priorPaths.get(f);
+				 // this.swagger.getPaths().put(f, px);
+
 				 logger.warn("Path: " + f);
 			 }
 		}
+	}
+
+	static List<String> reservedList = new ArrayList() {
+		{
+			add("key");
+			add("from");
+			add("index");
+		}
+	};
+
+	private void fixReservedWords(Map<String, Model> definitions) {
+		// iterate models and rename reserved words
+		for(Model model : definitions.values()){
+			if(model.getProperties() != null) {
+
+				// modifying map so avoid concurrent exception
+				Collection<Property> vx = new ArrayList<Property>();
+				vx.addAll(model.getProperties().values());
+
+				for (Property f : vx) {
+					if (reservedList.contains(f.getName())) {
+						model.getProperties().remove(f.getName());
+						f.setName("_" + f.getName());
+						model.getProperties().put(f.getName(), f);
+					}
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -403,9 +422,9 @@ public class IgniteGenerator extends DefaultGenerator {
 	 * 
 	 * @param m
 	 */
-	private void addIgniteFields(Model mx) {
-
-		ModelImpl m = (ModelImpl) mx;
+	private void addIgniteFields(Model m) {
+		logger.info("Adding StackGen custom props for: " + m.getTitle());
+		// AbstractModel m = (AbstractModel) mx;
 		Map<PropertyBuilder.PropertyId, Object> args = new HashMap<PropertyBuilder.PropertyId, Object>();
 		// id -- all objects must have id as primary key
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
@@ -417,14 +436,14 @@ public class IgniteGenerator extends DefaultGenerator {
 		value.setPosition(1);
 		value.setName("id");
 		value.setAccess(StackgenModelProperty.AccessMode.READ_ONLY.name());
-		m.addProperty("id", value);
+		m.getProperties().put("id", value);
 		
 		// keyVersion
 		args.put(PropertyBuilder.PropertyId.TITLE, "Securefield Key Version");
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The version of the SecureField key used to crypt this row (generated column)");
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "1.0");
 		value = PropertyBuilder.build("integer", "int64", args);
-		m.addProperty("keyVersion", value);
+		m.getProperties().put("keyVersion", value);
 
 		// keySpec
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
@@ -435,14 +454,14 @@ public class IgniteGenerator extends DefaultGenerator {
 		args.put(PropertyBuilder.PropertyId.DEFAULT, "dev");
 		args.put(PropertyBuilder.PropertyId.EXAMPLE, "keySource:system");
 		value = PropertyBuilder.build("string", "", args);
-		m.addProperty("keySpec", value);
+		m.getProperties().put("keySpec", value);
 
 		// OwnerId
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
 		args.put(PropertyBuilder.PropertyId.TITLE, "StackGen owner id");
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The ID of the user that owns this data (generated column)");
 		value = PropertyBuilder.build("integer", "int64", args);
-		m.addProperty("ownerId", value);
+		m.getProperties().put("ownerId", value);
 
 		// CreatedDate
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
@@ -450,14 +469,14 @@ public class IgniteGenerator extends DefaultGenerator {
 		args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The created date for this record/object (generated column)");
 		value = PropertyBuilder.build("string", "date-time", args);
-		m.addProperty("createdDate", value);
+		m.getProperties().put("createdDate", value);
 
 		// ModifiedDate
 		args = new HashMap<PropertyBuilder.PropertyId, Object>();
 		args.put(PropertyBuilder.PropertyId.TITLE, "Modified Date");
 		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The last-modified date for this record/object (generated column)");
 		value = PropertyBuilder.build("string", "date-time", args);
-		m.addProperty("modifiedDate", value);
+		m.getProperties().put("modifiedDate", value);
 
 	}
 

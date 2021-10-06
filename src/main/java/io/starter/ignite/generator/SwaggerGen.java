@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.starter.ignite.generator.swagger.IgniteGenerator;
-import io.starter.ignite.util.SystemConstants;
-import io.swagger.codegen.ClientOptInput;
-import io.swagger.codegen.CodegenConstants;
+
+import io.swagger.codegen.v3.ClientOptInput;
+import io.swagger.codegen.v3.CodegenConstants;
+
 import io.swagger.models.Model;
 import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
@@ -217,6 +219,7 @@ public class SwaggerGen extends Gen {
 		config.addAdditionalProperty("delegatePattern", "true");
 		config.addAdditionalProperty("asynch", "true");
 		config.addAdditionalProperty("useDelegateValidation", "true");
+		config.addAdditionalProperty("useBeanValidation", "true");
 		config.addAdditionalProperty(CodegenConstants.REMOVE_OPERATION_ID_PREFIX, "true");
 	}
 
@@ -259,11 +262,11 @@ public class SwaggerGen extends Gen {
 			final ClientOptInput clientOptInput = config.toClientOptInput();
 
 			// merge swagger
-			Swagger x = clientOptInput.getSwagger();
+			OpenAPI x = clientOptInput.getOpenAPI();
 			for (SwaggerGen t : pluginSwaggers) {
 				try {
 					logger.info("Merging plugin swagger: " + t);
-					Swagger s = t.config.toClientOptInput().getSwagger();
+					OpenAPI s = t.config.toClientOptInput().getOpenAPI();
 					if (s != null)
 						mergeSwagger(s, x);
 				} catch (Throwable e) {

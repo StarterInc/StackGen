@@ -13,6 +13,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
@@ -56,8 +57,8 @@ public class Main extends Gen implements CommandLineRunner {
 		
 		SpringApplication app = new SpringApplication(Main.class);
 		app.setWebApplicationType(WebApplicationType.NONE);
+		// TODO: app.setBanner(new Banner());
 		ConfigurableApplicationContext context = app.run(args);
-	    logger.debug("CLOSING $type Extractor...");
 	    context.close();
 		
 	}
@@ -66,6 +67,8 @@ public class Main extends Gen implements CommandLineRunner {
 	 * a list of file paths to copy relative to project root
 	 */
 	protected static String[][] staticFiles = {
+
+			{ "/src/resources/templates/.swagger-codegen-ignore", "/src/main/resources/.swagger-codegen-ignore" },
 
 			{ "/src/resources/templates/log4j.properties", "/src/main/resources/log4j.properties" },
 
@@ -85,14 +88,14 @@ public class Main extends Gen implements CommandLineRunner {
 		if (!genDir.exists()) {
 			genDir.mkdirs();
 		}
-		Main.logger.info("Copying static files to folder: " + config.getGenOutputFolder()  + " exists: " + genDir.exists());
+		logger.info("Copying static files to folder: " + config.getGenOutputFolder()  + " exists: " + genDir.exists());
 		if (genDir.exists()) {
 			String projectdir = System.getProperty("user.dir");
 			for (final String[] fx : staticFiles) {
 				final File fromF = new File( projectdir + fx[0]);
 				final File toF = new File(config.getGenOutputFolder()  + fx[1]);
 				if (fromF.exists()) {
-					Main.logger.info("Copying static file : " + fromF + " to: " + toF);
+					logger.info("Copying static file : " + fromF + " to: " + toF);
 
 					if (!toF.exists()) { // prep dest folder
 						toF.mkdirs();
@@ -101,14 +104,14 @@ public class Main extends Gen implements CommandLineRunner {
 					try {
 						FileUtils.copyFile(fromF, toF);
 					} catch (final Exception e) {
-						Main.logger.error("Could not copy static file. " + e.toString());
+						logger.error("Could not copy static file. " + e.toString());
 					}
 				} else {
-					Main.logger.warn("Missing expected static file : " + fromF.getAbsolutePath());
+					logger.warn("Missing expected static file : " + fromF.getAbsolutePath());
 				}
 			}
 		}
-		Main.logger.info("Done copying static files to " + config.getGenOutputFolder() );
+		logger.info("Done copying static files to " + config.getGenOutputFolder() );
 	}
 
 	/**
@@ -140,7 +143,7 @@ public class Main extends Gen implements CommandLineRunner {
 					final String varg = argument.substring(argument.indexOf(p));
 					System.setProperty(narg, varg);
 				} catch (final Exception e) {
-					Main.logger.warn("Could not set property from arg: " + argument + " due to: " + e.toString());
+					logger.warn("Could not set property from arg: " + argument + " due to: " + e.toString());
 				}
 			}
 		}
@@ -168,7 +171,7 @@ public class Main extends Gen implements CommandLineRunner {
 			generateStack(config);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			throw new IgniteException("STACKGEN FAILURE: " + e.toString());
+			throw new IgniteException("FATAL: " + e.toString());
 		}
 	}
 
@@ -183,7 +186,7 @@ public class Main extends Gen implements CommandLineRunner {
 		try {
 			config = StackGenConfigurator.configureFromJSON(cfg, config);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			Main.logger.error("Copying config values from JSON to Sysprops failed while starting App Generation");
+			logger.error("Copying config values from JSON to Sysprops failed while starting App Generation");
 			e.printStackTrace();
 		}
 		generateStack(config);
@@ -198,7 +201,7 @@ public class Main extends Gen implements CommandLineRunner {
 	 * @param inputSpecFile
 	 */
 	public void generateStack(StackGenConfigurator cfg) throws Exception {
-		logger.debug("Begin StackGen Back End Generation...");
+		logger.info("Begin StackGen Back End Generation...");
 		preFlight(cfg);
 		config = cfg;
 		// JavaGen initialized first as it handles compilations
@@ -208,7 +211,7 @@ public class Main extends Gen implements CommandLineRunner {
 		if (config.overwriteMode) {
 			initOutputFolders(config);
 		}
-		logger.debug("Generating initial Model and API Classes...");
+		logger.info("Generating initial Model and API Classes...");
 		// generate swqgger api clients
 		if (!config.skipJavaGen) {
 
@@ -217,58 +220,59 @@ public class Main extends Gen implements CommandLineRunner {
 			reCompileAll(jg);
 
 		} else {
-			logger.debug("####### SWAGGER Generation: SKIPPED");
+			logger.info("####### StackGen Java Generation: SKIPPED");
 		}
 
 		if (!config.skipDbGen) {
-			logger.debug("Generating Database Schemas for Model API...");
+			logger.info("generating DB for API model");
 			// generate corresponding DML
 			// statements to create a JDBC database
 			// execute DB creation, connect and test
 			new DBGen(config).createDatabaseTablesFromModelFolder();
+		} else {
+			logger.info("DB for API Model: skipped");
 		}
 
 		// generate MyBatis client classes XML configuration file
 		if (!config.skipMybatisGen) {
 			// reCompileAll(jg);
 			jg.compile(config.getModelPackageDir());
-			logger.debug("Generating MyBatis ORM Beans for Model API...");
+			logger.info("Generating ORM from API model...");
 			new MyBatisGen(config).createMyBatisFromModelFolder();
 		}
 
-		logger.debug("Compiling all java classes...");
+		logger.info("compiling all the javas...");
 		// compile the DataObject Classes
 		// reCompileAll(jg);
 		jg.compile(config.getModelDaoPackageDir() );
 		// jg.compile(config.getModelPackageDir());
 
-		logger.debug("Generating StackGen API beans...");
+		logger.info("generating API beans...");
 		// delegates calls to/from api to the mybatis entity
 		jg.generateClassesFromModelFolder();
 		jg.compile(config.getModelPackageDir());
 		
 		// final compile
-		logger.debug("Final compile of all classes...");
+		logger.info("recompile all the classes...");
 		jg.compile(config.getPackageDir());
 
 		// copy misc files into gen project
-		logger.debug("Copying static project files...");
+		logger.info("Copy some static files...");
 		copyStaticFiles(staticFiles);
 
 		// package the microservice for deployment
 		if (!config.skipMavenBuildGeneratedApp) {
-			logger.debug("Running Maven packager for deployment...");
+			logger.info("Maven packaging for deployment...");
 			MavenBuilder.build();
 		}
 
-		logger.debug("StackGen BackEnd Generation Complete.");
-
+		logger.info("SUCCESS: StackGen generation complete.");
 	}
 
 	private void preFlight(StackGenConfigurator cfg) {
 		this.config = cfg;
 
-		logger.debug(ASCIIArtPrinter.print());
+		System.out.println(ASCIIArtPrinter.print());
 
 		String artifactId = System.getProperty("artifactId");
 		if(artifactId != null) {
@@ -276,7 +280,7 @@ public class Main extends Gen implements CommandLineRunner {
 			logger.info("Generating: " + this.config.getArtifactId());
 		}
 		
-		Main.logger.info("Starting Stack Generation");
+		logger.info("Starting Stack Generation");
 	}
 
 	private void reCompileAll(JavaGen jg)
@@ -285,7 +289,7 @@ public class Main extends Gen implements CommandLineRunner {
 			jg.compile(config.getPackageDir());
 			jg.compile(config.getApiPackageDir());
 		} catch (final FileNotFoundException x) {
-			Main.logger.error("NO INPUT FILES AT: " + config.getPackageDir() + " Exiting");
+			logger.error("NO INPUT FILES AT: " + config.getPackageDir() + " Exiting");
 			return;
 		}
 
@@ -303,10 +307,10 @@ public class Main extends Gen implements CommandLineRunner {
 		logger.info("Generating Swagger Files From Plugins");
 		String inputSpecFile = config.getInputSpec();
 		List<File> gfiles = null;
-
+		String generatedSchemaFileName = "NOT CONFIGURED";
 		// handle file-based Schemas
 		if (inputSpecFile != null && !inputSpecFile.isEmpty()) {
-
+			logger.info("Got Input Spec File: " + inputSpecFile);
 			// append the input spec path if we aren't able to use default
 			if (!new File(inputSpecFile).exists()) {
 				inputSpecFile = StackGenConfigurator.getSpecLocation() + inputSpecFile;
@@ -314,14 +318,19 @@ public class Main extends Gen implements CommandLineRunner {
 			}
 			
 			if (config.iteratePluginGen) {
-				logger.info("Iterating Swagger Plugins");
+				logger.info("Iterating StackGen Plugins");
 				gfiles = iteratePluginsGen(inputSpecFile);
 			} else if (config.mergePluginGen) {
-				logger.info("Merging Swagger Plugins");
+				logger.info("Merging StackGen Plugins");
 				gfiles = mergePluginsGen(inputSpecFile);
+			} else {
+				logger.info("Skipping StackGen Plugins");
 			}
 		} else if(config.schemaData != null){
-			String generatedSchemaFileName = config.getJavaGenResourcesFolder() + "/stackgen-schema.yml";
+			generatedSchemaFileName =
+					config.getJavaGenResourcesFolder()
+							+ "/stackgen-schema.yml";
+
 			File fout = new File(generatedSchemaFileName);
 			if(!fout.canWrite()) {
 				fout.mkdirs();
@@ -331,11 +340,11 @@ public class Main extends Gen implements CommandLineRunner {
 			
 			config.setInputSpec(generatedSchemaFileName);
 		}else {
-			throw new IgniteException("No Swagger/OpenAPI Schema found for:" + config.getSchemaName());
+			throw new IgniteException("No Swagger/OpenAPI Schema found for:" + generatedSchemaFileName);
 		}
-		logger.info("File Generation");
+		logger.info("Generating all the things...");
 		gfiles = new SwaggerGen(config).generate();
-		Main.logger.info("####### SWAGGER Generated: " + (gfiles != null ? gfiles.size() : " NO ") + " Source Files");
+		logger.info("####### StackGen Wrote : " + (gfiles != null ? gfiles.size() : " ZERO(!) ") + " files so you don't have to.");
 	}
 
 	/**
@@ -353,7 +362,7 @@ public class Main extends Gen implements CommandLineRunner {
 		if (fin != null) {
 			for (final String fs : fin) {
 				final File f = new File(fs);
-				Main.logger.info("Generating Plugin Schema: " + fs);
+				logger.info("Generating Plugin Schema: " + fs);
 				final SwaggerGen pluginSwag = new SwaggerGen(f.getAbsolutePath());
 				swaggerGen.addSwagger(pluginSwag);
 			}
@@ -368,7 +377,7 @@ public class Main extends Gen implements CommandLineRunner {
 	 */
 	private List<File> iteratePluginsGen(String inputSpecFile) {
 		final List<File> allGen = new ArrayList<>();
-		logger.warn("iterating plugins...");
+		logger.info("iterating plugins...");
 		final SwaggerGen swaggerGen = new SwaggerGen(config);
 
 		// iterate the files in the plugins folder
@@ -376,14 +385,14 @@ public class Main extends Gen implements CommandLineRunner {
 		if(fin != null) {
 			for (final String fs : fin) {
 				final File f = new File(config.PLUGIN_SPEC_LOCATION + fs);
-				Main.logger.info("Generating Plugin: " + f.getName());
+				logger.info("Generating Plugin: " + f.getName());
 				final SwaggerGen pluginSwag = new SwaggerGen(f.getAbsolutePath());
 				final List<File> fxs = pluginSwag.generate();
 				allGen.addAll(fxs);
 			}
 		}
 		allGen.addAll(swaggerGen.generate());
-		Main.logger.info("####### SWAGGER Generated: " + allGen.size() + " Source Files");
+		logger.info("####### StackGen Plugin Generated: " + allGen.size() + " Source Files");
 		return allGen;
 	}
 
@@ -472,7 +481,7 @@ public class Main extends Gen implements CommandLineRunner {
 			return false;
 		final boolean outputDir = new File(newGenDir.getPath()  + "/src/").mkdirs();
 		if (!outputDir) {
-			Main.logger.error("Could not make directory: " + newGenDir.getPath() );
+			logger.error("Could not make directory: " + newGenDir.getPath() );
 			return false;
 		}else{
 			return true;

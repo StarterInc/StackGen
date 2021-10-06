@@ -69,36 +69,39 @@ public class StackModelRelationGenerator {
 		safeIterate.addAll(models.values());
 		for (Model mdx : safeIterate) {
 			Map<String, Property> props = mdx.getProperties();
+			if(props!=null) {
+				fixNames(props);
 
-			fixNames(props);
+				/*
+				 * ref String "#/definitions/CalendarEvent" (id=241) String
+				 * simpleRef String "CalendarEvent" (id=242) String 242
+				 * type RefType RefType (id=243) RefType 243 4
+				 * name String "events" (id=194) String 194 13440
+				 * required boolean false boolean
+				 * type String "ref" (id=196) String 196 13440
+				 */
 
-			/*
-			 * ref String "#/definitions/CalendarEvent" (id=241) String
-			 * simpleRef String "CalendarEvent" (id=242) String 242
-			 * type RefType RefType (id=243) RefType 243 4
-			 * name String "events" (id=194) String 194 13440
-			 * required boolean false boolean
-			 * type String "ref" (id=196) String 196 13440
-			 */
+				for (Property prop : props.values()) {
+					// then we need an IDX table
+					String field = prop.getName();
+					String[] tables = {prop.getName()};
+					String pt = prop.getType();
+					// it is a one-many foreign key ie: OWNER_ID
+					if (pt.equals("integer")
+							&& prop.getName().toLowerCase().endsWith("_id")) {
 
-			for (Property prop : props.values()) {
-				// then we need an IDX table
-				String field = prop.getName();
-				String[] tables = { prop.getName() };
-				String pt = prop.getType();
-				// it is a one-many foreign key ie: OWNER_ID
-				if (pt.equals("integer")
-						&& prop.getName().toLowerCase().endsWith("_id")) {
-
-					logger.info("Found PROP: " + pt);
-					// TODO: handle the one-to-many ID issue
-					// MyBatisJoin j = new MyBatisJoin(field, tables);
-				} else if (pt.equals("array")) {
-					logger.info("Found PROP: " + pt);
-					createIdx(swagger, config, refs, models, mdx, (ArrayProperty) prop, field);
-				} else if (pt.equals("ref")) {
-					createRef(swagger, config, refs, models, mdx, (RefProperty) prop, field);
+						logger.info("Found PROP: " + pt);
+						// TODO: handle the one-to-many ID issue
+						// MyBatisJoin j = new MyBatisJoin(field, tables);
+					} else if (pt.equals("array")) {
+						logger.info("Found PROP: " + pt);
+						createIdx(swagger, config, refs, models, mdx, (ArrayProperty) prop, field);
+					} else if (pt.equals("ref")) {
+						createRef(swagger, config, refs, models, mdx, (RefProperty) prop, field);
+					}
 				}
+			}else{
+				logger.warn("No Properties for Model : " +mdx.getDescription() + ":" + mdx.getTitle());
 			}
 		}
 		logger.info("Done Generating Stack Model Relationships.");
@@ -145,6 +148,8 @@ public class StackModelRelationGenerator {
 	}
 
 	private void fixNames(Map<String, Property> props) {
+		if(props==null)
+			return;
 		for (String key : props.keySet()) {
 			Property p = props.get(key);
 			p.setName(key);

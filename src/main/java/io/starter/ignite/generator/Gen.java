@@ -87,7 +87,7 @@ public class Gen {
 			return null;
 		}
 
-		Gen.logger.info("Crawling Class Heirarchy for Root Class: " + packageName + "." + className);
+		Gen.logger.info("Crawling Class Hierarchy for Root Class: " + packageName + "." + className);
 
 		results.put(className, ob);
 
@@ -100,7 +100,8 @@ public class Gen {
 		for (final Field f : fields) {
 			final Class<?> retval = f.getType();
 			if (!retval.isPrimitive() && (!retval.getName().equals(className))) {
-				if (!retval.getName().startsWith("L[java.") && !retval.getName().startsWith("ajc$")
+				if (!retval.getName().startsWith("L[java.")
+						&& !retval.getName().startsWith("ajc$")
 						&& !retval.getName().startsWith("[C")) {
 					processClasses(retval, results, impl);
 				}
@@ -179,7 +180,8 @@ public class Gen {
 			throw new FileNotFoundException("Gen.getJavaFiles Failure: no path here " + path);
 		}
 		final File[] modelFiles = modelDir.listFiles((FilenameFilter) (dir, name) -> {
-			if (new File(dir.getPath() + "/" + name).isDirectory() || name.toLowerCase().endsWith(".java")) {
+			if (new File(dir.getPath() + "/" + name).isDirectory()
+					|| name.toLowerCase().endsWith(".java")) {
 				return true;
 			}
 			return false;

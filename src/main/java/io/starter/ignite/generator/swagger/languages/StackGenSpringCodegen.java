@@ -3,10 +3,19 @@ package io.starter.ignite.generator.swagger.languages;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
+import com.github.jknack.handlebars.Handlebars;
 import io.starter.toolkit.StringTool;
+import io.swagger.codegen.v3.*;
+import io.swagger.codegen.v3.templates.TemplateEngine;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +23,9 @@ import org.slf4j.LoggerFactory;
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 
-import io.swagger.codegen.CodegenConfig;
-import io.swagger.codegen.CodegenModel;
-import io.swagger.codegen.CodegenProperty;
 import io.swagger.codegen.languages.SpringCodegen;
 import io.swagger.codegen.languages.features.BeanValidationFeatures;
-import io.swagger.codegen.languages.features.OptionalFeatures;
+ import io.swagger.codegen.languages.features.OptionalFeatures;
 
 /**
  * customized Spring CodeGen for StackGen
@@ -52,17 +58,32 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
         return (outputFolder + "/" + apiDocPath).replace('/', File.separatorChar);
     }
 
-    @Override
+	@Override
+	public String customTemplateDir() {
+		return null;
+	}
+
+	@Override
+	public String getTemplateVersion() {
+		return null;
+	}
+
+	@Override
     public String modelDocFileFolder() {
         return (outputFolder + "/" + modelDocPath).replace('/', File.separatorChar);
     }
-    
+
+	@Override
+	public String getTypeDeclaration(Schema schema) {
+		return null;
+	}
+
 	@Override
 	public void processOpts() {
 
 		// fix template dir to match our SG template project paths
 		super.templateDir = super.templateDir + "/src/main/" + super.library;
-
+		logger.info("Processing template files at: " + super.templateDir);
 		super.processOpts();
 		// add doc templates
 		apiTemplateFiles.put("ApiClient.mustache", ".java");
@@ -123,7 +144,11 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		additionalProperties.put("lambdaLowerCaseFirstLetter", new Mustache.Lambda() {
 			@Override
 			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
-				writer.write(StringTool.getLowerCaseFirstLetter(fragment.execute()));
+				String str = fragment.execute();
+				if(str.length() > 0){
+					str = StringTool.getLowerCaseFirstLetter(str);
+				}
+				writer.write(str);
 			}
 		});
 		additionalProperties.put("lambdaRemoveLineBreak", new Mustache.Lambda() {
@@ -132,6 +157,66 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 				writer.write(fragment.execute().replaceAll("\\r|\\n", ""));
 			}
 		});
+	}
+
+	@Override
+	public String generateExamplePath(String s, Operation operation) {
+		return null;
+	}
+
+	@Override
+	public String getInputURL() {
+		return null;
+	}
+
+	@Override
+	public void setInputURL(String s) {
+
+	}
+
+	@Override
+	public CodegenModel fromModel(String s, Schema schema) {
+		return null;
+	}
+
+	@Override
+	public CodegenModel fromModel(String s, Schema schema, Map<String, Schema> map) {
+		return null;
+	}
+
+	@Override
+	public CodegenOperation fromOperation(String s, String s1, Operation operation, Map<String, Schema> map, OpenAPI openAPI) {
+		return null;
+	}
+
+	@Override
+	public CodegenOperation fromOperation(String s, String s1, Operation operation, Map<String, Schema> map) {
+		return null;
+	}
+
+	@Override
+	public List<CodegenSecurity> fromSecurity(Map<String, SecurityScheme> map) {
+		return null;
+	}
+
+	@Override
+	public void preprocessOpenAPI(OpenAPI openAPI) {
+
+	}
+
+	@Override
+	public void processOpenAPI(OpenAPI openAPI) {
+
+	}
+
+	@Override
+	public TemplateEngine getTemplateEngine() {
+		return null;
+	}
+
+	@Override
+	public void addOperationToGroup(String s, String s1, Operation operation, CodegenOperation codegenOperation, Map<String, List<CodegenOperation>> map) {
+
 	}
 
 	@Override
@@ -229,6 +314,46 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 				model.imports.add("JsonCreator");
 			}
 		}
+	}
+
+	@Override
+	public void postProcessParameter(CodegenParameter codegenParameter) {
+
+	}
+
+	@Override
+	public void addHandlebarHelpers(Handlebars handlebars) {
+
+	}
+
+	@Override
+	public List<CodegenArgument> readLanguageArguments() {
+		return null;
+	}
+
+	@Override
+	public List<CodegenArgument> getLanguageArguments() {
+		return null;
+	}
+
+	@Override
+	public void setLanguageArguments(List<CodegenArgument> list) {
+
+	}
+
+	@Override
+	public boolean needsUnflattenedSpec() {
+		return false;
+	}
+
+	@Override
+	public void setUnflattenedOpenAPI(OpenAPI openAPI) {
+
+	}
+
+	@Override
+	public ISchemaHandler getSchemaHandler() {
+		return null;
 	}
 
 	private String extractEnumConfig(String st, String param) {

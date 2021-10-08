@@ -44,7 +44,7 @@ public class MainTest {
 
 		SwaggerGen swaggerGen = new SwaggerGen(job);
 
-		swaggerGen.mergePluginSwaggers();
+		swaggerGen.mergePluginSwaggers(swaggerGen.config);
 	}
 
 	
@@ -66,7 +66,7 @@ public class MainTest {
 
 		SwaggerGen swaggerGen = new SwaggerGen(job);
 
-		swaggerGen.mergePluginSwaggers();
+		swaggerGen.mergePluginSwaggers(swaggerGen.config);
 
 		List<File> output = swaggerGen.generate();
 		// org.junit.Assert.assertEquals("there should be 16 output files", output.size(), 17);
@@ -88,7 +88,7 @@ public class MainTest {
 			
 			// swaggerGen.addSwagger(gx1);
 			
-			swaggerGen.mergePluginSwaggers();
+			swaggerGen.mergePluginSwaggers(swaggerGen.config);
 			swaggerGen.preGen();
 
 			assertEquals("there should be 2 plugin swagger specs", 2, swaggerGen.pluginSwaggers.size());

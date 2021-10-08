@@ -34,7 +34,7 @@ public class DBGen extends Gen implements Generator {
     public static Connection conn = null;
 
     private List<String> indexList = new ArrayList();
-    
+
     public DBGen(StackGenConfigurator cfg) {
         super(cfg);
     }
@@ -113,7 +113,7 @@ public class DBGen extends Gen implements Generator {
 
         final String colName = decamelize(f.getName());
         final Class<?> colType = f.getType();
-        
+
         String colTypeName = colType.getName();
         final int pos = colTypeName.lastIndexOf(".") + 1;
         if (pos > 0) {
@@ -171,17 +171,13 @@ public class DBGen extends Gen implements Generator {
     private String configureDML(Field f, String dml, boolean rerun) {
 
         String notes = "";// "COMMENT 'ignite generated column for the "
-        // + f.getName()
-        // + " value'";
         boolean nullable = true;
         int leng = 256;
 
         // ${CHAR_SET} ${DEFAULT}
         final String defaultval = "";
         final String charset = ""; // "'utf8'";
-        // int minleng = 0;
-        //// double minVal = 0d;a
-        // double maxVal = Double.MAX_VALUE;
+
         boolean isSecure = false;
         boolean isDataField = false;
 
@@ -191,7 +187,6 @@ public class DBGen extends Gen implements Generator {
 
             if (sanno != null) {
                 Class<? extends Annotation> type = sanno.annotationType();
-
                 try {
                     isSecure = (Boolean) type.getDeclaredMethod("enabled").invoke(sanno, (Object[]) null);
                 } catch (Exception e) {
@@ -227,13 +222,13 @@ public class DBGen extends Gen implements Generator {
             logger.error("Problem getting ApiModelProperty Annotation on: " + f.getName() + " " + e.toString());
         }
 
-
         if (config.debug && !notes.isEmpty()) {
-            logger.info("Field notes: " + notes);
+            logger.info("Column notes: " + notes);
         }
         if (notes.equals("")) {
             dml = dml.replace("${COMMENT}", "");
         } else {
+            notes = escapeMysql(notes);
             dml = dml.replace("${COMMENT}", "COMMENT \"" + notes + "\"");
         }
 
@@ -261,6 +256,25 @@ public class DBGen extends Gen implements Generator {
         return dml;
     }
 
+    private String escapeMysql(String notes) {
+        String ret = notes.replace("\\", "\\\\")
+                .replace("\b","\\b")
+                .replace("\"","'")
+                .replace("\n","\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t")
+                .replace("\\x1A", "\\Z")
+                .replace("\\x00", "\\0")
+                .replace("'", "\\'")
+                .replace("\"", "\\\"");
+
+        if(ret.length() > 1020){
+            ret = ret.substring(0, 1020);
+            ret += "...";
+        }
+        return ret;
+    }
+
     /**
      * generate DB table from classfile
      */
@@ -279,33 +293,36 @@ public class DBGen extends Gen implements Generator {
         config.setGeneratorConnection(conn);
         // check if we even need to apply DML
         try {
-        	if (noTableChangesRequired(className, fieldList, table)) {
+            if (noTableChangesRequired(className, fieldList, table)) {
                 logger.info("No Changes to: " + className + " table made.");
-        		return;
-        	}
+                return;
+            }
         }catch(Exception e) {
             if(!e.toString().contains("doesn't exist")) {
                 logger.warn("Problem checking if table changes required: " + e);
             }
         }
-        
+
         // collect the COLUMNs and add to Table then generate
         String tableDML = table.generateTableBeginningDML(className);
         boolean isEmpty = true;
         String extraColumnDML = "";
 
         // reorder the ID field to be first column per convention
-        Object idxCol = fieldList.get(fieldList.size()-6);
-        fieldList.remove(idxCol);
-        fieldList.add(0, idxCol);
+        if(fieldList.size() > 6){
+            Object idxCol = fieldList.get(fieldList.size()-6);
+            fieldList.remove(idxCol);
+            fieldList.add(0, idxCol);
+        }
 
         for (Object fld : fieldList) {
             isEmpty = false;
             tableDML += "	" + fld.toString();
-            
+
             // add the PK for auto-increment ID
             String colName = fld.toString();
             colName = colName.substring(0, colName.indexOf(" "));
+
             if (colName.equalsIgnoreCase("id")) {
                 extraColumnDML += StackGenConfigurator.LINE_FEED + Table.myMap.get("pkid");
             }
@@ -432,13 +449,13 @@ public class DBGen extends Gen implements Generator {
                 if (colClass.equals("java.math.BigInteger")) {
                     colCheck += " BIGINT(10) UNSIGNED";
                 } else if (colClass.equals("java.lang.String")) {
-                    
-                	if(colPrecision > 1280) {
-                		colCheck += " LONGTEXT";
-                	} else {
-                		colCheck += " VARCHAR(" + colPrecision + ")";
-                	}
-                    
+
+                    if(colPrecision > 1280) {
+                        colCheck += " LONGTEXT";
+                    } else {
+                        colCheck += " VARCHAR(" + colPrecision + ")";
+                    }
+
                 } else if (colClass.equals("java.lang.Double")) {
                     colCheck += " DOUBLE";
                 } else if (colClass.equals("java.lang.Boolean")) {
@@ -454,7 +471,7 @@ public class DBGen extends Gen implements Generator {
                 }
 
                 if (!checkList.contains(colCheck)) {
-                	changesRequired = true;
+                    changesRequired = true;
                     logger.info("Found DB Schema Change: " + colCheck);
                 }
             }
@@ -572,7 +589,8 @@ public class DBGen extends Gen implements Generator {
 
         for (final File mf : modelFiles) {
             try {
-                String cn = mf.getName().substring(0, mf.getName().indexOf("."));
+                String cn = mf.getName();
+                cn = cn.substring(0, cn.indexOf("."));
                 // cn = cn + ".class";
                 cn = config.getIgniteModelPackage() + "." + cn;
                 logger.info("Loading Classes from ModelFile: " + cn);

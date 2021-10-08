@@ -1,5 +1,8 @@
 package io.starter.ignite.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 /**
@@ -9,11 +12,13 @@ import java.util.List;
  *
  */
 public abstract class DataModelBase implements DataModelObject {
+	protected static final Logger logger = LoggerFactory.getLogger(DataModelBase.class);
 
 	/**
 	 * fetch a list of this item from cache or persistence
 	 */
 	public List<DataModelBase> getList() {
+		logger.error("NOT IMPLEMENTED LIST: " + this);
 		return null;
 	}
 
@@ -21,6 +26,7 @@ public abstract class DataModelBase implements DataModelObject {
 	 * fetch a DataModelBase item from cache or persistence
 	 */
 	public DataModelBase get() {
+		logger.error("NOT IMPLEMENTED GET: " + this);
 		return null;
 	}
 
@@ -29,13 +35,14 @@ public abstract class DataModelBase implements DataModelObject {
 	 */
 	public DataModelBase persist() {
 
-		System.out.println("PERSISTING: " + this);
+		logger.error("NOT IMPLEMENTED PERSISTING: " + this);
 
 		return null;
 	}
 
 	@Override
 	public DataModelObject getDelegate() {
+		logger.error("NOT IMPLEMENTED GETDELEGATE: " + this);
 		return null;
 	}
 

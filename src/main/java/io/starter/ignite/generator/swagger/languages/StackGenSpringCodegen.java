@@ -35,11 +35,12 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 
 	public StackGenSpringCodegen() {
 		super();
+		logger.info("Initializing new StackGenSpringCodeGen");
 	}
 
 	@Override
 	public String getName() {
-		return "stackgen-java-spring";
+		return "java-spring";
 	}
 
 	@Override
@@ -60,19 +61,16 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 	@Override
 	public void processOpts() {
 
-		// fix template dir to match our SG template project paths
-		super.templateDir = super.templateDir + "/src/main/" + super.library;
-
 		super.processOpts();
 		// add doc templates
-		apiTemplateFiles.put("ApiClient.mustache", ".java");
-        modelDocTemplateFiles.put("model_doc.mustache", ".md");
+		//apiTemplateFiles.put("ApiClient.mustache", ".java");
+       // modelDocTemplateFiles.put("model_doc.mustache", ".md");
         apiDocTemplateFiles.put("api_doc.mustache", ".md");
 
 		// TODO: add model test
 		// modelTestTemplateFiles.put("modelTest.mustache", "Test.java");
 
-		apiTestTemplateFiles.put("apiTest.mustache", ".java");
+		//apiTestTemplateFiles.put("apiTest.mustache", ".java");
 
         // add lambda for mustache templates
  		additionalProperties.put("lambdaAddSecurityAnnotations", new Mustache.Lambda() {
@@ -155,7 +153,7 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 				vx += ")";
 				
 				property.vendorExtensions.put("secureAnnotation", vx);
-				logger.info("Found Starter SecureField Vendor Extension" + vx);
+				logger.info("Configuring Starter SecureField Extension" + vx);
 			}
 		}
 
@@ -183,7 +181,7 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 				}
 				vx = vx.replace("{{vx}}", st);
 				property.vendorExtensions.put("dataAnnotation", vx);
-				logger.info("Found Starter DataField Vendor Extension" + vx);
+				logger.info("Configuring Starter DataField Extension" + vx);
 			}
 		}
 

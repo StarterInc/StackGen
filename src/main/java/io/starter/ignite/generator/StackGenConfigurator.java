@@ -13,8 +13,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import io.starter.ignite.generator.swagger.languages.StackGenSpringCodegen;
+import io.starter.ignite.security.securefield.SecureFieldAspect;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
 import io.starter.ignite.generator.swagger.StackGenCodegenConfigLoader;
@@ -42,6 +46,9 @@ import io.swagger.parser.SwaggerParser;
 public class StackGenConfigurator extends CodegenConfigurator {
 
 	private static final long serialVersionUID = 23423423423L;
+
+	protected static final Logger logger = LoggerFactory.getLogger(StackGenConfigurator.class);
+
 
 	public Connection getGeneratorConnection() {
 		return generatorConnection;
@@ -154,7 +161,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	// spring, java, resteasy
 	public String swaggerLang = (SystemConstants.getValue("swaggerLang") != null ? SystemConstants.getValue("swaggerLang")
-			: "stackgen-java-spring");
+			: "java-spring");
 
 	// spring-boot ,jersey2
 	public String swaggerLib = (SystemConstants.getValue("swaggerLib") != null ? SystemConstants.getValue("swaggerLib")
@@ -255,7 +262,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
 	public String getStackGenVersion() {
 		return (SystemConstants.getValue("StackGenVersion") != null ? SystemConstants.getValue("StackGenVersion")
-				: "0.9.25-SNAPSHOT");
+				: SystemConstants.getValue("project.version"));
 	}
 
 	// ## SwaggerGen OPEN API
@@ -441,7 +448,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 				if (o != null)
 					cfgx.set(fx, o);
 			} catch (final Exception e) {
-				System.err.println("configure from json failed to set: " + e);
+				logger.error("configure from json failed to set: " + e);
 			}
 		}
 		return cfgx;
@@ -485,7 +492,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 			Method fx = ReflectionUtils.findMethod(getClass(), mn);
 			return fx.invoke(this);
 		} catch (Exception x) {
-			System.out.println("No value for: " + m);
+			logger.warn("callGet = No value for: " + m, x);
 			return null;
 		}
 	}
@@ -495,7 +502,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 			Field fx = ReflectionUtils.findField(getClass(), pname);
 			return fx.get(this);
 		} catch (Exception x) {
-			System.out.println("No value for: " + pname);
+			logger.warn("get - No value for: " + pname, x);
 			return null;
 		}
 	}
@@ -532,10 +539,17 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	public ClientOptInput toClientOptInput() {
 
 		CodegenConfig generator = StackGenCodegenConfigLoader.forName(getLang());
-		if(getTemplateDir() ==  null) {
-			setTemplateDir(SystemConstants.getValueOrDefault("templateDir", "java-spring" ));
-		}
-		generator.getCommonTemplateDir();
+
+		logger.trace("toClientOptInput setting templateDir: " + this.getTemplateDir() );
+		//if(this.getTemplateDir() ==  null) {
+			((StackGenSpringCodegen)generator)
+					.setTemplateDir(
+							SystemConstants.getValueOrDefault(
+									"templateDir",
+									this.getTemplateDir() )
+					);
+		//}
+		// generator.getCommonTemplateDir();
 		generator.setInputSpec(getInputSpec());
 		generator.setOutputDir(getOutputDir());
 		generator.setSkipOverwrite(isSkipOverwrite());
@@ -602,6 +616,31 @@ public class StackGenConfigurator extends CodegenConfigurator {
 				codegenConfig.additionalProperties().put(opt, getSystemProperties().get(opt));
 			}
 		}
+	}
+
+	/**
+	 * utility method for setting config values from a POJO
+	 */
+	public static StackGenConfigurator configureFromPOJO(final Object config, StackGenConfigurator cfgx)
+			throws IllegalArgumentException, IllegalAccessException {
+		final Field[] names = config.getClass().getDeclaredFields();
+
+		// init if null
+		if (cfgx == null) {
+			cfgx = new StackGenConfigurator();
+		}
+
+		for (final Field fx : names) {
+			try {
+				fx.setAccessible(true);
+				Object o = fx.get(config);
+				if (o != null)
+					cfgx.set(fx.getName(), o);
+			} catch (final Exception e) {
+				logger.error("Configure from POJO failed to set field value for: " + fx.getName() , e);
+			}
+		}
+		return cfgx;
 	}
 
 }

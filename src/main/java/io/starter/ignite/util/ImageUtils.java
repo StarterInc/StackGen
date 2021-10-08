@@ -24,7 +24,7 @@ public class ImageUtils {
 			.getLogger(ImageUtils.class);
 
 	// overwrite existing converted images
-	private static boolean			overwrite				= true;
+	private static final boolean			overwrite				= true;
 
 	public static int				IMAGE_BIG_WIDTH			= 800;
 	public static int				IMAGE_STANDARD_WIDTH	= 400;
@@ -90,7 +90,7 @@ public class ImageUtils {
 							// thats a
 						}
 					} catch (Exception e) {
-						; // typical
+						// typical
 					}
 				}
 			}

@@ -66,7 +66,7 @@ public class S3FS extends StorageServiceEventAdaptor
 	private final TimeFormatter			timeFormatter	= new TimeFormatter();
 	private S3FileUtils					fileUtils;
 
-	private void initialize() throws ServiceException, S3ServiceException {
+	private void initialize() throws ServiceException {
 		String awsAccessKey = SystemConstants.awsAccessKey;
 		String awsSecretKey = SystemConstants.awsSecretKey;
 

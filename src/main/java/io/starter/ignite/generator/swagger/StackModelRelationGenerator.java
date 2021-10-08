@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.codegen.CodegenConfig;
+import io.swagger.codegen.config.CodegenConfigurator;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.StringProperty;
 import org.slf4j.Logger;
@@ -106,7 +108,7 @@ public class StackModelRelationGenerator {
 
 	}
 
-	private void createRef(Swagger swagger, StackGenConfigurator config, List<MyBatisJoin> refs, Map<String, Model> models, Model mdx, RefProperty rp, String field) {
+	private void createRef(Swagger swagger, CodegenConfigurator config, List<MyBatisJoin> refs, Map<String, Model> models, Model mdx, RefProperty rp, String field) {
 
 	}
 

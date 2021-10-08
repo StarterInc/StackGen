@@ -2,8 +2,14 @@ package io.starter.ignite.generator.swagger;
 
 import io.swagger.codegen.CodegenConfig;
 import io.swagger.codegen.CodegenConfigLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StackGenCodegenConfigLoader extends CodegenConfigLoader{
+
+    protected final static Logger logger = LoggerFactory
+            .getLogger(StackGenCodegenConfigLoader.class);
+
     /**
      * 
      * load StackGen Generator
@@ -12,6 +18,7 @@ public class StackGenCodegenConfigLoader extends CodegenConfigLoader{
      * @return config class
      */
     public static CodegenConfig forName(String name) {
+        logger.info("Loading StackGenSpringCodegen...");
     	CodegenConfig ret = null;
 
     	try{

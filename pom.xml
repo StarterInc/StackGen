@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>io.starter</groupId>
 		<artifactId>stackgen-parent</artifactId>
-		<version>${revision}</version>
+		<version>0.9.31-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>stackgen</artifactId>

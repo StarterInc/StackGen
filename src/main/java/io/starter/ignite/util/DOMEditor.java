@@ -23,7 +23,7 @@ public class DOMEditor {
 	}
 
 	public static void write(Document doc, String output)
-			throws FileNotFoundException, IOException {
+			throws IOException {
 		// document is processed and edited successfully, lets save it in new
 		// file
 		XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());

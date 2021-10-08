@@ -7,6 +7,9 @@ import io.starter.OpenXLS.CellHandle;
 import io.starter.OpenXLS.NameHandle;
 import io.starter.OpenXLS.RowHandle;
 import io.starter.OpenXLS.WorkBookHandle;
+import io.starter.ignite.generator.MyBatisGen;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * a hybrid utility class that emulates a recordset, a table, and a spreadsheet
@@ -16,6 +19,7 @@ import io.starter.OpenXLS.WorkBookHandle;
  * 
  */
 public class SheetTable {
+	protected static final Logger logger = LoggerFactory.getLogger(SheetTable.class);
 
 	// 1st row is table headers
 	CellHandle[]	headercells	= null;
@@ -168,8 +172,7 @@ public class SheetTable {
 		if (this.isAutoCommit() || force) {
 			mybook.close();
 		} else {
-			System.err
-					.println("AUTO-COMMIT NOT ENABLED. USE 'FORCE' TO WRITE TO BOOK");
+			logger.info("AUTO-COMMIT NOT ENABLED. USE 'FORCE' TO WRITE TO BOOK");
 		}
 	}
 

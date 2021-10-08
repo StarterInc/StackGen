@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.codegen.CodegenConfig;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class SwaggerGen extends Gen {
 
 	private static final Logger logger = LoggerFactory.getLogger(SwaggerGen.class);
 
-	IgniteGenerator generator = new IgniteGenerator(config);
+	IgniteGenerator generator = new IgniteGenerator();
 
 	/**
 	 * @return the generator
@@ -163,7 +164,7 @@ public class SwaggerGen extends Gen {
 
 		// the JSON serialization library to use
 		// (ie: jersey2, resteasy, resttemplate)
-		config.setLibrary(getVal("swaggerLib", "spring-boot"));
+		// config.setLibrary(getVal("swaggerLib", "spring-boot"));
 
 		// config.setReleaseNote("SET RELEASE NOTES", config.getReleaseNote());
 
@@ -239,7 +240,7 @@ public class SwaggerGen extends Gen {
 	}
 
 	public io.swagger.codegen.Generator preGen() {
-		final ClientOptInput clientOptInput = mergePluginSwaggers();
+		final ClientOptInput clientOptInput = mergePluginSwaggers(config);
 		return generator.opts(clientOptInput);
 	}
 
@@ -254,9 +255,9 @@ public class SwaggerGen extends Gen {
 	 * 
 	 * @see addSwagger(SwaggerGen x)
 	 */
-	public ClientOptInput mergePluginSwaggers() {
+	public ClientOptInput mergePluginSwaggers(StackGenConfigurator cfg) {
 		try {
-			final ClientOptInput clientOptInput = config.toClientOptInput();
+			final ClientOptInput clientOptInput = cfg.toClientOptInput();
 
 			// merge swagger
 			Swagger x = clientOptInput.getSwagger();

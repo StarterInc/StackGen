@@ -1,42 +1,14 @@
 package io.starter.ignite.generator.swagger;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import io.starter.ignite.generator.annotations.StackgenModelProperty;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.annotations.VisibleForTesting;
-
-import io.starter.ignite.generator.StackGenConfigurator;
-import io.starter.ignite.generator.DBGen;
 import io.starter.ignite.generator.IgniteException;
-import io.starter.ignite.generator.MyBatisJoin;
+import io.starter.ignite.generator.StackGenConfigurator;
 import io.starter.ignite.generator.SwaggerGen;
-import io.swagger.codegen.ClientOptInput;
-import io.swagger.codegen.CodegenConfig;
-import io.swagger.codegen.DefaultGenerator;
-import io.swagger.codegen.Generator;
-import io.swagger.codegen.InlineModelResolver;
+import io.starter.ignite.generator.annotations.StackgenModelProperty;
+import io.starter.ignite.generator.swagger.languages.StackGenSpringCodegen;
+import io.swagger.codegen.*;
 import io.swagger.codegen.ignore.CodegenIgnoreProcessor;
-import io.swagger.models.ArrayModel;
-import io.swagger.models.ComposedModel;
-import io.swagger.models.ExternalDocs;
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.Operation;
-import io.swagger.models.Path;
-import io.swagger.models.RefModel;
-import io.swagger.models.Response;
-import io.swagger.models.Swagger;
+import io.swagger.models.*;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
@@ -44,493 +16,526 @@ import io.swagger.models.properties.ObjectProperty;
 import io.swagger.models.properties.Property;
 import io.swagger.models.properties.PropertyBuilder;
 import io.swagger.models.properties.StringProperty;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Enhance the swagger Code Generation with Starter StackGen features
- * 
- * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
+ * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  */
 public class IgniteGenerator extends DefaultGenerator {
 
-	Logger logger = LoggerFactory.getLogger(IgniteGenerator.class);
+    static List<String> reservedList = new ArrayList() {
+        {
+            add("key");
+            add("from");
+            add("index");
+        }
+    };
+    Logger logger = LoggerFactory.getLogger(IgniteGenerator.class);
+    // Starter Enhancements
+    private Boolean generateStarterCRUDOps = true;
+    private Boolean generateStarterModelEnhancements = true;
+    private List<SwaggerGen> pluginSwaggers;
 
-	// Starter Enhancements
-	private Boolean				generateStarterCRUDOps				= true;
-	private Boolean				generateStarterModelEnhancements	= true;
-	private List<SwaggerGen>	pluginSwaggers;
+    IgniteGenerator plugins(List<SwaggerGen> pluginSwaggers) {
+        this.setPluginSwaggers(pluginSwaggers);
+        return this;
+    }
 
-	StackGenConfigurator cfg = null; 
-	public IgniteGenerator(StackGenConfigurator c) {
-		cfg = c;
-	}
+    /**
+     * add any additional custom configs
+     */
+    public void preprocessSwagger() {
+        // config.additionalProperties().put("serverPort", cfg.defaultPort);
+    }
 
-	IgniteGenerator plugins(List<SwaggerGen> pluginSwaggers) {
-		this.setPluginSwaggers(pluginSwaggers);
-		return this;
-	}
+    @Override
+    /**
+     * run the code generator and return the generated source code files
+     */
+    public List<File> generate() {
 
-	/**
-	 * add any additional custom configs
-	 * 
-	 */
-	public void preprocessSwagger() {
-		config.additionalProperties().put("serverPort", cfg.defaultPort);
-	}
+        if (swagger == null || config == null) {
+            throw new RuntimeException("missing swagger input or config!");
+        }
 
-	@Override
-	/**
-	 * run the code generator and return the generated source code files
-	 */
-	public List<File> generate() {
+        configureGeneratorProperties();
+        configureSwaggerInfo();
 
-		if (swagger == null || config == null) {
-			throw new RuntimeException("missing swagger input or config!");
-		}
+        // TODO: add the model link builder here
+        StackModelRelationGenerator relationGenerator = new StackModelRelationGenerator();
+        // List<MyBatisJoin> joins = relationGenerator.generate(swagger, config);
 
-		configureGeneratorProperties();
-		configureSwaggerInfo();
+        // add Starter StackGen code
+        if (generateStarterModelEnhancements) {
+            enhanceSwagger();
+        }
 
-		// TODO: add the model link builder here
-		StackModelRelationGenerator relationGenerator = new StackModelRelationGenerator();
-		List<MyBatisJoin> joins = relationGenerator.generate(swagger, cfg);
-
-		// add Starter StackGen code
-		if (generateStarterModelEnhancements) {
-			enhanceSwagger();
-		}
-
-		// some static settings
-		preprocessSwagger();
+        // some static settings
+        preprocessSwagger();
 
 
-		// resolve inline models
-		InlineModelResolver inlineModelResolver = new InlineModelResolver();
-		inlineModelResolver.flatten(swagger);
+        // resolve inline models
+        InlineModelResolver inlineModelResolver = new InlineModelResolver();
+        inlineModelResolver.flatten(swagger);
 
-		// the generated source code files are returned
-		List<File> files = new ArrayList<File>();
+        // the generated source code files are returned
+        List<File> files = new ArrayList<File>();
 
-		// models
-		List<Object> allModels = new ArrayList<Object>();
-		generateModels(files, allModels);
+        // models
+        List<Object> allModels = new ArrayList<Object>();
+        generateModels(files, allModels);
 
-		// apis
-		List<Object> allOperations = new ArrayList<Object>();
-		generateApis(files, allOperations, allModels);
+        // apis
+        List<Object> allOperations = new ArrayList<Object>();
+        generateApis(files, allOperations, allModels);
 
-		// supporting files
-		Map<String, Object> bundle = buildSupportFileBundle(allOperations, allModels);
-		generateSupportingFiles(files, bundle);
-		config.processSwagger(swagger);
+        // supporting files
+        Map<String, Object> bundle = buildSupportFileBundle(allOperations, allModels);
+        generateSupportingFiles(files, bundle);
+        config.processSwagger(swagger);
 
-		return files;
-	}
+        return files;
+    }
 
-	@Override
-	protected void configureGeneratorProperties() {
+    @Override
+    protected void configureGeneratorProperties() {
 
-		// Starter enhancements
-		generateStarterModelEnhancements = Boolean.valueOf(config
-				.additionalProperties()
-				.getOrDefault("igniteGenerateModelEnhancements", true)
-				.toString());
+        // Starter enhancements
+        generateStarterModelEnhancements = Boolean.valueOf(config
+                .additionalProperties()
+                .getOrDefault("igniteGenerateModelEnhancements", true)
+                .toString());
 
-		generateStarterCRUDOps = Boolean.valueOf(config.additionalProperties()
-				.getOrDefault("igniteGenerateCRUDOps", true)
-				.toString());
-		// end Starter enhancements
+        generateStarterCRUDOps = Boolean.valueOf(config.additionalProperties()
+                .getOrDefault("igniteGenerateCRUDOps", true)
+                .toString());
+        // end Starter enhancements
 
-		super.configureGeneratorProperties();
-	}
+        super.configureGeneratorProperties();
+    }
 
-	/**
-	 * Add the Starter StackGen required enhancements
-	 */
-	@VisibleForTesting
-	public void enhanceSwagger() {
-		
-		this.swagger.setBasePath("v1");
-		Set<String> keys;
-		try {
-			keys = this.swagger.getDefinitions().keySet();
-		}catch(NullPointerException e) {
-			throw new IgniteException("Schema: " + this.swagger.toString() + " malformed definitions section");
-		}
-		Map<String, Path> priorPaths = this.swagger.getPaths();
-		this.swagger.setPaths(new HashMap<String, Path>());
-		for (String k : keys) {
-			Model m = this.swagger.getDefinitions().get(k);
+    /**
+     * Add the Starter StackGen required enhancements
+     */
+    @VisibleForTesting
+    public void enhanceSwagger() {
 
-			// put in the ignite fields
-			addIgniteFields(m);
+        // this.swagger.setBasePath("v1");
+        Set<String> keys;
+        try {
+            keys = this.swagger.getDefinitions().keySet();
+        } catch (NullPointerException e) {
+            throw new IgniteException("Schema: " + this.swagger.toString() + " malformed definitions section");
+        }
 
-			if (generateStarterCRUDOps) { // optionally add the REST apis
-				// TODO: see if using the dynamic version is useful
-				// String path = this.swagger.getBasePath() + "/" + k;
-				String path = k;
+        fixReservedWords(this.swagger.getDefinitions());
 
-				// Path existing =
-				// this.swagger.getPaths().get(path.toLowerCase());
+        Map<String, Path> priorPaths = this.swagger.getPaths();
+        this.swagger.setPaths(new HashMap<String, Path>());
+        for (String k : keys) {
+            Model m = this.swagger.getDefinitions().get(k);
 
-				// IGNITE_GEN_REST_PATH_PREFIX
-				if (StackGenConfigurator.checkReservedWord(k)) { // handle reserved
-					
-					Path ops = addCrudOps(k, m);
-					if (ops != null) {
-						this.swagger.getPaths().put( path + "/{id}", ops);
-					}
-					
-					Path opsp = addPost(k, m);
-					if(opsp != null) {
-						this.swagger.getPaths().put( path, opsp);
-					}
-					
-					Path opsl = addListOp(k, m);
-					if (opsl != null) {
-						this.swagger.getPaths()
-								.put( path + "/list/{searchparam}", opsl);
-					}
-				}
-			}
-		}
-		if (priorPaths != null) {
-			logger.warn("Found existing endpoint paths in Schema. NOT Generating endpoints for: ");
-			 for (String f : priorPaths.keySet()) {
-				
-				 // TODO: define handling of existing paths 
-				 //Path px = priorPaths.get(f);
-				 //this.swagger.getPaths().put(f, px);
-				 logger.warn("Path: " + f);
-			 }
-		}
-	}
+            // put in the ignite fields
+            addIgniteFields(m);
 
-	/**
-	 * @return
-	 */
-	private PathParameter getSearchPathParameter() {
-		PathParameter p = new PathParameter();
-		p.type("string");
-		p.setDefaultValue("0");
-		// p.setPattern("string");
-		
-		p.setName("searchparam"); // k + "Example");
-		p.setAccess("public");
-		p.setDescription("Search example: JSON");
-		return p;
-	}
+            if (generateStarterCRUDOps) { // optionally add the REST apis
+                // TODO: see if using the dynamic version is useful
+                // String path = this.swagger.getBasePath() + "/" + k;
+                String path = k;
 
-	/**
-	 * @param m
-	 * @return
-	 */
-	private BodyParameter getBodyPathParameter(String k, Response r) {
-		RefModel m = new RefModel();
-		m.set$ref("#/definitions/" + k);
-		m.setReference(k);
-		r.responseSchema(m);
-		r.setDescription("Results fetched OK");
+                Path existing = this.swagger.getPaths().get(path.toLowerCase());
 
-		BodyParameter up = new BodyParameter();
-		up.setName("id");
-		up.setAccess("public");
-		up.setDescription("JSON payload (updated or new data)");
-		up.setRequired(true);
-		up.setSchema(m);
-		return up;
-	}
+                // IGNITE_GEN_REST_PATH_PREFIX
+                if (StackGenConfigurator.checkReservedWord(k)) { // handle reserved
 
-	/**
-	 * @return
-	 */
-	private PathParameter getIdPathParameter(String typeDesc) {
-		PathParameter p = new PathParameter();
-		p.type("integer");
-		// p.setMinimum(new BigDecimal(0));
+                    Path ops = addCrudOps(k, m);
+                    if (ops != null) {
+                        this.swagger.getPaths().put(path + "/{id}", ops);
+                    }
 
-		// p.setName(k + "ID");
-		p.setName("id");
-		p.setAccess("public");
-		p.setDescription(typeDesc + " a single result by ID");
-		p.setRequired(true);
+                    Path opsp = addPost(k, m);
+                    if (opsp != null) {
+                        this.swagger.getPaths().put(path, opsp);
+                    }
 
-		return p;
-	}
+                    Path opsl = addListOp(k, m);
+                    if (opsl != null) {
+                        this.swagger.getPaths()
+                                .put(path + "/list/{searchparam}", opsl);
+                    }
+                }
+            }
+        }
+        if (priorPaths != null) {
+            logger.warn("Found existing endpoint paths in Schema. NOT Generating endpoints for: ");
+            for (String f : priorPaths.keySet()) {
+                // TODO: fix handling of existing paths
+                // Path px = priorPaths.get(f);
+                // this.swagger.getPaths().put(f, px);
 
-	private void addSecurity(String k, Operation loadOp) {
-		List<String> value;
-		value = new ArrayList<String>();
-		value.add("read: " + k);
-		value.add("write: " + k);
-		loadOp.addSecurity("automator_auth", value);
-	}
+                logger.warn("Path: " + f);
+            }
+        }
+    }
 
-	private Operation createCRUDOp(String opName, String opType, String opDesc, Parameter p) {
-		Operation anOp = new Operation();
-		anOp.setDescription("StackGen Generated API " + opName + ":"
-				+ opType);
-		anOp.setSummary(opDesc);
-		anOp.setExternalDocs(new ExternalDocs("Documentation for " + opName, "https:/docs.stackgen.io/api/" + opName ));
-		
-		// 'name' causes dupe method generation
-		 anOp.addTag(opType + "-" + opName);
+    private void fixReservedWords(Map<String, Model> definitions) {
+        // iterate models and rename reserved words
+        for (Model model : definitions.values()) {
+            if (model.getProperties() != null) {
 
-		anOp.operationId(opType);
-		anOp.addParameter(p);
-		anOp.getVendorExtensions().put("x-tags", "[{tag=" + opType + "}]");
-		addSecurity(opDesc, anOp);
-		return anOp;
-	}
+                // modifying map so avoid concurrent exception
+                Collection<Property> vx = new ArrayList<Property>();
+                vx.addAll(model.getProperties().values());
 
-	
-	private Path addPost(String k, Model model) {
-		Path ops = new Path();
+                for (Property f : vx) {
+                    if (reservedList.contains(f.getName())) {
+                        model.getProperties().remove(f.getName());
+                        f.setName("_" + f.getName());
+                        model.getProperties().put(f.getName(), f);
+                    }
+                }
+            }
+        }
 
-		// POST
-		Response r = new Response();
-		BodyParameter up = getBodyPathParameter(k, r);
-		Operation insertOp = createCRUDOp(k, "insert", "Insert a new " + k
-				+ " into the system", up);
-		insertOp.addConsumes("application/json");
-		insertOp.addProduces("application/json");
-		StringProperty p = new StringProperty("application/json");
-		r.addHeader("Content-Type", p);
-		StringProperty s = new StringProperty("text/plain");
-		r.addHeader("Content-Type", s);
-		insertOp.response(200, r);
-		ops.setPost(insertOp);
-		return ops;
-	}
-	
-	/**
-	 * Adds Starter StackGen required API CRUD REST endpoints.
-	 * 
-	 * @param m
-	 * @return 
-	 */
-	private Path addCrudOps(String k, Model model) {
-		Path ops = new Path();
-		Response r = new Response();
-		BodyParameter up = getBodyPathParameter(k, r);
+    }
 
-		// PUT
-		Operation updateOp = createCRUDOp(k, "update", "Update an existing " + k , getIdPathParameter("Update"));
-		up = getBodyPathParameter(k, r);
-		updateOp.addParameter(up);
-		updateOp.response(200, r);
-		ops.setPut(updateOp);
+    /**
+     * @return
+     */
+    private PathParameter getSearchPathParameter() {
+        PathParameter p = new PathParameter();
+        p.type("string");
+        p.setDefaultValue("0");
+        // p.setPattern("string");
 
-		// DELETE
-		Operation deleteOp = createCRUDOp(k, "delete", "Delete an existing " + k
-				+ " from the system", getIdPathParameter("Delete"));
-		updateOp.response(200, r);
-		ops.setDelete(deleteOp);
+        p.setName("searchparam"); // k + "Example");
+        p.setAccess("public");
+        p.setDescription("Search example: JSON");
+        return p;
+    }
 
-		// GET
-		Operation loadOp = createCRUDOp(k, "load", "Load an existing " + k
-				+ " from the system", getIdPathParameter("Load"));
-		ComposedModel mxt = new ComposedModel();
-		// mxt.setReference(k);
-		mxt.setReference("#/definitions/" + k);
-		r.setResponseSchema(mxt);
-		loadOp.response(200, r);
-		ops.setGet(loadOp);
-		return ops;
-	}
+    /**
+     * @param m
+     * @return
+     */
+    private BodyParameter getBodyPathParameter(String k, Response r) {
+        RefModel m = new RefModel();
+        m.set$ref("#/definitions/" + k);
+        m.setReference(k);
+        r.responseSchema(m);
+        r.setDescription("Results fetched OK");
 
-	/**
-	 * Adds Starter StackGen required API CRUD REST endpoints.
-	 * 
-	 * @param m
-	 * @param existing 
-	 * @return 
-	 */
-	private Path addListOp(String k, Model model) {
-		Path ops = new Path();
+        BodyParameter up = new BodyParameter();
+        up.setName("id");
+        up.setAccess("public");
+        up.setDescription("JSON payload (updated or new data)");
+        up.setRequired(true);
+        up.setSchema(m);
+        return up;
+    }
 
-		// List createa a new list path
-		Operation listOp = new Operation();
-		listOp.setDescription("Starter StackGen Auto Generated Listing");
-		listOp.setSummary("Retreive a list of " + k + "s from the service");
-		// listOp.addTag("list-tag"); // causes dupe method gen
-		listOp.operationId("list");
+    /**
+     * @return
+     */
+    private PathParameter getIdPathParameter(String typeDesc) {
+        PathParameter p = new PathParameter();
+        p.type("integer");
+        // p.setMinimum(new BigDecimal(0));
 
-		Response r = new Response();
+        // p.setName(k + "ID");
+        p.setName("id");
+        p.setAccess("public");
+        p.setDescription(typeDesc + " a single result by ID");
+        p.setRequired(true);
 
-		ArrayModel m = new ArrayModel();
-		ObjectProperty objectProp = new ObjectProperty();
-		m.setItems(objectProp);
-		m.setReference("#/definitions/" + k);
-		r.responseSchema(m);
+        return p;
+    }
 
-		listOp.addResponse("200", r);
+    private void addSecurity(String k, Operation loadOp) {
+        List<String> value;
+        value = new ArrayList<String>();
+        value.add("read: " + k);
+        value.add("write: " + k);
+        loadOp.addSecurity("automator_auth", value);
+    }
 
-		// causes attempt to transform lists into strings
-		// ArrayModel mx = new ArrayModel();
-		// mx.setReference(k);
-		// StringProperty p = new StringProperty("#/definitions/" + k);
-		// mx.setItems(p);
-		// r.setResponseSchema(mx);
+    private Operation createCRUDOp(String opName, String opType, String opDesc, Parameter p) {
+        Operation anOp = new Operation();
+        anOp.setDescription("StackGen Generated API " + opName + ":"
+                + opType);
+        anOp.setSummary(opDesc);
+        anOp.setExternalDocs(new ExternalDocs("Documentation for " + opName, "https:/docs.stackgen.io/api/" + opName));
 
-		PathParameter px = getSearchPathParameter();
-		listOp.addParameter(px);
+        // 'name' causes dupe method generation
+        anOp.addTag(opType + "-" + opName);
 
-		// security
-		// [{automator_auth=[write:Account, read:Account]}]
-		List<String> value = new ArrayList<String>();
-		value.add("read: " + k); // + k);
-		value.add("write: " + k); // + k);
-		listOp.addSecurity("automator_auth", value);
+        anOp.operationId(opType);
+        anOp.addParameter(p);
+        anOp.getVendorExtensions().put("x-tags", "[{tag=" + opType + "}]");
+        addSecurity(opDesc, anOp);
+        return anOp;
+    }
 
-		// vendorExtensions
-		// {x-contentType=application/json, x-accepts=application/json, x-tags=[{tag=account}]}
-		
-		listOp.getVendorExtensions().put("x-contentType", "application/json");
-		listOp.getVendorExtensions().put("x-accepts", "application/json");
-		listOp.getVendorExtensions().put("x-tags", "[{tag=" + k + "}]");
-		// listOp.addTag(k);
-		ops.setGet(listOp);
 
-		return ops;
-	}
+    private Path addPost(String k, Model model) {
+        Path ops = new Path();
 
-	/**
-	 * Adds Starter StackGen required API properties.
-	 * 
-	 * API properties are added to the Model objects, and reflected in generated 
-	 * Database and Persistence classes.
-	 * 
-	 * @param m
-	 */
-	private void addIgniteFields(Model mx) {
+        // POST
+        Response r = new Response();
+        BodyParameter up = getBodyPathParameter(k, r);
+        Operation insertOp = createCRUDOp(k, "insert", "Insert a new " + k
+                + " into the system", up);
+        insertOp.addConsumes("application/json");
+        insertOp.addProduces("application/json");
+        StringProperty p = new StringProperty("application/json");
+        r.addHeader("Content-Type", p);
+        StringProperty s = new StringProperty("text/plain");
+        r.addHeader("Content-Type", s);
+        insertOp.response(200, r);
+        ops.setPost(insertOp);
+        return ops;
+    }
 
-		ModelImpl m = (ModelImpl) mx;
-		Map<PropertyBuilder.PropertyId, Object> args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		// id -- all objects must have id as primary key
-		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
-		args.put(PropertyBuilder.PropertyId.TITLE, "Id");
-		args.put(PropertyBuilder.PropertyId.ALLOW_EMPTY_VALUE, false);
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated column)");
-		Property value = PropertyBuilder.build("integer", "int64", args);
-		value.setPosition(1);
-		value.setName("id");
-		value.setAccess(StackgenModelProperty.AccessMode.READ_ONLY.name());
-		m.addProperty("id", value);
-		
-		// keyVersion
-		args.put(PropertyBuilder.PropertyId.TITLE, "Securefield Key Version");
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The version of the SecureField key used to crypt this row (generated column)");
-		args.put(PropertyBuilder.PropertyId.DEFAULT, "1.0");
-		value = PropertyBuilder.build("integer", "int64", args);
-		m.addProperty("keyVersion", value);
+    /**
+     * Adds Starter StackGen required API CRUD REST endpoints.
+     *
+     * @param m
+     * @return
+     */
+    private Path addCrudOps(String k, Model model) {
+        Path ops = new Path();
+        Response r = new Response();
+        BodyParameter up = getBodyPathParameter(k, r);
 
-		// keySpec
-		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.TITLE, "Securefield Key Spec");
-		args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The spec of the SecureField key used to crypt this row (generated column)");
-		// args.put(PropertyBuilder.PropertyId.MIN_LENGTH, "200");
-		args.put(PropertyBuilder.PropertyId.DEFAULT, "dev");
-		args.put(PropertyBuilder.PropertyId.EXAMPLE, "keySource:system");
-		value = PropertyBuilder.build("string", "", args);
-		m.addProperty("keySpec", value);
+        // PUT
+        Operation updateOp = createCRUDOp(k, "update", "Update an existing " + k, getIdPathParameter("Update"));
+        up = getBodyPathParameter(k, r);
+        updateOp.addParameter(up);
+        updateOp.response(200, r);
+        ops.setPut(updateOp);
 
-		// OwnerId
-		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.TITLE, "StackGen owner id");
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The ID of the user that owns this data (generated column)");
-		value = PropertyBuilder.build("integer", "int64", args);
-		m.addProperty("ownerId", value);
+        // DELETE
+        Operation deleteOp = createCRUDOp(k, "delete", "Delete an existing " + k
+                + " from the system", getIdPathParameter("Delete"));
+        updateOp.response(200, r);
+        ops.setDelete(deleteOp);
 
-		// CreatedDate
-		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.TITLE, "Created Date");
-		args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The created date for this record/object (generated column)");
-		value = PropertyBuilder.build("string", "date-time", args);
-		m.addProperty("createdDate", value);
+        // GET
+        Operation loadOp = createCRUDOp(k, "load", "Load an existing " + k
+                + " from the system", getIdPathParameter("Load"));
+        ComposedModel mxt = new ComposedModel();
+        // mxt.setReference(k);
+        mxt.setReference("#/definitions/" + k);
+        r.setResponseSchema(mxt);
+        loadOp.response(200, r);
+        ops.setGet(loadOp);
+        return ops;
+    }
 
-		// ModifiedDate
-		args = new HashMap<PropertyBuilder.PropertyId, Object>();
-		args.put(PropertyBuilder.PropertyId.TITLE, "Modified Date");
-		args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The last-modified date for this record/object (generated column)");
-		value = PropertyBuilder.build("string", "date-time", args);
-		m.addProperty("modifiedDate", value);
+    /**
+     * Adds Starter StackGen required API CRUD REST endpoints.
+     *
+     * @param m
+     * @param existing
+     * @return
+     */
+    private Path addListOp(String k, Model model) {
+        Path ops = new Path();
 
-	}
+        // List createa a new list path
+        Operation listOp = new Operation();
+        listOp.setDescription("Starter StackGen Auto Generated Listing");
+        listOp.setSummary("Retreive a list of " + k + "s from the service");
+        // listOp.addTag("list-tag"); // causes dupe method gen
+        listOp.operationId("list");
 
-	/**
-	 * @return the pluginSwaggers
-	 */
-	public List<SwaggerGen> getPluginSwaggers() {
-		return pluginSwaggers;
-	}
+        Response r = new Response();
 
-	/**
-	 * @param pluginSwaggers the pluginSwaggers to set
-	 */
-	public void setPluginSwaggers(List<SwaggerGen> pluginSwaggers) {
-		this.pluginSwaggers = pluginSwaggers;
-	}
+        ArrayModel m = new ArrayModel();
+        ObjectProperty objectProp = new ObjectProperty();
+        m.setItems(objectProp);
+        m.setReference("#/definitions/" + k);
+        r.responseSchema(m);
 
-	public Swagger getSwagger() {
-		return swagger;
-	}
-	
-	@Override
-	public Generator opts(ClientOptInput opts) {
-		this.opts = opts;
-		this.swagger = opts.getSwagger();
-		this.config = opts.getConfig();
-		this.config.additionalProperties()
-				.putAll(opts.getOpts().getProperties());
+        listOp.addResponse("200", r);
 
-		String ignoreFileLocation = this.config.getIgnoreFilePathOverride();
-		if (ignoreFileLocation != null) {
-			final File ignoreFile = new File(ignoreFileLocation);
-			if (ignoreFile.exists() && ignoreFile.canRead()) {
-				this.ignoreProcessor = new CodegenIgnoreProcessor(ignoreFile);
-			} else {
-				logger.warn("Ignore file specified at {} is not valid. This will fall back to an existing ignore file if present in the output directory.", ignoreFileLocation);
-			}
-		}
+        // causes attempt to transform lists into strings
+        // ArrayModel mx = new ArrayModel();
+        // mx.setReference(k);
+        // StringProperty p = new StringProperty("#/definitions/" + k);
+        // mx.setItems(p);
+        // r.setResponseSchema(mx);
 
-		if (this.ignoreProcessor == null) {
-			this.ignoreProcessor = new CodegenIgnoreProcessor(
-					this.config.getOutputDir());
-		}
+        PathParameter px = getSearchPathParameter();
+        listOp.addParameter(px);
 
-		return this;
-	}
+        // security
+        // [{automator_auth=[write:Account, read:Account]}]
+        List<String> value = new ArrayList<String>();
+        value.add("read: " + k); // + k);
+        value.add("write: " + k); // + k);
+        listOp.addSecurity("automator_auth", value);
+
+        // vendorExtensions
+        // {x-contentType=application/json, x-accepts=application/json, x-tags=[{tag=account}]}
+
+        listOp.getVendorExtensions().put("x-contentType", "application/json");
+        listOp.getVendorExtensions().put("x-accepts", "application/json");
+        listOp.getVendorExtensions().put("x-tags", "[{tag=" + k + "}]");
+        // listOp.addTag(k);
+        ops.setGet(listOp);
+
+        return ops;
+    }
+
+    /**
+     * Adds Starter StackGen required API properties.
+     * <p>
+     * API properties are added to the Model objects, and reflected in generated
+     * Database and Persistence classes.
+     *
+     * @param m
+     */
+    private void addIgniteFields(Model mx) {
+
+        ModelImpl m = (ModelImpl) mx;
+        Map<PropertyBuilder.PropertyId, Object> args = new HashMap<PropertyBuilder.PropertyId, Object>();
+        // id -- all objects must have id as primary key
+        args = new HashMap<PropertyBuilder.PropertyId, Object>();
+        args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
+        args.put(PropertyBuilder.PropertyId.TITLE, "Id");
+        args.put(PropertyBuilder.PropertyId.ALLOW_EMPTY_VALUE, false);
+        args.put(PropertyBuilder.PropertyId.DESCRIPTION, "Primary Key for Object (generated column)");
+        Property value = PropertyBuilder.build("integer", "int64", args);
+        value.setPosition(1);
+        value.setName("id");
+        value.setAccess(StackgenModelProperty.AccessMode.READ_ONLY.name());
+        m.addProperty("id", value);
+
+        // keyVersion
+        args.put(PropertyBuilder.PropertyId.TITLE, "Securefield Key Version");
+        args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The version of the SecureField key used to crypt this row (generated column)");
+        args.put(PropertyBuilder.PropertyId.DEFAULT, "1.0");
+        value = PropertyBuilder.build("integer", "int64", args);
+        m.addProperty("keyVersion", value);
+
+        // keySpec
+        args = new HashMap<PropertyBuilder.PropertyId, Object>();
+        args.put(PropertyBuilder.PropertyId.TITLE, "Securefield Key Spec");
+        args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
+        args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The spec of the SecureField key used to crypt this row (generated column)");
+        // args.put(PropertyBuilder.PropertyId.MIN_LENGTH, "200");
+        args.put(PropertyBuilder.PropertyId.DEFAULT, "dev");
+        args.put(PropertyBuilder.PropertyId.EXAMPLE, "keySource:system");
+        value = PropertyBuilder.build("string", "", args);
+        m.addProperty("keySpec", value);
+
+        // OwnerId
+        args = new HashMap<PropertyBuilder.PropertyId, Object>();
+        args.put(PropertyBuilder.PropertyId.TITLE, "StackGen owner id");
+        args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The ID of the user that owns this data (generated column)");
+        value = PropertyBuilder.build("integer", "int64", args);
+        m.addProperty("ownerId", value);
+
+        // CreatedDate
+        args = new HashMap<PropertyBuilder.PropertyId, Object>();
+        args.put(PropertyBuilder.PropertyId.TITLE, "Created Date");
+        args.put(PropertyBuilder.PropertyId.READ_ONLY, true);
+        args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The created date for this record/object (generated column)");
+        value = PropertyBuilder.build("string", "date-time", args);
+        m.addProperty("createdDate", value);
+
+        // ModifiedDate
+        args = new HashMap<PropertyBuilder.PropertyId, Object>();
+        args.put(PropertyBuilder.PropertyId.TITLE, "Modified Date");
+        args.put(PropertyBuilder.PropertyId.DESCRIPTION, "The last-modified date for this record/object (generated column)");
+        value = PropertyBuilder.build("string", "date-time", args);
+        m.addProperty("modifiedDate", value);
+
+    }
+
+    /**
+     * @return the pluginSwaggers
+     */
+    public List<SwaggerGen> getPluginSwaggers() {
+        return pluginSwaggers;
+    }
+
+    /**
+     * @param pluginSwaggers the pluginSwaggers to set
+     */
+    public void setPluginSwaggers(List<SwaggerGen> pluginSwaggers) {
+        this.pluginSwaggers = pluginSwaggers;
+    }
+
+    public Swagger getSwagger() {
+        return swagger;
+    }
+
+    @Override
+    public Generator opts(ClientOptInput opts) {
+        this.opts = opts;
+        this.swagger = opts.getSwagger();
+        this.config = opts.getConfig();
+        this.config.additionalProperties()
+                .putAll(opts.getOpts().getProperties());
+
+        String ignoreFileLocation = this.config.getIgnoreFilePathOverride();
+        if (ignoreFileLocation != null) {
+            final File ignoreFile = new File(ignoreFileLocation);
+            if (ignoreFile.exists() && ignoreFile.canRead()) {
+                this.ignoreProcessor = new CodegenIgnoreProcessor(ignoreFile);
+            } else {
+                logger.warn("Ignore file specified at {} is not valid. This will fall back to an existing ignore file if present in the output directory.", ignoreFileLocation);
+            }
+        }
+
+        if (this.ignoreProcessor == null) {
+            this.ignoreProcessor = new CodegenIgnoreProcessor(
+                    this.config.getOutputDir());
+        }
+
+        return this;
+    }
+
     /**
      * Get the template file path with template dir prepended, and use the
      * library template if exists.
      *
-     * @param config Codegen config
+     * @param config       Codegen config
      * @param templateFile Template file
      * @return String Full template file path
      */
-	@Override
+    @Override
     public String getFullTemplateFile(CodegenConfig config, String templateFile) {
 
         //check the supplied template library folder for the file
-        final String library = cfg.getLibrary();
-        final String templateDir = cfg.getTemplateDir();
+        final String library = config.getLibrary();
+        final String templateDir = ((StackGenSpringCodegen) config).templateDir();
+        logger.info("SEARCHING " + library + " TEMPLATE DIR: " + templateDir);
         if (StringUtils.isNotEmpty(library) && StringUtils.isNotEmpty(templateDir)) {
             //look for the file in the library subfolder of the supplied template
-			final String libTemplateFile = templateDir + "/libraries/" + library + "/" + templateFile;  // buildLibraryFilePath(config.templateDir(), library, templateFile);
+            // /Users/johnmcmahon/workspace/sg-template-java_spring_mybatis_react_redux/src/main/java/libraries
+            final String libTemplateFile = templateDir + "/libraries" + library + "/" + templateFile;  // buildLibraryFilePath(config.templateDir(), library, templateFile);
             if (new File(libTemplateFile).exists()) {
+                logger.trace("FOUND LIBTEMPLATE FILE: " + libTemplateFile);
                 return libTemplateFile;
             }
         }
-		//check the supplied template main folder for the file
-		final String template = templateDir + File.separator + templateFile;
-		if (new File(template).exists()) {
-			return template;
-		}
+        //check the supplied template main folder for the file
+        final String template = templateDir + File.separator + templateFile;
+        if (new File(template).exists()) {
+            logger.trace("FOUND TEMPLATE FILE: " + template);
+            return template;
+        }
         // fallback to default handling
-		return super.getFullTemplateFile(config, templateFile);
+        return super.getFullTemplateFile(config, templateFile);
     }
 }

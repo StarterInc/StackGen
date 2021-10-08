@@ -1,5 +1,6 @@
 package io.starter.ignite.generator;
 
+import io.swagger.codegen.CodegenConfig;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.Swagger;
 import io.swagger.models.properties.Property;

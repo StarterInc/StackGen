@@ -731,7 +731,8 @@ public class JavaGen extends Gen implements Generator {
 		classLoader.close();
 	}
 
-	private FieldSpec createMyBatisSearchMapperField(String className) throws ClassNotFoundException {
+	private FieldSpec createMyBatisSearchMapperField(String className)
+			throws ClassNotFoundException {
 		Class<?> cx;
 		try {
 			final String lnx = getMyBatisName(className);

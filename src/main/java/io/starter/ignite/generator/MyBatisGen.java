@@ -52,11 +52,15 @@ public class MyBatisGen extends Gen implements Generator {
 
 	public Map<String, Object> createMyBatis(Class<?> c, MyBatisGen gen) throws Exception {
 
-		MyBatisGen.logger.info("Generate ORM files for:" + c.getName());
+		MyBatisGen.logger.info(
+				"Generate ORM files for:"
+						+ c.getName());
 
 		final Map<String, Object> classesToGenerate = gen.processClasses(c, null, gen);
 
-		MyBatisGen.logger.info("Done with ORM for:" + c.getName());
+		MyBatisGen.logger.info(
+				"Done with ORM for:"
+						+ c.getName());
 
 		return classesToGenerate;
 	}
@@ -171,7 +175,8 @@ public class MyBatisGen extends Gen implements Generator {
 
 		@Override
 		public void generationStarted(int totalTasks) {
-			logger.debug("Generating MyBatis Model Started with: " + totalTasks + " total tasks.");
+			logger.debug("Generating MyBatis Model Started with: "
+					+ totalTasks + " total tasks.");
 		}
 
 		@Override
@@ -214,7 +219,10 @@ public class MyBatisGen extends Gen implements Generator {
 	private Document jdt;
 
 	@Override
-	public void generate(String className, List<Object> fieldList, List<MethodSpec> getters, List<MethodSpec> setters)
+	public void generate(String className,
+						 List<Object> fieldList,
+						 List<MethodSpec> getters,
+						 List<MethodSpec> setters)
 			throws Exception {
 
 		// create a new JDOM Element
@@ -226,42 +234,58 @@ public class MyBatisGen extends Gen implements Generator {
 		final int dotpos = className.lastIndexOf(".");
 		className = className.substring(dotpos + 1);
 
-		logger.info("Load MyBatis Generator Config XML template for: " + className); // : " + jdt.getBaseURI());
-		final File genConfigFile = new File(config.getMybatisGenConfigTemplate());
+		logger.info("Load MyBatis Generator Config XML template for: "
+				+ className); // : " + jdt.getBaseURI());
+		final File genConfigFile =
+				new File(config.getMybatisGenConfigTemplate());
+
 		// make sure we have an ok mapping config
 		if(!genConfigFile.exists()) {
-			throw new IgniteException("Cannot find genConfig file for MyBatis Generation." + config.getMybatisGenConfigOut());
+			throw new IgniteException(
+					"Cannot find genConfig file for MyBatis Generation."
+							+ config.getMybatisGenConfigOut());
 		}
 		if(!genConfigFile.canRead()) {
-			throw new IgniteException("Cannot read genConfig file for MyBatis Generation." + config.getMybatisGenConfigOut());
+			throw new IgniteException(
+					"Cannot read genConfig file for MyBatis Generation."
+							+ config.getMybatisGenConfigOut());
 		}
 		jdt = createMyBatisXMLGenConfigNodes(jdt, className, genConfigFile);
 
 		FileUtil.ensurePathExists(new File(config.getMybatisGenConfigOut()));
 		DOMEditor.write(jdt, config.getMybatisGenConfigOut());
 
-		MyBatisGen.logger.info("Load MyBatis Persistence Config XML template: " + config.getMybatisGenConfigOut());
+		MyBatisGen.logger.info("Load MyBatis Generator Config XML template: "
+				+ config.getMybatisGenConfigOut());
 		final File configFile = new File(config.getMybatisGenConfigOut());
 		// make sure we have an ok mapping config
 		if(!configFile.exists()) {
-			throw new IgniteException("Cannot find config file for MyBatis Generation." + config.getMybatisGenConfigOut());
+			throw new IgniteException(
+					"Cannot find config file for MyBatis Generation."
+							+ config.getMybatisGenConfigOut());
 		}
 		if(!configFile.canRead()) {
-			throw new IgniteException("Cannot read config file for MyBatis Generation." + config.getMybatisGenConfigOut());
+			throw new IgniteException(
+					"Cannot read config file for MyBatis Generation."
+							+ config.getMybatisGenConfigOut());
 		}
 		jdx = createMyBatisXMLConfigNodes(jdx, configFile);
-		DOMEditor.write(jdx, config.getMybatisConfigOut()); // for runtime
+		DOMEditor.write(jdx, config.getMybatisGenConfigOut()); // for runtime
 	}
 
 	// mappers>
 	// <mapper resource="io/starter/sqlmaps/AclMapper.xml" />
-	private Document createMyBatisXMLConfigNodes(Document jdo, File configFile)
+	private Document createMyBatisXMLConfigNodes(
+			Document jdo, File configFile)
 			throws JDOMException, IOException {
 
-		MyBatisGen.logger.info("Parse MyBatis Template: " + configFile.getAbsolutePath());
+		MyBatisGen.logger.info(
+				"Parse MyBatis Template: "
+						+ configFile.getAbsolutePath());
 
 		if (jdo == null) {
-			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
+			jdo = DOMEditor.parse("mybatis",
+					configFile.getAbsolutePath());
 		}
 
 		// final Element rootElement = jdo.getRootElement();
@@ -275,14 +299,19 @@ public class MyBatisGen extends Gen implements Generator {
 		return jdo;
 	}
 
-	private Document createMyBatisXMLGenConfigNodes(Document jdo, String className, File configFile)
+	private Document createMyBatisXMLGenConfigNodes(
+			Document jdo,
+			String className,
+			File configFile)
 			throws JDOMException, IOException {
 
-		MyBatisGen.logger.info("Parse MyBatis Template: " + configFile.getAbsolutePath());
+		MyBatisGen.logger.info("Parse MyBatis Template: "
+				+ configFile.getAbsolutePath());
 		Table table = new Table(config);
 
 		if (jdo == null) {
-			jdo = DOMEditor.parse("mybatis", configFile.getAbsolutePath());
+			jdo = DOMEditor.parse("mybatis",
+					configFile.getAbsolutePath());
 		}
 
 		// dedupe
@@ -325,7 +354,10 @@ public class MyBatisGen extends Gen implements Generator {
 
 	void createMyBatisFromModelFolder() throws Exception {
 		MyBatisGen.logger.info("Iterate Model File Classesa and create MyBatis Objects...");
-		final File[] modelFiles = Gen.getJavaFiles(config.getJavaGenSourceFolder() + "/" + config.getModelPackageDir() , false);
+		final File[] modelFiles = Gen.getJavaFiles(
+				config.getJavaGenSourceFolder()
+						+ "/" + config.getModelPackageDir(),
+				false);
 
 		for (final File mf : modelFiles) {
 			final String mna = mf.getName();
@@ -336,7 +368,8 @@ public class MyBatisGen extends Gen implements Generator {
 				cn = config.getIgniteModelPackage() + "." + cn;
 				MyBatisGen.logger.info("Loading Model Class: " + cn);
 				final URLClassLoader classLoader = new URLClassLoader(
-						new URL[] { new File(config.getJavaGenSourceFolder()).toURI().toURL() });
+						new URL[] { new File(config.getJavaGenSourceFolder())
+								.toURI().toURL() });
 				try {
 					final Class<?> loadedClass = classLoader.loadClass(cn);
 					createMyBatis(loadedClass, this);

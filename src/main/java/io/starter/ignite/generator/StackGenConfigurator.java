@@ -365,7 +365,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
 	}
 
 	public String getMybatisConfigOut() {
-		return getGenOutputFolder() + "/src/main/resources/MyBatisConfig.xml";
+		return getGenOutputFolder() + "/" + getSourceResources() + "/MyBatisConfig.xml";
 	}
 
 	public String MYBATIS_COL_ENUM_FLAG = "ENUM";

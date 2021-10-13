@@ -519,7 +519,7 @@ public class IgniteGenerator extends DefaultGenerator {
         //check the supplied template library folder for the file
         final String library = config.getLibrary();
         final String templateDir = ((StackGenSpringCodegen) config).templateDir();
-        logger.info("SEARCHING " + library + " TEMPLATE DIR: " + templateDir);
+        logger.trace("SEARCHING " + library + " TEMPLATE DIR: " + templateDir);
         if (StringUtils.isNotEmpty(library) && StringUtils.isNotEmpty(templateDir)) {
             //look for the file in the library subfolder of the supplied template
             // /Users/johnmcmahon/workspace/sg-template-java_spring_mybatis_react_redux/src/main/java/libraries

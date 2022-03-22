@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.aspectj.util.FileUtil;
 import org.codehaus.plexus.util.FileUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
@@ -183,8 +183,7 @@ public class Main extends Gen implements CommandLineRunner {
 	 * @param inputSpec JSONObject containing config data
 	 * @return
 	 */
-	public void generateApp(JSONObject cfg) throws Exception {
-
+	public void generateApp(Map<String, Object> cfg) throws Exception {
 		try {
 			config = StackGenConfigurator.configureFromJSON(cfg, config);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -192,7 +191,6 @@ public class Main extends Gen implements CommandLineRunner {
 			e.printStackTrace();
 		}
 		generateStack(config);
-
 	}
 
 	/**

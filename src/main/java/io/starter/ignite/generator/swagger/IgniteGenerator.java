@@ -6,16 +6,16 @@ import io.starter.ignite.generator.StackGenConfigurator;
 import io.starter.ignite.generator.SwaggerGen;
 import io.starter.ignite.generator.annotations.StackgenModelProperty;
 import io.starter.ignite.generator.swagger.languages.StackGenSpringCodegen;
-import io.swagger.codegen.*;
-import io.swagger.codegen.ignore.CodegenIgnoreProcessor;
-import io.swagger.models.*;
+import io.swagger.codegen.v3.*;
+import io.swagger.codegen.v3.ignore.CodegenIgnoreProcessor;
+
+import io.swagger.models.Model;
+import io.swagger.models.RefModel;
 import io.swagger.models.parameters.BodyParameter;
-import io.swagger.models.parameters.Parameter;
-import io.swagger.models.parameters.PathParameter;
-import io.swagger.models.properties.ObjectProperty;
 import io.swagger.models.properties.Property;
-import io.swagger.models.properties.PropertyBuilder;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.*;
+import io.swagger.v3.oas.models.parameters.*;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,47 +127,47 @@ public class IgniteGenerator extends DefaultGenerator {
     @VisibleForTesting
     public void enhanceSwagger() {
 
-        // this.swagger.setBasePath("v1");
+        // this.openAPI.setBasePath("v1");
         Set<String> keys;
         try {
-            keys = this.swagger.getDefinitions().keySet();
+            keys = this.openAPI.getDefinitions().keySet();
         } catch (NullPointerException e) {
-            throw new IgniteException("Schema: " + this.swagger.toString() + " malformed definitions section");
+            throw new IgniteException("Schema: " + this.openAPI.toString() + " malformed definitions section");
         }
 
-        fixReservedWords(this.swagger.getDefinitions());
+        fixReservedWords(this.openAPI.getDefinitions());
 
-        Map<String, Path> priorPaths = this.swagger.getPaths();
-        this.swagger.setPaths(new HashMap<String, Path>());
+        Map<String, Path> priorPaths = this.openAPI.getPaths();
+        this.openAPI.setPaths(new HashMap<String, Path>());
         for (String k : keys) {
-            Model m = this.swagger.getDefinitions().get(k);
+            Model m = this.openAPI.getDefinitions().get(k);
 
             // put in the ignite fields
             addIgniteFields(m);
 
             if (generateStarterCRUDOps) { // optionally add the REST apis
                 // TODO: see if using the dynamic version is useful
-                // String path = this.swagger.getBasePath() + "/" + k;
+                // String path = this.openAPI.getBasePath() + "/" + k;
                 String path = k;
 
-                Path existing = this.swagger.getPaths().get(path.toLowerCase());
+                Path existing = this.openAPI.getPaths().get(path.toLowerCase());
 
                 // IGNITE_GEN_REST_PATH_PREFIX
                 if (StackGenConfigurator.checkReservedWord(k)) { // handle reserved
 
                     Path ops = addCrudOps(k, m);
                     if (ops != null) {
-                        this.swagger.getPaths().put(path + "/{id}", ops);
+                        this.openAPI.getPaths().put(path + "/{id}", ops);
                     }
 
                     Path opsp = addPost(k, m);
                     if (opsp != null) {
-                        this.swagger.getPaths().put(path, opsp);
+                        this.openAPI.getPaths().put(path, opsp);
                     }
 
                     Path opsl = addListOp(k, m);
                     if (opsl != null) {
-                        this.swagger.getPaths()
+                        this.openAPI.getPaths()
                                 .put(path + "/list/{searchparam}", opsl);
                     }
                 }
@@ -178,7 +178,7 @@ public class IgniteGenerator extends DefaultGenerator {
             for (String f : priorPaths.keySet()) {
                 // TODO: fix handling of existing paths
                 // Path px = priorPaths.get(f);
-                // this.swagger.getPaths().put(f, px);
+                // this.openAPI.getPaths().put(f, px);
 
                 logger.warn("Path: " + f);
             }
@@ -211,13 +211,13 @@ public class IgniteGenerator extends DefaultGenerator {
      */
     private PathParameter getSearchPathParameter() {
         PathParameter p = new PathParameter();
-        p.type("string");
-        p.setDefaultValue("0");
+        // p.setIn("String");
+        p.setExample("0");
+        p.setExplode(true);
         // p.setPattern("string");
 
         p.setName("searchparam"); // k + "Example");
-        p.setAccess("public");
-        p.setDescription("Search example: JSON");
+        p.setDescription("Search for ...");
         return p;
     }
 
@@ -225,11 +225,11 @@ public class IgniteGenerator extends DefaultGenerator {
      * @param m
      * @return
      */
-    private BodyParameter getBodyPathParameter(String k, Response r) {
+    private BodyParameter getBodyPathParameter(String k, ApiResponse r) {
         RefModel m = new RefModel();
         m.set$ref("#/definitions/" + k);
         m.setReference(k);
-        r.responseSchema(m);
+        // r.(m);
         r.setDescription("Results fetched OK");
 
         BodyParameter up = new BodyParameter();
@@ -482,7 +482,7 @@ public class IgniteGenerator extends DefaultGenerator {
     @Override
     public Generator opts(ClientOptInput opts) {
         this.opts = opts;
-        this.swagger = opts.getSwagger();
+        this.openAPI = opts.getSwagger();
         this.config = opts.getConfig();
         this.config.additionalProperties()
                 .putAll(opts.getOpts().getProperties());

@@ -57,7 +57,7 @@ public class SecureFieldTest {
 		
 		Field f = u.getClass().getField("password");
 		String pCheck = f.get(u).toString();
-		System.out.println("USER PASS: " + u.getPassword() + ":" + pCheck);
+		// System.out.println("USER PASS: " + u.getPassword() + ":" + pCheck);
 
 		String up = u.getPassword();
 		

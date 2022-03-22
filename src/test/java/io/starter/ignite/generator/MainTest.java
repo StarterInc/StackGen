@@ -5,7 +5,7 @@ package io.starter.ignite.generator;
 
 import static org.junit.Assert.assertEquals;
 
-import org.json.JSONObject;
+import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import io.swagger.models.properties.Property;
 
@@ -39,18 +40,18 @@ public class MainTest {
 	@Test
 	// @Ignore(value = "should not be run as a unit test")
 	public void swaggerGenJSONConfig() {
-
-		JSONObject job = new JSONObject(inputJSON);
-
+		Gson gson = new Gson();
+		Map job = gson.fromJson(inputJSON, Map.class);
 		SwaggerGen swaggerGen = new SwaggerGen(job);
-
 		swaggerGen.mergePluginSwaggers(swaggerGen.config);
 	}
 
 	
 	// @Test
 	public void generateAppFromJSON() throws Exception {
-		JSONObject job = new JSONObject(inputJSON);
+		Gson gson = new Gson();
+		Map job = gson.fromJson(inputJSON, Map.class);
+		// JSONObject job = new JSONObject(inputJSON);
 		// job.remove("schemaData");
 		// job.remove("schemaFile");
 		
@@ -61,13 +62,10 @@ public class MainTest {
 	@Test
 	@Ignore(value = "should not be run as a unit test")
 	public void swaggerGenJSONConfigGenerate() {
-
-		JSONObject job = new JSONObject(inputJSON);
-
+		Gson gson = new Gson();
+		Map job = gson.fromJson(inputJSON, Map.class);
 		SwaggerGen swaggerGen = new SwaggerGen(job);
-
 		swaggerGen.mergePluginSwaggers(swaggerGen.config);
-
 		List<File> output = swaggerGen.generate();
 		// org.junit.Assert.assertEquals("there should be 16 output files", output.size(), 17);
 	}

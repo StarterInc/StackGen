@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import io.swagger.codegen.CodegenConfig;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.starter.ignite.generator.swagger.IgniteGenerator;
-import io.starter.ignite.util.SystemConstants;
 import io.swagger.codegen.ClientOptInput;
 import io.swagger.codegen.CodegenConstants;
 import io.swagger.models.Model;
@@ -47,20 +44,6 @@ public class SwaggerGen extends Gen {
 	}
 
 	/**
-	 * @return the configObj
-	 */
-	public JSONObject getConfigObj() {
-		return configObj;
-	}
-
-	/**
-	 * @param configObj the configObj to set
-	 */
-	public void setConfigObj(JSONObject configObj) {
-		this.configObj = configObj;
-	}
-
-	/**
 	 * @return the pluginSwaggers
 	 */
 	public List<SwaggerGen> getPluginSwaggers() {
@@ -76,7 +59,7 @@ public class SwaggerGen extends Gen {
 
 	// the configObj is basically the
 	// command line stackgen values only
-	private JSONObject configObj;
+	private Map<String, Object> configObj;
 
 	List<SwaggerGen> pluginSwaggers = new ArrayList<SwaggerGen>();
 
@@ -90,10 +73,10 @@ public class SwaggerGen extends Gen {
 	 * 
 	 * @param inputSpec JSONObject containing config data
 	 */
-	public SwaggerGen(JSONObject cfg) {
+	public SwaggerGen(Map cfg) {
 		this(new File(  (StackGenConfigurator.getSpecLocation() != null ? StackGenConfigurator.getSpecLocation() : "") + 
-						( cfg.getString("schemaFile") != null 
-						? cfg.getString("schemaFile") 
+						( cfg.get("schemaFile") != null
+						? cfg.get("schemaFile")
 						: "")
 				 ));
 	}
@@ -230,8 +213,8 @@ public class SwaggerGen extends Gen {
 	 */
 	private String getVal(String fieldName, String systemVal) {
 		if (this.configObj != null) {
-			if (this.configObj.has(fieldName)) {
-				String v = this.configObj.getString(fieldName);
+			if (this.configObj.get(fieldName)!=null) {
+				String v = this.configObj.get(fieldName).toString();
 				if (v != null)
 					return v;
 			}

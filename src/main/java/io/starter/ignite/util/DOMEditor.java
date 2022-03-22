@@ -1,24 +1,20 @@
 package io.starter.ignite.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 public class DOMEditor {
 
 	public static Document parse(String namespace, String filename)
 			throws JDOMException, IOException {
-		// final Namespace ns = Namespace.getNamespace(namespace);
-
 		// Get the JDOM document
-		org.jdom.Document doc = useSAXParser(filename);
+		org.jdom2.Document doc = useSAXParser(filename);
 		return doc;
 	}
 
@@ -33,10 +29,9 @@ public class DOMEditor {
 	}
 
 	// Get JDOM document from SAX Parser
-	private static org.jdom.Document useSAXParser(String fileName)
+	private static org.jdom2.Document useSAXParser(String fileName)
 			throws JDOMException, IOException {
 		SAXBuilder saxBuilder = new SAXBuilder();
 		return saxBuilder.build(new File(fileName));
 	}
-
 }

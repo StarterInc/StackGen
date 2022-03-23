@@ -3,7 +3,7 @@
 ![StackGen CI](https://github.com/StarterInc/StackGen/workflows/StackGen%20CI/badge.svg?branch=master)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FStarterInc%2FStackGen.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FStarterInc%2FStackGen?ref=badge_shield)
 
-## Generate Apps and Stacks from OpenAPI/Swagger spec files -- CodeGen for Developers
+## Generate Enterprise Stacks from OpenAPI -- CodeGen for Coders
 
 Take an input OpenAPI/Swagger spec file and generate a full-stack Spring Boot microservice.
 

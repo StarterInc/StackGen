@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.codegen.v3.Generator;
+import io.swagger.models.Scheme;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.media.Schema;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +20,8 @@ import io.swagger.codegen.v3.ClientOptInput;
 import io.swagger.codegen.v3.CodegenConstants;
 
 import io.swagger.models.Model;
-import io.swagger.models.Scheme;
-import io.swagger.models.Swagger;
-import io.swagger.models.Tag;
-import io.swagger.models.parameters.Parameter;
+
+import io.swagger.v3.oas.models.parameters.Parameter;
 
 /**
  * responsible for generating the Swagger server and clients
@@ -102,7 +104,7 @@ public class SwaggerGen extends Gen {
 	/**
 	 * Create and initialize a new SwaggerGen
 	 * 
-	 * @param inputSpec filename of spec (file in templateDirectory)
+	 * @param spec filename of spec (file in templateDirectory)
 	 */
 	public SwaggerGen(String spec) {
 		config = getConfig(spec);
@@ -152,8 +154,7 @@ public class SwaggerGen extends Gen {
 	}
 
 	/**
-	 * @param spec
-	 * @param config
+	 *
 	 */
 	private void setStaticConfiguration() {
 
@@ -241,7 +242,7 @@ public class SwaggerGen extends Gen {
 		return systemVal;
 	}
 
-	public io.swagger.codegen.Generator preGen() {
+	public Generator preGen() {
 		final ClientOptInput clientOptInput = mergePluginSwaggers();
 		return generator.opts(clientOptInput);
 	}
@@ -254,8 +255,7 @@ public class SwaggerGen extends Gen {
 	 * Merge all of the loaded plugin swagger specs into this one
 	 * 
 	 * returns a ready-to-run config
-	 * 
-	 * @see addSwagger(SwaggerGen x)
+	 *
 	 */
 	public ClientOptInput mergePluginSwaggers() {
 		try {
@@ -294,37 +294,18 @@ public class SwaggerGen extends Gen {
 	 * @param plugin
 	 * @param target
 	 */
-	void mergeSwagger(Swagger plugin, Swagger target) {
-
-		List<Scheme> schemes = plugin.getSchemes();
-		for (Scheme c : schemes)
-			target.addScheme(c);
-
-		List<String> consumes = plugin.getConsumes();
-		if (consumes != null)
-			for (String c : consumes)
-				target.addConsumes(c);
-
-		List<String> produces = plugin.getProduces();
-		if (produces != null)
-			for (String c : produces)
-				target.addProduces(c);
-
-		Map<String, Model> definitions = plugin.getDefinitions();
-		if (definitions != null)
-			for (String c : definitions.keySet())
-				target.addDefinition(c, definitions.get(c));
-
-		Map<String, Parameter> parameters = plugin.getParameters();
-		if (parameters != null)
-			for (String c : parameters.keySet())
-				target.addParameter(c, parameters.get(c));
-
-		// target.addSecurity(securityRequirement);
-		List<Tag> tags = plugin.getTags();
-		if (tags != null)
-			for (Tag c : tags)
-				target.addTag(c);
+	void mergeSwagger(OpenAPI plugin, OpenAPI target) {
+		Components definitions = plugin.getComponents();
+		Components targetComponents = target.getComponents();
+		targetComponents.getSchemas().putAll(definitions.getSchemas());
+		targetComponents.getCallbacks().putAll(definitions.getCallbacks());
+		targetComponents.getExamples().putAll(definitions.getExamples());
+		targetComponents.getExtensions().putAll(definitions.getExtensions());
+		targetComponents.getHeaders().putAll(definitions.getHeaders());
+		targetComponents.getLinks().putAll(definitions.getLinks());targetComponents.getExtensions().putAll(definitions.getExtensions());
+		targetComponents.getParameters().putAll(definitions.getParameters());
+		targetComponents.getResponses().putAll(definitions.getResponses());
+		targetComponents.getRequestBodies().putAll(definitions.getRequestBodies());
+		targetComponents.getSecuritySchemes().putAll(definitions.getSecuritySchemes());
 	}
-
 }

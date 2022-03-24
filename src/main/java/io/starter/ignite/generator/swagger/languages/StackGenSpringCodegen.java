@@ -8,14 +8,12 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
-import com.github.jknack.handlebars.Handlebars;
+import io.swagger.codegen.v3.CodegenModel;
+import io.swagger.codegen.v3.CodegenParameter;
+import io.swagger.codegen.v3.CodegenProperty;
+import io.swagger.codegen.v3.generators.java.SpringCodegen;
+
 import io.starter.toolkit.StringTool;
-import io.swagger.codegen.v3.*;
-import io.swagger.codegen.v3.templates.TemplateEngine;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +21,8 @@ import org.slf4j.LoggerFactory;
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 
-import io.swagger.codegen.languages.SpringCodegen;
 import io.swagger.codegen.languages.features.BeanValidationFeatures;
- import io.swagger.codegen.languages.features.OptionalFeatures;
+import io.swagger.codegen.languages.features.OptionalFeatures;
 
 /**
  * customized Spring CodeGen for StackGen
@@ -35,7 +32,7 @@ import io.swagger.codegen.languages.features.BeanValidationFeatures;
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
-public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfig, BeanValidationFeatures, OptionalFeatures {
+public class StackGenSpringCodegen extends SpringCodegen implements BeanValidationFeatures, OptionalFeatures {
 
 	protected static final Logger logger = LoggerFactory.getLogger(StackGenSpringCodegen.class);
 
@@ -53,29 +50,14 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		return "Generates a Java SpringBoot StackGen Service.";
 	}
 
-    @Override
-    public String apiDocFileFolder() {
-        return (outputFolder + "/" + apiDocPath).replace('/', File.separatorChar);
-    }
-
 	@Override
-	public String customTemplateDir() {
-		return null;
+	public String apiDocFileFolder() {
+		return (outputFolder + "/" + apiDocPath).replace('/', File.separatorChar);
 	}
 
 	@Override
-	public String getTemplateVersion() {
-		return null;
-	}
-
-	@Override
-    public String modelDocFileFolder() {
-        return (outputFolder + "/" + modelDocPath).replace('/', File.separatorChar);
-    }
-
-	@Override
-	public String getTypeDeclaration(Schema schema) {
-		return null;
+	public String modelDocFileFolder() {
+		return (outputFolder + "/" + modelDocPath).replace('/', File.separatorChar);
 	}
 
 	@Override
@@ -87,42 +69,42 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		super.processOpts();
 		// add doc templates
 		apiTemplateFiles.put("ApiClient.mustache", ".java");
-        modelDocTemplateFiles.put("model_doc.mustache", ".md");
-        apiDocTemplateFiles.put("api_doc.mustache", ".md");
+		modelDocTemplateFiles.put("model_doc.mustache", ".md");
+		apiDocTemplateFiles.put("api_doc.mustache", ".md");
 
 		// TODO: add model test
 		// modelTestTemplateFiles.put("modelTest.mustache", "Test.java");
 
 		apiTestTemplateFiles.put("apiTest.mustache", ".java");
 
-        // add lambda for mustache templates
- 		additionalProperties.put("lambdaAddSecurityAnnotations", new Mustache.Lambda() {
- 			@Override
- 			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
- 				String checkOp = fragment.execute();
- 				
- 				String targetClassname = StackGenSpringCodegen.this.modelPackage() + "." + ((io.swagger.codegen.CodegenOperation)fragment.context()).baseName + "Service";
- 				
- 				switch(checkOp) {
- 					case "update":
+		// add lambda for mustache templates
+		additionalProperties.put("lambdaAddSecurityAnnotations", new Mustache.Lambda() {
+			@Override
+			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
+				String checkOp = fragment.execute();
+
+				String targetClassname = StackGenSpringCodegen.this.modelPackage() + "." + ((io.swagger.codegen.CodegenOperation)fragment.context()).baseName + "Service";
+
+				switch(checkOp) {
+					case "update":
 						writer.write("@PreAuthorize(\"hasPermission(#id2, 'update')\")");
 						break;
- 					case "delete":
- 						writer.write("@PreAuthorize(\"hasPermission(#id, '"+targetClassname+"', 'delete')\")");
- 						break;						
- 					case "load":
- 						writer.write("@PostFilter(\"hasPermission(filterObject, 'load')\")");
- 						break;
- 					case "list":
- 						writer.write("@PostFilter(\"hasPermission(filterObject, 'list')\")");
- 						break;
- 					// case "insert":
- 						// writer.write("@PreAuthorize(\"hasPermission(filterObject, 'insert')\")");
- 						// break;
- 						
- 				}
- 			}
- 		});
+					case "delete":
+						writer.write("@PreAuthorize(\"hasPermission(#id, '"+targetClassname+"', 'delete')\")");
+						break;
+					case "load":
+						writer.write("@PostFilter(\"hasPermission(filterObject, 'load')\")");
+						break;
+					case "list":
+						writer.write("@PostFilter(\"hasPermission(filterObject, 'list')\")");
+						break;
+					// case "insert":
+					// writer.write("@PreAuthorize(\"hasPermission(filterObject, 'insert')\")");
+					// break;
+
+				}
+			}
+		});
 		additionalProperties.put("lambdaEscapeDoubleQuote", new Mustache.Lambda() {
 			@Override
 			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
@@ -159,86 +141,28 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		});
 	}
 
-	@Override
-	public String generateExamplePath(String s, Operation operation) {
-		return null;
-	}
-
-	@Override
-	public String getInputURL() {
-		return null;
-	}
-
-	@Override
-	public void setInputURL(String s) {
-
-	}
-
-	@Override
-	public CodegenModel fromModel(String s, Schema schema) {
-		return null;
-	}
-
-	@Override
-	public CodegenModel fromModel(String s, Schema schema, Map<String, Schema> map) {
-		return null;
-	}
-
-	@Override
-	public CodegenOperation fromOperation(String s, String s1, Operation operation, Map<String, Schema> map, OpenAPI openAPI) {
-		return null;
-	}
-
-	@Override
-	public CodegenOperation fromOperation(String s, String s1, Operation operation, Map<String, Schema> map) {
-		return null;
-	}
-
-	@Override
-	public List<CodegenSecurity> fromSecurity(Map<String, SecurityScheme> map) {
-		return null;
-	}
-
-	@Override
-	public void preprocessOpenAPI(OpenAPI openAPI) {
-
-	}
-
-	@Override
-	public void processOpenAPI(OpenAPI openAPI) {
-
-	}
-
-	@Override
-	public TemplateEngine getTemplateEngine() {
-		return null;
-	}
-
-	@Override
-	public void addOperationToGroup(String s, String s1, Operation operation, CodegenOperation codegenOperation, Map<String, List<CodegenOperation>> map) {
-
-	}
 
 	@Override
 	public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
-		super.postProcessModelProperty(model, property);
+		super.postProcessModelProperty(model,
+				property);
 
 		// Starter Extensions
 		if (property.vendorExtensions.containsKey("x-starter-secureField")) {
 			Object o = property.vendorExtensions.containsKey("x-starter-secureField");
 			if (o != null) {
-				
+
 				// property.isSecure = true;
 				Object confs = property.vendorExtensions.get("x-starter-secureField");
 				String vx = "@io.starter.ignite.security.securefield.SecureField(enabled=true";
-				
+
 				if (confs.toString().toLowerCase().contains("type=hashed")) {
 					vx += ", type=io.starter.ignite.security.securefield.SecureField.Type.HASHED";
 				} else {
 					vx += ", strength=5";
 				}
 				vx += ")";
-				
+
 				property.vendorExtensions.put("secureAnnotation", vx);
 				logger.info("Found Starter SecureField Vendor Extension" + vx);
 			}
@@ -250,12 +174,12 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 				// "pass on" the settings for processing (ie: aspects)
 				String vx = "@io.starter.ignite.model.DataField({{vx}})";
 				String st = "";
-				
+
 				// handle hidden datafields
 				String strx = o.toString(); // .toLowerCase();
 				if(strx.indexOf(",") == -1) {
 					st = extractEnumConfig(st, strx.trim());
-				}else {					
+				}else {
 					StringTokenizer tokr = new StringTokenizer(strx, ",");
 					while(tokr.hasMoreTokens()){
 						String param = tokr.nextToken();
@@ -293,7 +217,7 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 			}
 		}
 
-		if (!BooleanUtils.toBoolean(model.isEnum)) {
+		if (!BooleanUtils.toBoolean(model.getIsEnum())) {
 			model.imports.add("ApiModel");
 		}
 
@@ -302,10 +226,10 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		}
 
 		// Add imports for Jackson
-		if (!Boolean.TRUE.equals(model.isEnum)) {
+		if (!Boolean.TRUE.equals(model.getIsEnum())) {
 			model.imports.add("JsonProperty");
 
-			if (Boolean.TRUE.equals(model.hasEnums)) {
+			if (Boolean.TRUE.equals(model.getIsEnum())) {
 				model.imports.add("JsonValue");
 			}
 		} else { // enum class
@@ -318,43 +242,20 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 
 	@Override
 	public void postProcessParameter(CodegenParameter codegenParameter) {
-
+		logger.warn("postProcessParameter: NOT IMPLEMENTED");;
 	}
 
 	@Override
-	public void addHandlebarHelpers(Handlebars handlebars) {
-
+	public void setGitRepoBaseURL(String s) {
+		logger.warn("setGitRepoBaseURL: NOT IMPLEMENTED");;
 	}
 
 	@Override
-	public List<CodegenArgument> readLanguageArguments() {
+	public String getGitRepoBaseURL() {
+		logger.warn("getGitRepoBaseURL: NOT IMPLEMENTED");;
 		return null;
 	}
 
-	@Override
-	public List<CodegenArgument> getLanguageArguments() {
-		return null;
-	}
-
-	@Override
-	public void setLanguageArguments(List<CodegenArgument> list) {
-
-	}
-
-	@Override
-	public boolean needsUnflattenedSpec() {
-		return false;
-	}
-
-	@Override
-	public void setUnflattenedOpenAPI(OpenAPI openAPI) {
-
-	}
-
-	@Override
-	public ISchemaHandler getSchemaHandler() {
-		return null;
-	}
 
 	private String extractEnumConfig(String st, String param) {
 		try {

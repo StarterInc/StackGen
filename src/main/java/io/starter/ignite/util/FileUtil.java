@@ -49,7 +49,7 @@ public class FileUtil {
 			}
 
 			// list all the directory contents
-			String files[] = src.list();
+			String[] files = src.list();
 
 			for (String file : files) {
 				// construct the src and dest file structure

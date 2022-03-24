@@ -72,6 +72,8 @@ public class Main extends Gen implements CommandLineRunner {
 
 			{ "/src/resources/templates/log4j.properties", "/src/main/resources/log4j.properties" },
 
+			{ "/src/resources/templates/MyBatisConfig.xml", "/src/main/resources/MyBatisConfig.xml" },
+
 			{ "/logs/logfile_placeholder.txt", "/logs/logfile_placeholder.txt" },
 
 			{ "/src/main/java/io/starter/spring/boot/stackgen-pro.txt",
@@ -272,7 +274,9 @@ public class Main extends Gen implements CommandLineRunner {
 	private void preFlight(StackGenConfigurator cfg) {
 		this.config = cfg;
 
-		System.out.println(ASCIIArtPrinter.print());
+		System.out.println();
+		System.out.print(ASCIIArtPrinter.print());
+		System.out.println();
 
 		String artifactId = System.getProperty("artifactId");
 		if(artifactId != null) {

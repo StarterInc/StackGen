@@ -7,6 +7,8 @@ import java.util.Map;
 
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,18 +57,18 @@ public class StackModelRelationGenerator {
 	protected final Logger logger = LoggerFactory
 			.getLogger(StackModelRelationGenerator.class);
 
-	public List<MyBatisJoin> generate(Swagger swagger, StackGenConfigurator config) {
+	public List<MyBatisJoin> generate(OpenAPI openAPI, StackGenConfigurator config) {
 		logger.info("Generating Stack Model Relationships for : "
-				+ swagger.getInfo().getDescription());
+				+ openAPI.getInfo().getDescription());
 
 		List<MyBatisJoin> refs = new ArrayList<MyBatisJoin>();
 
 		// for each model, iterate the props
 		// if it is an ARRAY value,
-		Map<String, Model> models = swagger.getDefinitions();
-		fixTitles(models);
+		Components models = openAPI.getComponents();
+		// fixTitles(models);
 		List<Model> safeIterate = new ArrayList<Model>();
-		safeIterate.addAll(models.values());
+		// safeIterate.addAll(models.values());
 		for (Model mdx : safeIterate) {
 			Map<String, Property> props = mdx.getProperties();
 			if(props!=null) {
@@ -95,9 +97,9 @@ public class StackModelRelationGenerator {
 						// MyBatisJoin j = new MyBatisJoin(field, tables);
 					} else if (pt.equals("array")) {
 						logger.info("Found PROP: " + pt);
-						createIdx(swagger, config, refs, models, mdx, (ArrayProperty) prop, field);
+						createIdx( config, refs, models, mdx, (ArrayProperty) prop, field);
 					} else if (pt.equals("ref")) {
-						createRef(swagger, config, refs, models, mdx, (RefProperty) prop, field);
+						createRef(openAPI, config, refs, models, mdx, (RefProperty) prop, field);
 					}
 				}
 			}else{
@@ -109,11 +111,11 @@ public class StackModelRelationGenerator {
 
 	}
 
-	private void createRef(Swagger swagger, StackGenConfigurator config, List<MyBatisJoin> refs, Map<String, Model> models, Model mdx, RefProperty rp, String field) {
+	private void createRef(OpenAPI openAPI, StackGenConfigurator config, List<MyBatisJoin> refs, Components models, Model mdx, RefProperty rp, String field) {
 
 	}
 
-	private void createIdx(Swagger swagger, StackGenConfigurator config, List<MyBatisJoin> refs, Map<String, Model> models, Model mdx, ArrayProperty arr, String field) {
+	private void createIdx( StackGenConfigurator config, List<MyBatisJoin> refs, Components models, Model mdx, ArrayProperty arr, String field) {
 		if(arr.getItems() instanceof  RefProperty){
 			RefProperty rp = (RefProperty)arr.getItems();
 			String sr = rp.getSimpleRef();
@@ -122,14 +124,14 @@ public class StackModelRelationGenerator {
 				sr1 = sr1.substring(sr1.lastIndexOf("/") + 1, sr1
 						.length());
 
-			Model rpm = models.get(sr);
+			Model rpm = null; // TODO: fix models.get(sr);
 			// create IDX table for array types
 			// like shared multiple resources GROUPS or ROLES
 			if (rpm != null) {
 				if (rpm.getTitle() == null) {
 					rpm.setTitle(sr1);
 				}
-				MyBatisJoin j = new MyBatisJoin(swagger, field, mdx, rpm, config);
+				MyBatisJoin j = new MyBatisJoin(field, mdx, rpm, config);
 				// creates the *Ref XML to inject into the Main Object
 				// Mapping
 				refs.add(j);

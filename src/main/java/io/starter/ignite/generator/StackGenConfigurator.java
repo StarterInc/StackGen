@@ -8,9 +8,13 @@ import io.swagger.codegen.v3.*;
 import io.swagger.codegen.v3.auth.AuthParser;
 import io.swagger.codegen.v3.config.CodegenConfigurator;
 import io.swagger.models.Swagger;
-import io.swagger.models.auth.AuthorizationValue;
+import io.swagger.parser.OpenAPIParser;
 import io.swagger.parser.SwaggerException;
 import io.swagger.parser.SwaggerParser;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.parser.core.models.AuthorizationValue;
+import io.swagger.v3.parser.core.models.ParseOptions;
+import io.swagger.v3.parser.core.models.SwaggerParseResult;
 import org.json.JSONObject;
 import org.springframework.util.ReflectionUtils;
 
@@ -521,10 +525,13 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
         final List<AuthorizationValue> authorizationValues = AuthParser.parse(auth);
 
-        Swagger swagger = new SwaggerParser().read(getInputSpec(), authorizationValues, true);
-        if (swagger != null) {
+        ParseOptions options = new ParseOptions();
+        options.setResolveCombinators(true);
+        SwaggerParseResult ox = new OpenAPIParser().readContents(getInputSpec(), authorizationValues, options);
+        OpenAPI openAPI = ox.getOpenAPI();
+        if (openAPI != null) {
             input.config(generator);
-            input.opts(new ClientOpts()).swagger(swagger);
+            input.opts(new ClientOpts()).openAPI(openAPI);
             return input;
         } else {
             throw new SwaggerException("Could not parse: " + this.getInputSpec());
@@ -541,7 +548,6 @@ public class StackGenConfigurator extends CodegenConfigurator {
         }
     }
 
-    @Override
     void handleDynamicProperties(CodegenConfig codegenConfig) {
         for (CliOption langCliOption : codegenConfig.cliOptions()) {
             String opt = langCliOption.getOpt();

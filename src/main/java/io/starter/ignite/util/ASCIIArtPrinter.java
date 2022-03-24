@@ -2,7 +2,7 @@ package io.starter.ignite.util;
 
 public class ASCIIArtPrinter {
 	
-	private static String[] prolines = {
+	private static final String[] prolines = {
 			"	   _________ __                 __     ________                ____________________ ________    ",
 			"	  /   _____//  |______    ____ |  | __/  _____/  ____   ____   \\______   \\______   \\\\_____  \\   ",
 			"	  \\_____  \\\\   __\\__  \\ _/ ___\\|  |/ /   \\  ____/ __ \\ /    \\   |     ___/|       _/ /   |   \\  ",
@@ -11,7 +11,7 @@ public class ASCIIArtPrinter {
 			"	         \\/           \\/     \\/     \\/       \\/     \\/     \\/                    \\/         \\/  "			
 	};
 	
-	private static String[] lines = {
+	private static final String[] lines = {
 			"	   _________ __                 __     ________                			",
 			"	  /   _____//  |______    ____ |  | __/  _____/  ____   ____   			",
 			"	  \\_____  \\\\   __\\__  \\ _/ ___\\|  |/ /   \\  ____/ __ \\ /    \\  ",

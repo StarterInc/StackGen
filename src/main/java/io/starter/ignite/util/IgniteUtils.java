@@ -36,7 +36,7 @@ public class IgniteUtils {
 						field.set(clone, field.get(delegate));
 					}
 				} catch (Exception e) {
-					; // ok
+                    // ok
 				}
 			}
 			return delegate;

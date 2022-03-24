@@ -90,7 +90,7 @@ public class ImageUtils {
 							// thats a
 						}
 					} catch (Exception e) {
-						; // typical
+						// typical
 					}
 				}
 			}

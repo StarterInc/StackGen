@@ -1,9 +1,12 @@
-package io.starter.ignite.generator.swagger;
+package io.starter.ignite.generator.swagger.languages;
 
 import java.io.File;
 import java.util.*;
 
+import io.starter.ignite.generator.swagger.StackModelRelationGenerator;
 import io.swagger.v3.oas.models.*;
+import io.swagger.v3.oas.models.examples.Example;
+import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.parser.util.InlineModelResolver;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,7 +22,6 @@ import io.starter.ignite.generator.SwaggerGen;
 
 import io.swagger.codegen.v3.ClientOptInput;
 import io.swagger.codegen.v3.CodegenConfig;
-import io.swagger.codegen.v3.DefaultGenerator;
 import io.swagger.codegen.v3.Generator;
 import io.swagger.codegen.v3.ignore.CodegenIgnoreProcessor;
 
@@ -75,6 +77,7 @@ public class IgniteGenerator extends DefaultGenerator {
 		}
 
 		configureGeneratorProperties();
+		configureSwaggerInfo();
 
 		// TODO: add the schema link builder here
 		StackModelRelationGenerator relationGenerator = new StackModelRelationGenerator();
@@ -97,22 +100,24 @@ public class IgniteGenerator extends DefaultGenerator {
 
 		// models
 		List<Object> allModels = new ArrayList<Object>();
-		//generateModels(files, allModels);
+		generateModels(files, allModels);
 
 		// apis
 		List<Object> allOperations = new ArrayList<Object>();
-		//generateApis(files, allOperations, allModels);
+		generateApis(files, allOperations, allModels);
 
 		// supporting files
-		//Map<String, Object> bundle = buildSupportFileBundle(allOperations, allModels);
-		//generateSupportingFiles(files, bundle);
+		Map<String, Object> bundle = buildSupportFileBundle(allOperations, allModels);
+		generateSupportingFiles(files, bundle);
+
 		config.processOpenAPI(openAPI);
 
-		return super.generate();
+		return files;
 	}
 
 	protected void configureGeneratorProperties() {
-
+		Map<String, Parameter> parameters = new HashMap<>();
+		openAPI.getComponents().setParameters(parameters);
 		// Starter enhancements
 		generateStarterModelEnhancements = Boolean.valueOf(config
 				.additionalProperties()
@@ -206,13 +211,13 @@ public class IgniteGenerator extends DefaultGenerator {
 
 	/**
 	 * TODO: fix this
-	 */
+
 	private Parameter getBodyPathParameter(String k, ApiResponse r) {
 		Parameter p = new Parameter();
 		p.$ref("#/definitions/" + k);
 		p.setDescription("Results fetched OK");
 		return p;
-	}
+	}*/
 
 	/**
 	 * @return
@@ -267,9 +272,9 @@ public class IgniteGenerator extends DefaultGenerator {
 		// POST
 
 		io.swagger.v3.oas.models.responses.ApiResponse r = new ApiResponse();
-		Parameter up = getBodyPathParameter(k, r);
-		Operation insertOp = createCRUDOp(k, "insert", "Insert a new " + k
-				+ " into the system", up);
+//		Parameter up = getBodyPathParameter(k, r);
+//		Operation insertOp = createCRUDOp(k, "insert", "Insert a new " + k
+//				+ " into the system", up);
 		/*insertOp.addConsumes("application/json");
 		insertOp.addProduces("application/json");
 		StringProperty p = new StringProperty("application/json");
@@ -291,25 +296,46 @@ public class IgniteGenerator extends DefaultGenerator {
 		PathItem ops = new PathItem();
 		ApiResponse r = new ApiResponse();
 
-		Parameter up = getBodyPathParameter(k, r);
+//		Parameter up = getBodyPathParameter(k, r);
+
+		// TODO: implement example helper
+		Example example = new Example();
+		example.description("TO BE IMPLEMENTED EXAMPLE: " + k);
+		example.setValue("for(int t=0;t<10;t++){;}");
+//		up.addExample("Example " + k, example);
 
 		// PUT
 		Operation updateOp = createCRUDOp(k, "update", "Update an existing " + k , getIdPathParameter("Update"));
-		updateOp.addParametersItem(up);
-		updateOp.getResponses().addApiResponse("200", r);
+		//updateOp.addParametersItem(up);
+
+		ApiResponses responses = new ApiResponses();
+		responses.addApiResponse("200", r);
+		updateOp.setResponses(responses);
+
 		ops.setPut(updateOp);
 
 		// PATCH
 		Operation patchOp = createCRUDOp(k, "patch", "Patch an existing " + k
 				+ " in the system", getIdPathParameter("Patch"));
 		r.setDescription("patched");
-		patchOp.getResponses().addApiResponse("204", r);
+
+		ApiResponses patchResponses = new ApiResponses();
+		patchResponses.addApiResponse("204", r);
+		patchOp.setResponses(patchResponses);
+
 		ops.setPatch(patchOp);
 
 		// DELETE
 		Operation deleteOp = createCRUDOp(k, "delete", "Delete an existing " + k
 				+ " from the system", getIdPathParameter("Delete"));
+
+		ApiResponses deleteResponses = new ApiResponses();
+		deleteResponses.addApiResponse("OK", r);
+		deleteOp.setResponses(deleteResponses);
+
+
 		deleteOp.getResponses().addApiResponse("OK", r);
+
 		ops.setDelete(deleteOp);
 
 		// GET
@@ -318,7 +344,11 @@ public class IgniteGenerator extends DefaultGenerator {
 
 		r.$ref("#/definitions/" + k);
 		r.setDescription("an existing " + k );
-		loadOp.getResponses().addApiResponse("200", r);
+
+		ApiResponses getResponses = new ApiResponses();
+		getResponses.addApiResponse("OK", r);
+		loadOp.setResponses(getResponses);
+
 		ops.setGet(loadOp);
 		return ops;
 	}
@@ -335,14 +365,17 @@ public class IgniteGenerator extends DefaultGenerator {
 
 		// List createa a new list path
 		Operation listOp = new Operation();
-		listOp.setDescription("Starter StackGen Auto Generated Listing");
-		listOp.setSummary("Retreive a list of " + k + "s from the service");
+		listOp.setDescription("StackGen Auto Generated Listing");
+		listOp.setSummary("Retrieves a list of " + k + "s from the service");
 		// listOp.addTag("list-tag"); // causes dupe method gen
 		listOp.operationId("list");
 
 		io.swagger.v3.oas.models.responses.ApiResponse r = new ApiResponse();
 		r.$ref("#/definitions/" + k);
-		listOp.getResponses().addApiResponse("200", r);
+
+		ApiResponses listResponses = new ApiResponses();
+		listResponses.addApiResponse("OK", r);
+		listOp.setResponses(listResponses);
 
 		// causes attempt to transform lists into strings
 		// ArrayModel mx = new ArrayModel();
@@ -356,16 +389,14 @@ public class IgniteGenerator extends DefaultGenerator {
 
 		// security
 		// [{automator_auth=[write:Account, read:Account]}]
-		List<String> value = new ArrayList<String>();
-		value.add("read: " + k); // + k);
-		value.add("write: " + k); // + k);
 		SecurityRequirement securityRequirement = new SecurityRequirement();
+		securityRequirement.addList("read", k);
+		securityRequirement.addList("write", k);
 		securityRequirement.addList("stackgen_auth");
 		listOp.addSecurityItem( securityRequirement);
 
 		// vendorExtensions
 		// {x-contentType=application/json, x-accepts=application/json, x-tags=[{tag=account}]}
-
 		listOp.addExtension("x-contentType", "application/json");
 		listOp.addExtension("x-accepts", "application/json");
 		listOp.addExtension("x-tags", "[{tag=" + k + "}]");
@@ -473,7 +504,8 @@ public class IgniteGenerator extends DefaultGenerator {
 			if (ignoreFile.exists() && ignoreFile.canRead()) {
 				this.ignoreProcessor = new CodegenIgnoreProcessor(ignoreFile);
 			} else {
-				logger.warn("Ignore file specified at {} is not valid. This will fall back to an existing ignore file if present in the output directory.", ignoreFileLocation);
+				logger.warn("Ignore file specified at {} is not valid. " +
+						"This will fall back to an existing ignore file if present in the output directory.", ignoreFileLocation);
 			}
 		}
 

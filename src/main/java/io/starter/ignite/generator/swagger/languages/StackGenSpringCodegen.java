@@ -3,8 +3,6 @@ package io.starter.ignite.generator.swagger.languages;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
@@ -14,6 +12,7 @@ import io.swagger.codegen.v3.CodegenProperty;
 import io.swagger.codegen.v3.generators.java.SpringCodegen;
 
 import io.starter.toolkit.StringTool;
+import io.swagger.codegen.v3.templates.TemplateEngine;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +22,7 @@ import com.samskivert.mustache.Template;
 
 import io.swagger.codegen.languages.features.BeanValidationFeatures;
 import io.swagger.codegen.languages.features.OptionalFeatures;
+
 
 /**
  * customized Spring CodeGen for StackGen
@@ -38,6 +38,10 @@ public class StackGenSpringCodegen extends SpringCodegen implements BeanValidati
 
 	public StackGenSpringCodegen() {
 		super();
+	}
+
+	public void setTemplateEngine(TemplateEngine tx){
+		this.templateEngine = tx;
 	}
 
 	@Override

@@ -2,23 +2,29 @@ package io.starter.ignite.generator;
 
 import io.starter.ignite.generator.swagger.StackGenCodegenConfigLoader;
 import io.starter.ignite.generator.swagger.languages.StackGenSpringCodegen;
+import io.starter.ignite.util.FileUtil;
 import io.starter.ignite.util.SystemConstants;
 import io.starter.toolkit.StringTool;
+
+
 import io.swagger.codegen.v3.*;
-import io.swagger.codegen.v3.auth.AuthParser;
-import io.swagger.codegen.v3.config.CodegenConfigurator;
-import io.swagger.models.Swagger;
+import io.swagger.codegen.v3.templates.MustacheTemplateEngine;
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.parser.SwaggerException;
-import io.swagger.parser.SwaggerParser;
+
+import io.swagger.codegen.v3.auth.AuthParser;
+import io.swagger.codegen.v3.config.CodegenConfigurator;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.parser.core.models.AuthorizationValue;
 import io.swagger.v3.parser.core.models.ParseOptions;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
+
 import org.json.JSONObject;
 import org.springframework.util.ReflectionUtils;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -485,7 +491,7 @@ public class StackGenConfigurator extends CodegenConfigurator {
         if (getTemplateDir() == null) {
             setTemplateDir(SystemConstants.getValueOrDefault("templateDir", "java-spring"));
         }
-        System.out.println("Template Dir: " + getTemplateDir());
+
         generator.setTemplateDir(getTemplateDir());
         generator.getCommonTemplateDir();
         generator.setInputSpec(getInputSpec());
@@ -523,18 +529,33 @@ public class StackGenConfigurator extends CodegenConfigurator {
 
         ClientOptInput input = new ClientOptInput().config(generator);
 
+        // setup the template engine
+        System.out.println("Mustache Template Dir: " + getTemplateDir());
+        generator.setTemplateEngine(new MustacheTemplateEngine(input.getConfig()));
+
         final List<AuthorizationValue> authorizationValues = AuthParser.parse(auth);
 
         ParseOptions options = new ParseOptions();
         options.setResolveCombinators(true);
-        SwaggerParseResult ox = new OpenAPIParser().readContents(getInputSpec(), authorizationValues, options);
+        SwaggerParseResult ox = null;
+        try {
+            ox = new OpenAPIParser().readContents(FileUtil.readFile(getInputSpec()), authorizationValues, options);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SwaggerException("Could not parse: " + this.getInputSpec() + "\r\n" +
+                    ox.getMessages().toString()+ "\r\n" +
+                    e.toString()
+            );
+        }
         OpenAPI openAPI = ox.getOpenAPI();
         if (openAPI != null) {
             input.config(generator);
             input.opts(new ClientOpts()).openAPI(openAPI);
             return input;
         } else {
-            throw new SwaggerException("Could not parse: " + this.getInputSpec());
+            throw new SwaggerException("null openAPI object: " + this.getInputSpec() + "\r\n" +
+                    ox.getMessages().toString()
+            );
         }
     }
 

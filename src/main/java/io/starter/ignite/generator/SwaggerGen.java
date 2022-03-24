@@ -3,25 +3,18 @@ package io.starter.ignite.generator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import io.swagger.codegen.v3.Generator;
-import io.swagger.models.Scheme;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.Schema;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.starter.ignite.generator.swagger.IgniteGenerator;
+import io.starter.ignite.generator.swagger.languages.IgniteGenerator;
 
 import io.swagger.codegen.v3.ClientOptInput;
 import io.swagger.codegen.v3.CodegenConstants;
-
-import io.swagger.models.Model;
-
-import io.swagger.v3.oas.models.parameters.Parameter;
 
 /**
  * responsible for generating the Swagger server and clients
@@ -244,6 +237,7 @@ public class SwaggerGen extends Gen {
 
 	public Generator preGen() {
 		final ClientOptInput clientOptInput = mergePluginSwaggers();
+
 		return generator.opts(clientOptInput);
 	}
 

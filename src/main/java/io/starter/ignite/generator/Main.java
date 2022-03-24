@@ -1,26 +1,23 @@
 package io.starter.ignite.generator;
 
+import io.starter.ignite.util.ASCIIArtPrinter;
+import io.starter.ignite.util.ZipFileWriter;
+import org.aspectj.util.FileUtil;
+import org.codehaus.plexus.util.FileUtils;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.context.ConfigurableApplicationContext;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-
-import org.aspectj.util.FileUtil;
-import org.codehaus.plexus.util.FileUtils;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.Banner;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.context.ConfigurableApplicationContext;
-
-import io.starter.ignite.util.ASCIIArtPrinter;
-import io.starter.ignite.util.ZipFileWriter;
 
 /**
  * <h2>Generates an app from a Swagger Spec</h2>
@@ -50,7 +47,7 @@ public class Main extends Gen implements CommandLineRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		if (args == null) {
 			args = new String[0];
 		}
@@ -116,21 +113,6 @@ public class Main extends Gen implements CommandLineRunner {
 		logger.info("Done copying static files to " + config.getGenOutputFolder() );
 	}
 
-	/**
-	 * ensure existence
-	 *
-	 * @throws IOException
-	 */
-	public static void checkLog4j() throws IOException {
-		final String udir = System.getProperty("user.dir");
-		final File log4j = new File(udir + "/log4j.properties");
-		if (!log4j.exists()) {
-			final File copyLog4j = new File(udir + "/src/resources/log4j.properties");
-			FileUtil.copyFile(copyLog4j, log4j);
-		}
-	}
-
-
 	@Override
 	public void run(String... args) throws Exception {
 		String inputSpecFile = null;
@@ -156,7 +138,7 @@ public class Main extends Gen implements CommandLineRunner {
 		if (System.getProperty("generateKey") != null) {
 			if (args.length == 2) {
 				System.out.println("--- Begin Generated Key ---");
-				System.out.println(Main.generateEncryptionKey(args[1]));
+				System.out.println(Main.generateEncryptionKey());
 				System.out.println("--- End Generated Key ---");
 			} else {
 				System.out.println("Usage:");
@@ -180,8 +162,8 @@ public class Main extends Gen implements CommandLineRunner {
 	/**
 	 * Create and initialize a new SwaggerGen from a JSON config object
 	 *
-	 * @param inputSpec JSONObject containing config data
-	 * @return
+	 * @param cfg JSONObject containing config data
+	 *
 	 */
 	public void generateApp(JSONObject cfg) throws Exception {
 
@@ -200,7 +182,7 @@ public class Main extends Gen implements CommandLineRunner {
 	 * 
 	 * sg0-dev/src/resources/MyBatisGeneratorConfig.xml' does not exist
 	 * 
-	 * @param inputSpecFile
+	 * @param cfg the config
 	 */
 	public void generateStack(StackGenConfigurator cfg) throws Exception {
 		logger.info("Begin StackGen Back End Generation...");
@@ -308,9 +290,11 @@ public class Main extends Gen implements CommandLineRunner {
 	}
 
 	private void generateSwagger(StackGenConfigurator config) throws IOException {
-		logger.info("Generating Swagger Files From Plugins");
+		logger.info("Starting CodeGen from OpenAPI");
+		logger.info(config.getReleaseNote());
+		logger.trace("Configuration: " + config.toString());
 		String inputSpecFile = config.getInputSpec();
-		List<File> gfiles = null;
+		List<File> generatedFiles = null;
 		String generatedSchemaFileName = "NOT CONFIGURED";
 		// handle file-based Schemas
 		if (inputSpecFile != null && !inputSpecFile.isEmpty()) {
@@ -323,10 +307,10 @@ public class Main extends Gen implements CommandLineRunner {
 			
 			if (config.iteratePluginGen) {
 				logger.info("Iterating StackGen Plugins");
-				gfiles = iteratePluginsGen(inputSpecFile);
+				generatedFiles = iteratePluginsGen();
 			} else if (config.mergePluginGen) {
 				logger.info("Merging StackGen Plugins");
-				gfiles = mergePluginsGen(inputSpecFile);
+				generatedFiles = mergePluginsGen(inputSpecFile);
 			} else {
 				logger.info("Skipping StackGen Plugins");
 			}
@@ -347,8 +331,12 @@ public class Main extends Gen implements CommandLineRunner {
 			throw new IgniteException("No Swagger/OpenAPI Schema found for:" + generatedSchemaFileName);
 		}
 		logger.info("Generating all the things...");
-		gfiles = new SwaggerGen(config).generate();
-		logger.info("####### StackGen Wrote : " + (gfiles != null ? gfiles.size() : " ZERO(!) ") + " files so you don't have to.");
+		if(generatedFiles == null){
+			generatedFiles = new SwaggerGen(config).generate();
+		} else {
+			generatedFiles.addAll(new SwaggerGen(config).generate());
+		}
+		logger.info("####### StackGen Wrote : " + (generatedFiles != null ? generatedFiles.size() : " ZERO(!) ") + " files so you don't have to.");
 	}
 
 	/**
@@ -356,10 +344,10 @@ public class Main extends Gen implements CommandLineRunner {
 	 * the main Swagger
 	 *
 	 * @param inputSpecFile of Main Swagger gen
-	 * @return
+	 * @return the merged plugin generated files
 	 */
 	private List<File> mergePluginsGen(String inputSpecFile) {
-		final SwaggerGen swaggerGen = new SwaggerGen(config.getSpecLocation() + inputSpecFile);
+		final SwaggerGen swaggerGen = new SwaggerGen(StackGenConfigurator.getSpecLocation() + inputSpecFile);
 
 		// iterate the files in the plugins folder
 		final String[] fin = getPluginFiles();
@@ -377,9 +365,8 @@ public class Main extends Gen implements CommandLineRunner {
 	/**
 	 * Iterate and run the Plugin Swagger gens, finally Run the Main Swagger gen
 	 *
-	 * @param inputSpecFile of Main Swagger gen
 	 */
-	private List<File> iteratePluginsGen(String inputSpecFile) {
+	private List<File> iteratePluginsGen() {
 		final List<File> allGen = new ArrayList<>();
 		logger.info("iterating plugins...");
 		final SwaggerGen swaggerGen = new SwaggerGen(config);
@@ -404,12 +391,11 @@ public class Main extends Gen implements CommandLineRunner {
 	 * generates an encryption key suitable for use by the SecureField encryption
 	 * algorithm
 	 *
-	 * @param salt
-	 * @return
-	 * @throws NoSuchAlgorithmException
+	 * @return the generated key
+	 * @throws NoSuchAlgorithmException if we cannot generate a default key
 	 * @see io.starter.ignite.security.securefield.SecureField
 	 */
-	public static String generateEncryptionKey(String salt) throws NoSuchAlgorithmException {
+	public static String generateEncryptionKey() throws NoSuchAlgorithmException {
 		return io.starter.ignite.security.crypto.EncryptionUtil.generateKey();
 	}
 
@@ -430,12 +416,9 @@ public class Main extends Gen implements CommandLineRunner {
 			if (name.toLowerCase().endsWith(".json")) {
 				return true;
 			}
-			if (name.toLowerCase().endsWith(".yml") || name.toLowerCase().endsWith(".yaml")) {
-				return true;
-			}
+			return name.toLowerCase().endsWith(".yml") || name.toLowerCase().endsWith(".yaml");
 
 			// otherwise
-			return false;
 		});
 
 		if (pluginFiles != null && pluginFiles.length < 1) {

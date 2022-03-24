@@ -49,7 +49,7 @@ public class MyBatisJoinTest {
 
 		// handle the join condition
 		final String field = "orderdetails";
-		final MyBatisJoin j = new MyBatisJoin(new Swagger(), field, m1, m2, config);
+		final MyBatisJoin j = new MyBatisJoin( field, m1, m2, config);
 
 		// lock this down
 		Assert.assertEquals("should never change", "CREATE TABLE `stackgen$_order_order_detail_idx` (\n" +
@@ -67,7 +67,7 @@ public class MyBatisJoinTest {
 
 		// handle the join condition
 		final String field = "orderdetails";
-		final MyBatisJoin j = new MyBatisJoin(new Swagger(), field, m1, m2, config);
+		final MyBatisJoin j = new MyBatisJoin( field, m1, m2, config);
 
 		// lock this down
 		Assert.assertEquals("should never change",
@@ -88,7 +88,7 @@ public class MyBatisJoinTest {
 
 		// handle the join condition
 		final String field = "orderdetails";
-		final MyBatisJoin j = new MyBatisJoin(new Swagger(), field, m1, m2, config);
+		final MyBatisJoin j = new MyBatisJoin( field, m1, m2, config);
 
 		// lock this down
 		Assert.assertEquals("should never change",

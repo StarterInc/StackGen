@@ -2,7 +2,7 @@ package io.starter.ignite.util;
 
 public interface SystemConstants {
 
-	static String getValueOrDefault(String v, String defaultVal) {
+	public static String getValueOrDefault(String v, String defaultVal) {
 		String ret = System.getProperty(v); //
 		if(ret != null) {
 			return ret;
@@ -14,7 +14,7 @@ public interface SystemConstants {
 		return defaultVal;
 	}
 
-	static String getValue(String v) {
+	public static String getValue(String v) {
 		String ret = System.getProperty(v); //
 		if(ret != null) {
 			return ret;

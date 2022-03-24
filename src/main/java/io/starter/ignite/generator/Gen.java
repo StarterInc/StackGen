@@ -24,8 +24,8 @@ import java.util.*;
 public class Gen {
 
 	private static final Logger logger = LoggerFactory.getLogger(Gen.class);
-
-
+	
+	
 	StackGenConfigurator config  = new StackGenConfigurator();
 	public void setConfig(StackGenConfigurator conf){
 		this.config = conf;
@@ -38,15 +38,15 @@ public class Gen {
 		}
 		return config;
 	}
-
+	
 	public Gen() {
-		// config = new StackGenConfigurator();
+		 // config = new StackGenConfigurator();
 	}
-
+	
 	public Gen(StackGenConfigurator cfg) {
 		config= cfg;
 	}
-
+	
 	/**
 	 * iterate over the Class heirarchy and build a list of public classes and
 	 * methods
@@ -325,10 +325,10 @@ public class Gen {
 	public static Annotation getSecureFieldAnnotation(Field f) throws NoSuchMethodException, SecurityException {
 		// get the annotation
 		for (Annotation annotation : f.getDeclaredAnnotations()) {
-			String cnx = annotation.toString();
-			if(cnx.startsWith("@io.starter.ignite.security.securefield.SecureField")) {
-				return f.getDeclaredAnnotation(annotation.annotationType());
-			}
+		    String cnx = annotation.toString();
+		    if(cnx.startsWith("@io.starter.ignite.security.securefield.SecureField")) {
+		    	return f.getDeclaredAnnotation(annotation.annotationType());
+		    }
 		}
 		return null;
 	}
@@ -337,34 +337,34 @@ public class Gen {
 	 *  name: createdDate
 	 value: The created date for this record/object (generated column)
 	 position: 0
-	 access:
-	 reference:
+	 access: 
+	 reference: 
 	 accessMode: AUTO
 	 maxLength: 256
 	 readOnly: false
 	 extensions: [Lio.swagger.v3.oas.annotations.extensions.Extension;@2a86e389
 	 hidden: false
-	 example:
+	 example: 
 	 minLength: 0
 	 allowEmptyValue: false
 	 secureField: false
-	 dataField:
-	 allowableValues:
+	 dataField: 
+	 allowableValues: 
 	 minValue: 4.9E-324
-	 notes:
+	 notes: 
 	 required: false
 	 maxValue: 1.7976931348623157E308
-	 dataType:
+	 dataType: 
 	 */
 	public static Annotation getApiModelPropertyAnnotation(Field f)
 			throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		final String methodName = "get" + StringTool.getUpperCaseFirstLetter(f.getName());
 		final Method getter = f.getDeclaringClass().getDeclaredMethod(methodName);
 		for (Annotation annotation : getter.getDeclaredAnnotations()) {
-			String cnx = annotation.toString();
-			if(cnx.startsWith("@io.starter.ignite.generator.annotations.StackgenModelProperty")) {
-				return getter.getDeclaredAnnotation(annotation.annotationType());
-			}
+		    String cnx = annotation.toString();
+		    if(cnx.startsWith("@io.starter.ignite.generator.annotations.StackgenModelProperty")) {
+		    	return getter.getDeclaredAnnotation(annotation.annotationType());
+		    }
 		}
 		return null;
 	}

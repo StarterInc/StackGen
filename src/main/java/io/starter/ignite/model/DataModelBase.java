@@ -42,7 +42,6 @@ public abstract class DataModelBase implements DataModelObject {
 
 	@Override
 	public DataModelObject getDelegate() {
-		logger.error("NOT IMPLEMENTED GETDELEGATE: " + this);
 		return null;
 	}
 

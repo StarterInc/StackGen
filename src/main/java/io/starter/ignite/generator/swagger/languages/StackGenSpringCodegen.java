@@ -6,7 +6,13 @@ import java.io.Writer;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
+import io.swagger.codegen.v3.CodegenModel;
+import io.swagger.codegen.v3.CodegenParameter;
+import io.swagger.codegen.v3.CodegenProperty;
+import io.swagger.codegen.v3.generators.java.SpringCodegen;
+
 import io.starter.toolkit.StringTool;
+import io.swagger.codegen.v3.templates.TemplateEngine;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +20,9 @@ import org.slf4j.LoggerFactory;
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 
-import io.swagger.codegen.CodegenConfig;
-import io.swagger.codegen.CodegenModel;
-import io.swagger.codegen.CodegenProperty;
-import io.swagger.codegen.languages.SpringCodegen;
 import io.swagger.codegen.languages.features.BeanValidationFeatures;
 import io.swagger.codegen.languages.features.OptionalFeatures;
+
 
 /**
  * customized Spring CodeGen for StackGen
@@ -29,18 +32,21 @@ import io.swagger.codegen.languages.features.OptionalFeatures;
  * @author John McMahon ~ github: SpaceGhost69 | twitter: @TechnoCharms
  *
  */
-public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfig, BeanValidationFeatures, OptionalFeatures {
+public class StackGenSpringCodegen extends SpringCodegen implements BeanValidationFeatures, OptionalFeatures {
 
 	protected static final Logger logger = LoggerFactory.getLogger(StackGenSpringCodegen.class);
 
 	public StackGenSpringCodegen() {
 		super();
-		logger.info("Initializing new StackGenSpringCodeGen");
+	}
+
+	public void setTemplateEngine(TemplateEngine tx){
+		this.templateEngine = tx;
 	}
 
 	@Override
 	public String getName() {
-		return "java-spring";
+		return "stackgen-java-spring";
 	}
 
 	@Override
@@ -48,58 +54,61 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		return "Generates a Java SpringBoot StackGen Service.";
 	}
 
-    @Override
-    public String apiDocFileFolder() {
-        return (outputFolder + "/" + apiDocPath).replace('/', File.separatorChar);
-    }
+	@Override
+	public String apiDocFileFolder() {
+		return (outputFolder + "/" + apiDocPath).replace('/', File.separatorChar);
+	}
 
-    @Override
-    public String modelDocFileFolder() {
-        return (outputFolder + "/" + modelDocPath).replace('/', File.separatorChar);
-    }
-    
+	@Override
+	public String modelDocFileFolder() {
+		return (outputFolder + "/" + modelDocPath).replace('/', File.separatorChar);
+	}
+
 	@Override
 	public void processOpts() {
 
+		// fix template dir to match our SG template project paths
+		super.templateDir = super.templateDir + "/src/main/" + super.library;
+		logger.info("Processing template files at: " + super.templateDir);
 		super.processOpts();
 		// add doc templates
-		//apiTemplateFiles.put("ApiClient.mustache", ".java");
-       // modelDocTemplateFiles.put("model_doc.mustache", ".md");
-        apiDocTemplateFiles.put("api_doc.mustache", ".md");
+		apiTemplateFiles.put("ApiClient.mustache", ".java");
+		modelDocTemplateFiles.put("model_doc.mustache", ".md");
+		apiDocTemplateFiles.put("api_doc.mustache", ".md");
 
 		// TODO: add model test
 		// modelTestTemplateFiles.put("modelTest.mustache", "Test.java");
 
-		//apiTestTemplateFiles.put("apiTest.mustache", ".java");
+		apiTestTemplateFiles.put("apiTest.mustache", ".java");
 
-        // add lambda for mustache templates
- 		additionalProperties.put("lambdaAddSecurityAnnotations", new Mustache.Lambda() {
- 			@Override
- 			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
- 				String checkOp = fragment.execute();
- 				
- 				String targetClassname = StackGenSpringCodegen.this.modelPackage() + "." + ((io.swagger.codegen.CodegenOperation)fragment.context()).baseName + "Service";
- 				
- 				switch(checkOp) {
- 					case "update":
+		// add lambda for mustache templates
+		additionalProperties.put("lambdaAddSecurityAnnotations", new Mustache.Lambda() {
+			@Override
+			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
+				String checkOp = fragment.execute();
+
+				String targetClassname = StackGenSpringCodegen.this.modelPackage() + "." + ((io.swagger.codegen.CodegenOperation)fragment.context()).baseName + "Service";
+
+				switch(checkOp) {
+					case "update":
 						writer.write("@PreAuthorize(\"hasPermission(#id2, 'update')\")");
 						break;
- 					case "delete":
- 						writer.write("@PreAuthorize(\"hasPermission(#id, '"+targetClassname+"', 'delete')\")");
- 						break;						
- 					case "load":
- 						writer.write("@PostFilter(\"hasPermission(filterObject, 'load')\")");
- 						break;
- 					case "list":
- 						writer.write("@PostFilter(\"hasPermission(filterObject, 'list')\")");
- 						break;
- 					// case "insert":
- 						// writer.write("@PreAuthorize(\"hasPermission(filterObject, 'insert')\")");
- 						// break;
- 						
- 				}
- 			}
- 		});
+					case "delete":
+						writer.write("@PreAuthorize(\"hasPermission(#id, '"+targetClassname+"', 'delete')\")");
+						break;
+					case "load":
+						writer.write("@PostFilter(\"hasPermission(filterObject, 'load')\")");
+						break;
+					case "list":
+						writer.write("@PostFilter(\"hasPermission(filterObject, 'list')\")");
+						break;
+					// case "insert":
+					// writer.write("@PreAuthorize(\"hasPermission(filterObject, 'insert')\")");
+					// break;
+
+				}
+			}
+		});
 		additionalProperties.put("lambdaEscapeDoubleQuote", new Mustache.Lambda() {
 			@Override
 			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
@@ -121,7 +130,11 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		additionalProperties.put("lambdaLowerCaseFirstLetter", new Mustache.Lambda() {
 			@Override
 			public void execute(Template.Fragment fragment, Writer writer) throws IOException {
-				writer.write(StringTool.getLowerCaseFirstLetter(fragment.execute()));
+				String str = fragment.execute();
+				if(str.length() > 0){
+					str = StringTool.getLowerCaseFirstLetter(str);
+				}
+				writer.write(str);
 			}
 		});
 		additionalProperties.put("lambdaRemoveLineBreak", new Mustache.Lambda() {
@@ -132,28 +145,30 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		});
 	}
 
+
 	@Override
 	public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
-		super.postProcessModelProperty(model, property);
+		super.postProcessModelProperty(model,
+				property);
 
 		// Starter Extensions
 		if (property.vendorExtensions.containsKey("x-starter-secureField")) {
 			Object o = property.vendorExtensions.containsKey("x-starter-secureField");
 			if (o != null) {
-				
+
 				// property.isSecure = true;
 				Object confs = property.vendorExtensions.get("x-starter-secureField");
 				String vx = "@io.starter.ignite.security.securefield.SecureField(enabled=true";
-				
+
 				if (confs.toString().toLowerCase().contains("type=hashed")) {
 					vx += ", type=io.starter.ignite.security.securefield.SecureField.Type.HASHED";
 				} else {
 					vx += ", strength=5";
 				}
 				vx += ")";
-				
+
 				property.vendorExtensions.put("secureAnnotation", vx);
-				logger.info("Configuring Starter SecureField Extension" + vx);
+				logger.info("Found Starter SecureField Vendor Extension" + vx);
 			}
 		}
 
@@ -163,12 +178,12 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 				// "pass on" the settings for processing (ie: aspects)
 				String vx = "@io.starter.ignite.model.DataField({{vx}})";
 				String st = "";
-				
+
 				// handle hidden datafields
 				String strx = o.toString(); // .toLowerCase();
 				if(strx.indexOf(",") == -1) {
 					st = extractEnumConfig(st, strx.trim());
-				}else {					
+				}else {
 					StringTokenizer tokr = new StringTokenizer(strx, ",");
 					while(tokr.hasMoreTokens()){
 						String param = tokr.nextToken();
@@ -181,7 +196,7 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 				}
 				vx = vx.replace("{{vx}}", st);
 				property.vendorExtensions.put("dataAnnotation", vx);
-				logger.info("Configuring Starter DataField Extension" + vx);
+				logger.info("Found Starter DataField Vendor Extension" + vx);
 			}
 		}
 
@@ -206,7 +221,7 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 			}
 		}
 
-		if (!BooleanUtils.toBoolean(model.isEnum)) {
+		if (!BooleanUtils.toBoolean(model.getIsEnum())) {
 			model.imports.add("ApiModel");
 		}
 
@@ -215,10 +230,10 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 		}
 
 		// Add imports for Jackson
-		if (!Boolean.TRUE.equals(model.isEnum)) {
+		if (!Boolean.TRUE.equals(model.getIsEnum())) {
 			model.imports.add("JsonProperty");
 
-			if (Boolean.TRUE.equals(model.hasEnums)) {
+			if (Boolean.TRUE.equals(model.getIsEnum())) {
 				model.imports.add("JsonValue");
 			}
 		} else { // enum class
@@ -228,6 +243,23 @@ public class StackGenSpringCodegen extends SpringCodegen implements CodegenConfi
 			}
 		}
 	}
+
+	@Override
+	public void postProcessParameter(CodegenParameter codegenParameter) {
+		logger.warn("postProcessParameter: NOT IMPLEMENTED");;
+	}
+
+	@Override
+	public void setGitRepoBaseURL(String s) {
+		logger.warn("setGitRepoBaseURL: NOT IMPLEMENTED");;
+	}
+
+	@Override
+	public String getGitRepoBaseURL() {
+		logger.warn("getGitRepoBaseURL: NOT IMPLEMENTED");;
+		return null;
+	}
+
 
 	private String extractEnumConfig(String st, String param) {
 		try {

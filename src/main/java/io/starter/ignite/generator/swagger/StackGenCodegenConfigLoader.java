@@ -1,7 +1,7 @@
 package io.starter.ignite.generator.swagger;
 
-import io.swagger.codegen.CodegenConfig;
-import io.swagger.codegen.CodegenConfigLoader;
+import io.swagger.codegen.v3.CodegenConfig;
+import io.swagger.codegen.v3.CodegenConfigLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ public class StackGenCodegenConfigLoader extends CodegenConfigLoader{
      * @return config class
      */
     public static CodegenConfig forName(String name) {
-        logger.info("Loading StackGenSpringCodegen...");
+        logger.info("Loading StackGenSpringCodegen: " + name);
     	CodegenConfig ret = null;
 
     	try{
@@ -30,7 +30,7 @@ public class StackGenCodegenConfigLoader extends CodegenConfigLoader{
             try {
                 ret = (CodegenConfig) Class.forName("io.starter.ignite.generator.swagger.languages.StackGenSpringCodegen").getDeclaredConstructor().newInstance();
             } catch (Exception e) {
-                throw new RuntimeException("Can't load config class with name ".concat(name), e);
+                throw new RuntimeException("Can't load config class with name: " + name, e);
             }
         }
         return ret;     

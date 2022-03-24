@@ -34,7 +34,7 @@ public class DBGen extends Gen implements Generator {
     public static Connection conn = null;
 
     private List<String> indexList = new ArrayList();
-
+    
     public DBGen(StackGenConfigurator cfg) {
         super(cfg);
     }
@@ -113,7 +113,7 @@ public class DBGen extends Gen implements Generator {
 
         final String colName = decamelize(f.getName());
         final Class<?> colType = f.getType();
-
+        
         String colTypeName = colType.getName();
         final int pos = colTypeName.lastIndexOf(".") + 1;
         if (pos > 0) {
@@ -293,16 +293,16 @@ public class DBGen extends Gen implements Generator {
         config.setGeneratorConnection(conn);
         // check if we even need to apply DML
         try {
-            if (noTableChangesRequired(className, fieldList, table)) {
+        	if (noTableChangesRequired(className, fieldList, table)) {
                 logger.info("No Changes to: " + className + " table made.");
-                return;
-            }
+        		return;
+        	}
         }catch(Exception e) {
             if(!e.toString().contains("doesn't exist")) {
                 logger.warn("Problem checking if table changes required: " + e);
             }
         }
-
+        
         // collect the COLUMNs and add to Table then generate
         String tableDML = table.generateTableBeginningDML(className);
         boolean isEmpty = true;
@@ -318,7 +318,7 @@ public class DBGen extends Gen implements Generator {
         for (Object fld : fieldList) {
             isEmpty = false;
             tableDML += "	" + fld.toString();
-
+            
             // add the PK for auto-increment ID
             String colName = fld.toString();
             colName = colName.substring(0, colName.indexOf(" "));
@@ -449,13 +449,13 @@ public class DBGen extends Gen implements Generator {
                 if (colClass.equals("java.math.BigInteger")) {
                     colCheck += " BIGINT(10) UNSIGNED";
                 } else if (colClass.equals("java.lang.String")) {
-
-                    if(colPrecision > 1280) {
-                        colCheck += " LONGTEXT";
-                    } else {
-                        colCheck += " VARCHAR(" + colPrecision + ")";
-                    }
-
+                    
+                	if(colPrecision > 1280) {
+                		colCheck += " LONGTEXT";
+                	} else {
+                		colCheck += " VARCHAR(" + colPrecision + ")";
+                	}
+                    
                 } else if (colClass.equals("java.lang.Double")) {
                     colCheck += " DOUBLE";
                 } else if (colClass.equals("java.lang.Boolean")) {
@@ -471,7 +471,7 @@ public class DBGen extends Gen implements Generator {
                 }
 
                 if (!checkList.contains(colCheck)) {
-                    changesRequired = true;
+                	changesRequired = true;
                     logger.info("Found DB Schema Change: " + colCheck);
                 }
             }

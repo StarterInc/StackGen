@@ -1,11 +1,11 @@
 package io.starter.ignite.generator;
 
-import io.swagger.codegen.CodegenConfig;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.Swagger;
 import io.swagger.models.properties.Property;
 import io.swagger.models.properties.PropertyBuilder;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +85,7 @@ public class MyBatisJoin {
 				+ TUPLE_TABLE_SUFFIX;
 	}
 
-	public MyBatisJoin(Swagger swagger, String field, Model src, Model ref, StackGenConfigurator config) {
+	public MyBatisJoin( String field, Model src, Model ref, StackGenConfigurator config) {
 		Table table = new Table(config);
 		this.source = src;
 		this.target = ref;
@@ -104,7 +104,7 @@ public class MyBatisJoin {
 		tableName = src.getTitle() + joinTable
 				+ "Idx";
 
-		swagger.addDefinition(tableName, getModel(table) );
+		// TODO: fix swagger.addDefinition(tableName, getModel(table) );
 	}
 
 

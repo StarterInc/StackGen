@@ -86,7 +86,7 @@ public class SecureFieldTest {
 
 		final Field f = u.getClass().getField("password");
 		final String pCheck = f.get(u).toString();
-		// System.out.println("USER PASS: " + u.getPassword() + ":" + pCheck);
+		System.out.println("USER PASS: " + u.getPassword() + ":" + pCheck);
 
 		final String up = u.getPassword();
 
@@ -105,7 +105,7 @@ public class SecureFieldTest {
 		u.setLastName(nm);
 		final Field f = u.getClass().getField("lastName");
 		final String lnameCheck = f.get(u).toString();
-		// System.out.println("USER LASTNAME: " + u.getLastName() + ":" + lnameCheck);
+		System.out.println("USER LASTNAME: " + u.getLastName() + ":" + lnameCheck);
 
 		final String nmx = u.getLastName();
 		Assert.assertNotEquals(nmx, lnameCheck);

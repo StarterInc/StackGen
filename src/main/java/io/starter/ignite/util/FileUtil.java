@@ -1,11 +1,6 @@
 package io.starter.ignite.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * utility methods for files
@@ -14,6 +9,31 @@ import java.io.OutputStream;
  *
  */
 public class FileUtil {
+
+	/**
+	 * reads a text file into a string... well we hope it's a text file...
+	 *
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static String readFile(String file) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader (file));
+		String         line = null;
+		StringBuilder  stringBuilder = new StringBuilder();
+		String         ls = System.getProperty("line.separator");
+
+		try {
+			while((line = reader.readLine()) != null) {
+				stringBuilder.append(line);
+				stringBuilder.append(ls);
+			}
+
+			return stringBuilder.toString();
+		} finally {
+			reader.close();
+		}
+	}
 
 	/**
 	 * build file path if it does not exist
@@ -49,7 +69,7 @@ public class FileUtil {
 			}
 
 			// list all the directory contents
-			String[] files = src.list();
+			String files[] = src.list();
 
 			for (String file : files) {
 				// construct the src and dest file structure

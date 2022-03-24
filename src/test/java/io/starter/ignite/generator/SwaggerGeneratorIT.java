@@ -5,14 +5,12 @@ package io.starter.ignite.generator;
 
 import static org.junit.Assert.assertNotNull;
 
-import com.google.gson.Gson;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 /**
  * test the app code generator
@@ -52,9 +50,7 @@ public class SwaggerGeneratorIT {
 				+ "  \"mybatisMain\": \"gen/src/\",\n" + "  \"name\": \"My Microservice API\",\n"
 				+ "  \"ownerId\": \"0\",\n" + "  \"schemaData\": \"Complete OpenAPI Schema Contents...\",\n"
 				+ "  \"schemaName\": \"starter\",\n" + "  \"status\": \"available\"\n" + "}";
-
-		Gson gson = new Gson();
-		Map job = gson.fromJson(inputJSON, Map.class);
+		JSONObject job = new JSONObject(inputJSON);
 
 		SwaggerGen swaggerGen = new SwaggerGen(job);
 		assertNotNull(swaggerGen.generate());

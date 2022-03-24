@@ -74,7 +74,7 @@ public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourc
 		try {
 			cpds.setDriverClass(driver); // loads the jdbc driver
 		} catch (Exception e) {
-			logger.error("Could not set Driver Class: " + driver, e);
+			System.err.println("Could not set Driver Class: " + driver);
 		}
 		cpds.setJdbcUrl(url + "/" + name);
 		cpds.setUser(username);
@@ -98,7 +98,7 @@ public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourc
 		try {
 			cpds.setDriverClass(dbDriver); // loads the jdbc driver
 		} catch (Exception e) {
-			logger.error("Could not set Driver Class: " + dbDriver);
+			System.err.println("Could not set Driver Class: " + dbDriver);
 		}
 		cpds.setJdbcUrl(dbUrl + "/" + dbName);
 		cpds.setUser(dbUser);
@@ -110,7 +110,7 @@ public class ConnectionFactory implements org.apache.ibatis.datasource.DataSourc
 		cpds.setMaxIdleTime(1800);
 		cpds.setIdleConnectionTestPeriod(300);
 		cpds.setTestConnectionOnCheckout(true);
-		cpds.setMaxPoolSize(100);
+		cpds.setMaxPoolSize(30);
 		return cpds;
 	}
 

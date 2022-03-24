@@ -834,7 +834,7 @@ public class JavaGen extends Gen implements Generator {
 		// test
 		final String sourcepath = config.getJavaGenSourceFolder() + "/" + packageDir;
 
-		JavaGen.logger.info("Preparing Java Compiler for: " + sourcepath);
+		JavaGen.logger.info("JavaGen Compiling: " + sourcepath);
 
 		// prepare compiler
 		final DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
